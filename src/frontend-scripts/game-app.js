@@ -9,6 +9,9 @@ document.addEventListener('DOMContentLoaded', () => {
 	require('./account')();
 	console.log('app started');
 
+
+	console.log('Hello World!');
+
 	if (container) {
 		React.render(<Game />, container);
 	}

@@ -67,7 +67,7 @@ gulp.task('styles', () => {
 });
 
 gulp.task('scripts', () => {
-	gulp.src('./src/frontend-scripts/chatroom-app.js')
+	gulp.src('./src/frontend-scripts/game-app.js')
 		.pipe(through2.obj((file, enc, next) => {
 			browserify(file.path, {debug: true})
 				.transform(babelify)

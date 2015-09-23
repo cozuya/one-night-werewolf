@@ -1,6 +1,9 @@
 'use strict';
 
-let React = require('react');
+let React = require('react'),
+	Left = require('./left/Left.jsx'),
+	Middle = require('./middle/Middle.jsx'),
+	Right = require('./right/Right.jsx');
 
 module.exports = class Game extends React.Component {
 	render() {
