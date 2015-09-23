@@ -1,12 +1,13 @@
 'use strict';
 
-let React = require('react');
+let React = require('react'),
+	Menu = require('../menu/Menu.jsx');
 
 module.exports = class Middle extends React.Component {
 	render() {
 		return (
-			<section className="middle">
-				
+			<section className="middle pusher">
+			
 			</section>
 		);
 	}
