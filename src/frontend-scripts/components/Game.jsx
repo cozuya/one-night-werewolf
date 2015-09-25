@@ -1,17 +1,18 @@
 'use strict';
 
 let React = require('react'),
-	Left = require('./left/Left.jsx'),
-	Middle = require('./middle/Middle.jsx'),
-	Right = require('./right/Right.jsx');
+	LeftSidebar = require('./section-left/LeftSidebar.jsx'),
+	Main = require('./section-main/Main.jsx'),
+	RightSidebar = require('./section-right/RightSidebar.jsx');
+
 
 module.exports = class Game extends React.Component {
 	render() {
 		return (
-			<section className="main">
-				<Left />
-				<Middle />
-				<Right />
+			<section>
+				<LeftSidebar />
+				<Main />
+				<RightSidebar />
 			</section>
 		);
 	}
