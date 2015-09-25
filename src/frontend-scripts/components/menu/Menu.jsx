@@ -2,13 +2,16 @@
 
 let React = require('react');
 
+
 module.exports = class Menu extends React.Component {
 	render() {
 		return (
-			<section className="top ui sidebar menu visible pusher">
+			<section className="ui large menu visible">
 				<p className="item">One Night Werewolf</p>
-				<a className="item right">Sign in</a>
-				<a className="item right">Sign up</a>
+				<div className="item right">
+					<a className="ui inverted button">Sign in</a>
+					<a className="ui inverted button">Sign up</a>
+				</div>
 			</section>
 		);
 	}
