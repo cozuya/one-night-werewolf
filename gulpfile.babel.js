@@ -11,46 +11,26 @@ let gulp = require('gulp'),
 	opn = require('opn'),
 	sass = require('gulp-sass'),
 	wait = require('gulp-wait'),
-	eslint = require('gulp-eslint'),
 	sourcemaps = require('gulp-sourcemaps'),
 	notify = require('gulp-notify'),
 	nodemon = require('gulp-nodemon'),
+	jshint = require('gulp-jshint'),
 	exec = require('child_process').exec;
 
 gulp.task('default', ['watch']);
 
 gulp.task('watch', () => {
-	opn('http://localhost:8080/');
+	// opn('http://localhost:8080/');
 	livereload.listen();
 	gulp.watch('./src/scss/*.scss', ['styles']);
-	gulp.watch('./src/frontend-scripts/**/*.js*', ['scripts']);
+	gulp.watch('./src/frontend-scripts/**/*.js*', ['scripts', 'lint']);
 	gulp.watch('./routes/*.js', ['reload']);
 });
 
 gulp.task('lint', () => {
-	gulp.src(['./src/frontend-scripts/*.js'])
-		.pipe(eslint())
-		.pipe(eslint.format())
-		.pipe(eslint.failOnError());
-});
-
-gulp.task('server', () => {
-
-	// may be causing issues, use the below command instead.  Not code covered.
-	// nodemon --exec npm run babel-node -- ./bin/dev
-
-	return nodemon({
-		script: './bin/dev',
-		ignore: ['./public', './src/frontend-scripts', './data', './logs'],
-		exec: 'npm run babel-node'
-	})
-	.on('error', (err) => {  // not working?
-		gulp.src('').pipe(notify(err));
-	});
-});
-
-gulp.task('mongo', () => { // does not work on osx for who knows reason.  Probably best to ignore and is not code covered in this version.  Start this task in its own process (minus the 'start' below).
-	exec('start mongod --quiet --dbpath ./data');
+	gulp.src(['./src/frontend-scripts/*.js*'])
+		.pipe(jshint())
+		.pipe(jshint.reporter('jshint-stylish'));
 });
 
 gulp.task('styles', () => {

@@ -6,6 +6,7 @@ let Game = require('./components/Game.jsx'),
 document.addEventListener('DOMContentLoaded', () => {
 	let container = document.getElementById('game-container');
 
+
 	require('./account')();
 	console.log('app started');
 
