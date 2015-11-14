@@ -1,15 +1,16 @@
 'use strict';
 
-let React = require('react'),
-	Game = require('./components/Game.jsx');
+let Game = require('./components/Game.jsx'),
+	ReactDOM = require('react-dom');
 
 document.addEventListener('DOMContentLoaded', () => {
 	let container = document.getElementById('game-container');
+
 
 	require('./account')();
 	console.log('app started');
 
 	if (container) {
-		React.render(<Game />, container);
+		ReactDOM.render(<Game />, container);
 	}
 });
