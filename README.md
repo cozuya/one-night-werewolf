@@ -35,6 +35,12 @@ First 3 prompts from semantic use the default, then point semantic to be install
 
 > gulp build
 
+For installation on windows, you may need to do a few extra steps if you are getting node-gyp errors, specifically installing the required MS programs referred to on node-gyp's github, and then possibly doing:
+
+> set GYP_MSVS_VERSION=2013
+
+> npm install --msvs_version=2013
+
 ## Running in dev mode ##
 
 start mongo:
