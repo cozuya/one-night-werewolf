@@ -1,7 +1,0 @@
-{
-	"passfail": false,
-	"browser": true,
-	"esnext": true,
-	"browserify": true,
-	"devel": true
-}

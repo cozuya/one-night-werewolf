@@ -13,7 +13,7 @@ WIP and just getting started!  Estimated alpha deployment: May 2016.
 
 ## Installation ##
 
-Install node or iojs, currently has dependencies that don't work with iojs v3.0.0 and higher.
+Install node - currently works with v5.0.0 and below.
 
 Install mongodb, have it in your path.
 
@@ -21,9 +21,7 @@ Install mongodb, have it in your path.
 
 > cd one-night-werewolf
 
-> mkdir data
-
-> mkdir logs
+> mkdir data logs
 
 > npm install -g gulp nodemon
 
@@ -40,6 +38,8 @@ For installation on windows, you may need to do a few extra steps if you are get
 > set GYP_MSVS_VERSION=2013
 
 > npm install --msvs_version=2013
+
+instead of the npm install found above.
 
 ## Running in dev mode ##
 

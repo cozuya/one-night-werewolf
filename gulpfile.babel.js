@@ -14,7 +14,6 @@ let gulp = require('gulp'),
 	sourcemaps = require('gulp-sourcemaps'),
 	notify = require('gulp-notify'),
 	nodemon = require('gulp-nodemon'),
-	jshint = require('gulp-jshint'),
 	exec = require('child_process').exec;
 
 gulp.task('default', ['watch']);
