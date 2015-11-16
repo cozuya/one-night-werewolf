@@ -1,8 +1,10 @@
 'use strict';
 
-let Game = require('./components/Game.jsx'),
-	React = require('react'),
-	ReactDOM = require('react-dom');
+let React = require('react'),
+	ReactDOM = require('react-dom'),
+	LeftSidebar = require('./components/section-left/LeftSidebar.jsx'),
+	Main = require('./components/section-main/Main.jsx'),
+	RightSidebar = require('./components/section-right/RightSidebar.jsx');
 
 document.addEventListener('DOMContentLoaded', () => {
 	let container = document.getElementById('game-container');
@@ -11,6 +13,11 @@ document.addEventListener('DOMContentLoaded', () => {
 	console.log('app started');
 
 	if (container) {
-		ReactDOM.render(<Game />, container);
+		ReactDOM.render(<section>
+							<LeftSidebar />
+							<Main />
+							<RightSidebar />
+						</section>,
+		container);
 	}
 });

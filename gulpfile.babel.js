@@ -27,9 +27,9 @@ gulp.task('watch', () => {
 });
 
 gulp.task('lint', () => {
-	gulp.src(['./src/frontend-scripts/*.js*'])
-		.pipe(jshint())
-		.pipe(jshint.reporter('jshint-stylish'));
+	// gulp.src(['./src/frontend-scripts/*.js*'])
+	// 	.pipe(jshint())
+	// 	.pipe(jshint.reporter('jshint-stylish'));
 });
 
 gulp.task('styles', () => {
