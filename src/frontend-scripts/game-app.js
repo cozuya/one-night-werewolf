@@ -13,7 +13,7 @@ document.addEventListener('DOMContentLoaded', () => {
 	console.log('app started');
 
 	if (container) {
-		ReactDOM.render(<section>
+		ReactDOM.render(<section className="ui grid">
 							<LeftSidebar />
 							<Main />
 							<RightSidebar />
