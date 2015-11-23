@@ -1,3 +1,7 @@
 'use strict';
 
-let store = require('redux').createStore;
+import { createStore } from 'redux';
+
+let store = createStore();
+
+module.exports = store;
