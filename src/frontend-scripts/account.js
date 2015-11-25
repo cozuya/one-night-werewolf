@@ -1,15 +1,15 @@
 'use strict';
 
-let	$ = require('jquery'),
-	Modal = require('semantic-ui-modal'),
-	Dimmer = require('semantic-ui-dimmer'),
-	Transition = require('semantic-ui-transition');
+import $ from 'jquery'
+import Modal from 'semantic-ui-modal'
+import Dimmer from 'semantic-ui-dimmer'
+import Transition from 'semantic-ui-transition'
 
 $.fn.transition = Transition;
 $.fn.modal = Modal;
 $.fn.dimmer = Dimmer;
 
-module.exports = () => {
+export default () => {
 	$('a#signup').on('click', function(event) {
 		event.preventDefault();
 

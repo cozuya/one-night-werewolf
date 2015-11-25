@@ -1,7 +1,7 @@
 'use strict';
 
-let React = require('react'),
-	Menu = require('../menu/Menu.jsx');
+import React from 'react'
+import Menu from '../menu/Menu.jsx'
 
 export default class Main extends React.Component {
 	render() {

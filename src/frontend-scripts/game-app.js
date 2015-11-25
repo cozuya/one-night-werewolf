@@ -1,14 +1,12 @@
 'use strict';
 
-let React = require('react'),
-	ReactDOM = require('react-dom'),
-	Provider = require('react-redux'),
-	createStore = require('redux').createStore,
-	LeftSidebar = require('./components/section-left/LeftSidebar.jsx'),
-	Main = require('./components/section-main/Main.jsx'),
-	RightSidebar = require('./components/section-right/RightSidebar.jsx'),
-	wwApp = require('./reducers/wwapp'),
-	account = require('./account');
+import account from './account'
+import AppComponent from './components/App.jsx'
+import React from 'react'
+import { render } from 'react-dom'
+import { createStore } from 'redux'
+import { Provider } from 'react-redux'
+import wwApp from './reducers/wwapp'
 
 document.addEventListener('DOMContentLoaded', () => {
 	let container = document.getElementById('game-container');
@@ -17,17 +15,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
 	console.log(`app started at ${new Date()}`);
 
-	console.log(wwApp);
-
 	if (container) {
-
 		let store = createStore(wwApp);
+		console.log(store);
 
-		ReactDOM.render(<Provider className="ui grid" store={store}>
-							<LeftSidebar />
-							<Main />
-							<RightSidebar />
-						</Provider>,
+		render(
+			<Provider store={store}>
+				<AppComponent />
+			</Provider>,
 		container);
 	}
 });

@@ -1,6 +1,6 @@
 'use strict';
 
-let React = require('react');
+import React from 'react'
 
 export default class RightSidebar extends React.Component {
 	render() {
