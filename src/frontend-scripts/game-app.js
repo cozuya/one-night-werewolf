@@ -2,25 +2,32 @@
 
 let React = require('react'),
 	ReactDOM = require('react-dom'),
+	Provider = require('react-redux'),
+	createStore = require('redux').createStore,
 	LeftSidebar = require('./components/section-left/LeftSidebar.jsx'),
 	Main = require('./components/section-main/Main.jsx'),
 	RightSidebar = require('./components/section-right/RightSidebar.jsx'),
-	store = require('./stores/stores.js');
+	wwApp = require('./reducers/wwapp'),
+	account = require('./account');
 
 document.addEventListener('DOMContentLoaded', () => {
 	let container = document.getElementById('game-container');
 
-	require('./account')();
+	account();
+
 	console.log(`app started at ${new Date()}`);
 
+	console.log(wwApp);
+
 	if (container) {
-		ReactDOM.render(<section className="ui grid">
+
+		let store = createStore(wwApp);
+
+		ReactDOM.render(<Provider className="ui grid" store={store}>
 							<LeftSidebar />
 							<Main />
 							<RightSidebar />
-						</section>,
+						</Provider>,
 		container);
-
-		console.log(store);
 	}
 });

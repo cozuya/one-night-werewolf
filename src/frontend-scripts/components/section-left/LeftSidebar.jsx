@@ -2,7 +2,8 @@
 
 let React = require('react');
 
-module.exports = class Left extends React.Component {
+// export default class LeftSidebar extends React.Component {
+module.exports = class LeftSidebar extends React.Component {
 	render() {
 		return (
 			<section className="section-left three wide column">

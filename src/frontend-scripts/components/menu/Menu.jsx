@@ -2,12 +2,6 @@
 
 let React = require('react');
 
-let r = require('react-redux');
-
-let Provider = require('react-redux').Provider;
-
-console.log(r);
-
 module.exports = class Menu extends React.Component {
 	render() {
 		return (

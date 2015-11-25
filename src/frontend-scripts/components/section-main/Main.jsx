@@ -3,7 +3,7 @@
 let React = require('react'),
 	Menu = require('../menu/Menu.jsx');
 
-module.exports = class Middle extends React.Component {
+export default class Main extends React.Component {
 	render() {
 		return (
 			<section className="section-main ten wide column">

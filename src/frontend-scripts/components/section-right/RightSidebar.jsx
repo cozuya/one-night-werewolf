@@ -2,7 +2,7 @@
 
 let React = require('react');
 
-module.exports = class Right extends React.Component {
+export default class RightSidebar extends React.Component {
 	render() {
 		return (
 			<section className="section-right three wide column">
