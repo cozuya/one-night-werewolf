@@ -1,9 +1,9 @@
 'use strict';
 
-import $ from 'jquery'
-import Modal from 'semantic-ui-modal'
-import Dimmer from 'semantic-ui-dimmer'
-import Transition from 'semantic-ui-transition'
+import $ from 'jquery';
+import Modal from 'semantic-ui-modal';
+import Dimmer from 'semantic-ui-dimmer';
+import Transition from 'semantic-ui-transition';
 
 $.fn.transition = Transition;
 $.fn.modal = Modal;
