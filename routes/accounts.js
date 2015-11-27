@@ -1,18 +1,18 @@
 'use strict';
 
-let mongoose = require('mongoose'),
-	passport = require('passport'),
-	LocalStrategy = require('passport-local').Strategy,
-	Account = require('../models/account'),
-	ensureAuthenticated = (req, res, next)  => {
-		if (req.isAuthenticated()) {
-			return next();
-		} else {
-			res.redirect('/');
-		}
-	};
+import mongoose from 'mongoose';
+import passport from 'passport';
+import Account from '../models/account';
 
-module.exports = () => {
+let ensureAuthenticated = (req, res, next)  => {
+	if (req.isAuthenticated()) {
+		return next();
+	} else {
+		res.redirect('/');
+	}
+};
+
+export default () => {
 	app.get('/account', ensureAuthenticated, (req, res) => {
 		res.render('my-account');
 	});
@@ -59,5 +59,9 @@ module.exports = () => {
 	app.post('/account/logout', ensureAuthenticated, (req, res) => {
 		req.logOut();
 		res.send();
-	});	
+	});
+
+	// app.post('/account/delete-account', passport.authenticate('local'), (req, res) => {
+				// todo
+	// });
 };

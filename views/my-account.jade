@@ -2,10 +2,11 @@ extends layout
 
 block content
 	nav.ui.teal.menu.inverted
+		a.ui.left.button.primary(href="/game") Play now
 		a.item.right#logout(href="#") Logout
-	a(style="float: right" href="/chat") Back to game
 	h1.ui.header My account
 	button#change-password.ui.primary.button(style="display: block; margin: 0 auto;") Change your password
+	button#delete-account.ui.primary.button(style="display: block; margin: 10px auto 0;") Delete your account
 
 
 	section.passwordchange-modal.ui.modal.small.segment.column
@@ -24,3 +25,17 @@ block content
 				.ui.text.loader Changing your password..
 			.ui.negative.hidden.message
 			.ui.hidden.message Successfully changed your password!
+
+	section.deleteaccount-modal.ui.modal.small.segment.column
+		h2.header Delete your account
+		.ui.warning.message This cannot be undone.
+		form.ui.form
+			.field
+				.ui.left.icon.input
+					i.lock.icon
+					input#deleteaccount-password(placeholder="Your current password")
+			button.ui.primary.button.fluid.large#deleteaccount-submit Submit
+			.ui.dimmer.inverted
+				.ui.text.loader Deleting your account..
+			.ui.negative.hidden.message
+			.ui.hidden.message Successfully deleted your account

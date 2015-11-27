@@ -1,9 +1,9 @@
 'use strict';
 
-let mongoose = require('mongoose'),
-	passport = require('passport'),
-	LocalStrategy = require('passport-local').Strategy,
-	Account = require('../models/account'),
+import mongoose from 'mongoose';
+import passport from 'passport';
+
+let Account = require('../models/account'),
 	ensureAuthenticated = (req, res, next)  => {
 		if (req.isAuthenticated()) {
 			return next();
@@ -18,21 +18,21 @@ module.exports = () => {
 
 	app.get('/', (req, res) => {
 		if (req.user) {
-			res.redirect('/game');
+			res.render('signed-in');
 		} else {
-			res.render('signed-out', {});
+			res.render('signed-out');
 		}
 	});
 
-	app.get('/signin', (req, res) => {
-		res.render('signup');
-	});
-
-	app.get('/signup', (req, res) => {
-		res.render('signup');
-	});
-
 	app.get('/game', ensureAuthenticated, (req, res) => {
+		res.render('game');
+	});
+
+	app.get('/observe', (req, res) => {
+		if (req.user) {
+			req.session.destroy();
+			req.logout();
+		}
 		res.render('game');
 	});
 

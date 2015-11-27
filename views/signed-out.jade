@@ -1,9 +1,13 @@
 extends layout
 block content
 	nav.ui.teal.menu.inverted
-		a.item.right#signin(href="#") Sign In
-		a.item#signup(href="#") Sign Up
-	h1.ui.header Sign in to play
+		a.ui.left.button.primary(href="/observe") Observe now
+		.item.right
+			.ui.buttons
+				.ui.button#signin Sign In
+				.or
+				.ui.button#signup Sign Up
+	h1.ui.header One Night Werewolf
 
 	section.signin-modal.ui.modal.small.segment.column
 		h2.header Sign in to your account

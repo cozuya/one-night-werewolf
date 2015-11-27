@@ -10,11 +10,11 @@ $.fn.modal = Modal;
 $.fn.dimmer = Dimmer;
 
 export default () => {
-	$('a#signup').on('click', function(event) {
+	$('#signup').on('click', function(event) {
 		event.preventDefault();
 
 		$('section.signup-modal')
-			.modal('setting', 'transition', 'vertical flip')
+			.modal('setting', 'transition', 'horizontal flip')
 			.modal('show');
 	});
 
@@ -52,7 +52,7 @@ export default () => {
 		});
 	});
 
-	$('a#signin').on('click', function(event) {
+	$('#signin').on('click', function(event) {
 		event.preventDefault();
 
 		$('section.signin-modal')
@@ -142,6 +142,53 @@ export default () => {
 				401() {
 					$loader.removeClass('active');
 					$errMessage.text('Your new password and your confirm password did not match.').removeClass('hidden');
+					if (!$successMessage.hasClass('hidden')) {
+						$successMessage.addClass('hidden');
+					}
+				}
+			}
+		});
+	});	
+
+	$('button#delete-account').on('click', function(event) {
+		$('section.deleteaccount-modal')
+			.modal('setting', 'transition', 'horizontal flip')
+			.modal('show');
+	});
+
+	$('button#deleteaccount-submit').on('click', function (event) {
+		return; // todo
+		event.preventDefault();
+		
+		let password = $('#deleteaccount-password').val(),
+			$loader = $(this).next(),
+			$errMessage = $loader.next(),
+			$successMessage = $errMessage.next(),
+			data = JSON.stringify({password});
+
+		$loader.addClass('active');
+
+		console.log(data);
+		
+		$.ajax({
+			url: '/account/delete-account',
+			method: 'POST',
+			contentType: 'application/json; charset=UTF-8',
+			data,
+			statusCode: {
+				200() {
+					$loader.removeClass('active');
+					$successMessage.removeClass('hidden');
+					setTimeout(function () {
+						window.location.reload();
+					}, 3000);
+					if (!$errMessage.hasClass('hidden')) {
+						$errMessage.addClass('hidden');
+					}
+				},
+				400() {
+					$loader.removeClass('active');
+					$errMessage.text('Your password did not match.').removeClass('hidden');
 					if (!$successMessage.hasClass('hidden')) {
 						$successMessage.addClass('hidden');
 					}
