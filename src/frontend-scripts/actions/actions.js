@@ -8,3 +8,12 @@ export function updateUser(user) {
 		user
 	}
 }
+
+export const UPDATE_MIDSECTION = 'UPDATE_MIDSECTION';
+
+export function updateMidsection(midsection) {
+	return {
+		type: UPDATE_MIDSECTION,
+		midsection
+	}
+}

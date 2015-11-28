@@ -3,7 +3,7 @@ one-night-werewolf
 
 A multiuser web game of deception and deduction.
 
-Front end: React, Flux (Alt), Sass, SocketIO, SemanticUI.
+Front end: React, Redux, Sass, SocketIO, SemanticUI.
 
 Back end: Node with Express, Jade, Passport, Mongodb with Mongoose, SocketIO.
 

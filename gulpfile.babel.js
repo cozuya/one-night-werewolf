@@ -1,20 +1,20 @@
 'use strict';
 
-let gulp = require('gulp'),
-	livereload = require('gulp-livereload'),
-	plumber = require('gulp-plumber'),
-	browserify = require('browserify'),
-	babelify = require('babelify'),
-	through2 = require('through2'),
-	transform = require('vinyl-transform'),
-	rename = require('gulp-rename'),
-	opn = require('opn'),
-	sass = require('gulp-sass'),
-	wait = require('gulp-wait'),
-	sourcemaps = require('gulp-sourcemaps'),
-	notify = require('gulp-notify'),
-	nodemon = require('gulp-nodemon'),
-	exec = require('child_process').exec;
+import gulp from 'gulp';
+import livereload from 'gulp-livereload';
+import plumber from 'gulp-plumber';
+import browserify from 'browserify';
+import babelify from 'babelify';
+import through2 from 'through2';
+import transform from 'vinyl-transform';
+import rename from 'gulp-rename';
+import opn from 'opn';
+import sass from 'gulp-sass';
+import wait from 'gulp-wait';
+import sourcemaps from 'gulp-sourcemaps';
+import notify from 'gulp-notify';
+import nodemon from 'gulp-nodemon';
+import { exec } from 'child_process';
 
 gulp.task('default', ['watch']);
 
