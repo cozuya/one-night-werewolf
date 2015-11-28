@@ -2,17 +2,17 @@
 
 import mongoose from 'mongoose';
 import passport from 'passport';
+import Account from '../models/account';
 
-let Account = require('../models/account'),
-	ensureAuthenticated = (req, res, next)  => {
-		if (req.isAuthenticated()) {
-			return next();
-		} else {
-			res.redirect('/');
-		}
-	};
+let ensureAuthenticated = (req, res, next)  => {
+	if (req.isAuthenticated()) {
+		return next();
+	} else {
+		res.redirect('/observe');
+	}
+};
 
-module.exports = () => {
+export default () => {
 	require('./chats')();
 	require('./accounts')();
 
@@ -25,7 +25,7 @@ module.exports = () => {
 	});
 
 	app.get('/game', ensureAuthenticated, (req, res) => {
-		res.render('game');
+		res.render('game', {user});
 	});
 
 	app.get('/observe', (req, res) => {

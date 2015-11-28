@@ -16,7 +16,6 @@ document.addEventListener('DOMContentLoaded', () => {
 	console.log(`app started at ${new Date()}`);
 
 	if (container) {
-
 		let store = createStore(wwApp);
 
 		render(
