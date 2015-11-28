@@ -12,12 +12,12 @@ document.addEventListener('DOMContentLoaded', () => {
 	let container = document.getElementById('game-container');
 
 	account();
-
+	
 	console.log(`app started at ${new Date()}`);
 
 	if (container) {
+
 		let store = createStore(wwApp);
-		console.log(store);
 
 		render(
 			<Provider store={store}>

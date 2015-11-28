@@ -1,6 +1,8 @@
 'use strict';
 
-export default (state = {}, action) => {
+import { combineReducers } from 'redux';
+
+let userName = (state = '', action) => {
 	switch (action.type) {
 		// case userName:
 		// 	return state.userName = action.userName;
@@ -8,3 +10,7 @@ export default (state = {}, action) => {
 			return state;
 	}
 };
+
+export default combineReducers({
+	userName
+});

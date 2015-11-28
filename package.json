@@ -25,7 +25,6 @@
     "semantic-ui": "^2.0.8"
   },
   "devDependencies": {
-    "babel-eslint": "^4.0.0",
     "babelify": "^5.0.4",
     "better-console": "^0.2.4",
     "browserify": "^9.0.3",
@@ -42,7 +41,6 @@
     "gulp-header": "^1.7.1",
     "gulp-help": "^1.6.1",
     "gulp-if": "^1.2.5",
-    "gulp-jshint": "^1.12.0",
     "gulp-less": "^3.0.3",
     "gulp-livereload": "^3.8.0",
     "gulp-minify-css": "^1.2.1",
