@@ -25,7 +25,7 @@ export default () => {
 	});
 
 	app.get('/game', ensureAuthenticated, (req, res) => {
-		res.render('game', {user});
+		res.render('game', {user: req.user.username});
 	});
 
 	app.get('/observe', (req, res) => {

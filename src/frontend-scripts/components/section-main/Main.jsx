@@ -7,7 +7,7 @@ export default class Main extends React.Component {
 	render() {
 		return (
 			<section className="section-main ten wide column">
-				<Menu />
+				<Menu userName={this.props.userName} />
 			</section>
 		);
 	}
