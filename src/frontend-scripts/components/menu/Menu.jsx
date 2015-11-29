@@ -7,9 +7,7 @@ export default class Menu extends React.Component {
 		let userName = this.props.userName,
 			rightSection = (() => {
 				if (userName) {
-					return (
-						<span>Logged in as <a href="/account" target="blank">{userName}</a></span>
-					)
+					return <span>Logged in as <a href="/account" target="blank">{userName}</a></span>
 				} else {
 					return (
 						<div className="ui buttons">

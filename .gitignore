@@ -18,3 +18,4 @@ var
 data/*
 data/mongod.lock
 public/semantic/*
+misc/*

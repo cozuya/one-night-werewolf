@@ -27,3 +27,37 @@
 .section-main > .menu {
 	margin: 0;
 }
+
+.creategame {
+	padding: 2%;
+
+	> .header {
+		text-align: center;
+		margin-bottom: 20px;
+	}
+
+	.grid h4 {
+		margin-bottom: 5px;
+	}
+
+	.gamename {
+		text-align: center;
+		input {
+			width: 80%;
+		}
+	}
+
+	.selectdefaults {
+		text-align: center;
+
+		.button {
+			margin: 0 auto;
+			width: 50%;
+		}
+
+		.popup {
+			width: 250px;
+			max-width: inherit;
+		}
+	}
+}
