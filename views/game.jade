@@ -5,3 +5,35 @@ block content
 		section#game-container(class="username-#{ user }")
 	else
 		section#game-container
+
+	section.signin-modal.ui.modal.small.segment.column
+		h2.header Sign in to your account
+		form.ui.form
+			.field
+				.ui.left.icon.input
+					i.user.icon
+					input#signin-username(placeholder="Username")
+			.field
+				.ui.left.icon.input
+					i.lock.icon
+					input#signin-password(placeholder="Password")
+			button.ui.primary.button.fluid.large.signin-submit Submit
+			.ui.dimmer.inverted
+				.ui.text.loader Signing in..
+			.ui.negative.hidden.message
+
+	section.signup-modal.ui.modal.small.segment.column
+		h2.header Sign up for an account
+		form.ui.form
+			.field
+				.ui.left.icon.input
+					i.user.icon
+					input#signup-username(placeholder="Username")
+			.field
+				.ui.left.icon.input
+					i.lock.icon
+					input#signup-password(placeholder="Password")
+			button.ui.primary.button.fluid.large.signup-submit Submit
+			.ui.dimmer.inverted
+				.ui.text.loader Signing up..
+			.ui.negative.hidden.message

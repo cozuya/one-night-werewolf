@@ -10,13 +10,10 @@ import { updateUser, updateMidsection } from '../actions/actions.js';
 class App extends React.Component {
 	componentWillMount() {
 		let { dispatch } = this.props,
-			classList = document.getElementById('game-container').classList,
-			user;
-
+			classList = document.getElementById('game-container').classList;
 
 			if (classList.length) {
-				user = classList[0].split('username-')[1];
-				dispatch(updateUser(user));
+				dispatch(updateUser(classList[0].split('username-')[1]));
 			}
 	}
 

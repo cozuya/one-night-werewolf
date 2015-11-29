@@ -10,7 +10,7 @@ $.fn.modal = Modal;
 $.fn.dimmer = Dimmer;
 
 export default () => {
-	$('#signup').on('click', function(event) {
+	$('body').on('click', '#signup', function(event) {
 		event.preventDefault();
 
 		$('section.signup-modal')
@@ -38,7 +38,11 @@ export default () => {
 			data: JSON.stringify({username, password}),
 			statusCode: {
 				200() {
-					window.location.reload();
+					if (window.location.pathname === '/observe') {
+						window.location.pathname = '/game';
+					} else {
+						window.location.reload();
+					}
 				},
 				400() {
 					submitErr('Sorry, that request did not look right.');
@@ -52,7 +56,7 @@ export default () => {
 		});
 	});
 
-	$('#signin').on('click', function(event) {
+	$('body').on('click', '#signin', function(event) {
 		event.preventDefault();
 
 		$('section.signin-modal')
@@ -80,7 +84,11 @@ export default () => {
 			data: JSON.stringify({username, password}),
 			statusCode: {
 				200() {
-					window.location.reload();
+					if (window.location.pathname === '/observe') {
+						window.location.pathname = '/game';
+					} else {
+						window.location.reload();
+					}
 				},
 				400() {
 					submitErr('Sorry, that request did not look right.');
@@ -168,8 +176,6 @@ export default () => {
 
 		$loader.addClass('active');
 
-		console.log(data);
-		
 		$.ajax({
 			url: '/account/delete-account',
 			method: 'POST',
