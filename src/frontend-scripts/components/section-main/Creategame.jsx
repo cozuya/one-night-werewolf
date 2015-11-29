@@ -3,7 +3,9 @@
 import React from 'react';
 import $ from 'jquery';
 import Popup from 'semantic-ui-popup';
+import Dropdown from 'semantic-ui-dropdown';
 
+$.fn.dropdown = Dropdown;
 $.fn.popup = Popup;
 
 export default class Creategame extends React.Component {
@@ -11,12 +13,15 @@ export default class Creategame extends React.Component {
 		$(this.refs.defaultrolespopup).popup({
 			inline: true,
 			hoverable: true,
-			position: 'bottom left',
-			width: '300px',
+			position: 'bottom center',
 			delay: {
 				show: 300,
 				hide: 800
 			}
+		});
+
+		$(this.refs.timedropdown).dropdown({
+			on: 'hover'
 		});
 	}
 
@@ -45,11 +50,26 @@ export default class Creategame extends React.Component {
 							Select
 						</div>
 						<div className="ui small popup top left transition hidden">
-							Automatically selects 2 werewolves, 3 villagers, and one each of the robber, troublemaker, insomniac, and hunter.
+							Automatically selects 2 werewolves, 3 villagers, and one each of the seer, robber, troublemaker, insomniac, and hunter.
 						</div>
 					</div>
 					<div className="four wide column">
-						3
+						<h4 className="ui header">Time of game</h4>
+						<div className="ui dropdown" ref="timedropdown">
+							<i className="dropdown icon"></i>
+							<div className="menu">
+								<div className="item">0:30</div>
+								<div className="item">1:00</div>
+								<div className="item">1:30</div>
+								<div className="item">2:00</div>
+								<div className="item">2:30</div>
+								<div className="item">3:00</div>
+								<div className="item">3:30</div>
+								<div className="item">4:00</div>
+								<div className="item">4:30</div>
+								<div className="item">5:00</div>
+							</div>
+						</div>
 					</div>
 					<div className="four wide column">
 						4
