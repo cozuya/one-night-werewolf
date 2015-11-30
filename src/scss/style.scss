@@ -60,4 +60,20 @@
 			max-width: inherit;
 		}
 	}
+
+	.timeofgame {
+		text-align: center;
+	}
+
+	.killorbekilled {
+		.popup {
+			width: 195px;
+		}
+
+		.checkbox {
+			width: 55px;
+			margin: 0 auto;
+			display: block;
+		}
+	}
 }
