@@ -89,6 +89,7 @@
 			background: #4B6A90;
 			height: 110px;
 			margin-bottom: 5px;
+			border-radius: 4px;
 		}
 
 		span {
@@ -99,6 +100,10 @@
 	}
 
 	.pickroles {
+		.row:last-child {
+			margin-bottom: 30px;
+		}
+		
 		.werewolf p, .minion p {
 			background: #DC6969;
 		}

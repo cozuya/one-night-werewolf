@@ -92,7 +92,7 @@ export default class Creategame extends React.Component {
 							<label></label>
 						</div>
 						<div className="ui small popup top left transition hidden">
-							At least one player is a werewolf i.e. not all werewolf cards are in the center.
+							At least one player is a werewolf i.e. all werewolf cards cannot be in the center.
 						</div>
 					</div>
 				</div>
@@ -101,37 +101,64 @@ export default class Creategame extends React.Component {
 						<div className="column werewolf">
 							<p>Werewolf</p>
 							<i className="minus icon"></i>
-							<span className="count">2</span>
+							<span>2</span>
 							<i className="plus icon"></i>
 						</div>
 						<div className="column minion">
 							<p>Minion</p>
+							<i className="minus icon"></i>
+							<span>0</span>
+							<i className="plus icon"></i>							
 						</div>
 						<div className="column">
 							<p>Mason</p>
+							<i className="minus icon"></i>
+							<span>0</span>
+							<i className="plus icon"></i>							
 						</div>
 						<div className="column">
 							<p>Seer</p>
+							<i className="minus icon"></i>
+							<span>0</span>
+							<i className="plus icon"></i>							
 						</div>
 						<div className="column">
 							<p>Robber</p>
+							<i className="minus icon"></i>
+							<span>0</span>
+							<i className="plus icon"></i>							
 						</div>
 					</div>
 					<div className="row">
 						<div className="column">
 							<p>Troublemaker</p>
+							<i className="minus icon"></i>
+							<span>0</span>
+							<i className="plus icon"></i>							
 						</div>
 						<div className="column">
 							<p>Insomniac</p>
+							<i className="minus icon"></i>
+							<span>0</span>
+							<i className="plus icon"></i>							
 						</div>
 						<div className="column">
 							<p>Hunter</p>
+							<i className="minus icon"></i>
+							<span>0</span>
+							<i className="plus icon"></i>							
 						</div>
 						<div className="column tanner">
 							<p>Tanner</p>
+							<i className="minus icon"></i>
+							<span>0</span>
+							<i className="plus icon"></i>							
 						</div>
 						<div className="column">
 							<p>Villager</p>
+							<i className="minus icon"></i>
+							<span>0</span>
+							<i className="plus icon"></i>							
 						</div>
 					</div>					
 				</div>
