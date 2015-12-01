@@ -31,7 +31,7 @@ export default class Creategame extends React.Component {
 			total: 10,
 			label: 'ratio',
 			text: {
-				ratio: '{value} of {total}'
+				ratio: '{value} of {total} roles selected'
 			}
 		});
 	}
@@ -96,9 +96,56 @@ export default class Creategame extends React.Component {
 						</div>
 					</div>
 				</div>
-				{/* roles go here */}
-				<div className="ui teal progress" ref="progressbar" data-value="2" data-total="10">
-					<div className="bar"></div>
+				<div className="ui grid five column pickroles">
+					<div className="row">
+						<div className="column werewolf">
+							<p>Werewolf</p>
+							<i className="minus icon"></i>
+							<span className="count">2</span>
+							<i className="plus icon"></i>
+						</div>
+						<div className="column minion">
+							<p>Minion</p>
+						</div>
+						<div className="column">
+							<p>Mason</p>
+						</div>
+						<div className="column">
+							<p>Seer</p>
+						</div>
+						<div className="column">
+							<p>Robber</p>
+						</div>
+					</div>
+					<div className="row">
+						<div className="column">
+							<p>Troublemaker</p>
+						</div>
+						<div className="column">
+							<p>Insomniac</p>
+						</div>
+						<div className="column">
+							<p>Hunter</p>
+						</div>
+						<div className="column tanner">
+							<p>Tanner</p>
+						</div>
+						<div className="column">
+							<p>Villager</p>
+						</div>
+					</div>					
+				</div>
+				<div>
+					<div className="ui teal progress" ref="progressbar" data-value="2" data-total="10">
+						<div className="bar">
+							<div className="progress">
+								
+							</div>
+						</div>
+					</div>
+				</div>
+				<div className="ui button primary disabled">
+					Create game
 				</div>
 			</section>
 		);

@@ -76,4 +76,35 @@
 			display: block;
 		}
 	}
+
+	.pickroles .column {
+		height: 120px;
+		width: 15% !important;
+		margin: 0 2.5% !important;
+		padding: 0 !important;
+		text-align: center;
+
+		p {
+			border: 1px solid grey;
+			background: #4B6A90;
+			height: 110px;
+			margin-bottom: 5px;
+		}
+
+		span {
+			font-size: 20px;
+			margin: 0 4%;
+		}
+
+	}
+
+	.pickroles {
+		.werewolf p, .minion p {
+			background: #DC6969;
+		}
+
+		.tanner p {
+			background: #DCB469;
+		}
+	}
 }
