@@ -92,7 +92,7 @@
 			border-radius: 4px;
 		}
 
-		span {
+		> span {
 			font-size: 20px;
 			margin: 0 4%;
 		}
@@ -110,6 +110,22 @@
 
 		.tanner p {
 			background: #DCB469;
+		}
+
+		.popup {
+			max-width: inherit;
+
+			> span > span {
+				color: #4B6A90;
+			}
+		}
+
+		.werewolf .popup {
+			width: 330px;
+
+			> span + span {
+				color: #DC6969;
+			}
 		}
 	}
 }

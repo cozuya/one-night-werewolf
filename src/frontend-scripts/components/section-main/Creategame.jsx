@@ -110,8 +110,9 @@ export default class Creategame extends React.Component {
 					<div className="row">
 						<div className="column werewolf">
 							<p ref="role_werewolf">Werewolf</p>
-							<div className="ui small popup bottom right transition hidden">
-								Werewolves wake up first, and look for other werewolves.  If there are none, they may look at a center card.  Werewolves are on the <span>werewolf team.</span>
+							<div className="ui small popup top left transition hidden">
+								Werewolves wake up first, and look for other werewolves.  If there are none, they may look at a center card.
+								  There is a minimum of 2 werewolves in every game.  Werewolves are on the <span>werewolf team.</span>
 							</div>
 							<i className="minus icon"></i>
 							<span>2</span>
