@@ -13,7 +13,10 @@ $.fn.progress = Progress;
 export default class Creategame extends React.Component {
 	constructor() {
 		this.handleChangeRole = this.handleChangeRole.bind(this);
-		// this.roleCount = this.roleCount.bind(this);
+		this.createNewGame = this.createNewGame.bind(this);
+		this.selectDefaultRoles = this.selectDefaultRoles.bind(this);
+		this.clearRoles = this.clearRoles.bind(this);
+
 		this.state = {
 			roles: ['werewolf', 'werewolf']
 		}
@@ -55,38 +58,61 @@ export default class Creategame extends React.Component {
 	}
 
 	handleChangeRole(el) {
-		let role = $(el.target).parent().find('p').attr('data-role'),
-			increment = $(el.target).hasClass('plus'),
+		let $target = $(el.target),
+			role = $target.parent().find('p').attr('data-role'),
+			increment = $target.hasClass('plus'),
 			$progress = $(this.refs.progressbar),
 			roles = this.state.roles,
-			werewolfCount = roles.filter((el) => {
-				return el === 'werewolf';
+			currentRoleCount = roles.filter((el) => {
+				return el === role;
 			}).length;
 
-		console.log(werewolfCount);
-
 		if (increment) {
-			if (roles.length <= 7) {
+			if (roles.length <= 9) {
 				roles.push(role);
 				this.setState({roles});
 				$progress.progress('increment');
 			}
 		} else {
-			if (roles.length >= 0 && werewolfCount >= 2) {
+			if (roles.length >= 0 && currentRoleCount > 0 && ((role === 'werewolf' && currentRoleCount !== 2) || role !== 'werewolf')) {
 				roles.splice(roles.indexOf(role), 1);
-				console.log(roles);
 				this.setState({roles});
 				$progress.progress('decrement');
 			}
 		}
-
-		// console.log(this.state.roles);
 	}
 
 	roleCount(role) {
 		return this.state.roles.filter((el) => {
 			return el === role;
 		}).length;
+	}
+
+	validateCreateButton() {
+		let classes = 'ui button primary',
+			disabled = this.state.roles.length !== 10 ? 'disabled ' : ''; // strings and ternaries don't mix well
+
+		return disabled + classes;
+	}
+
+	validateClearButton() {
+		return this.state.roles.length === 2 ? 'disabled' : '';
+	}
+
+	clearRoles() {
+		this.setState({roles: ['werewolf', 'werewolf']});
+		$(this.refs.progressbar).progress({value: 2});
+	}
+
+	selectDefaultRoles () {
+		let roles = ['werewolf', 'werewolf', 'seer', 'robber', 'troublemaker', 'insomniac', 'hunter', 'villager', 'villager', 'villager'];
+
+		this.setState({roles});
+		$(this.refs.progressbar).progress({value: 10});
+	}
+
+	createNewGame(el) {
+		let $button = $(el.target);
 	}
 
 	render() {
@@ -109,7 +135,7 @@ export default class Creategame extends React.Component {
 					</div>
 					<div className="four wide column selectdefaults">
 						<h4 className="ui header">Select default roles</h4>
-						<div className="ui basic button" ref="defaultrolespopup">
+						<div className="ui basic button" ref="defaultrolespopup" onClick={this.selectDefaultRoles}>
 							Select
 						</div>
 						<div className="ui small popup top left transition hidden">
@@ -150,6 +176,9 @@ export default class Creategame extends React.Component {
 				</div>
 				<div className="ui grid five column pickroles">
 					<div className="row">
+						<a href="#" className={this.validateClearButton()} onClick={this.clearRoles}>Clear</a>
+					</div>
+					<div className="row">
 						<div className="column werewolf">
 							<p ref="role_werewolf" data-role="werewolf">Werewolf</p>
 							<div className="ui small popup transition hidden">
@@ -161,87 +190,87 @@ export default class Creategame extends React.Component {
 							<i className="plus icon" onClick={this.handleChangeRole}></i>
 						</div>
 						<div className="column minion">
-							<p ref="role_minion">Minion</p>
+							<p ref="role_minion" data-role="minion">Minion</p>
 							<div className="ui small popup bottom right transition hidden">
 								Minions wake up, and get to see who the werewolves are - but the werewolves are not aware of who the minions are.  Minions win if the werewolves win, and in the event of no werewolves, win if a villager dies.  Minions are on the <span>werewolf team.</span>
 							</div>
-							<i className="minus icon"></i>
-							<span>0</span>
-							<i className="plus icon"></i>
+							<i className="minus icon" onClick={this.handleChangeRole}></i>
+							<span>{this.roleCount('minion')}</span>
+							<i className="plus icon" onClick={this.handleChangeRole}></i>
 						</div>
 						<div className="column mason">
-							<p ref="role_mason">Mason</p>
+							<p ref="role_mason" data-role="mason">Mason</p>
 							<div className="ui small popup bottom right transition hidden">
 								Masons wake up, and look for other masons.  Masons are on the <span>village team.</span>
 							</div>
-							<i className="minus icon"></i>
-							<span>0</span>
-							<i className="plus icon"></i>
+							<i className="minus icon" onClick={this.handleChangeRole}></i>
+							<span>{this.roleCount('mason')}</span>
+							<i className="plus icon" onClick={this.handleChangeRole}></i>
 						</div>
 						<div className="column">
-							<p>Seer</p>
+							<p data-role="seer">Seer</p>
 							<div className="ui small popup bottom right transition hidden">
 								Seers wake up, and have the choice of looking at another player's card, or two of the center cards.  Seers are on the <span>village team.</span>
 							</div>
-							<i className="minus icon"></i>
-							<span>0</span>
-							<i className="plus icon"></i>
+							<i className="minus icon" onClick={this.handleChangeRole}></i>
+							<span>{this.roleCount('seer')}</span>
+							<i className="plus icon" onClick={this.handleChangeRole}></i>
 						</div>
 						<div className="column">
-							<p>Robber</p>
+							<p data-role="robber">Robber</p>
 							<div className="ui small popup bottom right transition hidden">
 								Robbers wake up, and look at another player's card.  They then swap that player's card with their own, and become the role and team they have stolen (and vice versa) - however they do not do an additional night action.  Robbers are on the <span>village team.</span>
 							</div>
-							<i className="minus icon"></i>
-							<span>0</span>
-							<i className="plus icon"></i>
+							<i className="minus icon" onClick={this.handleChangeRole}></i>
+							<span>{this.roleCount('robber')}</span>
+							<i className="plus icon" onClick={this.handleChangeRole}></i>
 						</div>
 					</div>
 					<div className="row">
 						<div className="column">
-							<p>Troublemaker</p>
+							<p data-role="troublemaker">Troublemaker</p>
 							<div className="ui small popup bottom right transition hidden">
 								Troublemakers wake up, and swap the cards of two players without looking at them.  Troublemakers are on the <span>village team.</span>
 							</div>
-							<i className="minus icon"></i>
-							<span>0</span>
-							<i className="plus icon"></i>
+							<i className="minus icon" onClick={this.handleChangeRole}></i>
+							<span>{this.roleCount('troublemaker')}</span>
+							<i className="plus icon" onClick={this.handleChangeRole}></i>
 						</div>
 						<div className="column">
-							<p>Insomniac</p>
+							<p data-role="insomniac">Insomniac</p>
 							<div className="ui small popup bottom right transition hidden">
 								Insomniacs wake up, and look at their card again to see if they are still the insomniac.  Insomniacs are on the <span>village team.</span>
 							</div>
-							<i className="minus icon"></i>
-							<span>0</span>
-							<i className="plus icon"></i>
+							<i className="minus icon" onClick={this.handleChangeRole}></i>
+							<span>{this.roleCount('insomniac')}</span>
+							<i className="plus icon" onClick={this.handleChangeRole}></i>
 						</div>
 						<div className="column">
-							<p>Hunter</p>
+							<p data-role="hunter">Hunter</p>
 							<div className="ui small popup bottom right transition hidden">
 								Hunters do not wake up.  If a hunter is eliminated, the player he or she is selecting for elimination is also eliminated.  Hunters are on the <span>village team.</span>
 							</div>
-							<i className="minus icon"></i>
-							<span>0</span>
-							<i className="plus icon"></i>
+							<i className="minus icon" onClick={this.handleChangeRole}></i>
+							<span>{this.roleCount('hunter')}</span>
+							<i className="plus icon" onClick={this.handleChangeRole}></i>
 						</div>
 						<div className="column tanner">
-							<p>Tanner</p>
+							<p data-role="tanner">Tanner</p>
 							<div className="ui small popup bottom right transition hidden">
 								Tanners do not wake up.  Tanners are suicidal and only win if they are eliminated.  Tanners are on <span>their own team individually</span> and do not win if another tanner wins.
 							</div>
-							<i className="minus icon"></i>
-							<span>0</span>
-							<i className="plus icon"></i>
+							<i className="minus icon" onClick={this.handleChangeRole}></i>
+							<span>{this.roleCount('tanner')}</span>
+							<i className="plus icon" onClick={this.handleChangeRole}></i>
 						</div>
 						<div className="column">
-							<p>Villager</p>
+							<p data-role="villager">Villager</p>
 							<div className="ui small popup bottom right transition hidden">
 								Villagers do not wake up.  Villagers are on the <span>village team.</span>
 							</div>
-							<i className="minus icon"></i>
-							<span>0</span>
-							<i className="plus icon"></i>
+							<i className="minus icon" onClick={this.handleChangeRole}></i>
+							<span>{this.roleCount('villager')}</span>
+							<i className="plus icon" onClick={this.handleChangeRole}></i>
 						</div>
 					</div>
 				</div>
@@ -254,7 +283,7 @@ export default class Creategame extends React.Component {
 						</div>
 					</div>
 					<div className="four wide column">
-						<div className="ui button primary disabled">
+						<div className={this.validateCreateButton()} onClick={this.createNewGame}>
 							Create game
 						</div>
 					</div>

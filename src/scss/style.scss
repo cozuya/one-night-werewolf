@@ -106,10 +106,32 @@
 	}
 
 	.pickroles {
+		.row:first-child {
+			display: block;
+			padding-bottom: 0;
+
+			a {
+				float: right;
+				margin-right: 30px;
+			}
+
+		 	.disabled {
+		 		visibility: hidden;
+		 	}
+		}
+
+		.row:nth-child(2) {
+			padding-top: 3px;
+		}
+
 		.row:last-child {
 			margin-bottom: 20px;
 		}
 		
+		i {
+			cursor: pointer;
+		}
+
 		.werewolf p, .minion p {
 			background: #DC6969;
 		}
