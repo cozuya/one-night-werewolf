@@ -1,3 +1,7 @@
+$werewolfteam: #DC6969;
+$villageteam: #4B6A90;
+$tannerteam: #DCB469;
+
 .ui.menu {
 	border-radius: 0;
 }
@@ -92,7 +96,7 @@
 
 		p {
 			border: 1px solid grey;
-			background: #4B6A90;
+			background: $villageteam;
 			height: 110px;
 			margin-bottom: 5px;
 			border-radius: 4px;
@@ -138,18 +142,18 @@
 		}
 
 		.werewolf p, .minion p {
-			background: #DC6969;
+			background: $werewolfteam;
 		}
 
 		.tanner p {
-			background: #DCB469;
+			background: $tannerteam;
 		}
 
 		.popup {
 			max-width: inherit;
 
 			> span + span {
-				color: #4B6A90;
+				color: $villageteam;
 			}
 		}
 
@@ -157,7 +161,7 @@
 			width: 330px;
 
 			> span + span {
-				color: #DC6969;
+				color: $werewolfteam;
 			}
 		}
 
@@ -165,7 +169,7 @@
 			width: 335px;
 
 			> span + span {
-				color: #DC6969;
+				color: $werewolfteam;
 			}
 		}
 
@@ -180,5 +184,64 @@
 
 	.footer > .twelve {
 		margin-top: 7px;
+	}
+}
+
+.leftsidebar {
+	.vertical.segment {
+		cursor: pointer;
+		padding: 10px 0;
+
+		> div:first-child {
+			> span {
+				float: right;
+			}
+
+			.seatedcount {
+				margin-right: 15px;
+			}
+
+			.gamename {
+				float: left;
+			}
+
+			&:after {
+				display: block;
+				content: '';
+				clear: both;
+			}
+		}
+
+		.rolelist {
+			> div {
+				text-align: center;
+
+				div {
+					width: 20%;
+					float: left;
+					padding: 2px 0;
+					border: 1px solid #eee;
+				}
+
+				.village {
+					color: #fff;
+					background: $villageteam;
+				}
+
+				.werewolf {
+					background: $werewolfteam;
+				}
+				
+				.tanner {
+					background: $tannerteam;
+				}
+
+				&:after {
+					display: block;
+					content: '';
+					clear: both;
+				}
+			}
+		}
 	}
 }

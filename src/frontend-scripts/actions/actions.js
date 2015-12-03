@@ -17,3 +17,12 @@ export function updateMidsection(midsection) {
 		midsection
 	}
 }
+
+export const UPDATE_GAMELIST = 'UPDATE_GAMELIST';
+
+export function updateGamelist(gameList) {
+	return {
+		type: UPDATE_GAMELIST,
+		gameList
+	}
+}

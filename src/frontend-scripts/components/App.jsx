@@ -5,7 +5,10 @@ import Main from './section-main/Main.jsx'
 import RightSidebar from './section-right/RightSidebar.jsx'
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { updateUser, updateMidsection } from '../actions/actions.js';
+import { updateUser, updateMidsection, updateGamelist } from '../actions/actions.js';
+import socket from 'socket.io-client';
+
+socket = socket();
 
 class App extends React.Component {
 	componentWillMount() {
@@ -15,6 +18,13 @@ class App extends React.Component {
 			if (classList.length) {
 				dispatch(updateUser(classList[0].split('username-')[1]));
 			}
+
+
+		socket.on('gameList', (list) => {
+			dispatch(updateGamelist(list));
+		});
+		
+		socket.emit('getGameList');
 	}
 
 	handleCreateGameClick() {
@@ -29,6 +39,7 @@ class App extends React.Component {
 				<LeftSidebar
 					userName={this.props.userName}
 					midsection={this.props.midSection}
+					gameList={this.props.gameList}
 					onCreateGameClick={this.handleCreateGameClick.bind(this)}
 				/>
 				<Main

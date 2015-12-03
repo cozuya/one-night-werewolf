@@ -3,6 +3,7 @@
 import mongoose from 'mongoose';
 import passport from 'passport';
 import Account from '../models/account';
+import gameList from './socket/gameList';
 
 let ensureAuthenticated = (req, res, next)  => {
 	if (req.isAuthenticated()) {
@@ -13,7 +14,7 @@ let ensureAuthenticated = (req, res, next)  => {
 };
 
 export default () => {
-	require('./chats')();
+	gameList();
 	require('./accounts')();
 
 	app.get('/', (req, res) => {

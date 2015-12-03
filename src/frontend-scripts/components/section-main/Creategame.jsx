@@ -5,10 +5,12 @@ import $ from 'jquery';
 import Popup from 'semantic-ui-popup';
 import Dropdown from 'semantic-ui-dropdown';
 import Progress from 'semantic-ui-progress';
+import socket from 'socket.io-client';
 
 $.fn.dropdown = Dropdown;
 $.fn.popup = Popup;
 $.fn.progress = Progress;
+socket = socket();
 
 export default class Creategame extends React.Component {
 	constructor() {
@@ -125,11 +127,14 @@ export default class Creategame extends React.Component {
 	createNewGame() {
 		// doing this with jquery isn't really the 'react way' but it cuts down on loc and complexity as I would need 3 more functions just to retrieve state for the server in a component that is already pretty complex.
 		let newGame = {
-			kobk: $('div.killorbekilled').find('input').is(':checked'),
+			kobk: $('div.killorbekilled input').is(':checked'),
 			time: $('div.timeofgame > div.dropdown span').text(),
-			name: $('div.gamename > h4 > span').text(),
-			roles: this.state.roles
+			name: $('div.gamename > div > input').val().length ? $('div.gamename > div > input').val() : 'New Game',
+			roles: this.state.roles,
+			seated: [this.props.userName]
 		};
+
+		socket.emit('addGame', newGame);
 	}
 
 	render() {
@@ -147,7 +152,7 @@ export default class Creategame extends React.Component {
 					<div className="four wide column gamename">
 						<h4 className="ui header">Game name<small>*Optional</small></h4>
 						<div className="ui input">
-							<input placeholder="New Game"></input>
+							<input maxLength="14" placeholder="New Game"></input>
 						</div>
 					</div>
 					<div className="four wide column selectdefaults">
