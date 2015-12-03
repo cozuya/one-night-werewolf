@@ -60,14 +60,13 @@ export default class Creategame extends React.Component {
 	handleChangeRole(el) {
 		let $target = $(el.target),
 			role = $target.parent().find('p').attr('data-role'),
-			increment = $target.hasClass('plus'),
 			$progress = $(this.refs.progressbar),
 			roles = this.state.roles,
 			currentRoleCount = roles.filter((el) => {
 				return el === role;
 			}).length;
 
-		if (increment) {
+		if ($target.hasClass('plus')) {
 			if (roles.length <= 9) {
 				roles.push(role);
 				this.setState({roles});
@@ -101,18 +100,36 @@ export default class Creategame extends React.Component {
 
 	clearRoles() {
 		this.setState({roles: ['werewolf', 'werewolf']});
-		$(this.refs.progressbar).progress({value: 2});
+		$(this.refs.progressbar).progress({
+			value: 2,
+			label: 'ratio',
+			text: {
+				ratio: '{value} of {total} roles'
+			}
+		});
 	}
 
 	selectDefaultRoles () {
 		let roles = ['werewolf', 'werewolf', 'seer', 'robber', 'troublemaker', 'insomniac', 'hunter', 'villager', 'villager', 'villager'];
 
 		this.setState({roles});
-		$(this.refs.progressbar).progress({value: 10});
+		$(this.refs.progressbar).progress({
+			value: 10,
+			label: 'ratio',
+			text: {
+				ratio: '{value} of {total} roles'
+			}
+		});
 	}
 
-	createNewGame(el) {
-		let $button = $(el.target);
+	createNewGame() {
+		// doing this with jquery isn't really the 'react way' but it cuts down on loc and complexity as I would need 3 more functions just to retrieve state for the server in a component that is already pretty complex.
+		let newGame = {
+			kobk: $('div.killorbekilled').find('input').is(':checked'),
+			time: $('div.timeofgame > div.dropdown span').text(),
+			name: $('div.gamename > h4 > span').text(),
+			roles: this.state.roles
+		};
 	}
 
 	render() {
@@ -143,7 +160,7 @@ export default class Creategame extends React.Component {
 						</div>
 					</div>
 					<div className="four wide column timeofgame">
-						<h4 className="ui header">Time of game</h4>
+						<h4 className="ui header">Length of game</h4>
 						<div className="ui dropdown" ref="timedropdown">
 							<span className="text">3:00</span>
 							<i className="dropdown icon">
@@ -176,7 +193,7 @@ export default class Creategame extends React.Component {
 				</div>
 				<div className="ui grid five column pickroles">
 					<div className="row">
-						<a href="#" className={this.validateClearButton()} onClick={this.clearRoles}>Clear</a>
+						<div className={this.validateClearButton()} onClick={this.clearRoles}>Clear</div>
 					</div>
 					<div className="row">
 						<div className="column werewolf">

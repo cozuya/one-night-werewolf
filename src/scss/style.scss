@@ -110,9 +110,14 @@
 			display: block;
 			padding-bottom: 0;
 
-			a {
+			> div {
 				float: right;
 				margin-right: 30px;
+				cursor: pointer;
+
+				&:hover {
+					text-decoration: underline;
+				}
 			}
 
 		 	.disabled {
