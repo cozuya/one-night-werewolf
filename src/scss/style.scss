@@ -42,9 +42,15 @@
 
 	.gamename {
 		text-align: center;
+
+		h4 small {
+			margin-left: 8px;
+		}
+
 		input {
 			width: 80%;
 		}
+
 	}
 
 	.selectdefaults {
@@ -101,7 +107,7 @@
 
 	.pickroles {
 		.row:last-child {
-			margin-bottom: 30px;
+			margin-bottom: 20px;
 		}
 		
 		.werewolf p, .minion p {
@@ -115,7 +121,7 @@
 		.popup {
 			max-width: inherit;
 
-			> span > span {
+			> span + span {
 				color: #4B6A90;
 			}
 		}
@@ -127,5 +133,25 @@
 				color: #DC6969;
 			}
 		}
+
+		.minion .popup {
+			width: 335px;
+
+			> span + span {
+				color: #DC6969;
+			}
+		}
+
+		.mason .popup {
+			width: 335px;
+
+			> span + span {
+				// color: #DC6969;
+			}
+		}
+	}
+
+	.footer > .twelve {
+		margin-top: 7px;
 	}
 }
