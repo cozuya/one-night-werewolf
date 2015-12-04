@@ -1,6 +1,11 @@
 'use strict';
 
 import React from 'react';
+import $ from 'jquery';
+import Popup from 'semantic-ui-popup';
+import { roleMap } from '../../../../iso/util.js';
+
+$.fn.popup = Popup;
 
 export default class LeftSidebar extends React.Component {
 	constructor() {
@@ -12,7 +17,7 @@ export default class LeftSidebar extends React.Component {
 	}
 
 	createGameClick() {
-		this.props.onCreateGameClick();
+		this.props.onCreateGameButtonClick();
 	}
 
 	createButton() {
@@ -37,49 +42,7 @@ export default class LeftSidebar extends React.Component {
 	};
 
 	gameList() {
-		let roleMap = {
-			werewolf: {
-				initial: 'WW',
-				team: 'werewolf'
-			},
-			minion: {
-				initial: 'Mi',
-				team: 'werewolf'
-			},
-			mason: {
-				initial: 'Ma',
-				team: 'village'
-			},
-			seer: {
-				initial: 'S',
-				team: 'village'
-			},
-			robber: {
-				initial: 'R',
-				team: 'village'
-			},
-			troublemaker: {
-				initial: 'TM',
-				team: 'village'
-			},
-			hunter: {
-				initial: 'H',
-				team: 'village'
-			},			
-			tanner: {
-				initial: 'T',
-				team: 'tanner'
-			},
-			insomniac: {
-				initial: 'I',
-				team: 'village'
-			},
-			villager: {
-				initial: 'V',
-				team: 'village'
-			}
-		},
-		setClass = (role) => {
+		let setClass = (role) => {
 			return roleMap[role].team;
 		},
 		renderRoles = (roles) => {
@@ -107,8 +70,9 @@ export default class LeftSidebar extends React.Component {
 						</div>
 					</div>
 				</div>
-			)
+			);
 		});
+
 	}
 
 	render() {

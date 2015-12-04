@@ -6,6 +6,7 @@ import Popup from 'semantic-ui-popup';
 import Dropdown from 'semantic-ui-dropdown';
 import Progress from 'semantic-ui-progress';
 import socket from 'socket.io-client';
+import { defaultRolesArray } from '../../../../iso/util.js';
 
 $.fn.dropdown = Dropdown;
 $.fn.popup = Popup;
@@ -112,9 +113,7 @@ export default class Creategame extends React.Component {
 	}
 
 	selectDefaultRoles () {
-		let roles = ['werewolf', 'werewolf', 'seer', 'robber', 'troublemaker', 'insomniac', 'hunter', 'villager', 'villager', 'villager'];
-
-		this.setState({roles});
+		this.setState({roles: defaultRolesArray});
 		$(this.refs.progressbar).progress({
 			value: 10,
 			label: 'ratio',
@@ -135,6 +134,7 @@ export default class Creategame extends React.Component {
 		};
 
 		socket.emit('addGame', newGame);
+		this.props.onCreateGameSubmit();
 	}
 
 	render() {

@@ -11,7 +11,7 @@ export default class Main extends React.Component {
 		let midsection = (() => {
 			switch (this.props.midsection) {
 				case 'createGame':
-					return <Creategame userName={this.props.userName} />
+					return <Creategame userName={this.props.userName} onCreateGameSubmit={this.props.onCreateGameSubmit}/>
 				case 'game':
 					return <Game userName={this.props.userName} />
 				default:

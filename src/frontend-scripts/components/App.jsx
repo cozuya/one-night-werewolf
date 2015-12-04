@@ -19,18 +19,23 @@ class App extends React.Component {
 				dispatch(updateUser(classList[0].split('username-')[1]));
 			}
 
-
 		socket.on('gameList', (list) => {
 			dispatch(updateGamelist(list));
 		});
-		
+
 		socket.emit('getGameList');
 	}
 
-	handleCreateGameClick() {
+	leftSidebarHandleCreateGameClick() {
 		let { dispatch } = this.props;
 
 		dispatch(updateMidsection('createGame'));
+	}
+
+	onCreateGameSubmit() {
+		let { dispatch } = this.props;
+
+		dispatch(updateMidsection('game'));
 	}
 
 	render() {
@@ -40,11 +45,12 @@ class App extends React.Component {
 					userName={this.props.userName}
 					midsection={this.props.midSection}
 					gameList={this.props.gameList}
-					onCreateGameClick={this.handleCreateGameClick.bind(this)}
+					onCreateGameButtonClick={this.leftSidebarHandleCreateGameClick.bind(this)}
 				/>
 				<Main
 					userName={this.props.userName}
 					midsection={this.props.midSection}
+					onCreateGameSubmit={this.onCreateGameSubmit.bind(this)}
 				/>
 				<RightSidebar />
 			</section>
