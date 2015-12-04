@@ -1,14 +1,9 @@
 'use strict';
 
 import React from 'react';
-import $ from 'jquery';
-import Popup from 'semantic-ui-popup';
-import Dropdown from 'semantic-ui-dropdown';
-import Progress from 'semantic-ui-progress';
-
-$.fn.dropdown = Dropdown;
-$.fn.popup = Popup;
-$.fn.progress = Progress;
+import Table from './Table.jsx';
+import Gamechat from './Gamechat.jsx';
+import Gameroles from './Gameroles.jsx';
 
 export default class Game extends React.Component {
 	constructor() {
@@ -19,9 +14,21 @@ export default class Game extends React.Component {
 		
 	}
 
+	// <div className="row gameroles-container">
+	// 				<Gameroles />
+	// 			</div>
+
 	render() {
 		return (
-			<section className="game">
+			<section className="game ui grid">
+				<div className="row">
+					<div className="ten wide column table-container">
+						<Table />
+					</div>
+					<div className="six wide column chat-container">
+						<Gamechat />
+					</div>
+				</div>
 				
 			</section>
 		);

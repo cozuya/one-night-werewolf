@@ -8,14 +8,6 @@ import { roleMap } from '../../../../iso/util.js';
 $.fn.popup = Popup;
 
 export default class LeftSidebar extends React.Component {
-	constructor() {
-		// this.handleChangeRole = this.handleChangeRole.bind(this);
-		
-		// this.state = {
-		// 	roles: ['werewolf', 'werewolf']
-		// }
-	}
-
 	createGameClick() {
 		this.props.onCreateGameButtonClick();
 	}

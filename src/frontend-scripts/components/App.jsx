@@ -24,6 +24,9 @@ class App extends React.Component {
 		});
 
 		socket.emit('getGameList');
+
+		// temp for dev of game, remove below
+		dispatch(updateMidsection('game'));
 	}
 
 	leftSidebarHandleCreateGameClick() {
@@ -37,6 +40,7 @@ class App extends React.Component {
 
 		dispatch(updateMidsection('game'));
 	}
+
 
 	render() {
 		return (

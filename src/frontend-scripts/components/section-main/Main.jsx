@@ -8,13 +8,7 @@ import Game from './Game.jsx';
 
 export default class Main extends React.Component {
 	variableWidth() {
-		let classes = '';
-
-		if (this.props.midsection === 'game') {
-			classes += 'thirteen';
-		} else {
-			classes += 'ten';
-		}
+		let classes = this.props.midsection === 'game' ? 'thirteen' : 'ten';
 
 		classes += ' wide column section-main';  // yes semantic requires classes in specific order... ascii shrug
 
