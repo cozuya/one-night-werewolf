@@ -20,6 +20,16 @@ export default class LeftSidebar extends React.Component {
 		this.props.onCreateGameButtonClick();
 	}
 
+	visibleStatus() {
+		let classes = 'section-left three wide column leftsidebar';
+
+		if (this.props.midsection === 'game') {
+			classes += ' app-hidden';
+		}
+
+		return classes;
+	}
+
 	createButton() {
 		let userName = this.props.userName,
 			gameBeingCreated = this.props.midsection === 'createGame',
@@ -77,7 +87,7 @@ export default class LeftSidebar extends React.Component {
 
 	render() {
 		return (
-			<section className="section-left three wide column leftsidebar">
+			<section className={this.visibleStatus()}>
 				{this.createButton()}
 				{this.gameList()}
 			</section>

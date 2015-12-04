@@ -12,11 +12,11 @@ import opn from 'opn';
 import sass from 'gulp-sass';
 import wait from 'gulp-wait';
 import sourcemaps from 'gulp-sourcemaps';
-import notify from 'gulp-notify';
+import notifier from 'node-notifier';
 import nodemon from 'gulp-nodemon';
 import { exec } from 'child_process';
 
-gulp.task('default', ['watch']);
+gulp.task('default', ['watch', 'scripts']);
 
 gulp.task('watch', () => {
 	// opn('http://localhost:8080/');
@@ -36,7 +36,7 @@ gulp.task('styles', () => {
 	return gulp.src('./src/scss/style.scss')
 		.pipe(sourcemaps.init())
 		.pipe(sass({outputStyle: 'compressed'}).on('error', () => {
-			notify('sass error');
+			notifier.notify({ title: 'SASS Error', message: 'dun goofed3' });
 			return sass.logError;
 		}))
 		.pipe(sourcemaps.write())
@@ -52,7 +52,6 @@ gulp.task('scripts', () => {
 				.transform(babelify)
 				.bundle((err, res) => {
 					if (err) {
-						notify(err);
 						return next(err);
 					}
 					file.contents = res;
@@ -60,7 +59,7 @@ gulp.task('scripts', () => {
 				});
 		}))
 		.on('error', function (error) {
-			notify(error.stack);
+			notifier.notify({ title: 'JavaScript Error', message: ' '});
 			console.log(error.stack);
 			this.emit('end');
 		})

@@ -7,6 +7,20 @@ import Creategame from './Creategame.jsx';
 import Game from './Game.jsx';
 
 export default class Main extends React.Component {
+	variableWidth() {
+		let classes = '';
+
+		if (this.props.midsection === 'game') {
+			classes += 'thirteen';
+		} else {
+			classes += 'ten';
+		}
+
+		classes += ' wide column section-main';  // yes semantic requires classes in specific order... ascii shrug
+
+		return classes;
+	}
+	
 	render() {
 		let midsection = (() => {
 			switch (this.props.midsection) {
@@ -20,7 +34,7 @@ export default class Main extends React.Component {
 		})();
 
 		return (
-			<section className="section-main ten wide column">
+			<section className={this.variableWidth()}>
 				<Menu userName={this.props.userName} />
 				{midsection}
 			</section>
