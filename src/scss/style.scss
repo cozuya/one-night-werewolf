@@ -2,9 +2,10 @@ $werewolfteam: #DC6969;
 $villageteam: #4B6A90;
 $tannerteam: #DCB469;
 
-@include 'creategame.scss';
-@include 'leftsidebar.scss';
-@include 'game.scss';
+@import 'creategame.scss';
+@import 'leftsidebar.scss';
+@import 'game.scss';
+@import 'gameroles.scss';
 
 .app-hidden {
 	display: none !important;

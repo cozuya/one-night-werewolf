@@ -130,11 +130,14 @@ export default class Creategame extends React.Component {
 			time: $('div.timeofgame > div.dropdown span').text(),
 			name: $('div.gamename > div > input').val().length ? $('div.gamename > div > input').val() : 'New Game',
 			roles: this.state.roles,
-			seated: [this.props.userName]
+			seated: {
+				seat1: this.props.userName
+			},
+			uid: Math.random().toString(36).substring(6)
 		};
 
 		socket.emit('addGame', newGame);
-		this.props.onCreateGameSubmit();
+		this.props.onCreateGameSubmit(newGame);
 	}
 
 	render() {

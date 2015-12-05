@@ -61,7 +61,7 @@ export default class LeftSidebar extends React.Component {
 					<div>
 						<span className="gamename">{game.name}</span>
 						<span className="gamelength">{game.time}</span>
-						<span className="seatedcount">{game.seated.length}/7</span>
+						<span className="seatedcount">{Object.keys(game.seated).length}/7</span>
 					</div>
 					<div className="rolelist">
 						<div>

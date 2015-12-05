@@ -5,7 +5,7 @@ import Main from './section-main/Main.jsx'
 import RightSidebar from './section-right/RightSidebar.jsx'
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { updateUser, updateMidsection, updateGamelist } from '../actions/actions.js';
+import { updateUser, updateMidsection, updateGamelist, updateGameInfo } from '../actions/actions.js';
 import socket from 'socket.io-client';
 
 socket = socket();
@@ -27,7 +27,7 @@ class App extends React.Component {
 		socket.emit('getGameList');
 
 		// temp for dev of game, remove below
-		dispatch(updateMidsection('game'));
+		// dispatch(updateMidsection('game'));
 	}
 
 	leftSidebarHandleCreateGameClick() {
@@ -36,12 +36,16 @@ class App extends React.Component {
 		dispatch(updateMidsection('createGame'));
 	}
 
-	onCreateGameSubmit() {
+	onCreateGameSubmit(game) {
 		let { dispatch } = this.props;
-
+		dispatch(updateGameInfo(game));
 		dispatch(updateMidsection('game'));
+		socket.emit('createGame', game);
 	}
 
+	componentDidUpdate() {
+		console.log(this.props.gameInfo);
+	}
 
 	render() {
 		return (
@@ -56,6 +60,7 @@ class App extends React.Component {
 					userName={this.props.userName}
 					midsection={this.props.midSection}
 					onCreateGameSubmit={this.onCreateGameSubmit.bind(this)}
+					gameInfo={this.props.gameInfo}
 				/>
 				<RightSidebar />
 			</section>

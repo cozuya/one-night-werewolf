@@ -4,6 +4,7 @@ import { combineReducers } from 'redux';
 import { UPDATE_USER, updateUser } from '../actions/actions.js';
 import { UPDATE_MIDSECTION, updateMidsection} from '../actions/actions.js';
 import { UPDATE_GAMELIST, updateGamelist} from '../actions/actions.js';
+import { UPDATE_GAMEINFO, updateGameInfo} from '../actions/actions.js';
 
 let userName = (state = '', action) => {
 	switch (action.type) {
@@ -32,9 +33,18 @@ let gameList = (state = [], action) => {
 	}
 };
 
+let gameInfo = (state = {}, action) => {
+	switch (action.type) {
+		case UPDATE_GAMEINFO:
+			return state = action.gameInfo
+		default:
+			return state;
+	}
+};
 
 export default combineReducers({
 	userName,
 	midSection,
-	gameList
+	gameList,
+	gameInfo
 });

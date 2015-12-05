@@ -34,10 +34,10 @@ gulp.task('lint', () => {
 
 gulp.task('styles', () => {
 	return gulp.src('./src/scss/style.scss')
+		.pipe(plumber())
 		.pipe(sourcemaps.init())
 		.pipe(sass({outputStyle: 'compressed'}).on('error', () => {
-			notifier.notify({ title: 'SASS Error', message: 'dun goofed3' });
-			return sass.logError;
+			notifier.notify({ title: 'SASS Error', message: ' ' });
 		}))
 		.pipe(sourcemaps.write())
 		.pipe(gulp.dest('./public/styles/'))

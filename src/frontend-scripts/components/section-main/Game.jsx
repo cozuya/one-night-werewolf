@@ -14,22 +14,30 @@ export default class Game extends React.Component {
 		
 	}
 
-	// <div className="row gameroles-container">
-	// 				<Gameroles />
-	// 			</div>
+	leaveGame() {
+	}
 
 	render() {
 		return (
-			<section className="game ui grid">
-				<div className="row">
-					<div className="ten wide column table-container">
-						<Table />
-					</div>
-					<div className="six wide column chat-container">
-						<Gamechat />
+			<section className="game">
+				<div className="ui grid">
+					<div className="row">
+						<div className="ten wide column table-container">
+							<Table
+								leaveGame={this.leaveGame}
+								gameInfo={this.props.gameInfo}
+							/>
+						</div>
+						<div className="six wide column chat-container">
+							<Gamechat />
+						</div>
 					</div>
 				</div>
-				
+				<div className="row gameroles-container">
+					<Gameroles
+						roles={this.props.gameInfo.roles}
+					/>
+				</div>
 			</section>
 		);
 	}

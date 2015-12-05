@@ -3,7 +3,7 @@
 import mongoose from 'mongoose';
 import passport from 'passport';
 import Account from '../models/account';
-import gameList from './socket/gameList';
+import socketRoutes from './socket/routes.js';
 
 let ensureAuthenticated = (req, res, next)  => {
 	if (req.isAuthenticated()) {
@@ -14,7 +14,7 @@ let ensureAuthenticated = (req, res, next)  => {
 };
 
 export default () => {
-	gameList();
+	socketRoutes();
 	require('./accounts')();
 
 	app.get('/', (req, res) => {

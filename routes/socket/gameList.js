@@ -2,7 +2,31 @@
 
 // let Chatroom = require('../models/chatroom');
 
-export default () => {
+export function addGame(game) {
+	games.push(game);
+	gameList();
+}
+
+export function gameList() {
+	io.emit('gameList', games);
+}
+
+export let games = [];
+
+	// let games = [],
+	// 	gameList = () => {
+	// 		io.emit('gameList', games);
+	// 	};
+
+	// io.on('connection', (socket) => {
+	// 	socket.on('addGame', (game) => {
+	// 		games.push(game);
+	// 		gameList();
+	// 	});
+
+	// 	socket.on('getGameList', gameList);
+	// });
+
 	// let chats = [],
 	// 	users = [],
 	// 	userCount = 0,
@@ -14,23 +38,7 @@ export default () => {
 	// 	},
 	// 	initialConnection = true,
 	// 	chatroom;
-	let games = [],
-		gameList = () => {
-			io.emit('gameList', games);
-		};
 
-	io.on('connection', (socket) => {
-		// Object.keys(socket.handshake.session.passport).length > 0
-		// console.log(socket.handshake.session.passport);
-
-		socket.on('addGame', (game) => {
-			game.listID = games.length;
-			games.push(game);
-			gameList();
-		});
-
-		socket.on('getGameList', gameList);
-	});
 
 
 	// io.on('connection', (socket) => {
@@ -80,4 +88,3 @@ export default () => {
 
 	// 	socket.on('getUsers', sendUsers);
 	// });
-};

@@ -16,7 +16,11 @@ export default class Table extends React.Component {
 	}
 
 	componentDidMount() {
-			
+
+	}
+
+	leaveGame() {
+		
 	}
 
 	render() {
@@ -30,6 +34,10 @@ export default class Table extends React.Component {
 				<div className="seat seat5"></div>
 				<div className="seat seat6"></div>
 				<div className="seat seat7"></div>
+				<div className="seat mid1"></div>
+				<div className="seat mid2"></div>
+				<div className="seat mid3"></div>
+				<i className="remove icon" onClick={this.leaveGame}></i>
 			</section>
 		);
 	}
