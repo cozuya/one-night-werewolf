@@ -16,10 +16,8 @@ export default class Table extends React.Component {
 	}
 
 	componentDidMount() {
-		
+			
 	}
-
-
 
 	render() {
 		return (

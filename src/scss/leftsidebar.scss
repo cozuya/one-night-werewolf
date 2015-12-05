@@ -1,0 +1,60 @@
+.leftsidebar {
+	.vertical.segment {
+		cursor: pointer;
+		padding: 10px 0;
+
+		> div:first-child {
+			> span {
+				float: right;
+			}
+
+			.seatedcount {
+				margin-right: 15px;
+			}
+
+			.gamename {
+				float: left;
+			}
+
+			&:after {
+				display: block;
+				content: '';
+				clear: both;
+			}
+		}
+
+		.rolelist {
+			font-family: "Raleway", Helvetica, Arial, sans-serif;
+			font-weight: 700;
+			> div {
+				text-align: center;
+
+				div {
+					width: 20%;
+					float: left;
+					padding: 2px 0;
+					border: 1px solid #eee;
+				}
+
+				.village {
+					color: #fff;
+					background: $villageteam;
+				}
+
+				.werewolf {
+					background: $werewolfteam;
+				}
+				
+				.tanner {
+					background: $tannerteam;
+				}
+
+				&:after {
+					display: block;
+					content: '';
+					clear: both;
+				}
+			}
+		}
+	}
+}

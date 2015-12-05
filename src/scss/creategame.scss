@@ -1,0 +1,156 @@
+.creategame {
+	padding: 2%;
+
+	> .header {
+		text-align: center;
+		margin-bottom: 20px;
+	}
+
+	.grid h4 {
+		margin-bottom: 5px;
+	}
+
+	.gamename {
+		text-align: center;
+
+		h4 small {
+			margin-left: 8px;
+		}
+
+		input {
+			width: 80%;
+		}
+
+	}
+
+	.selectdefaults {
+		text-align: center;
+
+		.button {
+			margin: 0 auto;
+			width: 50%;
+		}
+
+		.popup {
+			width: 270px;
+			max-width: inherit;
+		}
+	}
+
+	.timeofgame {
+		text-align: center;
+	}
+
+	.killorbekilled {
+		.popup {
+			width: 195px;
+		}
+
+		.checkbox {
+			width: 55px;
+			margin: 0 auto;
+			display: block;
+		}
+	}
+
+	.pickroles .column {
+		height: 120px;
+		width: 12.25% !important;  // 88px
+		margin: 0 3.75% !important;
+		padding: 0 !important;
+		text-align: center;
+
+		p {
+			border: 1px solid grey;
+			background: $villageteam;
+			height: 110px;
+			margin-bottom: 5px;
+			border-radius: 4px;
+			font-size: 12px;
+		}
+
+		> span {
+			font-size: 20px;
+			margin: 0 4%;
+		}
+
+	}
+
+	.pickroles {
+		font-family: "Raleway", Helvetica, Arial, sans-serif;
+		.row:first-child {
+			display: block;
+			padding-bottom: 0;
+
+			> div {
+				float: right;
+				margin-right: 30px;
+				cursor: pointer;
+
+				&:hover {
+					text-decoration: underline;
+				}
+			}
+
+		 	.disabled {
+		 		visibility: hidden;
+		 	}
+		}
+
+		.row:nth-child(2) {
+			padding-top: 3px;
+		}
+
+		.row:last-child {
+			margin-bottom: 20px;
+		}
+		
+		i {
+			cursor: pointer;
+		}
+
+		.werewolf p, .minion p {
+			background: $werewolfteam;
+		}
+
+		.tanner p {
+			background: $tannerteam;
+		}
+
+		.popup {
+			max-width: inherit;
+
+			> span + span {
+				color: $villageteam;
+			}
+		}
+
+		.werewolf .popup {
+			width: 330px;
+
+			> span + span {
+				color: $werewolfteam;
+			}
+		}
+
+		.minion .popup {
+			width: 335px;
+
+			> span + span {
+				color: $werewolfteam;
+			}
+		}
+
+		.mason .popup {
+			width: 335px;
+
+			> span + span {
+				// color: #DC6969;
+			}
+		}
+	}
+
+	.footer > .twelve {
+		margin-top: 7px;
+	}
+}

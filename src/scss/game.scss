@@ -1,0 +1,68 @@
+.game.ui.grid {
+	margin: 0;
+
+	> .row:first-child {
+		height: 440px;
+		padding: 0;
+	}
+
+	.table-container {
+		background: #fafafa;
+		padding: 0;
+
+		.table {
+			position: relative;
+
+			.tableimage {
+				position: absolute;
+				top: 90px;
+				left: 70px;
+				box-shadow: 0px 0px 2px 1px #ddd;
+				width: 440px;
+				height: 280px;
+				border-radius: 50%;
+				background-image: url('../images/crossword.png');
+				background-repeat: repeat;
+			}
+
+			.seat {
+				width: 59px;
+				height: 80px;
+				background: #ccc;
+				position: absolute;
+				top: 0;
+				left: 0;
+			}
+
+			.seat1 {
+				top: 20px;
+				left: 260px;
+			}
+
+
+
+			// .seat2 {
+			// 	top: 60px;
+			// 	left: 360px;
+			// }
+
+			// .seat7 {
+			// 	top: 60px;
+			// 	left: 160px;
+			// }
+
+			// .seat3 {
+			// 	top: 180px;
+			// 	left: 460px;
+			// }
+		}
+	}
+
+	.chat-container {
+		background: #ddd;
+	}
+
+	.gameroles-container {
+		background: #eee;
+	}
+}
