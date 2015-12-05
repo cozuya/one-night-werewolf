@@ -93,7 +93,7 @@ $tannerteam: #DCB469;
 
 	.pickroles .column {
 		height: 120px;
-		width: 12.25% !important;
+		width: 12.25% !important;  // 88px
 		margin: 0 3.75% !important;
 		padding: 0 !important;
 		text-align: center;
@@ -277,6 +277,36 @@ $tannerteam: #DCB469;
 				width: 400px;
 				height: 260px;
 				border-radius: 50%;
+				background: #f4f4f4;
+			}
+
+			.seat {
+				width: 59px;
+				height: 80px;
+				background: #ccc;
+				position: absolute;
+				top: 0;
+				left: 0;
+			}
+
+			.seat1 {
+				top: 20px;
+				left: 260px;
+			}
+
+			.seat2 {
+				top: 60px;
+				left: 360px;
+			}
+
+			.seat7 {
+				top: 60px;
+				left: 160px;
+			}
+
+			.seat3 {
+				top: 180px;
+				left: 460px;
 			}
 		}
 	}
