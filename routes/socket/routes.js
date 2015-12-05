@@ -17,8 +17,7 @@ export default () => {
 		// socket.on('createGame', createGame);
 
 		socket.on('createGame', (game) => {
-			socket.join(game.uid)
+			createGame(socket, game);
 		});
-
 	});
 }
