@@ -20,7 +20,7 @@ export default class LeftSidebar extends React.Component {
 	}
 
 	createButton() {
-		let userName = this.props.userName,
+		let userName = this.props.userInfo.userName,
 			gameBeingCreated = this.props.midsection === 'createGame',
 			disabledText;
 

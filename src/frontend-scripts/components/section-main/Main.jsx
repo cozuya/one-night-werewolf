@@ -20,12 +20,12 @@ export default class Main extends React.Component {
 			switch (this.props.midsection) {
 				case 'createGame':
 					return <Creategame
-								userName={this.props.userName}
+								userInfo={this.props.userInfo}
 								onCreateGameSubmit={this.props.onCreateGameSubmit}
 							/>
 				case 'game':
 					return <Game
-								userName={this.props.userName}
+								userInfo={this.props.userInfo}
 								gameInfo={this.props.gameInfo}
 							/>
 				default:
@@ -35,7 +35,7 @@ export default class Main extends React.Component {
 
 		return (
 			<section className={this.variableWidth()}>
-				<Menu userName={this.props.userName} />
+				<Menu userInfo={this.props.userInfo} />
 				{midsection}
 			</section>
 		);

@@ -5,42 +5,52 @@ export const defaultRolesArray = ['werewolf', 'werewolf', 'seer', 'robber', 'tro
 export const roleMap = {
 	werewolf: {
 		initial: 'WW',
-		team: 'werewolf'
+		team: 'werewolf',
+		description: 'Werewolves wake up first, and look for other werewolves.  If there are none, they may look at a center card.  There is a minimum of 2 werewolves in every game.  Werewolves are on the <span>werewolf team.</span>'
 	},
 	minion: {
 		initial: 'Mi',
-		team: 'werewolf'
+		team: 'werewolf',
+		description: 'Minions wake up, and get to see who the werewolves are - but the werewolves are not aware of who the minions are.  Minions win if the werewolves win, and in the event of no werewolves, win if a villager dies.  Minions are on the <span>werewolf team.</span>'
 	},
 	mason: {
 		initial: 'Ma',
-		team: 'village'
+		team: 'village',
+		description: 'Masons wake up, and look for other masons.  Masons are on the <span>village team.</span>'
 	},
 	seer: {
 		initial: 'S',
-		team: 'village'
+		team: 'village',
+		description: 'Seers wake up, and have the choice of looking at another player\'s card, or two of the center cards.  Seers are on the <span>village team.</span>'
 	},
 	robber: {
 		initial: 'R',
-		team: 'village'
+		team: 'village',
+		description: 'Robbers wake up, and look at another player\'s card.  They then swap that player\'s card with their own, and become the role and team they have stolen (and vice versa) - however they do not do an additional night action.  Robbers are on the <span>village team.</span>'
 	},
 	troublemaker: {
 		initial: 'TM',
-		team: 'village'
+		team: 'village',
+		description: 'Troublemakers wake up, and swap the cards of two players without looking at them.  Troublemakers are on the <span>village team.</span>'
 	},
 	hunter: {
 		initial: 'H',
-		team: 'village'
+		team: 'village',
+		description: 'Hunters do not wake up.  If a hunter is eliminated, the player he or she is selecting for elimination is also eliminated.  Hunters are on the <span>village team.</span>'
 	},			
 	tanner: {
 		initial: 'T',
-		team: 'tanner'
+		team: 'tanner',
+		description: 'Tanners do not wake up.  Tanners are suicidal and only win if they are eliminated.  Tanners are on <span>their own team individually</span> and do not win if another tanner wins.'
 	},
 	insomniac: {
 		initial: 'I',
-		team: 'village'
+		team: 'village',
+		description: 'Insomniacs wake up, and look at their card again to see if they are still the insomniac.  Insomniacs are on the <span>village team.</span>'
 	},
 	villager: {
 		initial: 'V',
-		team: 'village'
+		team: 'village',
+		description: 'Villagers do not wake up.  Villagers are on the <span>village team.</span>'
 	}
 };

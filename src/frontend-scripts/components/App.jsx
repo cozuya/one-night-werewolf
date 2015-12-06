@@ -16,7 +16,7 @@ class App extends React.Component {
 			classList = document.getElementById('game-container').classList;
 
 			if (classList.length) {
-				dispatch(updateUser(classList[0].split('username-')[1]));
+				dispatch(updateUser({userName: classList[0].split('username-')[1]}));
 			}
 
 		socket.on('gameList', (list) => {
@@ -43,20 +43,20 @@ class App extends React.Component {
 	}
 
 	componentDidUpdate() {
-		console.log(this.props.gameInfo);
+		// console.log(this.props);
 	}
 
 	render() {
 		return (
 			<section className="ui grid">
 				<LeftSidebar
-					userName={this.props.userName}
+					userInfo={this.props.userInfo}
 					midsection={this.props.midSection}
 					gameList={this.props.gameList}
 					onCreateGameButtonClick={this.leftSidebarHandleCreateGameClick.bind(this)}
 				/>
 				<Main
-					userName={this.props.userName}
+					userInfo={this.props.userInfo}
 					midsection={this.props.midSection}
 					onCreateGameSubmit={this.onCreateGameSubmit.bind(this)}
 					gameInfo={this.props.gameInfo}

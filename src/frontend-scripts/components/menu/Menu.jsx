@@ -4,7 +4,8 @@ import React from 'react';
 
 export default class Menu extends React.Component {
 	render() {
-		let userName = this.props.userName,
+		// console.log(this.props);
+		let userName = this.props.userInfo.userName,
 			rightSection = (() => {
 				if (userName) {
 					return <span>Logged in as <a href="/account" target="blank">{userName}</a></span>

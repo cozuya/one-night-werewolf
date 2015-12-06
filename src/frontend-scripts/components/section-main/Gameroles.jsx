@@ -3,6 +3,7 @@
 import React from 'react';
 import $ from 'jquery';
 import Popup from 'semantic-ui-popup';
+import { roleMap } from '../../../../iso/util.js';
 
 $.fn.popup = Popup;
 
@@ -24,15 +25,21 @@ export default class Gameroles extends React.Component {
 	}
 
 	setClasses(role) {
-		return `role-${role}`;
+		return `roles ${role}`;
+	}
+
+	formatRoles(role) {
+		return role === 'troublemaker' ? 'trouble\nmaker' : role;
 	}
 
 	renderRoles(roles) {
-		return roles.map((el, i) => {
+		return roles.map((role, i) => {
 			return (
-				<div key={i}>
-					<div className={this.setClasses(el)}></div>
-					<div className="app-hidden">popup ph</div>
+				<div className={this.setClasses(role)} key={i}>
+					<p>{this.formatRoles(role)}</p>
+					<div className="ui small popup transition hidden">
+						{roleMap[role].description}
+					</div>
 				</div>
 			);
 		});
@@ -42,6 +49,9 @@ export default class Gameroles extends React.Component {
 	render() {
 		return (
 			<section className="gameroles" ref="rolecontainer">
+				<div className="ui right pointing label">
+  					Roles in this game:
+				</div>
 				{this.renderRoles(this.props.roles)}
 			</section>
 		);
