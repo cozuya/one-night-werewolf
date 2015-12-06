@@ -2,10 +2,7 @@
 
 import React from 'react';
 import $ from 'jquery';
-import Popup from 'semantic-ui-popup';
-import { roleMap } from '../../../../iso/util.js';
-
-$.fn.popup = Popup;
+import SidebarGame from './SidebarGame.jsx';
 
 export default class LeftSidebar extends React.Component {
 	createGameClick() {
@@ -43,45 +40,19 @@ export default class LeftSidebar extends React.Component {
 		}
 	};
 
-	gameList() {
-		let setClass = (role) => {
-			return roleMap[role].team;
-		},
-		renderRoles = (roles) => {
-			return roles.map((role, i) => {
-				return (
-					<div key={i} className={setClass(role)}>{roleMap[role].initial}</div>
-				);
-			});
-		};
+	gameClicked(el) {
+		let uid = $(el.currentTarget).attr('data-uid');
 
-		return this.props.gameList.map((game, i) => {
-			return (
-				<div className="ui vertical segment" key={i}>
-					<div>
-						<span className="gamename">{game.name}</span>
-						<span className="gamelength">{game.time}</span>
-						<span className="seatedcount">{Object.keys(game.seated).length}/7</span>
-					</div>
-					<div className="rolelist">
-						<div>
-							{renderRoles(game.roles.slice(0, 5))}
-						</div>
-						<div>
-							{renderRoles(game.roles.slice(5, 10))}
-						</div>
-					</div>
-				</div>
-			);
-		});
-
+		// todo: tell app which game was clicked and put user into game
 	}
 
 	render() {
 		return (
 			<section className={this.visibleStatus()}>
 				{this.createButton()}
-				{this.gameList()}
+				{this.props.gameList.map((game, i) => {
+					return <SidebarGame clickedGame={this.gameClicked} key={i} game={game} />
+				})}
 			</section>
 		);
 	}
