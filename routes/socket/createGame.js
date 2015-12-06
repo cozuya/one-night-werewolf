@@ -3,8 +3,7 @@
 // let Chatroom = require('../models/chatroom');
 
 export default (socket, game) => {
-	console.log(socket);
-	console.log(game);
+	let room = game.uid;
 
-	socket.join(game.uid);
+	socket.join(room);
 }

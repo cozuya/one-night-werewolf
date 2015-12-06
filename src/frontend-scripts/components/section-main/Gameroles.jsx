@@ -27,16 +27,22 @@ export default class Gameroles extends React.Component {
 		return `role-${role}`;
 	}
 
-	// {this.props.roles.map((el, i) => {
-	// 				return (
-	// 					<div className={setClasses(el))} key={i}></div>
-	// 				)
-	// 			})}
+	renderRoles(roles) {
+		return roles.map((el, i) => {
+			return (
+				<div key={i}>
+					<div className={this.setClasses(el)}></div>
+					<div className="app-hidden">popup ph</div>
+				</div>
+			);
+		});
+	}
+
 
 	render() {
 		return (
 			<section className="gameroles" ref="rolecontainer">
-				
+				{this.renderRoles(this.props.roles)}
 			</section>
 		);
 	}

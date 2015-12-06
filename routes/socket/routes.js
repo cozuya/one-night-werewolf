@@ -1,7 +1,5 @@
 'use strict';
 
-// let Chatroom = require('../models/chatroom');
-
 import createGame from './createGame.js';
 import { addGame, gameList, games } from './gameList.js';
 
@@ -13,8 +11,6 @@ export default () => {
 		socket.on('addGame', addGame);
 
 		socket.on('getGameList', gameList);
-
-		// socket.on('createGame', createGame);
 
 		socket.on('createGame', (game) => {
 			createGame(socket, game);
