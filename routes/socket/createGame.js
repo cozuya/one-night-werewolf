@@ -5,9 +5,9 @@
 let gamesInfo = [];
 
 export function createGame(socket, game) {
-	gamesInfo.push(game);
-
 	let room = game.uid;
+
+	gamesInfo.push(game);
 
 	socket.join(room);
 };
@@ -19,3 +19,13 @@ export function sendGameInfo(socket, gameID) {
 
 	socket.emit('gameUpdate', game);
 };
+
+export function updateGameInfo(data) {
+	let game = games.find((el) => {
+		return el.uid === data.gameID;
+	}),
+	index = games.indexOf(game);
+
+	games[index].seated[`seat${data.seatNumber}`] = data.user;
+	sendGameInfo();
+}

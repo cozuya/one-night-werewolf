@@ -16,30 +16,24 @@ export default class Table extends React.Component {
 	}
 
 	componentDidMount() {
-
+		console.log(this.props.gameInfo);
 	}
 
 	leaveGame() {
-		
+
 	}
 
 	clickedSeat(el) {
 		let seated = this.props.gameInfo.seated,
 			$seat = $(el.currentTarget);
 
-		console.log(this.props.userInfo.userName);
-		console.log($seat);
-
 		if (this.props.userInfo.userName) {
 			if ($seat.hasClass('empty')) {
-				console.log('hi');
-				this.props.seatUser();
+				this.props.updateSeatedUsers($seat.attr('data-seatnumber'));
 			}
 		} else {
 			// popup something that tells them they must be signed in to play
 		}
-		console.log(el);
-		console.log(this.props);
 	}
 
 	render() {
@@ -51,16 +45,17 @@ export default class Table extends React.Component {
 						classes = () => {
 							return seated ? `seat seat${el}` : `seat seat${el} empty`;
 						},
-						user;
-
-					user = seated ? this.props.gameInfo.seated[`seat${el}`].userName : 'Empty seat';
+						seatNumber = () => {
+							return el;
+						},
+						user = seated ? this.props.gameInfo.seated[`seat${el}`].userName : 'Empty seat';
 					
-					return <div key={el} className={classes()} data-seatnumber="el" onClick={this.clickedSeat.bind(this)}>{user}</div>
+					return <div key={el} className={classes()} data-seatnumber={seatNumber()} onClick={this.clickedSeat.bind(this)}>{user}</div>
 				})}
 				<div className="seat mid1"></div>
 				<div className="seat mid2"></div>
 				<div className="seat mid3"></div>
-				<i className="remove icon" onClick={this.leaveGame}></i>
+				<i className="remove icon" onClick={this.leaveGame.bind(this)}></i>
 			</section>
 		);
 	}

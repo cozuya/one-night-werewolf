@@ -25,7 +25,7 @@ export default class Main extends React.Component {
 							/>
 				case 'game':
 					return <Game
-								seatUser={this.props.seatUser}
+								updateSeatedUsers={this.props.updateSeatedUsers}
 								userInfo={this.props.userInfo}
 								gameInfo={this.props.gameInfo}
 							/>

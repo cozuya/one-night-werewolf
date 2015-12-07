@@ -6,11 +6,26 @@ export let games = [];
 
 export function addGame(game) {
 	games.push(game);
-	gameList();
+	sendGameList();
 }
 
-export function gameList() {
+export function sendGameList() {
 	io.emit('gameList', games);
+}
+
+export function updateGameList(data) {
+	let game = games.find((el) => {
+		return el.uid === data.gameID;
+	}),
+	index = games.indexOf(game);
+	
+
+	console.log(data);
+	console.log(games);
+	console.log(index);
+	console.log(games[index]);
+	games[index].seated[`seat${data.seatNumber}`] = data.user;
+	sendGameList();
 }
 
 

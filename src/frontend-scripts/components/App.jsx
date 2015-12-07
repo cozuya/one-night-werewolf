@@ -29,9 +29,6 @@ class App extends React.Component {
 		});
 
 		socket.emit('getGameList');
-
-		// temp for dev of game, remove below
-		// dispatch(updateMidsection('game'));
 	}
 
 	leftSidebarHandleCreateGameClick() {
@@ -43,6 +40,7 @@ class App extends React.Component {
 	onCreateGameSubmit(game) {
 		let { dispatch } = this.props;
 		dispatch(updateGameInfo(game));
+
 		dispatch(updateMidsection('game'));
 		socket.emit('createGame', game);
 	}
@@ -51,12 +49,14 @@ class App extends React.Component {
 		socket.emit('getGameInfo', gameID);
 	}
 
-	componentDidUpdate() {
-		// console.log(this.props);
-	}
+	updateSeatedUsersInGame(seatNumber) {
+		let data = {
+			gameID: this.props.gameInfo.uid,
+			seatNumber,
+			user: this.props.userInfo
+		}
 
-	seatUserInGame() {
-		socket.emit('seatUserInGame', this.props.gameInfo.uid);
+		socket.emit('seatUserInGame', data);
 	}
 
 	render() {
@@ -74,7 +74,7 @@ class App extends React.Component {
 					midsection={this.props.midSection}
 					onCreateGameSubmit={this.onCreateGameSubmit.bind(this)}
 					gameInfo={this.props.gameInfo}
-					seatUser={this.seatUserInGame.bind(this)}
+					updateSeatedUsers={this.updateSeatedUsersInGame.bind(this)}
 				/>
 				<RightSidebar />
 			</section>
