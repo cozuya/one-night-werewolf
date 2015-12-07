@@ -48,12 +48,15 @@ class App extends React.Component {
 	}
 
 	onSidebarGameClick(gameID) {
-		console.log(gameID);
 		socket.emit('getGameInfo', gameID);
 	}
 
 	componentDidUpdate() {
 		// console.log(this.props);
+	}
+
+	seatUserInGame() {
+		socket.emit('seatUserInGame', this.props.gameInfo.uid);
 	}
 
 	render() {
@@ -71,6 +74,7 @@ class App extends React.Component {
 					midsection={this.props.midSection}
 					onCreateGameSubmit={this.onCreateGameSubmit.bind(this)}
 					gameInfo={this.props.gameInfo}
+					seatUser={this.seatUserInGame.bind(this)}
 				/>
 				<RightSidebar />
 			</section>

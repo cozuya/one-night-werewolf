@@ -24,7 +24,22 @@ export default class Table extends React.Component {
 	}
 
 	clickedSeat(el) {
+		let seated = this.props.gameInfo.seated,
+			$seat = $(el.currentTarget);
 
+		console.log(this.props.userInfo.userName);
+		console.log($seat);
+
+		if (this.props.userInfo.userName) {
+			if ($seat.hasClass('empty')) {
+				console.log('hi');
+				this.props.seatUser();
+			}
+		} else {
+			// popup something that tells them they must be signed in to play
+		}
+		console.log(el);
+		console.log(this.props);
 	}
 
 	render() {
@@ -40,7 +55,7 @@ export default class Table extends React.Component {
 
 					user = seated ? this.props.gameInfo.seated[`seat${el}`].userName : 'Empty seat';
 					
-					return <div key={el} className={classes()} onClick={this.clickedSeat}>{user}</div>
+					return <div key={el} className={classes()} data-seatnumber="el" onClick={this.clickedSeat.bind(this)}>{user}</div>
 				})}
 				<div className="seat mid1"></div>
 				<div className="seat mid2"></div>

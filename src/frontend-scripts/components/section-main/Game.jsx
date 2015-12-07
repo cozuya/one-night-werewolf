@@ -24,7 +24,8 @@ export default class Game extends React.Component {
 					<div className="row">
 						<div className="ten wide column table-container">
 							<Table
-								leaveGame={this.leaveGame}
+								leaveGame={this.leaveGame.bind(this)}
+								seatUser={this.props.seatUser}
 								gameInfo={this.props.gameInfo}
 								userInfo={this.props.userInfo}
 							/>

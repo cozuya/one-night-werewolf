@@ -1,6 +1,6 @@
 'use strict';
 
-import { sendGameInfo, createGame} from './createGame.js';
+import { sendGameInfo, createGame } from './createGame.js';
 import { addGame, gameList, games } from './gameList.js';
 
 export default () => {
@@ -18,6 +18,11 @@ export default () => {
 
 		socket.on('getGameInfo', (gameID) => {
 			sendGameInfo(socket, gameID);
+		});
+
+		socket.on('seatUserInGame', (gameID) => {
+			// updateGameList(socket, gameID); // todo inside of gameList.js
+			// updateGameInfo(socket, gameID); // todo inside of createGame.js
 		});
 	});
 }

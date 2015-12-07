@@ -2,6 +2,8 @@
 
 // let Chatroom = require('../models/chatroom');
 
+export let games = [];
+
 export function addGame(game) {
 	games.push(game);
 	gameList();
@@ -11,7 +13,6 @@ export function gameList() {
 	io.emit('gameList', games);
 }
 
-export let games = [];
 
 	// let games = [],
 	// 	gameList = () => {
