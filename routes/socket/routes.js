@@ -1,6 +1,6 @@
 'use strict';
 
-import createGame from './createGame.js';
+import { sendGameInfo, createGame} from './createGame.js';
 import { addGame, gameList, games } from './gameList.js';
 
 export default () => {
@@ -8,12 +8,16 @@ export default () => {
 		// Object.keys(socket.handshake.session.passport).length > 0
 		// console.log(socket.handshake.session.passport);
 
-		socket.on('addGame', addGame);
+		socket.on('addGameToList', addGame);
 
 		socket.on('getGameList', gameList);
 
 		socket.on('createGame', (game) => {
 			createGame(socket, game);
+		});
+
+		socket.on('getGameInfo', (gameID) => {
+			sendGameInfo(socket, gameID);
 		});
 	});
 }

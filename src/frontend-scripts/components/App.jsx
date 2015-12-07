@@ -23,6 +23,11 @@ class App extends React.Component {
 			dispatch(updateGamelist(list));
 		});
 
+		socket.on('gameUpdate', (game) => {
+			dispatch(updateGameInfo(game));
+			dispatch(updateMidsection('game'));
+		});
+
 		socket.emit('getGameList');
 
 		// temp for dev of game, remove below
@@ -42,6 +47,11 @@ class App extends React.Component {
 		socket.emit('createGame', game);
 	}
 
+	onSidebarGameClick(gameID) {
+		console.log(gameID);
+		socket.emit('getGameInfo', gameID);
+	}
+
 	componentDidUpdate() {
 		// console.log(this.props);
 	}
@@ -53,6 +63,7 @@ class App extends React.Component {
 					userInfo={this.props.userInfo}
 					midsection={this.props.midSection}
 					gameList={this.props.gameList}
+					onGameClick={this.onSidebarGameClick.bind(this)}
 					onCreateGameButtonClick={this.leftSidebarHandleCreateGameClick.bind(this)}
 				/>
 				<Main
