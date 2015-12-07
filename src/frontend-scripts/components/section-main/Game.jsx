@@ -26,6 +26,7 @@ export default class Game extends React.Component {
 							<Table
 								leaveGame={this.leaveGame}
 								gameInfo={this.props.gameInfo}
+								userInfo={this.props.userInfo}
 							/>
 						</div>
 						<div className="six wide column chat-container">

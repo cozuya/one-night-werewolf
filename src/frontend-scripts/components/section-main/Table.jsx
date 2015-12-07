@@ -23,17 +23,25 @@ export default class Table extends React.Component {
 		
 	}
 
+	clickedSeat(el) {
+
+	}
+
 	render() {
 		return (
 			<section className="table">
 				<div className="tableimage"></div>
-				<div className="seat seat1"></div>
-				<div className="seat seat2"></div>
-				<div className="seat seat3"></div>
-				<div className="seat seat4"></div>
-				<div className="seat seat5"></div>
-				<div className="seat seat6"></div>
-				<div className="seat seat7"></div>
+				{[1,2,3,4,5,6,7].map((el) => {
+					let seated = this.props.gameInfo.seated[`seat${el}`],
+						classes = () => {
+							return seated ? `seat seat${el}` : `seat seat${el} empty`;
+						},
+						user;
+
+					user = seated ? this.props.gameInfo.seated[`seat${el}`].userName : 'Empty seat';
+					
+					return <div key={el} className={classes()} onClick={this.clickedSeat}>{user}</div>
+				})}
 				<div className="seat mid1"></div>
 				<div className="seat mid2"></div>
 				<div className="seat mid3"></div>
