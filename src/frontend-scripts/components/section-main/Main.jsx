@@ -30,7 +30,8 @@ export default class Main extends React.Component {
 								gameInfo={this.props.gameInfo}
 							/>
 				default:
-					return <Defaultmid />
+					return <Defaultmid
+								quickDefault={this.props.quickDefault} />
 			}
 		})();
 

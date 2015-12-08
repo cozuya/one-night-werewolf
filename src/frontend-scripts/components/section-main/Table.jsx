@@ -20,16 +20,19 @@ export default class Table extends React.Component {
 	}
 
 	leaveGame(el) {
-		this.props.updateSeatedUsers();
+		this.props.updateSeatedUsers(null, this.props.userInfo);
 	}
 
 	clickedSeat(el) {
 		let seated = this.props.gameInfo.seated,
+			userInfo = this.props.userInfo,
 			$seat = $(el.currentTarget);
 
-		if (this.props.userInfo.userName) {
-			if ($seat.hasClass('empty')) {
-				this.props.updateSeatedUsers($seat.attr('data-seatnumber'), this.props.userInfo);
+		console.log(this.props.userInfo);
+
+		if (userInfo.userName) {
+			if ($seat.hasClass('empty') && !userInfo.isSeated) {
+				this.props.updateSeatedUsers($seat.attr('data-seatnumber'), userInfo);
 			}
 		} else {
 			// popup something that tells them they must be signed in to play

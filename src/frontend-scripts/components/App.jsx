@@ -16,7 +16,14 @@ class App extends React.Component {
 			classList = document.getElementById('game-container').classList;
 
 			if (classList.length) {
-				dispatch(updateUser({userName: classList[0].split('username-')[1]}));
+				dispatch(updateUser({
+					userName: classList[0].split('username-')[1],
+					isSeated: false
+				}));
+			} else {
+				dispatch(updateUser({
+					isSeated: false
+				}));
 			}
 
 		socket.on('gameList', (list) => {
@@ -24,7 +31,6 @@ class App extends React.Component {
 		});
 
 		socket.on('gameUpdate', (game) => {
-			console.log(game);
 			dispatch(updateGameInfo(game));
 			if (this.props.midsection !== 'game') {
 				dispatch(updateMidsection('game'));
@@ -45,26 +51,76 @@ class App extends React.Component {
 	}
 
 	onCreateGameSubmit(game) {
-		let { dispatch } = this.props;
+		let { dispatch } = this.props,
+			userInfo = this.props.userInfo;
 
-		socket.emit('createGame', game);
+		console.log(game);
+
+		userInfo.isSeated = true;
+
 		dispatch(updateGameInfo(game));
 		dispatch(updateMidsection('game'));
+		dispatch(updateUser(userInfo));
+		socket.emit('createGame', game);
+	}
+
+	makeQuickDefault() {
+		// dev only
+console.log('Hello World!');
+		let { dispatch } = this.props,
+			userInfo = this.props.userInfo,
+			game = {
+				inProgress: false,
+				kobk: true,
+				name: 'New Game',
+				roles: ['werewolf', 'werewolf', 'seer', 'robber', 'troublemaker', 'insomniac', 'hunter', 'villager', 'villager', 'villager'],
+				seated: {
+					seat1: {
+						isSeated: true,
+						userName: this.props.userInfo.userName
+					}
+				},
+				seatedCount: 1,
+				time: '3:00',
+				uid: Math.random().toString(36).substring(6)
+			};
+
+		userInfo.isSeated = true;
+
+		dispatch(updateGameInfo(game));
+		dispatch(updateMidsection('game'));
+		dispatch(updateUser(userInfo));
+		socket.emit('createGame', game);
+
 	}
 
 	updateSeatedUsersInGame(seatNumber, user) {
+		// method needs work
+
 		let uid = this.props.gameInfo.uid,
 			{ dispatch } = this.props,
+			userInfo = this.props.userInfo,
 			data = {
-			uid,
-			seatNumber,
-			user
-		}
+				uid,
+				seatNumber,
+				user
+			};
 
 		socket.emit('getGameInfo', uid);
 
 		if (!data.user) {
 			dispatch(updateMidsection('default'));
+		}
+
+		console.log(user);
+		console.log(userInfo);
+
+		if (user.userName === userInfo.userName) {
+			userInfo.isSeated = true;
+			dispatch(updateUser(userInfo));
+		} else {
+			userInfo.isSeated = false;
+			dispatch(updateUser(userInfo));
 		}
 
 		socket.emit('updateSeatedUsers', data);
@@ -85,6 +141,7 @@ class App extends React.Component {
 					onCreateGameSubmit={this.onCreateGameSubmit.bind(this)}
 					gameInfo={this.props.gameInfo}
 					updateSeatedUsers={this.updateSeatedUsersInGame.bind(this)}
+					quickDefault={this.makeQuickDefault.bind(this)}
 				/>
 				<RightSidebar />
 			</section>

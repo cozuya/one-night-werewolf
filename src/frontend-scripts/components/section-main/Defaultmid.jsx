@@ -21,6 +21,8 @@ export default class Defaultmid extends React.Component {
 				<button style={{padding: '20px'}} data-name="f" className="loginquick">login f</button>
 				<br />
 				<button style={{padding: '20px'}} data-name="g" className="loginquick">login g</button>
+				<br />
+				<button style={{padding: '20px', background: 'blue', color: 'white'}} data-name="h" onClick={this.props.quickDefault}>default game</button>
 				
 
 			</section>
