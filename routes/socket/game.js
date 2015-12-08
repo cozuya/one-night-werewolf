@@ -21,12 +21,9 @@ export function sendGameList() {
 }
 
 export function createGame(socket, game) {
-	let room = game.uid;
-
 	games.push(game);
 	sendGameList();
-
-	socket.join(room);
+	socket.join(game.uid);
 };
 
 export function sendGameInfo(socket, uid) {
@@ -34,18 +31,19 @@ export function sendGameInfo(socket, uid) {
 		return el.uid === uid;
 	});
 
+	socket.join(uid);
 	socket.emit('gameUpdate', game);
 }
 
 export function updateSeatedUsers(socket, data) {
 	let game = games.find((el) => {
-		return el.uid === data.gameID;
+		return el.uid === data.uid;
 	});
+
 
 	if (typeof data.user !== 'undefined') {
 		game.seated[`seat${data.seatNumber}`] = data.user;
 		game.seatedCount++;
-		socket.emit('gameUpdate', game);
 	} else {
 		for (var key in game.seated) {
 			if (game.seated.hasOwnProperty(key)) {
@@ -55,8 +53,10 @@ export function updateSeatedUsers(socket, data) {
 				}
 			}
 		}
+		socket.leave(game.uid);
 	}
 
+	socket.broadcast.to(data.uid).emit('gameUpdate', game).emit('gameUpdate', game);
 	sendGameList();
 }
 

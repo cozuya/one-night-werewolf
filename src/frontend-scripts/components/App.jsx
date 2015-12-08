@@ -24,6 +24,7 @@ class App extends React.Component {
 		});
 
 		socket.on('gameUpdate', (game) => {
+			console.log(game);
 			dispatch(updateGameInfo(game));
 			if (this.props.midsection !== 'game') {
 				dispatch(updateMidsection('game'));
@@ -46,17 +47,21 @@ class App extends React.Component {
 	onCreateGameSubmit(game) {
 		let { dispatch } = this.props;
 
+		socket.emit('createGame', game);
 		dispatch(updateGameInfo(game));
 		dispatch(updateMidsection('game'));
 	}
 
 	updateSeatedUsersInGame(seatNumber, user) {
-		let { dispatch } = this.props,
+		let uid = this.props.gameInfo.uid,
+			{ dispatch } = this.props,
 			data = {
-			gameID: this.props.gameInfo.uid,
+			uid,
 			seatNumber,
 			user
 		}
+
+		socket.emit('getGameInfo', uid);
 
 		if (!data.user) {
 			dispatch(updateMidsection('default'));

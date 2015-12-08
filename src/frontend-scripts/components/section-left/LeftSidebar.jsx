@@ -40,18 +40,12 @@ export default class LeftSidebar extends React.Component {
 		}
 	};
 
-	gameClicked(el) {
-		let uid = $(el.currentTarget).attr('data-uid');
-
-		this.props.onGameClick(uid);
-	}
-
 	render() {
 		return (
 			<section className={this.visibleStatus()}>
 				{this.createButton()}
 				{this.props.gameList.map((game, i) => {
-					return <SidebarGame clickedGame={this.gameClicked.bind(this)} key={i} game={game} />
+					return <SidebarGame key={i} game={game} />
 				})}
 			</section>
 		);
