@@ -3,7 +3,7 @@
 import { combineReducers } from 'redux';
 import { UPDATE_USER, updateUser } from '../actions/actions.js';
 import { UPDATE_MIDSECTION, updateMidsection} from '../actions/actions.js';
-import { UPDATE_GAMELIST, updateGamelist} from '../actions/actions.js';
+import { UPDATE_GAMELIST, updateGameList} from '../actions/actions.js';
 import { UPDATE_GAMEINFO, updateGameInfo} from '../actions/actions.js';
 
 let userInfo = (state = {}, action) => {

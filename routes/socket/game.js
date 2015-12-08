@@ -2,31 +2,65 @@
 
 // let Chatroom = require('../models/chatroom');
 
-export let games = [];
-
-export function addGame(game) {
-	games.push(game);
-	sendGameList();
-}
+let games = [];
 
 export function sendGameList() {
-	io.emit('gameList', games);
+	let gameList = games.map((game) => {
+		return {
+			kobk: game.kobk,
+			time: game.time,
+			name: game.name,
+			roles: game.roles,
+			seatedCount: game.seatedCount,
+			inProgress: game.inProgress,
+			uid: game.uid
+		};
+	});
+
+	io.emit('gameList', gameList);
 }
 
-export function updateGameList(data) {
+export function createGame(socket, game) {
+	let room = game.uid;
+
+	games.push(game);
+	sendGameList();
+
+	socket.join(room);
+};
+
+export function sendGameInfo(socket, uid) {
+	let game = games.find((el) => {
+		return el.uid === uid;
+	});
+
+	socket.emit('gameUpdate', game);
+}
+
+export function updateSeatedUsers(socket, data) {
 	let game = games.find((el) => {
 		return el.uid === data.gameID;
-	}),
-	index = games.indexOf(game);
-	
+	});
 
-	console.log(data);
-	console.log(games);
-	console.log(index);
-	console.log(games[index]);
-	games[index].seated[`seat${data.seatNumber}`] = data.user;
+	if (typeof data.user !== 'undefined') {
+		game.seated[`seat${data.seatNumber}`] = data.user;
+		game.seatedCount++;
+		socket.emit('gameUpdate', game);
+	} else {
+		for (var key in game.seated) {
+			if (game.seated.hasOwnProperty(key)) {
+				if (game.seated[key].userName === socket.handshake.session.passport.user) {
+					delete game.seated[key];
+					game.seatedCount--;
+				}
+			}
+		}
+	}
+
 	sendGameList();
 }
+
+
 
 
 	// let games = [],

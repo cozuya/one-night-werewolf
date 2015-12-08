@@ -16,11 +16,11 @@ export default class Table extends React.Component {
 	}
 
 	componentDidMount() {
-		console.log(this.props.gameInfo);
+
 	}
 
-	leaveGame() {
-
+	leaveGame(el) {
+		this.props.updateSeatedUsers();
 	}
 
 	clickedSeat(el) {
@@ -29,7 +29,7 @@ export default class Table extends React.Component {
 
 		if (this.props.userInfo.userName) {
 			if ($seat.hasClass('empty')) {
-				this.props.updateSeatedUsers($seat.attr('data-seatnumber'));
+				this.props.updateSeatedUsers($seat.attr('data-seatnumber'), this.props.userInfo);
 			}
 		} else {
 			// popup something that tells them they must be signed in to play

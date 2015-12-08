@@ -20,7 +20,7 @@ export function updateMidsection(midsection) {
 
 export const UPDATE_GAMELIST = 'UPDATE_GAMELIST';
 
-export function updateGamelist(gameList) {
+export function updateGameList(gameList) {
 	return {
 		type: UPDATE_GAMELIST,
 		gameList

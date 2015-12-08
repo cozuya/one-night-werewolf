@@ -133,11 +133,12 @@ export default class Creategame extends React.Component {
 			seated: {
 				seat1: this.props.userInfo
 			},
+			inProgress: false,
+			seatedCount: 1,
 			uid: Math.random().toString(36).substring(6)
 		};
 
-		socket.emit('addGameToList', newGame);
-		socket.emit('addGameInfo', newGame);
+		socket.emit('createGame', newGame);
 		this.props.onCreateGameSubmit(newGame);
 	}
 

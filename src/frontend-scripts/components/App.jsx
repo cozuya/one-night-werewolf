@@ -5,7 +5,7 @@ import Main from './section-main/Main.jsx'
 import RightSidebar from './section-right/RightSidebar.jsx'
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { updateUser, updateMidsection, updateGamelist, updateGameInfo } from '../actions/actions.js';
+import { updateUser, updateMidsection, updateGameList, updateGameInfo } from '../actions/actions.js';
 import socket from 'socket.io-client';
 
 socket = socket();
@@ -20,15 +20,21 @@ class App extends React.Component {
 			}
 
 		socket.on('gameList', (list) => {
-			dispatch(updateGamelist(list));
+			dispatch(updateGameList(list));
 		});
 
 		socket.on('gameUpdate', (game) => {
 			dispatch(updateGameInfo(game));
-			dispatch(updateMidsection('game'));
+			if (this.props.midsection !== 'game') {
+				dispatch(updateMidsection('game'));
+			}
 		});
 
 		socket.emit('getGameList');
+	}
+
+	componentDidUpdate() {
+		// console.log(this.props.userInfo);
 	}
 
 	leftSidebarHandleCreateGameClick() {
@@ -39,24 +45,24 @@ class App extends React.Component {
 
 	onCreateGameSubmit(game) {
 		let { dispatch } = this.props;
+
 		dispatch(updateGameInfo(game));
-
 		dispatch(updateMidsection('game'));
-		socket.emit('createGame', game);
 	}
 
-	onSidebarGameClick(gameID) {
-		socket.emit('getGameInfo', gameID);
-	}
-
-	updateSeatedUsersInGame(seatNumber) {
-		let data = {
+	updateSeatedUsersInGame(seatNumber, user) {
+		let { dispatch } = this.props,
+			data = {
 			gameID: this.props.gameInfo.uid,
 			seatNumber,
-			user: this.props.userInfo
+			user
 		}
 
-		socket.emit('seatUserInGame', data);
+		if (!data.user) {
+			dispatch(updateMidsection('default'));
+		}
+
+		socket.emit('updateSeatedUsers', data);
 	}
 
 	render() {
@@ -66,7 +72,6 @@ class App extends React.Component {
 					userInfo={this.props.userInfo}
 					midsection={this.props.midSection}
 					gameList={this.props.gameList}
-					onGameClick={this.onSidebarGameClick.bind(this)}
 					onCreateGameButtonClick={this.leftSidebarHandleCreateGameClick.bind(this)}
 				/>
 				<Main
