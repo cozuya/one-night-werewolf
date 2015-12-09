@@ -1,8 +1,9 @@
 'use strict';
 
-let mongoose = require('mongoose'),
-	Schema = mongoose.Schema,
-	passportLocalMongoose = require('passport-local-mongoose'),
+import mongoose from 'mongoose';
+import passportLocalMongoose from 'passport-local-mongoose';
+
+let Schema = mongoose.Schema,
 	Account = new Schema({
 		username: {
 			type: String,
@@ -14,4 +15,4 @@ let mongoose = require('mongoose'),
 
 Account.plugin(passportLocalMongoose);
 
-module.exports = mongoose.model('Account', Account);
+export default mongoose.model('Account', Account);

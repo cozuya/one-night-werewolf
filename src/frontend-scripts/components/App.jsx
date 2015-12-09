@@ -15,16 +15,11 @@ class App extends React.Component {
 		let { dispatch } = this.props,
 			classList = document.getElementById('game-container').classList;
 
-			if (classList.length) {
-				dispatch(updateUser({
-					userName: classList[0].split('username-')[1],
-					isSeated: false
-				}));
-			} else {
-				dispatch(updateUser({
-					isSeated: false
-				}));
-			}
+		if (classList.length) {
+			dispatch(updateUser({
+				userName: classList[0].split('username-')[1],
+			}));
+		}
 
 		socket.on('gameList', (list) => {
 			dispatch(updateGameList(list));
@@ -66,7 +61,6 @@ class App extends React.Component {
 
 	makeQuickDefault() {
 		// dev only
-console.log('Hello World!');
 		let { dispatch } = this.props,
 			userInfo = this.props.userInfo,
 			game = {
@@ -91,7 +85,6 @@ console.log('Hello World!');
 		dispatch(updateMidsection('game'));
 		dispatch(updateUser(userInfo));
 		socket.emit('createGame', game);
-
 	}
 
 	updateSeatedUsersInGame(seatNumber, user) {
