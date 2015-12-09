@@ -2,7 +2,7 @@
 
 // let Chatroom = require('../models/chatroom');
 
-let games = [];
+export let games = [];
 
 export function sendGameList() {
 	let gameList = games.map((game) => {

@@ -16,9 +16,13 @@ class App extends React.Component {
 			classList = document.getElementById('game-container').classList;
 
 		if (classList.length) {
-			dispatch(updateUser({
-				userName: classList[0].split('username-')[1],
-			}));
+			let name = {
+				userName: classList[0].split('username-')[1]
+			}
+
+			dispatch(updateUser(name));
+
+			socket.emit('checkNewlyConnectedUserStatus', name);
 		}
 
 		socket.on('gameList', (list) => {
@@ -36,7 +40,13 @@ class App extends React.Component {
 	}
 
 	componentDidUpdate() {
-		// console.log(this.props.userInfo);
+		// console.log(this.props);
+	}
+
+	onLeaveCreateGame() {
+		let { dispatch } = this.props;
+
+		dispatch(updateMidsection('default'));
 	}
 
 	leftSidebarHandleCreateGameClick() {
@@ -49,7 +59,7 @@ class App extends React.Component {
 		let { dispatch } = this.props,
 			userInfo = this.props.userInfo;
 
-		console.log(game);
+		// console.log(game);
 
 		userInfo.isSeated = true;
 
@@ -105,8 +115,8 @@ class App extends React.Component {
 			dispatch(updateMidsection('default'));
 		}
 
-		console.log(user);
-		console.log(userInfo);
+		// console.log(user);
+		// console.log(userInfo);
 
 		if (user.userName === userInfo.userName) {
 			userInfo.isSeated = true;
@@ -132,6 +142,7 @@ class App extends React.Component {
 					userInfo={this.props.userInfo}
 					midsection={this.props.midSection}
 					onCreateGameSubmit={this.onCreateGameSubmit.bind(this)}
+					leaveCreateGame={this.onLeaveCreateGame.bind(this)}
 					gameInfo={this.props.gameInfo}
 					updateSeatedUsers={this.updateSeatedUsersInGame.bind(this)}
 					quickDefault={this.makeQuickDefault.bind(this)}

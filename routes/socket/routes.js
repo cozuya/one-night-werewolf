@@ -1,6 +1,7 @@
 'use strict';
 
-import { sendGameList, createGame, sendGameInfo, updateSeatedUsers } from './game.js';
+import { sendGameList, createGame, sendGameInfo, updateSeatedUsers, games } from './game.js';
+import { checkUserStatus } from './account.js';
 
 export default () => {
 	io.on('connection', (socket) => {
@@ -19,6 +20,10 @@ export default () => {
 
 		socket.on('updateSeatedUsers', (data) => {
 			updateSeatedUsers(socket, data);
+		});
+
+		socket.on('checkNewlyConnectedUserStatus', (data) => {
+			checkUserStatus(socket, data, games);
 		});
 	});
 }

@@ -22,6 +22,7 @@ export default class Main extends React.Component {
 					return <Creategame
 								userInfo={this.props.userInfo}
 								onCreateGameSubmit={this.props.onCreateGameSubmit}
+								leaveCreateGame={this.props.leaveCreateGame}
 							/>
 				case 'game':
 					return <Game

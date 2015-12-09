@@ -112,7 +112,7 @@ export default class Creategame extends React.Component {
 		});
 	}
 
-	selectDefaultRoles () {
+	selectDefaultRoles() {
 		this.setState({roles: defaultRolesArray});
 		$(this.refs.progressbar).progress({
 			value: 10,
@@ -121,6 +121,10 @@ export default class Creategame extends React.Component {
 				ratio: '{value} of {total} roles'
 			}
 		});
+	}
+
+	leaveCreateGame() {
+		this.props.leaveCreateGame();
 	}
 
 	createNewGame() {
@@ -144,6 +148,7 @@ export default class Creategame extends React.Component {
 	render() {
 		return (
 			<section className="creategame">
+				<i className="remove icon" onClick={this.leaveCreateGame.bind(this)}></i>
 				<div className="ui header">
 					<div className="content">
 						Create a new game
