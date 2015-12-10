@@ -40,10 +40,10 @@ export function updateSeatedUsers(socket, data) {
 		return el.uid === data.uid;
 	});
 
-
-	if (typeof data.user !== 'undefined') {
-		game.seated[`seat${data.seatNumber}`] = data.user;
+	if (data.seatNumber !== null) {
+		game.seated[`seat${data.seatNumber}`] = data.userInfo;
 		game.seatedCount++;
+		socket.broadcast.to(data.uid).emit('gameUpdate', game).emit('gameUpdate', game);
 	} else {
 		for (let key in game.seated) {
 			if (game.seated.hasOwnProperty(key)) {
@@ -53,9 +53,20 @@ export function updateSeatedUsers(socket, data) {
 				}
 			}
 		}
+
+		if (Object.keys(game.seated).length === 0) {
+			deleteGame(game);
+		}
+
 		socket.leave(game.uid);
+		socket.broadcast.to(data.uid).emit('gameUpdate', game).emit('gameUpdate', {});
 	}
 
-	socket.broadcast.to(data.uid).emit('gameUpdate', game).emit('gameUpdate', game);
 	sendGameList();
 }
+
+let deleteGame = (game) => {
+	let index = games.indexOf(game);
+
+	games.splice(index, 1);
+};

@@ -5,10 +5,12 @@ import $ from 'jquery';
 import Popup from 'semantic-ui-popup';
 import Dropdown from 'semantic-ui-dropdown';
 import Progress from 'semantic-ui-progress';
+import Modal from 'semantic-ui-modal';
 
 $.fn.dropdown = Dropdown;
 $.fn.popup = Popup;
 $.fn.progress = Progress;
+$.fn.modal = Modal;
 
 export default class Table extends React.Component {
 	constructor() {
@@ -19,20 +21,21 @@ export default class Table extends React.Component {
 
 	}
 
-	leaveGame(el) {
-		this.props.updateSeatedUsers(null, this.props.userInfo);
+	leaveGame() {
+		this.props.updateSeatedUsers(null);
 	}
 
 	clickedSeat(el) {
 		let seated = this.props.gameInfo.seated,
 			userInfo = this.props.userInfo,
-			$seat = $(el.currentTarget);
-
-		console.log(this.props.userInfo);
+			$seat = $(el.currentTarget),
+			isUserAlreadySeated = Object.keys(seated).find((seat) => {
+				return seated[seat].userName === userInfo.userName;
+			});
 
 		if (userInfo.userName) {
-			if ($seat.hasClass('empty') && !userInfo.isSeated) {
-				this.props.updateSeatedUsers($seat.attr('data-seatnumber'), userInfo);
+			if ($seat.hasClass('empty') && !isUserAlreadySeated) {
+				this.props.updateSeatedUsers($seat.attr('data-seatnumber'));
 			}
 		} else {
 			// popup something that tells them they must be signed in to play

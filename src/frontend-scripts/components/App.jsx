@@ -30,9 +30,12 @@ class App extends React.Component {
 		});
 
 		socket.on('gameUpdate', (game) => {
-			dispatch(updateGameInfo(game));
-			if (this.props.midsection !== 'game') {
+			if (this.props.midsection !== 'game' && Object.keys(game).length) {
+				dispatch(updateGameInfo(game));
 				dispatch(updateMidsection('game'));
+			} else {
+				dispatch(updateMidsection('default'));
+				dispatch(updateGameInfo(game));
 			}
 		});
 
@@ -59,10 +62,6 @@ class App extends React.Component {
 		let { dispatch } = this.props,
 			userInfo = this.props.userInfo;
 
-		// console.log(game);
-
-		userInfo.isSeated = true;
-
 		dispatch(updateGameInfo(game));
 		dispatch(updateMidsection('game'));
 		dispatch(updateUser(userInfo));
@@ -80,7 +79,6 @@ class App extends React.Component {
 				roles: ['werewolf', 'werewolf', 'seer', 'robber', 'troublemaker', 'insomniac', 'hunter', 'villager', 'villager', 'villager'],
 				seated: {
 					seat1: {
-						isSeated: true,
 						userName: this.props.userInfo.userName
 					}
 				},
@@ -89,7 +87,6 @@ class App extends React.Component {
 				uid: Math.random().toString(36).substring(6)
 			};
 
-		userInfo.isSeated = true;
 
 		dispatch(updateGameInfo(game));
 		dispatch(updateMidsection('game'));
@@ -97,34 +94,14 @@ class App extends React.Component {
 		socket.emit('createGame', game);
 	}
 
-	updateSeatedUsersInGame(seatNumber, user) {
-		// method needs work
-
+	updateSeatedUsersInGame(seatNumber) {
 		let uid = this.props.gameInfo.uid,
-			{ dispatch } = this.props,
 			userInfo = this.props.userInfo,
 			data = {
 				uid,
 				seatNumber,
-				user
+				userInfo
 			};
-
-		socket.emit('getGameInfo', uid);
-
-		if (!data.user) {
-			dispatch(updateMidsection('default'));
-		}
-
-		// console.log(user);
-		// console.log(userInfo);
-
-		if (user.userName === userInfo.userName) {
-			userInfo.isSeated = true;
-			dispatch(updateUser(userInfo));
-		} else {
-			userInfo.isSeated = false;
-			dispatch(updateUser(userInfo));
-		}
 
 		socket.emit('updateSeatedUsers', data);
 	}
