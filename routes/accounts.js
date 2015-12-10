@@ -3,6 +3,7 @@
 import mongoose from 'mongoose';
 import passport from 'passport';
 import Account from '../models/account';
+import GameSettings from '../models/gamesettings';
 
 let ensureAuthenticated = (req, res, next)  => {
 	if (req.isAuthenticated()) {
@@ -45,6 +46,13 @@ export default () => {
 			if (err) {
 				console.log(err);
 			}
+
+			let settings = new GameSettings({
+				username,
+				disablePopups: false
+			});
+
+			settings.save();
 
 			passport.authenticate('local')(req, res, () => {
 				res.send();

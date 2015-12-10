@@ -67,6 +67,7 @@
     "redux": "^3.0.4",
     "redux-devtools": "^2.1.5",
     "require-dot-file": "^0.4.0",
+    "semantic-ui-checkbox": "^2.1.6",
     "semantic-ui-dimmer": "^2.0.8",
     "semantic-ui-dropdown": "^2.1.6",
     "semantic-ui-form": "^2.1.3",

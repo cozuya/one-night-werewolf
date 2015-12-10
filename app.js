@@ -45,6 +45,6 @@ passport.use(new Strategy(Account.authenticate()));
 passport.serializeUser(Account.serializeUser());
 passport.deserializeUser(Account.deserializeUser());
 
-mongoose.connect('mongodb://localhost/chatroom-app');
+mongoose.connect('mongodb://localhost/one-night-werewolf-app');
 
 routesIndex();

@@ -4,6 +4,7 @@ import React from 'react';
 import Menu from '../menu/Menu.jsx';
 import Defaultmid from './Defaultmid.jsx';
 import Creategame from './Creategame.jsx';
+import Settings from './Settings.jsx';
 import Game from './Game.jsx';
 
 export default class Main extends React.Component {
@@ -29,6 +30,11 @@ export default class Main extends React.Component {
 								updateSeatedUsers={this.props.updateSeatedUsers}
 								userInfo={this.props.userInfo}
 								gameInfo={this.props.gameInfo}
+							/>
+				case 'settings':
+					return <Settings
+								routeToDefault={this.props.routeToDefault}
+								userInfo={this.props.userInfo}
 							/>
 				default:
 					return <Defaultmid

@@ -22,8 +22,20 @@ class App extends React.Component {
 
 			dispatch(updateUser(name));
 
-			socket.emit('checkNewlyConnectedUserStatus', name);
+			socket.emit('checkNewlyConnectedUserStatus');
+			socket.emit('getUserGameSettings');
 		}
+
+		socket.on('gameSettings', (settings) => {
+			let user = this.props.userInfo;
+
+			delete settings.__v
+			delete settings._id
+			delete settings.username;
+
+			user.gameSettings = settings;
+			dispatch(updateUser(user));
+		});
 
 		socket.on('gameList', (list) => {
 			dispatch(updateGameList(list));
@@ -43,7 +55,6 @@ class App extends React.Component {
 	}
 
 	componentDidUpdate() {
-		// console.log(this.props);
 	}
 
 	onLeaveCreateGame() {
@@ -56,6 +67,18 @@ class App extends React.Component {
 		let { dispatch } = this.props;
 
 		dispatch(updateMidsection('createGame'));
+	}
+
+	rightSidebarHandleSettingClick() {
+		let { dispatch } = this.props;
+
+		dispatch(updateMidsection('settings'));
+	}
+
+	handleRouteToDefault() {
+		let { dispatch } = this.props;
+
+		dispatch(updateMidsection('default'));
 	}
 
 	onCreateGameSubmit(game) {
@@ -124,7 +147,11 @@ class App extends React.Component {
 					updateSeatedUsers={this.updateSeatedUsersInGame.bind(this)}
 					quickDefault={this.makeQuickDefault.bind(this)}
 				/>
-				<RightSidebar />
+				<RightSidebar
+					userInfo={this.props.userInfo}
+					settingClick={this.rightSidebarHandleSettingClick.bind(this)}
+					routeToDefault={this.handleRouteToDefault.bind(this)}
+				/>
 			</section>
 		);
 	}
