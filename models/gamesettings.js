@@ -5,7 +5,9 @@ import mongoose from 'mongoose';
 let Schema = mongoose.Schema,
 	GameSettings = new Schema({
 		username: String,
-		disablePopups: Boolean
+		gameSettings: {
+			disablePopups: Boolean
+		}
 	});
 
 export default mongoose.model('GameSettings', GameSettings);

@@ -10,7 +10,7 @@ let Schema = mongoose.Schema,
 			required: true,
 			unique: true
 		},
-		password: String,
+		password: String
 	});
 
 Account.plugin(passportLocalMongoose);

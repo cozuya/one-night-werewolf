@@ -24,8 +24,9 @@ export function checkUserStatus(socket, data, games) {
 export function handleUpdatedGameSettings(socket, data) {
 	let username = socket.handshake.session.passport.user;
 
-	GameSettings.find({username}, (err, settings) => {
-
+	GameSettings.findOne({username}, (err, settings) => {
+		settings.gameSettings = data;
+		settings.save();
 	});
 }
 

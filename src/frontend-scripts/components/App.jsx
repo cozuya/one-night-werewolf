@@ -29,11 +29,13 @@ class App extends React.Component {
 		socket.on('gameSettings', (settings) => {
 			let user = this.props.userInfo;
 
+			console.log(settings);
+
 			delete settings.__v
 			delete settings._id
 			delete settings.username;
 
-			user.gameSettings = settings;
+			user.gameSettings = settings.gameSettings;
 			dispatch(updateUser(user));
 		});
 

@@ -20,8 +20,17 @@ export default class Creategame extends React.Component {
 	constructor() {
 	}
 
+	componentDidUpdate() {
+		
+	}
+
 	componentDidMount() {
-		console.log(this.props.userInfo);
+		let getSettingsFromComponent = () => {
+			return {
+
+			}
+		};
+
 		$(this.refs.popups).popup({
 			inline: true,
 			hoverable: true,
@@ -32,10 +41,14 @@ export default class Creategame extends React.Component {
 			}
 		}).checkbox({
 			onChecked: function () {
-				socket.emit('updateGameSettings', {test: 'testing'});
+				socket.emit('updateGameSettings', {
+					disablePopups: true
+				});
 			},
 			onUnchecked: function () {
-				console.log('Hello World!');
+				socket.emit('updateGameSettings', {
+					disablePopups: false
+				});
 			},
 		});
 	}
@@ -48,15 +61,15 @@ export default class Creategame extends React.Component {
 					<div className="content">
 						Game settings
 						<div className="sub header">
-							Account settings can be found <a href='/account' target="blank">here (new tab).</a>							
+							Account settings can be found <a href='/account' target="blank">here</a> (new tab).
 						</div>
 					</div>
 				</div>
 				<div className="ui grid">
 					<div className="four wide column popups">
-						<h4 className="ui header">Disable information popups</h4>
+						<h4 className="ui header">Disable informational popups</h4>
 						<div className="ui fitted toggle checkbox" ref="popups">
-							<input type="checkbox" name="popups"></input>
+							<input type="checkbox" name="popups" defaultChecked={this.props.userInfo.gameSettings.disablePopups}></input>
 							<label></label>
 						</div>
 						<div className="ui small popup transition hidden">

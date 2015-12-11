@@ -49,7 +49,9 @@ export default () => {
 
 			let settings = new GameSettings({
 				username,
-				disablePopups: false
+				gameSettings: {
+					disablePopups: false
+				}
 			});
 
 			settings.save();
