@@ -26,7 +26,7 @@ export default class Creategame extends React.Component {
 	}
 
 	componentDidMount() {
-		$(this.refs.defaultrolespopup).add(this.refs.kobkpopup).popup({
+		let popupSettings = {
 			inline: true,
 			hoverable: true,
 			position: 'bottom center',
@@ -34,30 +34,26 @@ export default class Creategame extends React.Component {
 				show: 300,
 				hide: 800
 			}
-		});
+		};
+		
+		if (!this.props.userInfo.gameSettings.disablePopups) {
+			$(this.refs.defaultrolespopup).add(this.refs.kobkpopup).popup(popupSettings);
 
-		$(this.refs.role_werewolf).add(this.refs.role_minion).add(this.refs.role_mason).popup({
-			inline: true,
-			hoverable: true,
-			lastResort: false,
-			delay: {
-				show: 300,
-				hide: 800
-			}
-		});
+			$(this.refs.role_werewolf).add(this.refs.role_minion).add(this.refs.role_mason).popup(popupSettings);
 
-		$(this.refs.timedropdown).dropdown({
-			on: 'hover'
-		});
+			$(this.refs.timedropdown).dropdown({
+				on: 'hover'
+			});
 
-		$(this.refs.progressbar).progress({
-			percent: 20,
-			total: 10,
-			label: 'ratio',
-			text: {
-				ratio: '{value} of {total} roles'
-			}
-		});
+			$(this.refs.progressbar).progress({
+				percent: 20,
+				total: 10,
+				label: 'ratio',
+				text: {
+					ratio: '{value} of {total} roles'
+				}
+			});
+		}
 	}
 
 	handleChangeRole(el) {

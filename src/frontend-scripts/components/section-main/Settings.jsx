@@ -73,7 +73,7 @@ export default class Creategame extends React.Component {
 							<label></label>
 						</div>
 						<div className="ui small popup transition hidden">
-							Disable most popups like this one that explain game terms and concepts.
+							Disable most popups (but not this one) that explain game terms and concepts.
 						</div>
 					</div>
 				</div>

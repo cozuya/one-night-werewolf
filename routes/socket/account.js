@@ -27,6 +27,7 @@ export function handleUpdatedGameSettings(socket, data) {
 	GameSettings.findOne({username}, (err, settings) => {
 		settings.gameSettings = data;
 		settings.save();
+		socket.emit('gameSettings', settings);
 	});
 }
 
