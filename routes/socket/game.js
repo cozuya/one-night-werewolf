@@ -2,6 +2,12 @@
 
 // let Chatroom = require('../models/chatroom');
 
+let deleteGame = (game) => {
+	let index = games.indexOf(game);
+
+	games.splice(index, 1);
+};
+
 export let games = [];
 
 export function sendGameList() {
@@ -65,8 +71,11 @@ export function updateSeatedUsers(socket, data) {
 	sendGameList();
 }
 
-let deleteGame = (game) => {
-	let index = games.indexOf(game);
+export function updateGameChat(socket, data, uid) {
+	let game = games.find((el) => {
+		return el.uid === uid;
+	});
 
-	games.splice(index, 1);
-};
+	game.chats.push(data);
+	socket.broadcast.to(uid).emit('gameUpdate', game).emit('gameUpdate', game);
+}

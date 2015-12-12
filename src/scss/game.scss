@@ -105,21 +105,37 @@
 			font-style: italic;
 			color: #eee;
 			background: #555;
-			padding: 3px 0px 3px 8px;
+			padding: 3px 0px 7px 8px;
 		}
 
 		.gamechat {
 			margin: 0;
 			background: #f6f6f6;
 
-			.item {
-				padding: 8px;
+			.pointing.menu {
+				margin: 0;
+
+				.item {
+					padding: 8px;		
+				}
 			}
 
 			.chats {
 				height: 305px;
 				overflow-y: scroll;
+				background: #fdfdfd;
+				font-size: 18px;
+
+				.item {
+					line-height: 1;
+					padding: 0;
+				}
+
+				.chat-user {
+					color: #16AB39;
+				}
 			}
+
 
 			.inputbar {
 				span {

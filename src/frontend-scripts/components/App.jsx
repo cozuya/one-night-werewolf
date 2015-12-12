@@ -50,9 +50,6 @@ class App extends React.Component {
 		socket.emit('getGameList');
 	}
 
-	componentDidUpdate() {
-	}
-
 	onLeaveCreateGame() {
 		let { dispatch } = this.props;
 
@@ -101,7 +98,10 @@ class App extends React.Component {
 						userName: this.props.userInfo.userName
 					}
 				},
-				status: 'Waiting for more players..',
+				status: {
+					message: 'Waiting for more players..'
+				},
+				chats: [],
 				seatedCount: 1,
 				time: '3:00',
 				uid: Math.random().toString(36).substring(6)
@@ -126,6 +126,10 @@ class App extends React.Component {
 		socket.emit('updateSeatedUsers', data);
 	}
 
+	handleNewChat(chat) {
+		socket.emit('newGameChat', chat, this.props.gameInfo.uid);
+	}
+
 	render() {
 		return (
 			<section className="ui grid">
@@ -143,6 +147,7 @@ class App extends React.Component {
 					gameInfo={this.props.gameInfo}
 					updateSeatedUsers={this.updateSeatedUsersInGame.bind(this)}
 					quickDefault={this.makeQuickDefault.bind(this)}
+					newChat={this.handleNewChat.bind(this)}
 				/>
 				<RightSidebar
 					userInfo={this.props.userInfo}

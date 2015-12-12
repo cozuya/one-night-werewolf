@@ -138,9 +138,10 @@ export default class Creategame extends React.Component {
 			// }
 			status: {
 				preCountdown: 'Game begins in ',
-				postCountdown: 'seconds.',
+				postCountdown: ' seconds.',
 				countDown: 5
 			},
+			chats: [],
 			inProgress: false,
 			seatedCount: 1,
 			uid: Math.random().toString(36).substring(6)

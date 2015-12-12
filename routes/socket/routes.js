@@ -1,6 +1,6 @@
 'use strict';
 
-import { sendGameList, createGame, sendGameInfo, updateSeatedUsers, games } from './game.js';
+import { updateGameChat, sendGameList, createGame, sendGameInfo, updateSeatedUsers, games } from './game.js';
 import { checkUserStatus, handleUpdatedGameSettings, sendUserGameSettings } from './account.js';
 
 export default () => {
@@ -29,6 +29,10 @@ export default () => {
 
 		socket.on('getUserGameSettings', () => {
 			sendUserGameSettings(socket);			
+		});
+
+		socket.on('newGameChat', (chat, uid) => {
+			updateGameChat(socket, chat, uid);
 		});
 	});
 }

@@ -30,6 +30,7 @@ export default class Main extends React.Component {
 								updateSeatedUsers={this.props.updateSeatedUsers}
 								userInfo={this.props.userInfo}
 								gameInfo={this.props.gameInfo}
+								newChat={this.props.newChat}
 							/>
 				case 'settings':
 					return <Settings

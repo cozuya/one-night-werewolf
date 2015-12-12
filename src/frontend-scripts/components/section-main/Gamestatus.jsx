@@ -11,7 +11,6 @@ export default class Gamestatus extends React.Component {
 	}
 
 	componentDidMount() {
-		console.log(this.props.gameInfo);
 	}
 
 	componentDidUpdate() {
@@ -36,16 +35,18 @@ export default class Gamestatus extends React.Component {
 	}
 
 	processStatus() {
-		if (this.props.gameInfo.status.countDown) {
+		let gameInfo = this.props.gameInfo;
+
+		if (gameInfo.status.countDown) {
 			return (
 				<div>
-					{this.props.gameInfo.status.preCountdown}
+					{gameInfo.status.preCountdown}
 					{this.state.time}
-					{this.props.gameInfo.status.postCountdown}
+					{gameInfo.status.postCountdown}
 				</div>
 			);
 		} else {
-			return this.props.gameInfo.status.preCountdown;
+			return gameInfo.status.message;
 		}
 	}
 

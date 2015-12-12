@@ -32,7 +32,11 @@ export default class Game extends React.Component {
 								gameInfo={this.props.gameInfo}
 								userInfo={this.props.userInfo}
 							/>
-							<Gamechat />
+							<Gamechat
+								gameInfo={this.props.gameInfo}
+								userInfo={this.props.userInfo}
+								newChat={this.props.newChat}
+							/>
 						</div>
 					</div>
 				</div>
