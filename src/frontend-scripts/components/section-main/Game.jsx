@@ -3,6 +3,7 @@
 import React from 'react';
 import Table from './Table.jsx';
 import Gamechat from './Gamechat.jsx';
+import Gamestatus from './Gamestatus.jsx';
 import Gameroles from './Gameroles.jsx';
 
 export default class Game extends React.Component {
@@ -27,6 +28,10 @@ export default class Game extends React.Component {
 							/>
 						</div>
 						<div className="six wide column chat-container">
+							<Gamestatus 
+								gameInfo={this.props.gameInfo}
+								userInfo={this.props.userInfo}
+							/>
 							<Gamechat />
 						</div>
 					</div>

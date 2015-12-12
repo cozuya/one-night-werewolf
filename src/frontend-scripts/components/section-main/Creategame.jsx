@@ -133,6 +133,7 @@ export default class Creategame extends React.Component {
 			seated: {
 				seat1: this.props.userInfo
 			},
+			status: 'Waiting for more players..',
 			inProgress: false,
 			seatedCount: 1,
 			uid: Math.random().toString(36).substring(6)

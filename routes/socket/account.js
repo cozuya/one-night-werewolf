@@ -35,7 +35,6 @@ export function sendUserGameSettings(socket) {
 	let username = socket.handshake.session.passport.user;
 
 	GameSettings.findOne({username}, (err, settings) => {
-		console.log(settings);
 		socket.emit('gameSettings', settings);
 	});
 }

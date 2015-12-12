@@ -29,10 +29,6 @@ class App extends React.Component {
 		socket.on('gameSettings', (settings) => {
 			let user = this.props.userInfo;
 
-			delete settings.__v
-			delete settings._id
-			delete settings.username;
-
 			user.gameSettings = settings.gameSettings;
 			dispatch(updateUser(user));
 		});
@@ -105,6 +101,7 @@ class App extends React.Component {
 						userName: this.props.userInfo.userName
 					}
 				},
+				status: 'Waiting for more players..',
 				seatedCount: 1,
 				time: '3:00',
 				uid: Math.random().toString(36).substring(6)

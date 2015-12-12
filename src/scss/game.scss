@@ -97,8 +97,45 @@
 	}
 
 	.chat-container {
-		background: #ddd;
+		background: #f6f6f6;
+		padding: 0;
+
+		.gamestatus {
+			font-size: 22px;
+			font-style: italic;
+			color: #eee;
+			background: #555;
+			padding: 3px 0px 3px 8px;
+		}
+
+		.gamechat {
+			margin: 0;
+			background: #f6f6f6;
+
+			.item {
+				padding: 8px;
+			}
+
+			.chats {
+				height: 305px;
+				overflow-y: scroll;
+			}
+
+			.inputbar {
+				span {
+					padding-left: 20px;
+				}
+
+				.input {
+					width: 290px;
+					button {
+						padding: 0px 10px;
+					}
+				}
+			}
+		}
 	}
+
 
 	.gameroles-container {
 		background: #eee;

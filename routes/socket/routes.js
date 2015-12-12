@@ -5,9 +5,6 @@ import { checkUserStatus, handleUpdatedGameSettings, sendUserGameSettings } from
 
 export default () => {
 	io.on('connection', (socket) => {
-		// Object.keys(socket.handshake.session.passport).length > 0
-		// console.log(socket.handshake.session.passport);
-
 		socket.on('getGameInfo', (uid) => {
 			sendGameInfo(socket, uid);
 		});
