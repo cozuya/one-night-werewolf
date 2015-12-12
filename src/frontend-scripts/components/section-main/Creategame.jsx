@@ -133,7 +133,14 @@ export default class Creategame extends React.Component {
 			seated: {
 				seat1: this.props.userInfo
 			},
-			status: 'Waiting for more players..',
+			// status: {
+			// 	preCountdown: 'Waiting for more players..'
+			// }
+			status: {
+				preCountdown: 'Game begins in ',
+				postCountdown: 'seconds.',
+				countDown: 5
+			},
 			inProgress: false,
 			seatedCount: 1,
 			uid: Math.random().toString(36).substring(6)
