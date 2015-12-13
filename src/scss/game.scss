@@ -120,8 +120,12 @@
 				}
 			}
 
+			.chatpusher {
+				height: 290px;
+			}
+
 			.chats {
-				height: 305px;
+				height: 335px;
 				overflow-y: scroll;
 				background: #fdfdfd;
 				font-size: 18px;
@@ -133,6 +137,10 @@
 
 				.chat-user {
 					color: #16AB39;
+				}
+
+				.chat-user--game, .game-chat {
+					color: #8B8B8B;
 				}
 			}
 

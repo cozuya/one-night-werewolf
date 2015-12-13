@@ -41,6 +41,16 @@ For installation on windows, you may need to do a few extra steps if you are get
 
 instead of the npm install found above.
 
+Also, if you receive an error with semantic on install despite the above, you can probably fix it by:
+
+> npm install semantic-ui
+
+go through the prompts, then
+
+> cd public/semantic
+
+> gulp build
+
 ## Running in dev mode ##
 
 start mongo:

@@ -6,11 +6,9 @@ import $ from 'jquery';
 
 export default class Gamechat extends React.Component {
 	constructor() {
-	// <section className="segment previewbar">
-	// 				<i className="large comment outline icon"></i>
-	// 			</section>
-
-		// this.state = 
+		this.state = {
+			chatFilter: 'All'
+		};
 	}
 
 	clickExpand(e) {
@@ -52,24 +50,62 @@ export default class Gamechat extends React.Component {
 		}
 	}
 
-	componentDidUpdate() {
-		let chatsContainer = document.querySelector('section.segment.chats');
+	componentDidMount() {
+		this.scrollChats();
+	}
 
+	componentDidUpdate() {
+		this.scrollChats();		
+	}
+
+	scrollChats() {
+		let chatsContainer = document.querySelector('section.segment.chats'),
+			$chatPusher = $('div.chatpusher'),
+			chatHeight = 290,
+			chatCount = this.props.gameInfo.chats.length;
+
+		if (chatCount < 20) {
+			$chatPusher.css({
+				height: 290 - chatCount * 16,
+			});
+		}
 		chatsContainer.scrollTop = chatsContainer.scrollHeight;
+	}
+
+
+	handleChatFilterClick(e) {
+		let $el = $(e.currentTarget);
+
+		if ($el.hasClass('active')) {
+			return;
+		}
+
+		this.setState({
+			chatFilter: $el.text()
+		});
+
+		$el.parent().find('.active').removeClass('active');
+		$el.addClass('active');
 	}
 
 	processChats() {
 		return this.props.gameInfo.chats.map((chat, i) => {
-			return (
-				<div className="item" key={i}>
-					<span className="chat-user">{chat.userName}: </span>
-					{chat.chat}
-				</div>
-			);
-		});
-	}
-
-	handleChatFilterClick(el) {
+			if (chat.userName === 'GAME' && (this.state.chatFilter === 'Game' || this.state.chatFilter === 'All')) {
+				return (
+					<div className="item" key={i}>
+						<span className="chat-user--game">[{chat.userName}]: </span>
+						<span className="game-chat">{chat.chat}</span>
+					</div>
+				);
+			} else if (chat.userName !== 'GAME' && this.state.chatFilter !== 'Game') {
+				return (
+					<div className="item" key={i}>
+						<span className="chat-user">{chat.userName}: </span>
+						{chat.chat}
+					</div>
+				);
+			};
+		});	
 	}
 
 	render() {
@@ -81,8 +117,9 @@ export default class Gamechat extends React.Component {
 					<a className="item" onClick={this.handleChatFilterClick.bind(this)}>Game</a>
 				</section>
 				<section className="segment chats">
+					<div className="chatpusher"></div>
 					<div className="ui list">
-					{this.processChats()}
+						{this.processChats()}
 					</div>
 				</section>
 				<form className="segment inputbar" onSubmit={this.handleSubmit.bind(this)}>
