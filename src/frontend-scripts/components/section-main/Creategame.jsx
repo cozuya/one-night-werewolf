@@ -17,7 +17,6 @@ export default class Creategame extends React.Component {
 	constructor() {
 		this.handleChangeRole = this.handleChangeRole.bind(this);
 		this.createNewGame = this.createNewGame.bind(this);
-		this.selectDefaultRoles = this.selectDefaultRoles.bind(this);
 		this.clearRoles = this.clearRoles.bind(this);
 
 		this.state = {
@@ -40,20 +39,20 @@ export default class Creategame extends React.Component {
 			$(this.refs.defaultrolespopup).add(this.refs.kobkpopup).popup(popupSettings);
 
 			$(this.refs.role_werewolf).add(this.refs.role_minion).add(this.refs.role_mason).popup(popupSettings);
-
-			$(this.refs.timedropdown).dropdown({
-				on: 'hover'
-			});
-
-			$(this.refs.progressbar).progress({
-				percent: 20,
-				total: 10,
-				label: 'ratio',
-				text: {
-					ratio: '{value} of {total} roles'
-				}
-			});
 		}
+
+		$(this.refs.timedropdown).dropdown({
+			on: 'hover'
+		});
+
+		$(this.refs.progressbar).progress({
+			percent: 20,
+			total: 10,
+			label: 'ratio',
+			text: {
+				ratio: '{value} of {total} roles'
+			}
+		});
 	}
 
 	handleChangeRole(el) {
@@ -171,7 +170,7 @@ export default class Creategame extends React.Component {
 					</div>
 					<div className="four wide column selectdefaults">
 						<h4 className="ui header">Select default roles</h4>
-						<div className="ui basic button" ref="defaultrolespopup" onClick={this.selectDefaultRoles}>
+						<div className="ui basic button" ref="defaultrolespopup" onClick={this.selectDefaultRoles.bind(this)}>
 							Select
 						</div>
 						<div className="ui small popup top left transition hidden">

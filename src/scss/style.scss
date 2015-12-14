@@ -8,6 +8,10 @@ $tannerteam: #DCB469;
 @import 'gameroles.scss';
 @import 'settings.scss';
 
+body {
+	background-image: url('../images/pw_maze_white.png');
+}
+
 .app-hidden {
 	display: none !important;
 }
@@ -21,9 +25,10 @@ $tannerteam: #DCB469;
 	padding-right: 0;
 }
 
-.section-left, .section-right {
+.section-left, .section-right, .creategame {
 	border: 1px solid rgba(34,36,38,.15);
 	box-shadow: 0 1px 2px 0 rgba(34,36,38,.15);
+	background: #fff;
 }
 
 .section-main > section {

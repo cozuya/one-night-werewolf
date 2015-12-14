@@ -87,7 +87,9 @@ export default class Gamechat extends React.Component {
 	}
 
 	processChats() {
-		return this.props.gameInfo.chats.map((chat, i) => {
+		let gameInfo = this.props.gameInfo;
+
+		return gameInfo.chats.map((chat, i) => {
 			if (chat.userName === 'GAME' && (this.state.chatFilter === 'Game' || this.state.chatFilter === 'All')) {
 				return (
 					<div className="item" key={i}>
@@ -96,9 +98,13 @@ export default class Gamechat extends React.Component {
 					</div>
 				);
 			} else if (chat.userName !== 'GAME' && this.state.chatFilter !== 'Game') {
+				let isSeated = !!Object.keys(gameInfo.seated).find((seat) => {
+					return gameInfo.seated[seat].userName === chat.userName;
+				});
+
 				return (
 					<div className="item" key={i}>
-						<span className="chat-user">{chat.userName}: </span>
+						<span className="chat-user">{chat.userName}{isSeated ? '' : ' (Observer)'}: </span>
 						{chat.chat}
 					</div>
 				);
@@ -131,7 +137,7 @@ export default class Gamechat extends React.Component {
 				</section>
 				<form className="segment inputbar" onSubmit={this.handleSubmit.bind(this)}>
 					<i className="large expand icon" onClick={this.clickExpand.bind(this)}></i>
-					<div className="ui action input">
+					<div className={this.props.userInfo.userName ? "ui action input" : "ui action input disabled"}>
 						<input placeholder="Chat.." ref="chatinput" onKeyUp={this.handleKeyup.bind(this)}></input>
 						<button className="ui primary button disabled">Chat</button>
 					</div>
