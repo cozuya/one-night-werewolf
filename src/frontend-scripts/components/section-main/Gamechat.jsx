@@ -7,7 +7,8 @@ import $ from 'jquery';
 export default class Gamechat extends React.Component {
 	constructor() {
 		this.state = {
-			chatFilter: 'All'
+			chatFilter: 'All',
+			lock: false
 		};
 	}
 
@@ -62,30 +63,27 @@ export default class Gamechat extends React.Component {
 		let chatsContainer = document.querySelector('section.segment.chats'),
 			$chatPusher = $('div.chatpusher'),
 			chatHeight = 290,
-			chatCount = this.props.gameInfo.chats.length;
+			chatCount = this.props.gameInfo.chats.length,
+			$lockIcon = $('section.gamechat > .ui.menu > i');
 
 		if (chatCount < 20) {
 			$chatPusher.css({
 				height: 290 - chatCount * 16,
 			});
+		} else {
+			$chatPusher.remove();
 		}
-		chatsContainer.scrollTop = chatsContainer.scrollHeight;
+
+		if (!this.state.lock) {
+			chatsContainer.scrollTop = chatsContainer.scrollHeight;
+		}
 	}
 
 
 	handleChatFilterClick(e) {
-		let $el = $(e.currentTarget);
-
-		if ($el.hasClass('active')) {
-			return;
-		}
-
 		this.setState({
-			chatFilter: $el.text()
+			chatFilter: $(e.currentTarget).text()
 		});
-
-		$el.parent().find('.active').removeClass('active');
-		$el.addClass('active');
 	}
 
 	processChats() {
@@ -108,13 +106,22 @@ export default class Gamechat extends React.Component {
 		});	
 	}
 
+	handleChatLockClick(e) {
+		if (this.state.lock) {
+			this.setState({lock: false});
+		} else {
+			this.setState({lock: true});
+		}
+	}
+
 	render() {
 		return (
 			<section className="gamechat">
 				<section className="ui pointing menu">
-					<a className="item active" onClick={this.handleChatFilterClick.bind(this)}>All</a>
-					<a className="item" onClick={this.handleChatFilterClick.bind(this)}>Chat</a>
-					<a className="item" onClick={this.handleChatFilterClick.bind(this)}>Game</a>
+					<a className={this.state.chatFilter === 'All' ? "item active" : "item"} onClick={this.handleChatFilterClick.bind(this)}>All</a>
+					<a className={this.state.chatFilter === 'Chat' ? "item active" : "item"} onClick={this.handleChatFilterClick.bind(this)}>Chat</a>
+					<a className={this.state.chatFilter === 'Game' ? "item active" : "item"} onClick={this.handleChatFilterClick.bind(this)}>Game</a>
+					<i className={this.state.lock ? "large lock icon" : "large unlock alternate icon"} onClick={this.handleChatLockClick.bind(this)}></i>
 				</section>
 				<section className="segment chats">
 					<div className="chatpusher"></div>
