@@ -3,7 +3,7 @@
 import LeftSidebar from './section-left/LeftSidebar.jsx'
 import Main from './section-main/Main.jsx'
 import RightSidebar from './section-right/RightSidebar.jsx'
-import React, { Component, PropTypes } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
 import { updateUser, updateMidsection, updateGameList, updateGameInfo } from '../actions/actions.js';
 import socket from 'socket.io-client';
@@ -75,12 +75,11 @@ class App extends React.Component {
 	}
 
 	onCreateGameSubmit(game) {
-		let { dispatch } = this.props,
-			userInfo = this.props.userInfo;
+		let { dispatch } = this.props;
 
 		dispatch(updateGameInfo(game));
 		dispatch(updateMidsection('game'));
-		dispatch(updateUser(userInfo));
+		dispatch(updateUser(this.props.userInfo));
 		socket.emit('createGame', game);
 	}
 
@@ -98,9 +97,7 @@ class App extends React.Component {
 						userName: this.props.userInfo.userName
 					}
 				},
-				status: {
-					message: 'Waiting for more players..'
-				},
+				status: 'Waiting for more players..',
 				chats: [],
 				seatedCount: 1,
 				time: '3:00',
@@ -145,6 +142,7 @@ class App extends React.Component {
 					onCreateGameSubmit={this.onCreateGameSubmit.bind(this)}
 					leaveCreateGame={this.onLeaveCreateGame.bind(this)}
 					gameInfo={this.props.gameInfo}
+					routeToDefault={this.handleRouteToDefault.bind(this)}
 					updateSeatedUsers={this.updateSeatedUsersInGame.bind(this)}
 					quickDefault={this.makeQuickDefault.bind(this)}
 					newChat={this.handleNewChat.bind(this)}
@@ -152,7 +150,6 @@ class App extends React.Component {
 				<RightSidebar
 					userInfo={this.props.userInfo}
 					settingClick={this.rightSidebarHandleSettingClick.bind(this)}
-					routeToDefault={this.handleRouteToDefault.bind(this)}
 				/>
 			</section>
 		);

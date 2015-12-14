@@ -13,16 +13,14 @@ $.fn.progress = Progress;
 $.fn.modal = Modal;
 
 export default class Table extends React.Component {
-	constructor() {
-		
-	}
-
-	componentDidMount() {
-
-	}
-
 	leaveGame() {
 		this.props.updateSeatedUsers(null);
+	}
+
+	validateLeaveButton() {
+		// need to disable when user is seated and seatedCount === 7
+
+		return 'remove icon';
 	}
 
 	clickedSeat(el) {
@@ -61,7 +59,7 @@ export default class Table extends React.Component {
 				<div className="seat mid1"></div>
 				<div className="seat mid2"></div>
 				<div className="seat mid3"></div>
-				<i className="remove icon" onClick={this.leaveGame.bind(this)}></i>
+				<i onClick={this.leaveGame.bind(this)} className={this.validateLeaveButton()}></i>
 			</section>
 		);
 	}

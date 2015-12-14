@@ -8,19 +8,19 @@ export default class Defaultmid extends React.Component {
 			<section className="defaultmid">
 				Welcome to One Night Werewolf
 				<br />
-				<button style={{padding: '20px'}} data-name="a" className="loginquick">login a</button>
+				<button style={{padding: '20px', width: '150px'}} data-name="jin" className="loginquick">login jin</button>
 				<br />
-				<button style={{padding: '20px'}} data-name="b" className="loginquick">login b</button>
+				<button style={{padding: '20px', width: '150px'}} data-name="paul" className="loginquick">login paul</button>
 				<br />
-				<button style={{padding: '20px'}} data-name="c" className="loginquick">login c</button>
+				<button style={{padding: '20px', width: '150px'}} data-name="heichachi" className="loginquick">login heihachi</button>
 				<br />
-				<button style={{padding: '20px'}} data-name="d" className="loginquick">login d</button>
+				<button style={{padding: '20px', width: '150px'}} data-name="nina" className="loginquick">login nina</button>
 				<br />
-				<button style={{padding: '20px'}} data-name="e" className="loginquick">login e</button>
+				<button style={{padding: '20px', width: '150px'}} data-name="anna" className="loginquick">login anna</button>
 				<br />
-				<button style={{padding: '20px'}} data-name="f" className="loginquick">login f</button>
+				<button style={{padding: '20px', width: '150px'}} data-name="marshall" className="loginquick">login marshall</button>
 				<br />
-				<button style={{padding: '20px'}} data-name="g" className="loginquick">login g</button>
+				<button style={{padding: '20px', width: '150px'}} data-name="kazuya" className="loginquick">login kazuya</button>
 				<br />
 				<button style={{padding: '20px', background: 'blue', color: 'white'}} data-name="h" onClick={this.props.quickDefault}>default game</button>
 				

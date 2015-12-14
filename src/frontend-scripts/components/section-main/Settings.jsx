@@ -16,21 +16,8 @@ $.fn.checkbox = Checkbox;
 
 socket = socket();
 
-export default class Creategame extends React.Component {
-	constructor() {
-	}
-
-	componentDidUpdate() {
-		
-	}
-
+export default class Settings extends React.Component {
 	componentDidMount() {
-		let getSettingsFromComponent = () => {
-			return {
-
-			}
-		};
-
 		$(this.refs.popups).popup({
 			inline: true,
 			hoverable: true,

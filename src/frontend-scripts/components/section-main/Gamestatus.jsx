@@ -4,19 +4,14 @@ import React from 'react';
 
 export default class Gamestatus extends React.Component {
 	constructor() {
-		this.state = {
-			time: 0,
-			newTimer: true
-		}		
+		
 	}
 
 	componentDidMount() {
 	}
 
 	componentDidUpdate() {
-		if (this.props.gameInfo.status.countDown && !this.state.newTimer) {
-			this.countDown();
-		}
+
 	}
 
 	countDown() {
@@ -56,7 +51,7 @@ export default class Gamestatus extends React.Component {
 	render() {
 		return (
 			<section className="gamestatus">
-				{this.processStatus()}
+				{this.props.gameInfo.status}
 			</section>
 		);
 	}

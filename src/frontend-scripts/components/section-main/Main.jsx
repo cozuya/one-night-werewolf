@@ -17,7 +17,7 @@ export default class Main extends React.Component {
 	}
 	
 	render() {
-		let midsection = (() => {
+		let midsection = () => {
 			switch (this.props.midsection) {
 				case 'createGame':
 					return <Creategame
@@ -41,12 +41,12 @@ export default class Main extends React.Component {
 					return <Defaultmid
 								quickDefault={this.props.quickDefault} />
 			}
-		})();
+		};
 
 		return (
 			<section className={this.variableWidth()}>
 				<Menu userInfo={this.props.userInfo} />
-				{midsection}
+				{midsection()}
 			</section>
 		);
 	}
