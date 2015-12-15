@@ -127,6 +127,10 @@ class App extends React.Component {
 		socket.emit('newGameChat', chat, this.props.gameInfo.uid);
 	}
 
+	statusCountdown(startTime, message = 'Game starts in %%% seconds..') {
+		
+	}
+
 	render() {
 		return (
 			<section className="ui grid">
