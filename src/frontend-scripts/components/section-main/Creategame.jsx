@@ -37,7 +37,6 @@ export default class Creategame extends React.Component {
 		
 		if (!this.props.userInfo.gameSettings.disablePopups) {
 			$(this.refs.defaultrolespopup).add(this.refs.kobkpopup).popup(popupSettings);
-
 			$(this.refs.role_werewolf).add(this.refs.role_minion).add(this.refs.role_mason).popup(popupSettings);
 		}
 
@@ -60,12 +59,26 @@ export default class Creategame extends React.Component {
 			role = $target.parent().find('p').attr('data-role'),
 			$progress = $(this.refs.progressbar),
 			roles = this.state.roles,
+			werewolfTeamCount = roles.filter((el) => {
+				return el === 'werewolf' || el === 'minion';
+			}).length,
+			tannerTeamCount = roles.filter((el) => {
+				return el === 'tanner';
+			}).length,
 			currentRoleCount = roles.filter((el) => {
 				return el === role;
 			}).length;
 
+		if (role === 'werewolf' || role === 'minion') {
+			werewolfTeamCount++;
+		}
+
+		if (role === 'tanner') {
+			tannerTeamCount++;
+		}
+
 		if ($target.hasClass('plus')) {
-			if (roles.length <= 9) {
+			if (roles.length <= 9 && werewolfTeamCount <= 5 && tannerTeamCount <= 3) {
 				roles.push(role);
 				this.setState({roles});
 				$progress.progress('increment');
