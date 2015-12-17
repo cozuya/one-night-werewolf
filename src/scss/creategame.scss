@@ -1,4 +1,5 @@
 .creategame {
+	padding: 2%;
 
 	.remove.icon {
 		cursor: pointer;
@@ -7,9 +8,6 @@
 		left: 670px;
 		opacity: .3;
 	}
-
-
-	padding: 2%;
 
 	> .header {
 		text-align: center;
@@ -41,10 +39,10 @@
 			width: 50%;
 		}
 
-		.popup {
-			width: 270px;
-			max-width: inherit;
-		}
+		// .popup {
+		// 	width: 270px;
+		// 	max-width: inherit;
+		// }
 	}
 
 	.timeofgame {
@@ -136,12 +134,13 @@
 		}
 
 		.werewolf .popup {
-			width: 330px;
+			// width: 330px;
 
 			> span + span {
 				color: $werewolfteam;
 			}
 		}
+		
 
 		.minion .popup {
 			width: 335px;

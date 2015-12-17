@@ -28,9 +28,9 @@ export default class Creategame extends React.Component {
 		let popupSettings = {
 			inline: true,
 			hoverable: true,
-			position: 'bottom center',
+			// position: 'bottom center',
 			delay: {
-				show: 300,
+				show: 400,
 				hide: 800
 			}
 		};
@@ -137,7 +137,7 @@ export default class Creategame extends React.Component {
 
 	createNewGame() {
 		// doing this with jquery isn't really the 'react way' but it cuts down on loc and complexity as I would need 3 more functions just to retrieve state for the server in a component that is already pretty complex.
-		let newGame = {
+		this.props.onCreateGameSubmit({
 			kobk: $('div.killorbekilled input').is(':checked'),
 			time: $('div.timeofgame > div.dropdown span').text(),
 			name: $('div.gamename > div > input').val().length ? $('div.gamename > div > input').val() : 'New Game',
@@ -150,9 +150,7 @@ export default class Creategame extends React.Component {
 			inProgress: false,
 			seatedCount: 1,
 			uid: Math.random().toString(36).substring(6)
-		};
-		
-		this.props.onCreateGameSubmit(newGame);
+		});	
 	}
 
 	render() {
@@ -224,7 +222,7 @@ export default class Creategame extends React.Component {
 							<p ref="role_werewolf" data-role="werewolf">Werewolf</p>
 							<div className="ui small popup transition hidden">
 								Werewolves wake up first, and look for other werewolves.  If there are none, they may look at a center card.
-								  There is a minimum of 2 werewolves in every game.  Werewolves are on the <span>werewolf team.</span>
+								  There is a minimum of 2 werewolves in every game, and a maximum of 5 werewolf team roles in every game.  Werewolves are on the <span>werewolf team.</span>
 							</div>
 							<i className="minus icon" onClick={this.handleChangeRole}></i>
 							<span>{this.roleCount('werewolf')}</span>
@@ -233,7 +231,7 @@ export default class Creategame extends React.Component {
 						<div className="column minion">
 							<p ref="role_minion" data-role="minion">Minion</p>
 							<div className="ui small popup bottom right transition hidden">
-								Minions wake up, and get to see who the werewolves are - but the werewolves are not aware of who the minions are.  Minions win if the werewolves win, and in the event of no werewolves, win if a villager dies.  Minions are on the <span>werewolf team.</span>
+								Minions wake up, and get to see who the werewolves are - but the werewolves are not aware of who the minions are.  Minions win if the werewolves win, and in the event of no werewolves, win if a villager dies.  There is a maximum of 5 werewolf team roles in every game.  Minions are on the <span>werewolf team.</span>
 							</div>
 							<i className="minus icon" onClick={this.handleChangeRole}></i>
 							<span>{this.roleCount('minion')}</span>
@@ -251,7 +249,7 @@ export default class Creategame extends React.Component {
 						<div className="column">
 							<p data-role="seer">Seer</p>
 							<div className="ui small popup bottom right transition hidden">
-								Seers wake up, and have the choice of looking at another player's card, or two of the center cards.  Seers are on the <span>village team.</span>
+								Seers wake up, and may look at another player's card, or two of the center cards.  Seers are on the <span>village team.</span>
 							</div>
 							<i className="minus icon" onClick={this.handleChangeRole}></i>
 							<span>{this.roleCount('seer')}</span>
@@ -260,7 +258,7 @@ export default class Creategame extends React.Component {
 						<div className="column">
 							<p data-role="robber">Robber</p>
 							<div className="ui small popup bottom right transition hidden">
-								Robbers wake up, and look at another player's card.  They then swap that player's card with their own, and become the role and team they have stolen (and vice versa) - however they do not do an additional night action.  Robbers are on the <span>village team.</span>
+								Robbers wake up, and may look at another player's card.  If so, they swap that player's card with their own, and then become the team of the card they have stolen (and vice versa); however, they do not take an additional night action.  Robbers are on the <span>village team.</span>
 							</div>
 							<i className="minus icon" onClick={this.handleChangeRole}></i>
 							<span>{this.roleCount('robber')}</span>
@@ -271,7 +269,7 @@ export default class Creategame extends React.Component {
 						<div className="column">
 							<p data-role="troublemaker">Troublemaker</p>
 							<div className="ui small popup bottom right transition hidden">
-								Troublemakers wake up, and swap the cards of two players without looking at them.  Troublemakers are on the <span>village team.</span>
+								Troublemakers wake up, and may swap the cards of two players without looking at them.  Troublemakers are on the <span>village team.</span>
 							</div>
 							<i className="minus icon" onClick={this.handleChangeRole}></i>
 							<span>{this.roleCount('troublemaker')}</span>
@@ -280,7 +278,7 @@ export default class Creategame extends React.Component {
 						<div className="column">
 							<p data-role="insomniac">Insomniac</p>
 							<div className="ui small popup bottom right transition hidden">
-								Insomniacs wake up, and look at their card again to see if they are still the insomniac.  Insomniacs are on the <span>village team.</span>
+								Insomniacs wake up, and may look at their card to see if they are still the insomniac.  Insomniacs are on the <span>village team.</span>
 							</div>
 							<i className="minus icon" onClick={this.handleChangeRole}></i>
 							<span>{this.roleCount('insomniac')}</span>
