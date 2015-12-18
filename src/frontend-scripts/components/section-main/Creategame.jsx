@@ -36,6 +36,9 @@ export default class Creategame extends React.Component {
 		};
 		
 		if (!this.props.userInfo.gameSettings.disablePopups) {
+
+			// todo: clean this up
+			
 			$(this.refs.defaultrolespopup).add(this.refs.kobkpopup).popup(popupSettings);
 			$(this.refs.role_werewolf).add(this.refs.role_minion).add(this.refs.role_mason).add(this.refs.role_seer).add(this.refs.role_robber).add(this.refs.role_troublemaker).add(this.refs.role_insomniac).add(this.refs.role_hunter).add(this.refs.role_tanner).add(this.refs.role_villager).popup(popupSettings);
 		}
@@ -222,8 +225,7 @@ export default class Creategame extends React.Component {
 						<div className="column werewolf">
 							<p ref="role_werewolf" data-role="werewolf">Werewolf</p>
 							<div className="ui small popup transition hidden top left">
-								Werewolves wake up first, and look for other werewolves.  If there are none, they may look at a center card.
-								  There is a minimum of 2 werewolves in every game, and a maximum of 5 werewolf team roles in every game.  Werewolves are on the <span>werewolf team.</span>
+								Werewolves wake up first, and look for other werewolves.  If there are none, they may look at a center card.  There is a minimum of 2 werewolves in every game, and a maximum of 5 werewolf team roles in every game.  Werewolves are on the <span>werewolf team.</span>
 							</div>
 							<i className="minus icon" onClick={this.handleChangeRole}></i>
 							<span>{this.roleCount('werewolf')}</span>

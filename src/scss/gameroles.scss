@@ -10,7 +10,7 @@
 		padding: 4px;
 	}
 
-	> .roles {
+	> div > .roles {
 		width: 70px;
 		height: 95px;
 		background: $villageteam;
@@ -23,13 +23,24 @@
 		p:first-letter {
 			text-transform: capitalize;
 		}
+
+		+ div > span {
+			color: $villageteam;
+		}
 	}
 
-	> .werewolf, > .minion {
+	> div > .werewolf, > .minion {
+		+ div > span {
+			color: $werewolfteam;
+		}
+
 		background: $werewolfteam;
 	}
 
-	> .tanner {
+	> div > .tanner {
+		+ div > span {
+			color: $tannerteam;
+		}
 		background: $tannerteam;
 	}
 }

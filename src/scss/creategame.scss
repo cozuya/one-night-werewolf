@@ -141,6 +141,10 @@
 		}
 		
 		.tanner .popup {
+			span {
+				color: #000;
+			}
+			
 			> .tanner-inner {
 				color: $tannerteam;
 			}

@@ -42,6 +42,7 @@ export default class Game extends React.Component {
 				</div>
 				<div className="row gameroles-container">
 					<Gameroles
+						userInfo={this.props.userInfo}
 						roles={this.props.gameInfo.roles}
 					/>
 				</div>

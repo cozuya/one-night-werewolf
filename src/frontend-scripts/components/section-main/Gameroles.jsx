@@ -8,20 +8,18 @@ import { roleMap } from '../../../../iso/util.js';
 $.fn.popup = Popup;
 
 export default class Gameroles extends React.Component {
-	constructor() {
-		
-	}
-
 	componentDidMount() {
-		// $(`${this.refs.rolecontainer} > div:first-child`).popup({
-		// 	inline: true,
-		// 	hoverable: true,
-		// 	position: 'bottom center',
-		// 	delay: {
-		// 		show: 300,
-		// 		hide: 800
-		// 	}
-		// });
+		if (this.props.userInfo && !this.props.userInfo.gameSettings.disablePopups) {
+			$('div.roles').popup({
+				inline: true,
+				hoverable: true,
+				lastResort: true,
+				delay: {
+					show: 700,
+					hide: 800
+				}
+			});
+		}
 	}
 
 	setClasses(role) {
@@ -35,10 +33,11 @@ export default class Gameroles extends React.Component {
 	renderRoles(roles) {
 		return roles.map((role, i) => {
 			return (
-				<div className={this.setClasses(role)} key={i}>
-					<p>{this.formatRoles(role)}</p>
-					<div className="ui small popup transition hidden">
-						{roleMap[role].description}
+				<div key={i}>
+					<div className={this.setClasses(role)}>
+						<p>{this.formatRoles(role)}</p>
+					</div>
+					<div className="ui small popup transition hidden top left" dangerouslySetInnerHTML={{__html: roleMap[role].description}}>
 					</div>
 				</div>
 			);

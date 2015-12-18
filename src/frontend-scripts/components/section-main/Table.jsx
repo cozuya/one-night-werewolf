@@ -36,7 +36,7 @@ export default class Table extends React.Component {
 				this.props.updateSeatedUsers($seat.attr('data-seatnumber'));
 			}
 		} else {
-			// popup something that tells them they must be signed in to play
+			$('div.small.modal').modal('show');
 		}
 	}
 
@@ -60,6 +60,10 @@ export default class Table extends React.Component {
 				<div className="seat mid2"></div>
 				<div className="seat mid3"></div>
 				<i onClick={this.leaveGame.bind(this)} className={this.validateLeaveButton()}></i>
+				<div className="ui basic small modal">
+					<i className="close icon"></i>
+					<div className="ui header">You will need to sign in or sign up for an account to play.</div>
+				</div>
 			</section>
 		);
 	}
