@@ -17,7 +17,6 @@ export default class Creategame extends React.Component {
 	constructor() {
 		this.handleChangeRole = this.handleChangeRole.bind(this);
 		this.createNewGame = this.createNewGame.bind(this);
-		this.clearRoles = this.clearRoles.bind(this);
 
 		this.state = {
 			roles: ['werewolf', 'werewolf']
@@ -28,6 +27,7 @@ export default class Creategame extends React.Component {
 		let popupSettings = {
 			inline: true,
 			hoverable: true,
+			lastResort: true,
 			// position: 'bottom center',
 			delay: {
 				show: 400,
@@ -37,8 +37,9 @@ export default class Creategame extends React.Component {
 		
 		if (!this.props.userInfo.gameSettings.disablePopups) {
 			$(this.refs.defaultrolespopup).add(this.refs.kobkpopup).popup(popupSettings);
-			$(this.refs.role_werewolf).add(this.refs.role_minion).add(this.refs.role_mason).popup(popupSettings);
+			$(this.refs.role_werewolf).add(this.refs.role_minion).add(this.refs.role_mason).add(this.refs.role_seer).add(this.refs.role_robber).add(this.refs.role_troublemaker).add(this.refs.role_insomniac).add(this.refs.role_hunter).add(this.refs.role_tanner).add(this.refs.role_villager).popup(popupSettings);
 		}
+
 
 		$(this.refs.timedropdown).dropdown({
 			on: 'hover'
@@ -215,12 +216,12 @@ export default class Creategame extends React.Component {
 				</div>
 				<div className="ui grid five column pickroles">
 					<div className="row">
-						<div className={this.validateClearButton()} onClick={this.clearRoles}>Clear</div>
+						<div className={this.validateClearButton()} onClick={this.clearRoles.bind(this)}>Clear</div>
 					</div>
 					<div className="row">
 						<div className="column werewolf">
 							<p ref="role_werewolf" data-role="werewolf">Werewolf</p>
-							<div className="ui small popup transition hidden">
+							<div className="ui small popup transition hidden top left">
 								Werewolves wake up first, and look for other werewolves.  If there are none, they may look at a center card.
 								  There is a minimum of 2 werewolves in every game, and a maximum of 5 werewolf team roles in every game.  Werewolves are on the <span>werewolf team.</span>
 							</div>
@@ -247,7 +248,7 @@ export default class Creategame extends React.Component {
 							<i className="plus icon" onClick={this.handleChangeRole}></i>
 						</div>
 						<div className="column">
-							<p data-role="seer">Seer</p>
+							<p ref="role_seer" data-role="seer">Seer</p>
 							<div className="ui small popup bottom right transition hidden">
 								Seers wake up, and may look at another player's card, or two of the center cards.  Seers are on the <span>village team.</span>
 							</div>
@@ -256,7 +257,7 @@ export default class Creategame extends React.Component {
 							<i className="plus icon" onClick={this.handleChangeRole}></i>
 						</div>
 						<div className="column">
-							<p data-role="robber">Robber</p>
+							<p ref="role_robber" data-role="robber">Robber</p>
 							<div className="ui small popup bottom right transition hidden">
 								Robbers wake up, and may look at another player's card.  If so, they swap that player's card with their own, and then become the team of the card they have stolen (and vice versa); however, they do not take an additional night action.  Robbers are on the <span>village team.</span>
 							</div>
@@ -267,7 +268,7 @@ export default class Creategame extends React.Component {
 					</div>
 					<div className="row">
 						<div className="column">
-							<p data-role="troublemaker">Troublemaker</p>
+							<p ref="role_troublemaker" data-role="troublemaker">Troublemaker</p>
 							<div className="ui small popup bottom right transition hidden">
 								Troublemakers wake up, and may swap the cards of two players without looking at them.  Troublemakers are on the <span>village team.</span>
 							</div>
@@ -276,7 +277,7 @@ export default class Creategame extends React.Component {
 							<i className="plus icon" onClick={this.handleChangeRole}></i>
 						</div>
 						<div className="column">
-							<p data-role="insomniac">Insomniac</p>
+							<p ref="role_insomniac" data-role="insomniac">Insomniac</p>
 							<div className="ui small popup bottom right transition hidden">
 								Insomniacs wake up, and may look at their card to see if they are still the insomniac.  Insomniacs are on the <span>village team.</span>
 							</div>
@@ -285,7 +286,7 @@ export default class Creategame extends React.Component {
 							<i className="plus icon" onClick={this.handleChangeRole}></i>
 						</div>
 						<div className="column">
-							<p data-role="hunter">Hunter</p>
+							<p ref="role_hunter" data-role="hunter">Hunter</p>
 							<div className="ui small popup bottom right transition hidden">
 								Hunters do not wake up.  If a hunter is eliminated, the player he or she is selecting for elimination is also eliminated.  Hunters are on the <span>village team.</span>
 							</div>
@@ -294,16 +295,16 @@ export default class Creategame extends React.Component {
 							<i className="plus icon" onClick={this.handleChangeRole}></i>
 						</div>
 						<div className="column tanner">
-							<p data-role="tanner">Tanner</p>
+							<p ref="role_tanner" data-role="tanner">Tanner</p>
 							<div className="ui small popup bottom right transition hidden">
-								Tanners do not wake up.  Tanners are suicidal and only win if they are eliminated.  Tanners are on <span>their own team individually</span> and do not win if another tanner wins.
+								Tanners do not wake up.  Tanners are suicidal and only win if they are eliminated.  There is a maximum of 3 tanners per game.  Tanners are on <span className="tanner-inner">their own team individually</span> and do not win if another tanner wins.
 							</div>
 							<i className="minus icon" onClick={this.handleChangeRole}></i>
 							<span>{this.roleCount('tanner')}</span>
 							<i className="plus icon" onClick={this.handleChangeRole}></i>
 						</div>
 						<div className="column">
-							<p data-role="villager">Villager</p>
+							<p ref="role_villager" data-role="villager">Villager</p>
 							<div className="ui small popup bottom right transition hidden">
 								Villagers do not wake up.  Villagers are on the <span>village team.</span>
 							</div>

@@ -126,6 +126,7 @@
 		}
 
 		.popup {
+			width: 330px;
 			max-width: inherit;
 
 			> span + span {
@@ -133,28 +134,15 @@
 			}
 		}
 
-		.werewolf .popup {
-			// width: 330px;
-
+		.werewolf .popup, .minion .popup {
 			> span + span {
 				color: $werewolfteam;
 			}
 		}
 		
-
-		.minion .popup {
-			width: 335px;
-
-			> span + span {
-				color: $werewolfteam;
-			}
-		}
-
-		.mason .popup {
-			width: 335px;
-
-			> span + span {
-				// color: #DC6969;
+		.tanner .popup {
+			> .tanner-inner {
+				color: $tannerteam;
 			}
 		}
 	}
