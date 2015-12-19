@@ -21,9 +21,11 @@ class App extends React.Component {
 			}
 
 			dispatch(updateUser(name));
-
-			socket.emit('checkNewlyConnectedUserStatus');
 			socket.emit('getUserGameSettings');
+			setTimeout(() => {
+				// probably a better way to do this but oh well
+				socket.emit('checkNewlyConnectedUserStatus');
+			}, 500);
 		}
 
 		socket.on('gameSettings', (settings) => {
@@ -38,6 +40,8 @@ class App extends React.Component {
 		});
 
 		socket.on('gameUpdate', (game) => {
+			console.log(game);
+			
 			if (this.props.midsection !== 'game' && Object.keys(game).length) {
 				dispatch(updateGameInfo(game));
 				dispatch(updateMidsection('game'));

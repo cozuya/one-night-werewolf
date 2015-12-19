@@ -77,5 +77,16 @@ export function updateGameChat(socket, data, uid) {
 	});
 
 	game.chats.push(data);
+	console.log(game);
+	socket.broadcast.to(uid).emit('gameUpdate', game).emit('gameUpdate', game);
+}
+
+export function startGameCountdown(socket, uid) {
+	let game = games.find((el) => {
+		return el.uid === uid;
+	});
+
+	game.inProgress = true;
+	game.status = 'Game full!  Game starts in 5 seconds.';
 	socket.broadcast.to(uid).emit('gameUpdate', game).emit('gameUpdate', game);
 }

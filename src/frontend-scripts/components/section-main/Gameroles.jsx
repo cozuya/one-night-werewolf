@@ -9,7 +9,7 @@ $.fn.popup = Popup;
 
 export default class Gameroles extends React.Component {
 	componentDidMount() {
-		if (this.props.userInfo && !this.props.userInfo.gameSettings.disablePopups) {
+		if (this.props.userInfo.userName && !this.props.userInfo.gameSettings.disablePopups) {
 			$('div.roles').popup({
 				inline: true,
 				hoverable: true,

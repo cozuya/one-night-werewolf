@@ -6,13 +6,25 @@ import Popup from 'semantic-ui-popup';
 import Dropdown from 'semantic-ui-dropdown';
 import Progress from 'semantic-ui-progress';
 import Modal from 'semantic-ui-modal';
+import socket from 'socket.io-client';
 
+socket = socket();
 $.fn.dropdown = Dropdown;
 $.fn.popup = Popup;
 $.fn.progress = Progress;
 $.fn.modal = Modal;
 
 export default class Table extends React.Component {
+	componentDidUpdate() {
+		let gameInfo = this.props.gameInfo;
+
+		console.log(this.props.gameInfo);
+		// if (!gameInfo.inProgress && gameInfo.seatedCount === 7) {
+		if (!gameInfo.inProgress && gameInfo.seatedCount === 2) {
+			socket.emit('startGameCountdown', gameInfo.uid);
+		}
+	}
+
 	leaveGame() {
 		this.props.updateSeatedUsers(null);
 	}
@@ -36,7 +48,7 @@ export default class Table extends React.Component {
 				this.props.updateSeatedUsers($seat.attr('data-seatnumber'));
 			}
 		} else {
-			$('div.small.modal').modal('show');
+			$('section.table div.small.modal').modal('show');
 		}
 	}
 
