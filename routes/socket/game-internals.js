@@ -1,7 +1,10 @@
 'use strict';
 
-import games from './game.js';
+import { games } from './game.js';
+import _ from 'lodash';
 
-export function startGame() {
-	// console.log(games);
+export function startGame(game) {
+	let tempGame = _.clone(game);
+
+	delete tempGame.name;
 }

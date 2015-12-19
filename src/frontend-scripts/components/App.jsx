@@ -41,8 +41,6 @@ class App extends React.Component {
 		});
 
 		socket.on('gameUpdate', (game) => {
-			console.log(game);
-
 			if (this.props.midsection !== 'game' && Object.keys(game).length) {
 				dispatch(updateGameInfo(game));
 				dispatch(updateMidsection('game'));

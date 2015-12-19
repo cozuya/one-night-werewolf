@@ -3,6 +3,7 @@
 // let Chatroom = require('../models/chatroom');
 
 import { startGame } from './game-internals.js';
+import _ from 'lodash';
 
 let deleteGame = (game) => {
 	let index = games.indexOf(game);
@@ -87,13 +88,13 @@ export function startGameCountdown(socket, uid) {
 	let game = games.find((el) => {
 		return el.uid === uid;
 	}),
-	seconds = 5,
+	seconds = 2,
 	countDown = setInterval(() => {
 		if (seconds === 0) {
 			clearInterval(countDown);
-			startGame();
+			startGame(game);
 		} else {
-			game.status = `Game full!  Game starts in ${seconds} second${seconds === 1 ? '' : 's'}.`;
+			game.status = `Seats full!  Game starts in ${seconds} second${seconds === 1 ? '' : 's'}.`;
 		}
 
 		seconds--;
