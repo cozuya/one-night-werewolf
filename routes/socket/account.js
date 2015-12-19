@@ -2,6 +2,7 @@
 
 import mongoose from 'mongoose';
 import GameSettings from '../../models/gamesettings';
+import { secureGame } from './game.js';
 
 export function checkUserStatus(socket, data, games) {
 	let gameIndex;
@@ -17,7 +18,7 @@ export function checkUserStatus(socket, data, games) {
 	});
 
 	if (gameIndex >= 0) {
-		socket.emit('gameUpdate', games[gameIndex]);
+		socket.emit('gameUpdate', secureGame(games[gameIndex]));
 	}
 }
 

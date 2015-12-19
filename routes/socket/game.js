@@ -13,6 +13,13 @@ let deleteGame = (game) => {
 
 export let games = [];
 
+export function secureGame(game) {
+	let _game = _.clone(game);
+
+	delete _game.internals;
+	return _game;
+};
+
 export function sendGameList() {
 	let gameList = games.map((game) => {
 		return {
@@ -30,6 +37,12 @@ export function sendGameList() {
 }
 
 export function createGame(socket, game) {
+	game.internals = {
+		centerRoles: []
+	};
+	_.range(1, 8).forEach((num, i) => {
+		game.internals[`seat${num}`] = {};
+	});
 	games.push(game);
 	sendGameList();
 	socket.join(game.uid);
@@ -41,7 +54,7 @@ export function sendGameInfo(socket, uid) {
 	});
 
 	socket.join(uid);
-	socket.emit('gameUpdate', game);
+	socket.emit('gameUpdate', secureGame(game));
 }
 
 export function updateSeatedUsers(socket, data) {
@@ -52,7 +65,7 @@ export function updateSeatedUsers(socket, data) {
 	if (data.seatNumber !== null) {
 		game.seated[`seat${data.seatNumber}`] = data.userInfo;
 		game.seatedCount++;
-		io.sockets.in(data.uid).emit('gameUpdate', game);
+		io.sockets.in(data.uid).emit('gameUpdate', secureGame(game));
 	} else {
 		for (let key in game.seated) {
 			if (game.seated.hasOwnProperty(key)) {
@@ -68,7 +81,7 @@ export function updateSeatedUsers(socket, data) {
 		}
 
 		socket.leave(game.uid);
-		io.sockets.in(data.uid).emit('gameUpdate', game);
+		io.sockets.in(data.uid).emit('gameUpdate', secureGame(game));
 		socket.emit('gameUpdate', {});
 	}
 
@@ -81,7 +94,7 @@ export function updateGameChat(socket, data, uid) {
 	});
 
 	game.chats.push(data);
-	io.sockets.in(uid).emit('gameUpdate', game);
+	io.sockets.in(uid).emit('gameUpdate', secureGame(game));
 }
 
 export function startGameCountdown(socket, uid) {
@@ -94,11 +107,11 @@ export function startGameCountdown(socket, uid) {
 			clearInterval(countDown);
 			startGame(game);
 		} else {
-			game.status = `Seats full!  Game starts in ${seconds} second${seconds === 1 ? '' : 's'}.`;
+			game.status = `Shuffling.. Game starts in ${seconds} second${seconds === 1 ? '' : 's'}.`;
 		}
 
 		seconds--;
-		io.sockets.in(uid).emit('gameUpdate', game);
+		io.sockets.in(uid).emit('gameUpdate', secureGame(game));
 	}, 1000);
 
 	game.inProgress = true;
