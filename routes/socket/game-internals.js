@@ -3,7 +3,7 @@
 import { games, secureGame } from './game.js';
 import _ from 'lodash';
 
-export function startGame(game) {  // this fires twice which really can't happen so need to be fixed first
+export function startGame(game) {
 	let roles = game.roles,
 		allWerewolvesNotInCenter = false,
 		assignRoles = () => {
@@ -21,15 +21,16 @@ export function startGame(game) {  // this fires twice which really can't happen
 				_roles.splice(roleIndex, 1);
 			}
 
-			_roles.forEach((role) => {  // spread op here?
-				game.internals.centerRoles.push(role);
-			});
+			game.internals.centerRoles = [..._roles];
 		};
 
 	assignRoles();
 
 	if (game.kobk && !allWerewolvesNotInCenter) {
-		// need some sort of do while loop here
+		console.log('hi');
+		while (!allWerewolvesNotInCenter) {
+			console.log('there');
+			assignRoles();
+		}
 	}
-	console.log(game.internals);
 }

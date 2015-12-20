@@ -12,7 +12,7 @@ export default class Defaultmid extends React.Component {
 				<br />
 				<button style={{padding: '20px', width: '150px'}} data-name="paul" className="loginquick">login paul</button>
 				<br />
-				<button style={{padding: '20px', width: '150px'}} data-name="heichachi" className="loginquick">login heihachi</button>
+				<button style={{padding: '20px', width: '150px'}} data-name="heihachi" className="loginquick">login heihachi</button>
 				<br />
 				<button style={{padding: '20px', width: '150px'}} data-name="nina" className="loginquick">login nina</button>
 				<br />

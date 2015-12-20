@@ -37,9 +37,7 @@ export function sendGameList() {
 }
 
 export function createGame(socket, game) {
-	game.internals = {
-		centerRoles: []
-	};
+	game.internals = {};
 	_.range(1, 8).forEach((num, i) => {
 		game.internals[`seat${num}`] = {};
 	});
