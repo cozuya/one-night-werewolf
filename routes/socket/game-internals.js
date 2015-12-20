@@ -4,10 +4,9 @@ import { games, secureGame } from './game.js';
 import _ from 'lodash';
 
 export function startGame(game) {
-	let roles = game.roles,
-		allWerewolvesNotInCenter = false,
+	let allWerewolvesNotInCenter = false,
 		assignRoles = () => {
-			let _roles = _.clone(roles);
+			let _roles = _.clone(game.roles);
 
 			for (let seat in game.seated) {
 				let roleIndex = Math.floor((Math.random() * _roles.length)),
@@ -27,10 +26,40 @@ export function startGame(game) {
 	assignRoles();
 
 	if (game.kobk && !allWerewolvesNotInCenter) {
-		console.log('hi');
 		while (!allWerewolvesNotInCenter) {
-			console.log('there');
 			assignRoles();
 		}
 	}
+
+	let getRoomSockets = () => {
+		let sockets = Object.keys(io.sockets.adapter.rooms[game.uid]);
+		let _sockets = [];
+
+		for (let id of sockets) {
+			_sockets.push(io.sockets.connected[id]);
+		}
+
+		return _sockets;
+	};
+	let roomSocketIds = getRoomSockets();
+	console.log(roomSocketIds[0].handshake.session.passport.user);
+	console.log(io.sockets.connected);
+	// console.log(io.sockets.connected[roomSocketIds[0]]);
+	// console.log(io.sockets.connected[roomSocketIds[0]].handshake.session.passport.user);
+	// console.log(io.sockets.connected[roomSocketIds[0]].nickname);
+
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
