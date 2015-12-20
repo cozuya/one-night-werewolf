@@ -23,6 +23,10 @@ export default class Table extends React.Component {
 		}
 	}
 
+	componentDidMount() {
+		console.log(this.props.gameInfo);
+	}
+
 	shouldComponentUpdate() {
 		let gameInfo = this.props.gameInfo;
 
@@ -41,10 +45,10 @@ export default class Table extends React.Component {
 		return this.props.gameInfo.seatedCount === 7 ? 'app-hidden' : 'remove icon';
 	}
 
-	clickedSeat(el) {
+	clickedSeat(e) {
 		let seated = this.props.gameInfo.seated,
 			userInfo = this.props.userInfo,
-			$seat = $(el.currentTarget),
+			$seat = $(e.currentTarget),
 			isUserAlreadySeated = Object.keys(seated).find((seat) => {
 				return seated[seat].userName === userInfo.userName;
 			});
@@ -54,7 +58,7 @@ export default class Table extends React.Component {
 				this.props.updateSeatedUsers($seat.attr('data-seatnumber'));
 			}
 		} else {
-			$('section.table div.small.modal').modal('show');
+			$('section.table div.small.modal').modal('show');  // should hook into e.currentTarget for modulatory (sp)
 		}
 	}
 

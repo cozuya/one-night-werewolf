@@ -21,7 +21,17 @@ export function startGame(game) {
 			}
 
 			game.internals.centerRoles = [..._roles];
-		};
+		},
+		roomSockets = Object.keys(io.sockets.adapter.rooms[game.uid]).map((sockedId) => {
+			return io.sockets.connected[sockedId];
+		}),
+		playerSockets = roomSockets.filter((socket) => {
+			let players = Object.keys(game.seated).map((seat) => {
+				return game.seated[seat].userName;
+			});
+
+			return players.indexOf(socket.handshake.session.passport.user) >= 0;
+		});
 
 	assignRoles();
 
@@ -31,35 +41,22 @@ export function startGame(game) {
 		}
 	}
 
-	let getRoomSockets = () => {
-		let sockets = Object.keys(io.sockets.adapter.rooms[game.uid]);
-		let _sockets = [];
+	for (let seat in game.seated) {
+		let userName = game.seated[seat].userName,
+			socket = playerSockets.find((player) => {
+				return player.handshake.session.passport.user === userName;
+			});
 
-		for (let id of sockets) {
-			_sockets.push(io.sockets.connected[id]);
-		}
+		game.internals[seat].userName = userName;
+		game.internals[seat].socket = socket;
 
-		return _sockets;
-	};
-	let roomSocketIds = getRoomSockets();
-	console.log(roomSocketIds[0].handshake.session.passport.user);
-	console.log(io.sockets.connected);
-	// console.log(io.sockets.connected[roomSocketIds[0]]);
-	// console.log(io.sockets.connected[roomSocketIds[0]].handshake.session.passport.user);
-	// console.log(io.sockets.connected[roomSocketIds[0]].nickname);
+		sendNewGameChat(game, userName, `The game begins and you receive the ${game.internals[seat].trueRole.toUpperCase()} role.`);
+	}
 
+	sendNewGameChat(game, undefined, 'The game begins.');
+	// beginNightPhase();  todo
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
+let sendNewGameChat = (game, userName, message) => {
+	
+}
