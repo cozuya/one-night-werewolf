@@ -49,6 +49,7 @@ export function startGame(game) {
 
 		game.internals[seat].userName = userName;
 		game.internals[seat].socket = socket;
+		game.internals[seat].gameChats = [];
 
 		sendNewGameChat(game, userName, `The game begins and you receive the ${game.internals[seat].trueRole.toUpperCase()} role.`);
 	}
@@ -58,5 +59,22 @@ export function startGame(game) {
 }
 
 let sendNewGameChat = (game, userName, message) => {
-	
+	let chat = {
+		userName,
+		timestamp: new Date(),
+		chat: message,
+		gameChat: true
+	},
+	cloneGame = _.clone(game),
+	user = game.internals.find((seat) => {
+		return seat.userName === userName;
+	}),
+	currentChats = cloneGame.chats,
+	socket = user.socket;
+
+	console.log(user);
+	user.gameChats.push(chat);
+
+	// todo: not totally straight best way to go forward on this is yet.
+
 }

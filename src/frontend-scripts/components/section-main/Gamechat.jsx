@@ -41,7 +41,8 @@ export default class Gamechat extends React.Component {
 			this.props.newChat({
 				userName: this.props.userInfo.userName,
 				timestamp: new Date(),
-				chat: input.value
+				chat: input.value,
+				gameChat: false
 			});
 
 			input.value = '';
@@ -90,10 +91,10 @@ export default class Gamechat extends React.Component {
 		let gameInfo = this.props.gameInfo;
 
 		return gameInfo.chats.map((chat, i) => {
-			if (chat.userName === 'GAME' && (this.state.chatFilter === 'Game' || this.state.chatFilter === 'All')) {
+			if (chat.gameChat && (this.state.chatFilter === 'Game' || this.state.chatFilter === 'All')) {
 				return (
 					<div className="item" key={i}>
-						<span className="chat-user--game">[{chat.userName}]: </span>
+						<span className="chat-user--game">[GAME]: </span>
 						<span className="game-chat">{chat.chat}</span>
 					</div>
 				);
