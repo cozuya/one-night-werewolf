@@ -60,21 +60,32 @@ export function startGame(game) {
 
 let sendNewGameChat = (game, userName, message) => {
 	let chat = {
-		userName,
+		userName: userName, // undefined isn't a good key..
 		timestamp: new Date(),
 		chat: message,
 		gameChat: true
 	},
 	cloneGame = _.clone(game),
-	user = game.internals.find((seat) => {
-		return seat.userName === userName;
+	userSeat = Object.keys(game.internals).find((seat) => {
+		return game.internals[seat].userName === userName;
 	}),
 	currentChats = cloneGame.chats,
-	socket = user.socket;
+	user = game.internals[userSeat],
+	socket = user.socket,
+	tempChats;
 
 	console.log(user);
-	user.gameChats.push(chat);
+	if (userName) {
+		user.gameChats.push(chat);
+	}
 
-	// todo: not totally straight best way to go forward on this is yet.
+	// todo: needs to have a 'notseatedgamechat' array somewhere in this case
+
+	tempChats = user.gameChats.concat(cloneGame.chats);
+	tempChats.sort((chat1, chat2) => {
+		return chat1.timestamp - chat2.timestamp;
+	});
+
+	console.log(tempChats);
 
 }
