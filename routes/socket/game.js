@@ -37,7 +37,9 @@ export function sendGameList() {
 }
 
 export function createGame(socket, game) {
-	game.internals = {};
+	game.internals = {
+		unSeatedGameChats: []
+	};
 	_.range(1, 8).forEach((num, i) => {
 		game.internals[`seat${num}`] = {};
 	});
@@ -92,8 +94,27 @@ export function updateGameChat(socket, data, uid) {
 	});
 
 	game.chats.push(data);
-	io.sockets.in(uid).emit('gameUpdate', secureGame(game));
+
+	if (data.isSeated && data.inProgress) {
+		updateGameChatForSeatedPlayingUser(game, socket, data, uid);
+	} else {
+		io.sockets.in(uid).emit('gameUpdate', secureGame(game));
+	}
+
 }
+
+let updateGameChatForSeatedPlayingUser = (game, socket, data, uid) => {
+	let user = game.internals[data.seat],
+		chats = game.chats;
+
+	chats.concat(game.internals[user]);
+	
+	chats.sort((chat1, chat2) => {
+		return chat1.timestamp - chat2.timestamp;
+	});
+
+	socket.in(uid).emit('gameUpdate', secureGame(game));
+};
 
 export function startGameCountdown(socket, uid) {
 	let game = games.find((el) => {

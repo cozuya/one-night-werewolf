@@ -69,23 +69,23 @@ let sendNewGameChat = (game, userName, message) => {
 	userSeat = Object.keys(game.internals).find((seat) => {
 		return game.internals[seat].userName === userName;
 	}),
-	currentChats = cloneGame.chats,
 	user = game.internals[userSeat],
 	socket = user.socket,
+	gameChats = userName ? user.gameChats : game.internals.unSeatedGameChats,
 	tempChats;
 
-	console.log(user);
-	if (userName) {
-		user.gameChats.push(chat);
-	}
-
-	// todo: needs to have a 'notseatedgamechat' array somewhere in this case
-
-	tempChats = user.gameChats.concat(cloneGame.chats);
+	gameChats.push(chat);
+	tempChats = gameChats.concat(cloneGame.chats);
 	tempChats.sort((chat1, chat2) => {
 		return chat1.timestamp - chat2.timestamp;
 	});
 
-	console.log(tempChats);
+	cloneGame.chats = tempChats;
 
+	if (userName) {
+		socket.in(game.uid).emit('gameUpdate', secureGame(cloneGame));
+	} else {
+		// need to loop through all unseated sockets here as opposed to blasting
+		io.sockets.in(game.uid).emit('gameUpdate', secureGame(cloneGame));
+	}
 }

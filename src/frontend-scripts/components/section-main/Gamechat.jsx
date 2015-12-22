@@ -33,7 +33,10 @@ export default class Gamechat extends React.Component {
 	handleSubmit(e) {
 		let input = ReactDOM.findDOMNode(this.refs.chatinput),
 			$button = $(e.currentTarget).find('button'),
-			$clearIcon = $button.parent().next();
+			$clearIcon = $button.parent().next(),
+			seat = Object.keys(this.props.gameInfo.seated).find((seat) => {
+				return this.props.gameInfo.seated[seat] === this.props.userInfo.userName;
+			});
 
 		e.preventDefault();
 
@@ -42,7 +45,9 @@ export default class Gamechat extends React.Component {
 				userName: this.props.userInfo.userName,
 				timestamp: new Date(),
 				chat: input.value,
-				gameChat: false
+				gameChat: false,
+				seat,
+				inProgress: this.props.gameInfo.inProgress
 			});
 
 			input.value = '';
@@ -92,13 +97,17 @@ export default class Gamechat extends React.Component {
 
 		return gameInfo.chats.map((chat, i) => {
 			if (chat.gameChat && (this.state.chatFilter === 'Game' || this.state.chatFilter === 'All')) {
+				console.log('Hello World!');
+				console.log(chat.gameChat);
+				console.log(this.state.chatFilter);
+				console.log(chat);
 				return (
 					<div className="item" key={i}>
 						<span className="chat-user--game">[GAME]: </span>
 						<span className="game-chat">{chat.chat}</span>
 					</div>
 				);
-			} else if (chat.userName !== 'GAME' && this.state.chatFilter !== 'Game') {
+			} else if (!chat.gameChat && this.state.chatFilter !== 'Game') {
 				let isSeated = !!Object.keys(gameInfo.seated).find((seat) => {
 					return gameInfo.seated[seat].userName === chat.userName;
 				});
