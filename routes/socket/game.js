@@ -38,11 +38,10 @@ export function sendGameList() {
 
 export function createGame(socket, game) {
 	game.internals = {
-		unSeatedGameChats: []
+		unSeatedGameChats: [],
+		seatedPlayers: []
 	};
-	_.range(1, 8).forEach((num, i) => {
-		game.internals[`seat${num}`] = {};
-	});
+
 	games.push(game);
 	sendGameList();
 	socket.join(game.uid);
@@ -104,10 +103,10 @@ export function updateGameChat(socket, data, uid) {
 }
 
 let updateGameChatForSeatedPlayingUser = (game, socket, data, uid) => {
-	let user = game.internals[data.seat],
+	let user = game.internals[data.seat], // changing
 		chats = game.chats;
 
-	chats.concat(game.internals[user]);
+	chats.concat(game.internals[game.internals.indexOf]); // changing
 	
 	chats.sort((chat1, chat2) => {
 		return chat1.timestamp - chat2.timestamp;

@@ -97,7 +97,6 @@ export default class Gamechat extends React.Component {
 
 		return gameInfo.chats.map((chat, i) => {
 			if (chat.gameChat && (this.state.chatFilter === 'Game' || this.state.chatFilter === 'All')) {
-				console.log('Hello World!');
 				console.log(chat.gameChat);
 				console.log(this.state.chatFilter);
 				console.log(chat);
