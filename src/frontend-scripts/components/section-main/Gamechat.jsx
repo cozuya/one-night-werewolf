@@ -62,8 +62,21 @@ export default class Gamechat extends React.Component {
 	}
 
 	componentDidUpdate() {
-		this.scrollChats();		
+		this.scrollChats();
 	}
+
+	// shouldComponentUpdate() {
+	// 	let gameInfo = this.props.gameInfo;
+
+	// 	console.log(this.props.gameInfo.chats);
+
+	// 	if (gameInfo.inProgress && !gameInfo.chats.length) {
+	// 		console.log('Hello World!');
+	// 		return false;
+	// 	}
+
+	// 	return true;
+	// }
 
 	scrollChats() {
 		let chatsContainer = document.querySelector('section.segment.chats'),
@@ -95,11 +108,10 @@ export default class Gamechat extends React.Component {
 	processChats() {
 		let gameInfo = this.props.gameInfo;
 
+		// console.log(this.props.gameInfo.chats);
+
 		return gameInfo.chats.map((chat, i) => {
 			if (chat.gameChat && (this.state.chatFilter === 'Game' || this.state.chatFilter === 'All')) {
-				console.log(chat.gameChat);
-				console.log(this.state.chatFilter);
-				console.log(chat);
 				return (
 					<div className="item" key={i}>
 						<span className="chat-user--game">[GAME]: </span>

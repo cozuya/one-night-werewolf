@@ -20,7 +20,8 @@ export function secureGame(game) {
 	return _game;
 };
 
-export function sendGameList() {
+
+export function sendGameList(socket) {
 	let gameList = games.map((game) => {
 		return {
 			kobk: game.kobk,
@@ -33,7 +34,7 @@ export function sendGameList() {
 		};
 	});
 
-	io.emit('gameList', gameList);
+	socket.emit('gameList', gameList);
 }
 
 export function createGame(socket, game) {
@@ -43,7 +44,7 @@ export function createGame(socket, game) {
 	};
 
 	games.push(game);
-	sendGameList();
+	sendGameList(socket);
 	socket.join(game.uid);
 };
 
@@ -84,7 +85,7 @@ export function updateSeatedUsers(socket, data) {
 		socket.emit('gameUpdate', {});
 	}
 
-	sendGameList();
+	sendGameList(socket);
 }
 
 export function updateGameChat(socket, data, uid) {

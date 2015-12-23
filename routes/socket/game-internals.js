@@ -60,22 +60,8 @@ export function startGame(game) {
 
 		player.socket = socket;
 		player.gameChats = [];
-		// console.log(`username: ${userName}`);
-		// // console.log(i);
-		// console.log(socket.id);
-
-		// console.log(game.internals.seatedPlayers[i].gameChats);
-		console.log(game.internals.seatedPlayers[i].socket.id);
-
-		// console.log(game);
-		// console.log(game.internals);
-		
-
-
 		sendNewGameChat(game, player, `The game begins and you receive the ${player.trueRole.toUpperCase()} role.`);
 	});
-
-	// console.log(game.internals.seatedPlayers);
 
 	sendNewGameChat(game, undefined, 'The game begins.', observerSockets);
 	// beginNightPhase();  todo
@@ -87,11 +73,12 @@ let sendNewGameChat = (game, player, message, observerSockets) => {
 			userName,
 			timestamp: new Date(),
 			chat: message,
-			gameChat: true
+			gameChat: true,
+			inProgress: true
 		},
-	cloneGame = _.clone(game),
-	gameChats = userName ? player.gameChats : game.internals.unSeatedGameChats,
-	tempChats;
+		cloneGame = _.clone(game),
+		gameChats = userName ? player.gameChats : game.internals.unSeatedGameChats,
+		tempChats;
 
 	gameChats.push(chat);
 	tempChats = gameChats.concat(cloneGame.chats);
@@ -100,14 +87,8 @@ let sendNewGameChat = (game, player, message, observerSockets) => {
 	});
 	cloneGame.chats = tempChats;
 
-	// console.log(game.internals.seatedPlayers[0].gameChats);
-	// console.log(game.internals.seatedPlayers[0].socket.id);
-	// console.log(game.internals.seatedPlayers[1].gameChats);
-	// console.log(game.internals.seatedPlayers[1].socket.id);
-	// console.log(player);
-	// console.log(message);
 	if (player) {
-		player.socket.in(game.uid).emit('gameUpdate', secureGame(cloneGame));
+		player.socket.emit('gameUpdate', secureGame(cloneGame)); // seems ok/doesn't fire an update
 	} else {
 		// need to loop through all unseated sockets here as opposed to blasting
 		// observerSockets.in(game.uid).emit('gameUpdate', secureGame(cloneGame));
