@@ -49,17 +49,28 @@ export function startGame(game) {
 		}
 	}
 
+	// console.log(game.internals.seatedPlayers);
+
 	game.internals.seatedPlayers.forEach((player, i) => {
 		let userName = player.userName,
 			socket = _.find(playerSockets, (playerSocket) => {
-				console.log(`socketuser: ${playerSocket.handshake.session.passport.user}`);
+				// console.log(`socketuser: ${playerSocket.handshake.session.passport.user}`);
 				return playerSocket.handshake.session.passport.user === userName;
 			});
 
 		player.socket = socket;
 		player.gameChats = [];
-		console.log(`username: ${userName}`);
-		console.log(i);
+		// console.log(`username: ${userName}`);
+		// // console.log(i);
+		// console.log(socket.id);
+
+		// console.log(game.internals.seatedPlayers[i].gameChats);
+		console.log(game.internals.seatedPlayers[i].socket.id);
+
+		// console.log(game);
+		// console.log(game.internals);
+		
+
 
 		sendNewGameChat(game, player, `The game begins and you receive the ${player.trueRole.toUpperCase()} role.`);
 	});
@@ -89,6 +100,12 @@ let sendNewGameChat = (game, player, message, observerSockets) => {
 	});
 	cloneGame.chats = tempChats;
 
+	// console.log(game.internals.seatedPlayers[0].gameChats);
+	// console.log(game.internals.seatedPlayers[0].socket.id);
+	// console.log(game.internals.seatedPlayers[1].gameChats);
+	// console.log(game.internals.seatedPlayers[1].socket.id);
+	// console.log(player);
+	// console.log(message);
 	if (player) {
 		player.socket.in(game.uid).emit('gameUpdate', secureGame(cloneGame));
 	} else {

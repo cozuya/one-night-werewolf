@@ -100,6 +100,8 @@ export function updateGameChat(socket, data, uid) {
 		io.sockets.in(uid).emit('gameUpdate', secureGame(game));
 	}
 
+	console.log(socket.handshake.session.passport.user);
+	console.log(socket.id);
 }
 
 let updateGameChatForSeatedPlayingUser = (game, socket, data, uid) => {
@@ -115,7 +117,7 @@ let updateGameChatForSeatedPlayingUser = (game, socket, data, uid) => {
 	socket.in(uid).emit('gameUpdate', secureGame(game));
 };
 
-export function startGameCountdown(socket, uid) {
+export function startGameCountdown(uid) {
 	let game = games.find((el) => {
 		return el.uid === uid;
 	}),

@@ -36,7 +36,7 @@ export default () => {
 		});
 
 		socket.on('startGameCountdown', (uid) => {
-			startGameCountdown(socket, uid);
+			startGameCountdown(uid);
 		});
 	});
 }
