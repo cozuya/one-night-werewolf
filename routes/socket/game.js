@@ -54,6 +54,7 @@ export function sendGameInfo(socket, uid) {
 	});
 
 	socket.join(uid);
+	console.log('sgi');
 	socket.emit('gameUpdate', secureGame(game));
 }
 
@@ -65,6 +66,7 @@ export function updateSeatedUsers(socket, data) {
 	if (data.seatNumber !== null) {
 		game.seated[`seat${data.seatNumber}`] = data.userInfo;
 		game.seatedCount++;
+		console.log('usu');
 		io.sockets.in(data.uid).emit('gameUpdate', secureGame(game));
 	} else {
 		for (let key in game.seated) {
@@ -81,10 +83,11 @@ export function updateSeatedUsers(socket, data) {
 		}
 
 		socket.leave(game.uid);
+		console.log('usu2');
 		io.sockets.in(data.uid).emit('gameUpdate', secureGame(game));
 		socket.emit('gameUpdate', {});
 	}
-
+	console.log('usu3');
 	sendGameList(socket);
 }
 
@@ -92,6 +95,7 @@ export function updateGameChat(socket, data, uid) {
 	let game = games.find((el) => {
 		return el.uid === uid;
 	});
+	console.log('ugc');
 
 	game.chats.push(data);
 
@@ -100,12 +104,10 @@ export function updateGameChat(socket, data, uid) {
 	} else {
 		io.sockets.in(uid).emit('gameUpdate', secureGame(game));
 	}
-
-	console.log(socket.handshake.session.passport.user);
-	console.log(socket.id);
 }
 
 let updateGameChatForSeatedPlayingUser = (game, socket, data, uid) => {
+	console.log('ugcfspu');
 	let user = game.internals[data.seat], // changing
 		chats = game.chats;
 
@@ -129,10 +131,9 @@ export function startGameCountdown(uid) {
 			startGame(game);
 		} else {
 			game.status = `Shuffling.. Game starts in ${seconds} second${seconds === 1 ? '' : 's'}.`;
+			io.sockets.in(uid).emit('gameUpdate', secureGame(game));
 		}
-
 		seconds--;
-		io.sockets.in(uid).emit('gameUpdate', secureGame(game));
 	}, 1000);
 
 	game.inProgress = true;
