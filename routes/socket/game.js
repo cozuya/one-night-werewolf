@@ -54,7 +54,6 @@ export function sendGameInfo(socket, uid) {
 	});
 
 	socket.join(uid);
-	console.log('sgi');
 	socket.emit('gameUpdate', secureGame(game));
 }
 
@@ -66,7 +65,6 @@ export function updateSeatedUsers(socket, data) {
 	if (data.seatNumber !== null) {
 		game.seated[`seat${data.seatNumber}`] = data.userInfo;
 		game.seatedCount++;
-		console.log('usu');
 		io.sockets.in(data.uid).emit('gameUpdate', secureGame(game));
 	} else {
 		for (let key in game.seated) {
@@ -83,22 +81,23 @@ export function updateSeatedUsers(socket, data) {
 		}
 
 		socket.leave(game.uid);
-		console.log('usu2');
 		io.sockets.in(data.uid).emit('gameUpdate', secureGame(game));
 		socket.emit('gameUpdate', {});
 	}
-	console.log('usu3');
 	sendGameList(socket);
 }
 
 export function updateGameChat(socket, data, uid) {
 	let game = games.find((el) => {
 		return el.uid === uid;
-	});
-	console.log('ugc');
+	}),
+		cloneGame = _.clone(game),
+		userName = socket.handshake.session ? socket.handshake.session.passport.user : '',
+		player, tempChats;
 
 	game.chats.push(data);
 
+	// todo 12/24
 	if (data.isSeated && data.inProgress) {
 		updateGameChatForSeatedPlayingUser(game, socket, data, uid);
 	} else {
@@ -106,8 +105,8 @@ export function updateGameChat(socket, data, uid) {
 	}
 }
 
+// probably delete
 let updateGameChatForSeatedPlayingUser = (game, socket, data, uid) => {
-	console.log('ugcfspu');
 	let user = game.internals[data.seat], // changing
 		chats = game.chats;
 

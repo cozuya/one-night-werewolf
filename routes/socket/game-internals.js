@@ -88,7 +88,7 @@ let sendNewGameChat = (game, player, message, observerSockets) => {
 	cloneGame.chats = tempChats;
 
 	if (player) {
-		player.socket.emit('gameUpdate', secureGame(cloneGame)); // seems ok/doesn't fire an update
+		player.socket.emit('gameUpdate', secureGame(cloneGame));
 	} else {
 		// need to loop through all unseated sockets here as opposed to blasting
 		// observerSockets.in(game.uid).emit('gameUpdate', secureGame(cloneGame));
