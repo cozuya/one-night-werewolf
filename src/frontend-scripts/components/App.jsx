@@ -31,6 +31,7 @@ class App extends React.Component {
 		socket.on('gameSettings', (settings) => {
 			let user = this.props.userInfo;
 
+			console.log(settings);
 			// todo: this needs to also update the gameInfo object on the front and possibly back end.
 			user.gameSettings = settings.gameSettings;
 			dispatch(updateUser(user));
@@ -41,7 +42,6 @@ class App extends React.Component {
 		});
 
 		socket.on('gameUpdate', (game) => {
-			console.log(game.chats);
 			if (this.props.midsection !== 'game' && Object.keys(game).length) {
 				dispatch(updateGameInfo(game));
 				dispatch(updateMidsection('game'));
@@ -87,8 +87,8 @@ class App extends React.Component {
 		socket.emit('createGame', game);
 	}
 
+	// ***** dev helpers only *****
 	makeQuickDefault() {
-		// dev only
 		let { dispatch } = this.props,
 			userInfo = this.props.userInfo,
 			game = {
@@ -105,7 +105,7 @@ class App extends React.Component {
 				chats: [],
 				seatedCount: 1,
 				time: '3:00',
-				uid: Math.random().toString(36).substring(6)
+				uid: 'DEVGAME'
 			};
 
 
@@ -114,6 +114,25 @@ class App extends React.Component {
 		dispatch(updateUser(userInfo));
 		socket.emit('createGame', game);
 	}
+
+	componentDidUpdate() {
+		let { dispatch } = this.props;
+
+		if (this.userInfo) {
+			console.log('hi');
+			if (this.userInfo.userName === 'jin') {
+				console.log('Hello World!');
+				this.makeQuickDefault();
+			}
+
+			if (this.userInfo.userName === 'paul') {
+				dispatch(updateMidsection('game'));
+				dispatch(updateGameInfo());
+			}
+		}
+	}
+
+	// ***** end dev helpers *****
 
 	updateSeatedUsersInGame(seatNumber) {
 		let uid = this.props.gameInfo.uid,
@@ -129,10 +148,6 @@ class App extends React.Component {
 
 	handleNewChat(chat) {
 		socket.emit('newGameChat', chat, this.props.gameInfo.uid);
-	}
-
-	statusCountdown(startTime, message = 'Game starts in %%% seconds..') {
-		
 	}
 
 	render() {

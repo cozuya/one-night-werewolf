@@ -6,7 +6,8 @@ let Schema = mongoose.Schema,
 	GameSettings = new Schema({
 		username: String,
 		gameSettings: {
-			disablePopups: Boolean
+			disablePopups: Boolean,
+			enableTimestamps: Boolean
 		}
 	});
 

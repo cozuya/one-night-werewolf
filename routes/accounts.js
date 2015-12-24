@@ -50,7 +50,8 @@ export default () => {
 			let settings = new GameSettings({
 				username,
 				gameSettings: {
-					disablePopups: false
+					disablePopups: false,
+					enableTimestamps: false
 				}
 			});
 

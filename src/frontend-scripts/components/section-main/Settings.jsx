@@ -27,16 +27,29 @@ export default class Settings extends React.Component {
 				hide: 800
 			}
 		}).checkbox({
-			onChecked: function () {
+			onChecked() {
 				socket.emit('updateGameSettings', {
 					disablePopups: true
 				});
 			},
-			onUnchecked: function () {
+			onUnchecked() {
 				socket.emit('updateGameSettings', {
 					disablePopups: false
 				});
 			},
+		});
+
+		$(this.refs.timestamps).checkbox({
+			onChecked() {
+				socket.emit('updateGameSettings', {
+					enableTimestamps: true
+				});
+			},
+			onUnchecked() {
+				socket.emit('updateGameSettings', {
+					enableTimestamps: false
+				});
+			}
 		});
 	}
 
@@ -61,6 +74,13 @@ export default class Settings extends React.Component {
 						</div>
 						<div className="ui small popup transition hidden">
 							Disable most popups (but not this one) that explain game terms and concepts.
+						</div>
+					</div>
+					<div className="four wide column popups">
+						<h4 className="ui header">Add timestamps to in-game chats</h4>
+						<div className="ui fitted toggle checkbox" ref="timestamps">
+							<input type="checkbox" name="timestamps" defaultChecked={this.props.userInfo.gameSettings.enableTimestamps}></input>
+							<label></label>
 						</div>
 					</div>
 				</div>

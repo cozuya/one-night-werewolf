@@ -26,7 +26,9 @@ export function handleUpdatedGameSettings(socket, data) {
 	let username = socket.handshake.session.passport.user;
 
 	GameSettings.findOne({username}, (err, settings) => {
-		settings.gameSettings = data;
+		for (let setting in data) {
+			settings.gameSettings[setting] = data[setting];
+		}
 		settings.save();
 		socket.emit('gameSettings', settings);
 	});

@@ -65,19 +65,6 @@ export default class Gamechat extends React.Component {
 		this.scrollChats();
 	}
 
-	// shouldComponentUpdate() {
-	// 	let gameInfo = this.props.gameInfo;
-
-	// 	console.log(this.props.gameInfo.chats);
-
-	// 	if (gameInfo.inProgress && !gameInfo.chats.length) {
-	// 		console.log('Hello World!');
-	// 		return false;
-	// 	}
-
-	// 	return true;
-	// }
-
 	scrollChats() {
 		let chatsContainer = document.querySelector('section.segment.chats'),
 			$chatPusher = $('div.chatpusher'),
@@ -105,6 +92,22 @@ export default class Gamechat extends React.Component {
 		});
 	}
 
+	handleTimestamps(timestamp) {
+		let minutes = (`0${new Date(timestamp).getMinutes()}`).slice(-2),
+			seconds = (`0${new Date(timestamp).getSeconds()}`).slice(-2);
+
+		console.log(minutes);
+		console.log(seconds);
+
+		if (this.props.userInfo && this.props.userInfo.gameSettings.enableTimestamps) {
+			return (
+				<span className="chat-timestamp">
+					({minutes}: {seconds})
+				</span>
+			);
+		}
+	}
+
 	processChats() {
 		let gameInfo = this.props.gameInfo;
 
@@ -114,7 +117,7 @@ export default class Gamechat extends React.Component {
 			if (chat.gameChat && (this.state.chatFilter === 'Game' || this.state.chatFilter === 'All')) {
 				return (
 					<div className="item" key={i}>
-						<span className="chat-user--game">[GAME]: </span>
+						<span className="chat-user--game">[GAME] {this.handleTimestamps.call(this, chat.timestamp)}: </span>
 						<span className="game-chat">{chat.chat}</span>
 					</div>
 				);
@@ -125,7 +128,7 @@ export default class Gamechat extends React.Component {
 
 				return (
 					<div className="item" key={i}>
-						<span className="chat-user">{chat.userName}{isSeated ? '' : ' (Observer)'}: </span>
+						<span className="chat-user">{chat.userName}{isSeated ? '' : ' (Observer)'} {this.handleTimestamps.call(this, chat.timestamp)}: </span>
 						{chat.chat}
 					</div>
 				);

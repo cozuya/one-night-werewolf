@@ -149,13 +149,21 @@
 
 				.chat-user {
 					color: #16AB39;
+
+					.chat-timestamp {
+						color: #21792A;
+						font-size: 12px;
+					}
 				}
 
-				.chat-user--game, .game-chat {
+				.chat-user--game .chat-timestamp {
+					font-size: 12px;
+				}
+
+				.chat-user--game, .game-chat, .chat-user--game .chat-timestamp {
 					color: #8B8B8B;
 				}
 			}
-
 
 			.inputbar {
 				span {
