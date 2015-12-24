@@ -123,7 +123,7 @@ export function startGameCountdown(uid) {
 			clearInterval(countDown);
 			startGame(game);
 		} else {
-			game.status = `Shuffling.. Game starts in ${seconds} second${seconds === 1 ? '' : 's'}.`;
+			game.status = `Game starts in ${seconds} second${seconds === 1 ? '' : 's'}.`;
 			io.sockets.in(uid).emit('gameUpdate', secureGame(game));
 		}
 		seconds--;

@@ -62,7 +62,7 @@ export function startGame(game) {
 	});
 
 	sendNewGameChat(game, undefined, 'The game begins.', observerSockets);
-	// beginNightPhase();  todo
+	beginPreNightPhase(game);
 }
 
 let sendNewGameChat = (game, player, message, observerSockets) => {
@@ -79,6 +79,7 @@ let sendNewGameChat = (game, player, message, observerSockets) => {
 		tempChats;
 
 	gameChats.push(chat);
+
 	tempChats = gameChats.concat(cloneGame.chats);
 	tempChats.sort((chat1, chat2) => {
 		return chat1.timestamp - chat2.timestamp;
@@ -92,4 +93,10 @@ let sendNewGameChat = (game, player, message, observerSockets) => {
 			socket.emit('gameUpdate', secureGame(cloneGame));
 		});
 	}
+}
+
+let beginPreNightPhase = () => {
+	// todo: 12/25 - deal with this race condition/overwriting the sendnewgamechat of starting the game
+	// game.status = 'Dealing..';
+	// io.in(game.uid).emit('gameUpdate', secureGame(game));
 }

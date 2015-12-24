@@ -1,0 +1,112 @@
+.table-container {
+	background: #fafafa;
+	padding: 0;
+
+	.table {
+		position: relative;
+
+		.tableimage {
+			position: absolute;
+			top: 90px;
+			left: 70px;
+			box-shadow: 0px 0px 2px 1px #ddd;
+			width: 440px;
+			height: 280px;
+			border-radius: 50%;
+			background-image: url('../images/crossword.png');
+			background-repeat: repeat;
+		}
+
+		.seat {
+			width: 59px;
+			height: 80px;
+			background: #ccc;
+			position: absolute;
+			border-radius: 4px;
+			text-align: center;
+			padding: 5px;
+
+			.username {
+				position: absolute;
+				top: -20px;
+				left: 50%;
+				margin-left: -30px;
+				width: 100%;
+				text-align: center;
+			}
+		}
+		
+
+		.card {
+			border-radius: 4px;
+			top: 190px;
+			left: 260px;
+			background-image: url('../images/vertical_cloth.png');
+			width: 59px;
+			height: 80px;
+			position: absolute;
+		}
+
+		.seat1 {
+			top: 20px;
+			left: 260px;
+		}
+
+		.seat2 {
+			top: 70px;
+			left: 430px;
+		}
+
+		.seat3 {
+			top: 210px;
+			left: 500px;
+		}
+
+		.seat4 {
+			top: 320px;
+			left: 360px;
+		}
+
+		.seat5 {
+			top: 70px;
+			left: 90px;
+		}
+
+		.seat6 {
+			top: 210px;
+			left: 20px;
+		}
+
+		.seat7 {
+			top: 320px;
+			left: 160px;
+		}
+
+		.mid1 {
+			top: 190px;
+			left: 260px;
+			display: none;
+		}
+
+		.mid2 {
+			top: 190px;
+			left: 180px;
+			display: none;
+		}
+
+		.mid3 {
+			top: 190px;
+			left: 340px;
+			display: none;
+		}
+
+		.remove.icon {
+			position: absolute;
+			top: 10px;
+			left: 535px;
+			opacity: 0.3;
+			cursor: pointer;
+			font-size: 30px;
+		}
+	}	
+}

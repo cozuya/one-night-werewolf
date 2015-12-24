@@ -18,12 +18,14 @@ $.fn.modal = Modal;
 export default class Table extends React.Component {
 	componentDidUpdate() {
 		let gameInfo = this.props.gameInfo;
+
 		if (!gameInfo.inProgress && gameInfo.seatedCount === 2 && gameInfo.seated.seat1.userName === this.props.userInfo.userName) {
 			socket.emit('startGameCountdown', gameInfo.uid);
 		}
-	}
 
-	componentDidMount() {
+		if (gameInfo.inProgress && gameInfo.status === 'Dealing..') {
+			this.dealCards();
+		}
 	}
 
 	shouldComponentUpdate() {
@@ -41,14 +43,14 @@ export default class Table extends React.Component {
 	}
 
 	validateLeaveButton() {
-		return this.props.gameInfo.seatedCount === 7 ? 'app-hidden' : 'remove icon';
+		return this.props.gameInfo.seatedCount === 7 ? 'app-hidden' : 'remove icon';  // todo: fix this, unseated/observers can't leave game lol...
 	}
 
 	clickedSeat(e) {
 		let seated = this.props.gameInfo.seated,
 			userInfo = this.props.userInfo,
 			$seat = $(e.currentTarget),
-			isUserAlreadySeated = Object.keys(seated).find((seat) => {
+			isUserAlreadySeated = !!Object.keys(seated).find((seat) => {
 				return seated[seat].userName === userInfo.userName;
 			});
 
@@ -57,8 +59,33 @@ export default class Table extends React.Component {
 				this.props.updateSeatedUsers($seat.attr('data-seatnumber'));
 			}
 		} else {
-			$('section.table div.small.modal').modal('show');  // should hook into e.currentTarget for modulatory (sp)
+			$('section.table div.small.modal').modal('show');  // todo: should hook into e.currentTarget for modulatory (sp)
 		}
+	}
+
+	unStartedGame() {
+		let reactDoesntLetMePutClassNameLogicInJSXForNoReason = (num) => {
+			return `card card${num}`;
+		};
+
+		if (!this.props.gameInfo.inProgress || /^Game starts in/.test(this.props.gameInfo.status) || /^Dealing../.test(this.props.gameInfo.status)) {
+			return _.range(1, 11).map((num) => {
+				return <div key={num} className={reactDoesntLetMePutClassNameLogicInJSXForNoReason(num)}></div>
+			});
+		}
+	}
+
+	dealCards() {
+		let $cards = $('section.table .cards'),
+			endSeatTop = ['20px', '70px', '210px', '320px', '70px', '210px', '320px'],
+			endSeatLeft = ['260px', '430px', '500px', '360px', '90px', '20px', '160px'];
+
+		$cards.each((index) => {
+			$(this).animate({
+				top: endSeatTop[index],
+				left: endSeatLeft[index]
+			}, 3000);
+		});
 	}
 
 	render() {
@@ -73,13 +100,14 @@ export default class Table extends React.Component {
 						seatNumber = () => {
 							return el;
 						},
-						user = seated ? this.props.gameInfo.seated[`seat${el}`].userName : 'Empty seat';
+						user = seated ? this.props.gameInfo.seated[`seat${el}`].userName : '';
 
-					return <div key={el} className={classes()} data-seatnumber={seatNumber()} onClick={this.clickedSeat.bind(this)}>{user}</div>
+					return <div key={el} className={classes()} data-seatnumber={seatNumber()} onClick={this.clickedSeat.bind(this)}><span className="username">{user}</span></div>
 				})}
 				<div className="seat mid1"></div>
 				<div className="seat mid2"></div>
 				<div className="seat mid3"></div>
+				{this.unStartedGame()}
 				<i onClick={this.leaveGame.bind(this)} className={this.validateLeaveButton()}></i>
 				<div className="ui basic small modal">
 					<i className="close icon"></i>
