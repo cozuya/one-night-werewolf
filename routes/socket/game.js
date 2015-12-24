@@ -89,35 +89,29 @@ export function updateSeatedUsers(socket, data) {
 
 export function updateGameChat(socket, data, uid) {
 	let game = games.find((el) => {
-		return el.uid === uid;
-	}),
-		cloneGame = _.clone(game),
-		userName = socket.handshake.session ? socket.handshake.session.passport.user : '',
-		player, tempChats;
+			return el.uid === uid;
+		});
 
+	data.timestamp = new Date();
 	game.chats.push(data);
 
-	// todo 12/24
-	if (data.isSeated && data.inProgress) {
-		updateGameChatForSeatedPlayingUser(game, socket, data, uid);
+	if (data.inProgress) {
+		let cloneGame = _.clone(game);
+
+		if (data.seat) {
+			let tempChats = cloneGame.chats;
+
+			tempChats = tempChats.concat(game.internals.seatedPlayers[data.seat - 1].gameChats);
+			tempChats.sort((chat1, chat2) => {
+				return chat1.timestamp - chat2.timestamp;
+			});
+			cloneGame.chats = tempChats;
+		}
+		io.in(uid).emit('gameUpdate', secureGame(cloneGame));
 	} else {
-		io.sockets.in(uid).emit('gameUpdate', secureGame(game));
+		io.in(uid).emit('gameUpdate', secureGame(game));
 	}
 }
-
-// probably delete
-let updateGameChatForSeatedPlayingUser = (game, socket, data, uid) => {
-	let user = game.internals[data.seat], // changing
-		chats = game.chats;
-
-	chats.concat(game.internals[game.internals.indexOf]); // changing
-	
-	chats.sort((chat1, chat2) => {
-		return chat1.timestamp - chat2.timestamp;
-	});
-
-	socket.in(uid).emit('gameUpdate', secureGame(game));
-};
 
 export function startGameCountdown(uid) {
 	let game = games.find((el) => {

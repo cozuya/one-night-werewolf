@@ -115,22 +115,22 @@ class App extends React.Component {
 		socket.emit('createGame', game);
 	}
 
-	componentDidUpdate() {
-		let { dispatch } = this.props;
+	// componentDidUpdate() {
+	// 	let { dispatch } = this.props;
 
-		if (this.userInfo) {
-			console.log('hi');
-			if (this.userInfo.userName === 'jin') {
-				console.log('Hello World!');
-				this.makeQuickDefault();
-			}
+	// 	if (this.userInfo) {
+	// 		console.log('hi');
+	// 		if (this.userInfo.userName === 'jin') {
+	// 			console.log('Hello World!');
+	// 			this.makeQuickDefault();
+	// 		}
 
-			if (this.userInfo.userName === 'paul') {
-				dispatch(updateMidsection('game'));
-				dispatch(updateGameInfo());
-			}
-		}
-	}
+	// 		if (this.userInfo.userName === 'paul') {
+	// 			dispatch(updateMidsection('game'));
+	// 			dispatch(updateGameInfo());
+	// 		}
+	// 	}
+	// }
 
 	// ***** end dev helpers *****
 

@@ -8,7 +8,7 @@ export function startGame(game) {
 		assignRoles = () => {
 			let _roles = _.clone(game.roles);
 
-			game.internals.seatedPlayers.map((player) => {
+			game.internals.seatedPlayers.map((player, index) => {
 				let roleIndex = Math.floor((Math.random() * _roles.length)),
 					role = _roles[roleIndex];
 
@@ -17,6 +17,7 @@ export function startGame(game) {
 				}
 
 				player.trueRole = role;
+				player.seat = index + 1;
 				_roles.splice(roleIndex, 1);
 			});
 
@@ -49,12 +50,9 @@ export function startGame(game) {
 		}
 	}
 
-	// console.log(game.internals.seatedPlayers);
-
 	game.internals.seatedPlayers.forEach((player, i) => {
 		let userName = player.userName,
 			socket = _.find(playerSockets, (playerSocket) => {
-				// console.log(`socketuser: ${playerSocket.handshake.session.passport.user}`);
 				return playerSocket.handshake.session.passport.user === userName;
 			});
 
@@ -90,7 +88,8 @@ let sendNewGameChat = (game, player, message, observerSockets) => {
 	if (player) {
 		player.socket.emit('gameUpdate', secureGame(cloneGame));
 	} else {
-		// need to loop through all unseated sockets here as opposed to blasting
-		// observerSockets.in(game.uid).emit('gameUpdate', secureGame(cloneGame));
+		observerSockets.forEach((socket) => {
+			socket.emit('gameUpdate', secureGame(cloneGame));
+		});
 	}
 }

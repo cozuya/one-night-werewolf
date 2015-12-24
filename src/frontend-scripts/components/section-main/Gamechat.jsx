@@ -35,7 +35,7 @@ export default class Gamechat extends React.Component {
 			$button = $(e.currentTarget).find('button'),
 			$clearIcon = $button.parent().next(),
 			seat = Object.keys(this.props.gameInfo.seated).find((seat) => {
-				return this.props.gameInfo.seated[seat] === this.props.userInfo.userName;
+				return this.props.gameInfo.seated[seat].userName === this.props.userInfo.userName;
 			});
 
 		e.preventDefault();
@@ -43,10 +43,9 @@ export default class Gamechat extends React.Component {
 		if (input.value) {
 			this.props.newChat({
 				userName: this.props.userInfo.userName,
-				timestamp: new Date(),
 				chat: input.value,
 				gameChat: false,
-				seat,
+				seat: seat ? parseInt(seat.split('seat')[1]) : '',
 				inProgress: this.props.gameInfo.inProgress
 			});
 
@@ -93,11 +92,12 @@ export default class Gamechat extends React.Component {
 	}
 
 	handleTimestamps(timestamp) {
+		if (!this.props.userInfo.userName) {
+			return;
+		}
+
 		let minutes = (`0${new Date(timestamp).getMinutes()}`).slice(-2),
 			seconds = (`0${new Date(timestamp).getSeconds()}`).slice(-2);
-
-		console.log(minutes);
-		console.log(seconds);
 
 		if (this.props.userInfo && this.props.userInfo.gameSettings.enableTimestamps) {
 			return (
@@ -111,7 +111,7 @@ export default class Gamechat extends React.Component {
 	processChats() {
 		let gameInfo = this.props.gameInfo;
 
-		// console.log(this.props.gameInfo.chats);
+		// todo: make the logged in user's chats a different color than everyone else's chats
 
 		return gameInfo.chats.map((chat, i) => {
 			if (chat.gameChat && (this.state.chatFilter === 'Game' || this.state.chatFilter === 'All')) {

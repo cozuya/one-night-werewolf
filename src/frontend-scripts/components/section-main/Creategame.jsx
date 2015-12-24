@@ -154,7 +154,9 @@ export default class Creategame extends React.Component {
 			inProgress: false,
 			seatedCount: 1,
 			uid: Math.random().toString(36).substring(6)
-		});	
+		});
+
+		// todo: didn't update another player's list when I hit submit
 	}
 
 	render() {
