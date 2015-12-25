@@ -43,7 +43,16 @@ export default class Table extends React.Component {
 	}
 
 	validateLeaveButton() {
-		return this.props.gameInfo.seatedCount === 7 ? 'app-hidden' : 'remove icon';  // todo: fix this, unseated/observers can't leave game lol...
+		let gameInfo = this.props.gameInfo,
+			isUserSeated = !!Object.keys(gameInfo.seated).find((seat) => {
+				return gameInfo.seated[seat].userName === this.props.userInfo.userName;
+			});
+
+		if (isUserSeated && this.props.gameInfo.seatedCount === 2) { // todo (far in the future): clear this when game is completed
+			return 'app-hidden';
+		} else {
+			return 'remove icon';
+		}
 	}
 
 	clickedSeat(e) {
