@@ -128,7 +128,7 @@ export default class Gamechat extends React.Component {
 
 				return (
 					<div className="item" key={i}>
-						<span className="chat-user">{chat.userName}{isSeated ? '' : ' (Observer)'} {this.handleTimestamps.call(this, chat.timestamp)}: </span>
+						<span className="chat-user">{chat.userName}{isSeated ? '' : ' (Observer)'}{this.handleTimestamps.call(this, chat.timestamp)}: </span>
 						{chat.chat}
 					</div>
 				);

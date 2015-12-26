@@ -2,7 +2,7 @@
 
 // let Chatroom = require('../models/chatroom');
 
-import { startGame } from './game-internals.js';
+import { startGame, getSocketsByUid, updateInprogressChat } from './game-internals.js';
 import _ from 'lodash';
 
 let deleteGame = (game) => {
@@ -90,25 +90,17 @@ export function updateSeatedUsers(socket, data) {
 export function updateGameChat(socket, data, uid) {
 	let game = games.find((el) => {
 			return el.uid === uid;
-		});
-
-	data.timestamp = new Date();
-	game.chats.push(data);
+		}),
+		seatedPlayer = Object.keys(game.seated).find((seat) => {
+			return game.seated[seat].userName === socket.handshake.session.passport.user;
+		}),
+		cloneGame = _.clone(game);
 
 	if (data.inProgress) {
-		let cloneGame = _.clone(game);
-
-		if (data.seat) {
-			let tempChats = cloneGame.chats;
-
-			tempChats = tempChats.concat(game.internals.seatedPlayers[data.seat - 1].gameChats);
-			tempChats.sort((chat1, chat2) => {
-				return chat1.timestamp - chat2.timestamp;
-			});
-			cloneGame.chats = tempChats;
-		}
-		io.in(uid).emit('gameUpdate', secureGame(cloneGame));
+		updateInprogressChat(game, data);
 	} else {
+		data.timestamp = new Date();
+		game.chats.push(data);
 		io.in(uid).emit('gameUpdate', secureGame(game));
 	}
 }

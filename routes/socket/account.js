@@ -3,24 +3,23 @@
 import mongoose from 'mongoose';
 import GameSettings from '../../models/gamesettings';
 import { games, secureGame } from './game.js';
+import _ from 'lodash';
 
 export function checkUserStatus(socket) {
-	let gameIndex;
-
 	games.forEach((game, i) => {
-		let inGame = Object.keys(game.seated).find((seat) => {
+		let currentGame = Object.keys(game.seated).find((seat) => {
 			return game.seated[seat].userName === socket.handshake.session.passport.user;
 		});
 
-		if (inGame) {
-			gameIndex = i;
+		if (currentGame) {
+			let tempChats = game.chats,
+				cloneGame = _.clone(currentGame);
+
+			console.log(cloneGame);	
 			socket.join(game.uid);
+			socket.emit('gameUpdate', secureGame(cloneGame));
 		}
 	});
-
-	if (gameIndex >= 0) {
-		socket.emit('gameUpdate', secureGame(games[gameIndex]));
-	}
 }
 
 export function handleUpdatedGameSettings(socket, data) {

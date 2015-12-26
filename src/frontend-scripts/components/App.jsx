@@ -104,7 +104,7 @@ class App extends React.Component {
 				chats: [],
 				seatedCount: 1,
 				time: '3:00',
-				uid: 'DEVGAME'
+				uid: Math.random().toString(36).substring(6)
 			};
 
 

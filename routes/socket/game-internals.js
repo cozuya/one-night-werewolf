@@ -3,6 +3,28 @@
 import { games, secureGame } from './game.js';
 import _ from 'lodash';
 
+export function getSocketsByUid(uid) {
+	let game = games.find((el) => {
+			return el.uid === uid;
+		}),
+		seatedPlayerNames = Object.keys(game.seated).map((seat) => {
+			return game.seated[seat].userName;
+		}),
+		sockets = {},
+		roomSockets = Object.keys(io.sockets.adapter.rooms[game.uid]).map((sockedId) => {
+			return io.sockets.connected[sockedId];
+		});
+
+		sockets.playerSockets = roomSockets.filter((socket) => {
+			return seatedPlayerNames.indexOf(socket.handshake.session.passport.user) >= 0;
+		}),
+		sockets.observerSockets = roomSockets.filter((socket) => {
+			return seatedPlayerNames.indexOf(socket.handshake.session.passport.user) === -1;
+		});
+
+	return sockets;
+}
+
 export function startGame(game) {
 	let allWerewolvesNotInCenter = false,
 		assignRoles = () => {
@@ -23,18 +45,11 @@ export function startGame(game) {
 
 			game.internals.centerRoles = [..._roles];
 		},
-		seatedPlayerNames = Object.keys(game.seated).map((seat) => {
-				return game.seated[seat].userName;
-		}),
-		roomSockets = Object.keys(io.sockets.adapter.rooms[game.uid]).map((sockedId) => {
-			return io.sockets.connected[sockedId];
-		}),
-		playerSockets = roomSockets.filter((socket) => {
-			return seatedPlayerNames.indexOf(socket.handshake.session.passport.user) >= 0;  // todo: need to check against non logged in users
-		}),
-		observerSockets = roomSockets.filter((socket) => {
-			return seatedPlayerNames.indexOf(socket.handshake.session.passport.user) === -1;
-		});
+		chat = {
+			timestamp: new Date(),
+			gameChat: true,
+			inProgress: true
+		};
 
 	Object.keys(game.seated).map((seat, i) => {
 		return game.internals.seatedPlayers[i] = {
@@ -51,34 +66,37 @@ export function startGame(game) {
 	}
 
 	game.internals.seatedPlayers.forEach((player, i) => {
-		let userName = player.userName,
-			socket = _.find(playerSockets, (playerSocket) => {
-				return playerSocket.handshake.session.passport.user === userName;
-			});
+		// let userName = player.userName
+		// ,
+		// 	socket = sockets.playerSockets.find((playerSocket) => {
+		// 		return playerSocket.handshake.session.passport.user === userName;
+		// 	})
+			;
 
-		player.socket = socket;
+		chat.userName = player.userName;
+		chat.chat= `The game begins and you receive the ${player.trueRole.toUpperCase()} role.`;
+
 		player.gameChats = [];
-		sendNewGameChat(game, player, `The game begins and you receive the ${player.trueRole.toUpperCase()} role.`);
+		updateInprogressChat(game, chat, player);
 	});
 
-	sendNewGameChat(game, undefined, 'The game begins.', observerSockets);
+	updateInprogressChat(game, chat);
 	beginPreNightPhase(game);
 }
 
-let sendNewGameChat = (game, player, message, observerSockets) => {
-	let userName = player ? player.userName : undefined,
-		chat = {
-			userName,
-			timestamp: new Date(),
-			chat: message,
-			gameChat: true,
-			inProgress: true
-		},
-		cloneGame = _.clone(game),
-		gameChats = userName ? player.gameChats : game.internals.unSeatedGameChats,
+export function updateInprogressChat(game, chat, player) {
+	// todo: verify that all this works for game and non game.
+
+	let cloneGame = _.clone(game),
+		gameChats = player ? player.gameChats : game.internals.unSeatedGameChats,
+		sockets = getSocketsByUid(game.uid),
 		tempChats;
 
-	gameChats.push(chat);
+	if (chat.gameChat) {
+		gameChats.push(chat);
+	} else {
+		game.chats.push(chat);
+	}
 
 	tempChats = gameChats.concat(cloneGame.chats);
 	tempChats.sort((chat1, chat2) => {
@@ -86,12 +104,20 @@ let sendNewGameChat = (game, player, message, observerSockets) => {
 	});
 	cloneGame.chats = tempChats;
 
-	if (player) {
-		player.socket.emit('gameUpdate', secureGame(cloneGame));
+	if (chat.gameChat) {
+		if (player) {
+			let playerSocket = sockets.playerSockets.find((sock) => {
+				return player.userName === sock.handshake.session.passport.user;
+			});
+
+			playerSocket.emit('gameUpdate', secureGame(cloneGame));
+		} else {
+			sockets.observerSockets.forEach((socket) => {
+				socket.emit('gameUpdate', secureGame(cloneGame));
+			});
+		}
 	} else {
-		observerSockets.forEach((socket) => {
-			socket.emit('gameUpdate', secureGame(cloneGame));
-		});
+		io.in(game.uid).emit('gameUpdate', secureGame(game));
 	}
 }
 
