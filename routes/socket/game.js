@@ -117,7 +117,7 @@ export function startGameCountdown(uid) {
 	let game = games.find((el) => {
 		return el.uid === uid;
 	}),
-	seconds = 2,
+	seconds = 1,
 	countDown = setInterval(() => {
 		if (seconds === 0) {
 			clearInterval(countDown);

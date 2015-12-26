@@ -21,8 +21,8 @@ export default () => {
 			updateSeatedUsers(socket, data);
 		});
 
-		socket.on('checkNewlyConnectedUserStatus', (data) => {
-			checkUserStatus(socket, data, games);
+		socket.on('checkNewlyConnectedUserStatus', () => {
+			checkUserStatus(socket);
 		});
 
 		socket.on('updateGameSettings', (data) => {

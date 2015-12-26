@@ -2,9 +2,9 @@
 
 import mongoose from 'mongoose';
 import GameSettings from '../../models/gamesettings';
-import { secureGame } from './game.js';
+import { games, secureGame } from './game.js';
 
-export function checkUserStatus(socket, data, games) {
+export function checkUserStatus(socket) {
 	let gameIndex;
 
 	games.forEach((game, i) => {
@@ -14,6 +14,7 @@ export function checkUserStatus(socket, data, games) {
 
 		if (inGame) {
 			gameIndex = i;
+			socket.join(game.uid);
 		}
 	});
 

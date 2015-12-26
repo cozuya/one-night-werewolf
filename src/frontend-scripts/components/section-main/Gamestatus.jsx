@@ -17,7 +17,6 @@ export default class Gamestatus extends React.Component {
 	countDown() {
 		let time = this.props.gameInfo.status.countDown,
 			timer = setInterval(() => {
-				console.log(time);
 				if (time === 0) {
 					clearInterval(timer);
 				}

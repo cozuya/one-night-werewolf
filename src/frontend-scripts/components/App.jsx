@@ -31,7 +31,6 @@ class App extends React.Component {
 		socket.on('gameSettings', (settings) => {
 			let user = this.props.userInfo;
 
-			console.log(settings);
 			// todo: this needs to also update the gameInfo object on the front and possibly back end.
 			user.gameSettings = settings.gameSettings;
 			dispatch(updateUser(user));
