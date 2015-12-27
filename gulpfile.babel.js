@@ -13,7 +13,6 @@ import sass from 'gulp-sass';
 import wait from 'gulp-wait';
 import sourcemaps from 'gulp-sourcemaps';
 import notifier from 'node-notifier';
-import nodemon from 'gulp-nodemon';
 import { exec } from 'child_process';
 
 gulp.task('default', ['watch', 'scripts']);

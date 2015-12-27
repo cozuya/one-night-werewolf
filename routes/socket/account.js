@@ -2,7 +2,9 @@
 
 import mongoose from 'mongoose';
 import GameSettings from '../../models/gamesettings';
-import { games, secureGame } from './game.js';
+import { games } from './game.js';
+import { secureGame} from './util.js';
+import { combineInprogressChats } from './gamechat.js';
 import _ from 'lodash';
 
 export function checkUserStatus(socket) {
@@ -10,11 +12,14 @@ export function checkUserStatus(socket) {
 		return !!Object.keys(game.seated).find((seat) => {
 			return game.seated[seat].userName === socket.handshake.session.passport.user;
 		});
-	});
+	}),
+	chats, cloneGame;
 
 	if (gameUserIsIn) {
+		cloneGame = _.clone(gameUserIsIn);
+		cloneGame.chats = combineInprogressChats(cloneGame, socket.handshake.session.passport.user);
 		socket.join(gameUserIsIn.uid);
-		socket.emit('gameUpdate', secureGame(gameUserIsIn));
+		socket.emit('gameUpdate', secureGame(cloneGame));
 	}
 }
 

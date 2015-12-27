@@ -2,7 +2,9 @@
 
 // let Chatroom = require('../models/chatroom');
 
-import { startGame, updateInprogressNonSystemChat } from './game-internals.js';
+import { startGame } from './game-internals.js';
+import { secureGame, getInternalPlayerInGameByUserName } from './util.js';
+import { combineInprogressChats } from './gamechat.js';
 import _ from 'lodash';
 
 let deleteGame = (game) => {
@@ -12,14 +14,6 @@ let deleteGame = (game) => {
 };
 
 export let games = [];
-
-export function secureGame(game) {
-	let _game = _.clone(game);
-
-	delete _game.internals;
-	return _game;
-};
-
 
 export function sendGameList(socket) {
 	let gameList = games.map((game) => {
@@ -50,11 +44,23 @@ export function createGame(socket, game) {
 
 export function sendGameInfo(socket, uid) {
 	let game = games.find((el) => {
-		return el.uid === uid;
-	});
+			return el.uid === uid;
+		}),
+		cloneGame = _.clone(game);
 
 	socket.join(uid);
-	socket.emit('gameUpdate', secureGame(game));
+
+	if (game.inProgress) {
+		if (socket.handshake.session) {
+			let player = getInternalPlayerInGameByUserName(game, socket.handshake.session.passport.user);
+			console.log(player);
+			cloneGame.chats = player ? combineInprogressChats(game, player) : combineInprogressChats(game);
+		} else {
+			cloneGame.chats = combineInprogressChats(game);
+		}
+	}
+
+	socket.emit('gameUpdate', secureGame(cloneGame));
 }
 
 export function updateSeatedUsers(socket, data) {
@@ -85,24 +91,6 @@ export function updateSeatedUsers(socket, data) {
 		socket.emit('gameUpdate', {});
 	}
 	sendGameList(socket);
-}
-
-export function updateGameChat(socket, data, uid) {
-	let game = games.find((el) => {
-			return el.uid === uid;
-		}),
-		seatedPlayer = Object.keys(game.seated).find((seat) => { // todo: error here when a player chats while in game after a page refresh?  see if repeatable
-			return game.seated[seat].userName === socket.handshake.session.passport.user;
-		}),
-		cloneGame = _.clone(game);
-
-	if (data.inProgress) {
-		updateInprogressNonSystemChat(game, data);
-	} else {
-		data.timestamp = new Date();
-		game.chats.push(data);
-		io.in(uid).emit('gameUpdate', secureGame(game));
-	}
 }
 
 export function startGameCountdown(uid) {

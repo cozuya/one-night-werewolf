@@ -9,6 +9,7 @@ debug = require('debug')('app:server');
 server = http.createServer(app);
 
 global.io = require('socket.io')(server);
+global.notify = require('node-notifier');
 
 app.set('port', port);
 server.listen(port);

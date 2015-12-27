@@ -2,6 +2,7 @@
 
 import { startGameCountdown, updateGameChat, sendGameList, createGame, sendGameInfo, updateSeatedUsers, games } from './game.js';
 import { checkUserStatus, handleUpdatedGameSettings, sendUserGameSettings } from './account.js';
+import { addNewGameChat } from './gamechat.js';
 
 export default () => {
 	io.on('connection', (socket) => {
@@ -34,7 +35,7 @@ export default () => {
 		});
 
 		socket.on('newGameChat', (chat, uid) => {
-			updateGameChat(socket, chat, uid);
+			addNewGameChat(chat, uid);
 		});
 
 		socket.on('startGameCountdown', (uid) => {
