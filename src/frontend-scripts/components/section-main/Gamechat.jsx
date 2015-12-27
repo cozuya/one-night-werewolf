@@ -96,6 +96,8 @@ export default class Gamechat extends React.Component {
 			return;
 		}
 
+		console.log(timestamp);
+
 		let minutes = (`0${new Date(timestamp).getMinutes()}`).slice(-2),
 			seconds = (`0${new Date(timestamp).getSeconds()}`).slice(-2);
 

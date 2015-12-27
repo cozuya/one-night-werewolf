@@ -2,7 +2,7 @@
 
 // let Chatroom = require('../models/chatroom');
 
-import { startGame, getSocketsByUid, updateInprogressChat } from './game-internals.js';
+import { startGame, updateInprogressNonSystemChat } from './game-internals.js';
 import _ from 'lodash';
 
 let deleteGame = (game) => {
@@ -97,7 +97,7 @@ export function updateGameChat(socket, data, uid) {
 		cloneGame = _.clone(game);
 
 	if (data.inProgress) {
-		updateInprogressChat(game, data);
+		updateInprogressNonSystemChat(game, data);
 	} else {
 		data.timestamp = new Date();
 		game.chats.push(data);

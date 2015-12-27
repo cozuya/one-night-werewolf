@@ -44,11 +44,6 @@ export function startGame(game) {
 			});
 
 			game.internals.centerRoles = [..._roles];
-		},
-		chat = {
-			timestamp: new Date(),
-			gameChat: true,
-			inProgress: true
 		};
 
 	Object.keys(game.seated).map((seat, i) => {
@@ -65,64 +60,88 @@ export function startGame(game) {
 		}
 	}
 
+	game.internals.unSeatedGameChats = [];
+
 	game.internals.seatedPlayers.forEach((player, i) => {
-		// let userName = player.userName
-		// ,
-		// 	socket = sockets.playerSockets.find((playerSocket) => {
-		// 		return playerSocket.handshake.session.passport.user === userName;
-		// 	})
-			;
-
-		chat.userName = player.userName;
-		chat.chat= `The game begins and you receive the ${player.trueRole.toUpperCase()} role.`;
-
 		player.gameChats = [];
-		updateInprogressChat(game, chat, player);
+		updateInprogressSystemChat(game, {
+			gameChat: true,
+			userName: player.userName,
+			chat: `The game begins and you receive the ${player.trueRole.toUpperCase()} role.`,
+			seat: i + 1
+		});
 	});
 
-	updateInprogressChat(game, chat);
+	updateInprogressSystemChat(game, {
+		gameChat: true,
+		chat: 'The game begins.'
+	});
+
 	beginPreNightPhase(game);
 }
 
-export function updateInprogressChat(game, chat, player) {
-	// todo: verify that all this works for game and non game.
+let updateInprogressSystemChat = (game, chat) => {
+	let sockets = getSocketsByUid(game.uid),	
+		gameChats = chat.userName ? game.internals.seatedPlayers[chat.seat - 1].gameChats : game.internals.unSeatedGameChats,
+		tempChats, cloneGame;
 
-	let cloneGame = _.clone(game),
-		gameChats = player ? player.gameChats : game.internals.unSeatedGameChats,
-		sockets = getSocketsByUid(game.uid),
-		tempChats;
-
-	if (chat.gameChat) {
-		gameChats.push(chat);
-	} else {
-		game.chats.push(chat);
-	}
-
+	chat.timestamp = new Date();
+	gameChats.push(chat);
+	cloneGame = _.clone(game);
 	tempChats = gameChats.concat(cloneGame.chats);
 	tempChats.sort((chat1, chat2) => {
 		return chat1.timestamp - chat2.timestamp;
 	});
+
 	cloneGame.chats = tempChats;
 
-	if (chat.gameChat) {
-		if (player) {
-			let playerSocket = sockets.playerSockets.find((sock) => {
-				return player.userName === sock.handshake.session.passport.user;
-			});
+	if (chat.userName) {
+		let playerSocket = sockets.playerSockets.find((sock) => {
+			return chat.userName === sock.handshake.session.passport.user;
+		});
 
-			playerSocket.emit('gameUpdate', secureGame(cloneGame));
-		} else {
-			sockets.observerSockets.forEach((socket) => {
-				socket.emit('gameUpdate', secureGame(cloneGame));
-			});
-		}
+		playerSocket.emit('gameUpdate', secureGame(cloneGame));
 	} else {
-		io.in(game.uid).emit('gameUpdate', secureGame(game));
+		// todo: need to figure out how to make a new observer see these gamechats after they have been generated here.
+		sockets.observerSockets.forEach((sock) => {
+			sock.emit('gameUpdate', secureGame(cloneGame));
+		});
 	}
 }
 
+export function updateInprogressNonSystemChat(game, chat) {
+	let sockets = getSocketsByUid(game.uid),
+		generateChats = (nonGameChats) => {
+			let tempChats = _.clone(game).chats;
+
+			tempChats = tempChats.concat(nonGameChats);
+			tempChats.sort((chat1, chat2) => {
+				return chat1.timestamp - chat2.timestamp;
+			});
+
+			return tempChats;
+		};
+
+	chat.timestamp = new Date();
+	game.chats.push(chat);
+
+	sockets.playerSockets.forEach((playerSocket, index) => {
+		let cloneGame = _.clone(game);
+
+		cloneGame.chats = generateChats(cloneGame.internals.seatedPlayers[index].gameChats);
+		playerSocket.emit('gameUpdate', secureGame(cloneGame));
+	});
+
+	sockets.observerSockets.forEach((observerSocket) => {
+		let cloneGame = _.clone(game);
+
+		cloneGame.chats = generateChats(cloneGame.internals.unSeatedGameChats);
+		observerSocket.emit('gameUpdate', secureGame(cloneGame));
+	});
+}
+
 let beginPreNightPhase = () => {
-	// todo: 12/25 - deal with this race condition/overwriting the sendnewgamechat of starting the game
+	// todo: deal with this race condition/overwriting the sendnewgamechat of starting the game
 	// game.status = 'Dealing..';
 	// io.in(game.uid).emit('gameUpdate', secureGame(game));
 }
