@@ -91,7 +91,7 @@ export function updateGameChat(socket, data, uid) {
 	let game = games.find((el) => {
 			return el.uid === uid;
 		}),
-		seatedPlayer = Object.keys(game.seated).find((seat) => {
+		seatedPlayer = Object.keys(game.seated).find((seat) => { // todo: error here when a player chats while in game after a page refresh?  see if repeatable
 			return game.seated[seat].userName === socket.handshake.session.passport.user;
 		}),
 		cloneGame = _.clone(game);

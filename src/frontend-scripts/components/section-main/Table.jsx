@@ -28,15 +28,15 @@ export default class Table extends React.Component {
 		}
 	}
 
-	shouldComponentUpdate() {
-		let gameInfo = this.props.gameInfo;
+	// shouldComponentUpdate() {
+	// 	let gameInfo = this.props.gameInfo;
 
-		if (!gameInfo.inProgress && gameInfo.seatedCount === 2 && gameInfo.seated.seat1.userName === this.props.userInfo.userName) {
-			return false;
-		}
+	// 	if (!gameInfo.inProgress && gameInfo.seatedCount === 2 && gameInfo.seated.seat1.userName === this.props.userInfo.userName) {
+	// 		return false;
+	// 	}
 
-		return true;
-	}
+	// 	return true;
+	// }
 
 	leaveGame() {
 		this.props.updateSeatedUsers(null);

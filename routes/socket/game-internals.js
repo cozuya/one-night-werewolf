@@ -60,8 +60,6 @@ export function startGame(game) {
 		}
 	}
 
-	game.internals.unSeatedGameChats = [];
-
 	game.internals.seatedPlayers.forEach((player, i) => {
 		player.gameChats = [];
 		updateInprogressSystemChat(game, {

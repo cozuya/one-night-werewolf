@@ -6,20 +6,16 @@ import { games, secureGame } from './game.js';
 import _ from 'lodash';
 
 export function checkUserStatus(socket) {
-	games.forEach((game, i) => {
-		let currentGame = Object.keys(game.seated).find((seat) => {
+	let gameUserIsIn = games.find((game) => {
+		return !!Object.keys(game.seated).find((seat) => {
 			return game.seated[seat].userName === socket.handshake.session.passport.user;
 		});
-
-		if (currentGame) {
-			let tempChats = game.chats,
-				cloneGame = _.clone(currentGame);
-
-			console.log(cloneGame);	
-			socket.join(game.uid);
-			socket.emit('gameUpdate', secureGame(cloneGame));
-		}
 	});
+
+	if (gameUserIsIn) {
+		socket.join(gameUserIsIn.uid);
+		socket.emit('gameUpdate', secureGame(gameUserIsIn));
+	}
 }
 
 export function handleUpdatedGameSettings(socket, data) {
