@@ -77,23 +77,21 @@ export default class Table extends React.Component {
 			return `card card${num}`;
 		};
 
-		if (!this.props.gameInfo.inProgress || /^Game starts in/.test(this.props.gameInfo.status) || /^Dealing../.test(this.props.gameInfo.status)) {
-			return _.range(1, 11).map((num) => {
-				return <div key={num} className={reactDoesntLetMePutClassNameLogicInJSXForNoReason(num)}></div>
-			});
-		}
+		return _.range(1, 11).map((num) => {
+			return <div key={num} className={reactDoesntLetMePutClassNameLogicInJSXForNoReason(num)}></div>
+		});
 	}
 
 	dealCards() {
-		let $cards = $('section.table .cards'),
-			endSeatTop = ['20px', '70px', '210px', '320px', '70px', '210px', '320px'],
-			endSeatLeft = ['260px', '430px', '500px', '360px', '90px', '20px', '160px'];
+		let $cards = $('section.table .card'),
+			endSeatTop = ['20px', '70px', '210px', '320px', '70px', '210px', '320px', '190px', '190px', '190px'],
+			endSeatLeft = ['260px', '430px', '500px', '360px', '90px', '20px', '160px', '180px', '260px', '340px'];
 
-		$cards.each((index) => {
+		$cards.each(function (index) {
 			$(this).animate({
 				top: endSeatTop[index],
 				left: endSeatLeft[index]
-			}, 3000);
+			}, 2000);
 		});
 	}
 

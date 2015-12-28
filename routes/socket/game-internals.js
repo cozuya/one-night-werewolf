@@ -1,6 +1,7 @@
 'use strict';
 
-import { games, secureGame } from './game.js';
+import { games } from './game.js';
+import { secureGame } from './util.js';
 import { sendInprogressChats } from './gamechat.js';
 import _ from 'lodash';
 
@@ -39,24 +40,30 @@ export function startGame(game) {
 		}
 	}
 
-	game.internals.seatedPlayers.forEach((player, i) => {
-		player.gameChats = [{
+	game.status = 'Dealing..';
+	io.in(game.uid).emit('gameUpdate', secureGame(game));
+
+	setTimeout(() => {
+		game.internals.seatedPlayers.forEach((player, i) => {
+			player.gameChats = [{
+				gameChat: true,
+				userName: player.userName,
+				chat: `The game begins and you receive the ${player.trueRole.toUpperCase()} role.`,
+				seat: i + 1,
+				timestamp: new Date()
+			}];
+		});
+
+		game.internals.unSeatedGameChats.push({
 			gameChat: true,
-			userName: player.userName,
-			chat: `The game begins and you receive the ${player.trueRole.toUpperCase()} role.`,
-			seat: i + 1,
+			chat: 'The game begins.',
 			timestamp: new Date()
-		}];
-	});
+		});
 
-	game.internals.unSeatedGameChats.push({
-		gameChat: true,
-		chat: 'The game begins.',
-		timestamp: new Date()
-	});
-
-	sendInprogressChats(game);
-	beginPreNightPhase(game);
+		game.status = 'Night begins in 5 seconds.';
+		sendInprogressChats(game);
+		beginPreNightPhase(game);
+	}, 2000);
 }
 
 let beginPreNightPhase = () => {
