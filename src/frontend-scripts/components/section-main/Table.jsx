@@ -78,7 +78,14 @@ export default class Table extends React.Component {
 		};
 
 		return _.range(1, 11).map((num) => {
-			return <div key={num} className={reactDoesntLetMePutClassNameLogicInJSXForNoReason(num)}></div>
+			return (
+				<div key={num} className={reactDoesntLetMePutClassNameLogicInJSXForNoReason(num)}>
+					<div className="card-flipper">
+						<div className="card-back"></div>
+						<div className="card-front"></div>
+					</div>
+				</div>
+			);
 		});
 	}
 

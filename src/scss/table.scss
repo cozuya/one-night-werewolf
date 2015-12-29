@@ -38,15 +38,49 @@
 		
 
 		.card {
-			border-radius: 4px;
 			top: 190px;
 			left: 260px;
-			background-image: url('../images/vertical_cloth.png');
-			width: 59px;
-			height: 80px;
 			position: absolute;
-			border: 1px solid #eee;
+			perspective: 1000;
+
+			.card-flipper {
+				width: 59px;
+				height: 80px;
+				transition: 1s;
+				transform-style: preserve-3d;
+				position: relative;
+			}
+
+			.card-flipper.flip {
+				transform: rotateY(180deg);
+			}
+
+			.card-front, .card-back {
+				border-radius: 4px;
+				backface-visibility: hidden;
+				border: 1px solid #eee;
+				position: absolute;
+				top: 0;
+				left: 0;
+				width: 59px;
+				height: 80px;
+			}
+
+			.card-front {
+				transform: rotateY(180deg);
+			}
+
+			.card-back {
+				z-index: 2;
+				transform: rotateY(0deg);
+				background-image: url('../images/vertical_cloth.png');
+			}
 		}
+
+		.card.flipped {
+			transform: rotateY(180deg);
+		}
+
 
 		.seat1 {
 			top: 20px;
