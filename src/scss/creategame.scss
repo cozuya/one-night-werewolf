@@ -63,18 +63,15 @@
 
 	.pickroles .column {
 		height: 120px;
-		width: 12.25% !important;  // 88px
+		width:  81px !important;
 		margin: 0 3.75% !important;
 		padding: 0 !important;
 		text-align: center;
 
-		p {
-			border: 1px solid grey;
-			background: $villageteam;
+		 div {
 			height: 110px;
 			margin-bottom: 5px;
 			border-radius: 4px;
-			font-size: 12px;
 		}
 
 		> span {
@@ -82,6 +79,45 @@
 			margin: 0 4%;
 		}
 
+		div[data-role="werewolf"] {
+			background: url('../images/cards/card-werewolf.png');
+		}
+
+		div[data-role="minion"] {
+			background: url('../images/cards/card-minion.png');
+		}
+
+		div[data-role="mason"] {
+			background: url('../images/cards/card-mason.png');
+		}
+
+		div[data-role="seer"] {
+			background: url('../images/cards/card-seer.png');
+		}
+
+		div[data-role="robber"] {
+			background: url('../images/cards/card-robber.png');
+		}
+
+		div[data-role="troublemaker"] {
+			background: url('../images/cards/card-troublemaker.png');
+		}
+
+		div[data-role="insomniac"] {
+			background: url('../images/cards/card-insomniac.png');
+		}
+
+		div[data-role="hunter"] {
+			background: url('../images/cards/card-hunter.png');
+		}
+
+		div[data-role="tanner"] {
+			background: url('../images/cards/card-tanner.png');
+		}
+
+		div[data-role="villager"] {
+			background: url('../images/cards/card-villager.png');
+		}
 	}
 
 	.pickroles {

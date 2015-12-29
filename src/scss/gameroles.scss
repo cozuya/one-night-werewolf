@@ -13,34 +13,8 @@
 	> div > .roles {
 		width: 70px;
 		height: 95px;
-		background: $villageteam;
 		float: left;
 		margin: 9px 7px 9px 9px;
 		border-radius: 4px;
-		font-family: "Raleway", Helvetica, Arial, sans-serif;
-		text-align: center;
-
-		p:first-letter {
-			text-transform: capitalize;
-		}
-
-		+ div > span {
-			color: $villageteam;
-		}
-	}
-
-	> div > .werewolf, > .minion {
-		+ div > span {
-			color: $werewolfteam;
-		}
-
-		background: $werewolfteam;
-	}
-
-	> div > .tanner {
-		+ div > span {
-			color: $tannerteam;
-		}
-		background: $tannerteam;
 	}
 }

@@ -26,19 +26,12 @@ export default class Gameroles extends React.Component {
 		return `roles ${role}`;
 	}
 
-	formatRoles(role) {
-		return role === 'troublemaker' ? 'trouble\nmaker' : role;
-	}
-
 	renderRoles(roles) {
 		return roles.map((role, i) => {
 			return (
 				<div key={i}>
-					<div className={this.setClasses(role)}>
-						<p>{this.formatRoles(role)}</p>
-					</div>
-					<div className="ui small popup transition hidden top left" dangerouslySetInnerHTML={{__html: roleMap[role].description}}>
-					</div>
+					<div className={this.setClasses(role)}></div>
+					<div className="ui small popup transition hidden top left" dangerouslySetInnerHTML={{__html: roleMap[role].description}}></div>
 				</div>
 			);
 		});
