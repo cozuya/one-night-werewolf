@@ -75,6 +75,46 @@
 				transform: rotateY(0deg);
 				background-image: url('../images/vertical_cloth.png');
 			}
+
+			.card-front.werewolf {
+				background-image: url('../images/cards/card-werewolf.png');
+			}
+
+			.card-front.minion {
+				background-image: url('../images/cards/card-minion.png');
+			}
+
+			.card-front.mason {
+				background-image: url('../images/cards/card-mason.png');
+			}
+
+			.card-front.seer {
+				background-image: url('../images/cards/card-seer.png');
+			}
+
+			.card-front.robber {
+				background-image: url('../images/cards/card-robber.png');
+			}
+
+			.card-front.troublemaker {
+				background-image: url('../images/cards/card-troublemaker.png');
+			}
+
+			.card-front.insomniac {
+				background-image: url('../images/cards/card-insomniac.png');
+			}
+
+			.card-front.hunter {
+				background-image: url('../images/cards/card-hunter.png');
+			}
+
+			.card-front.tanner {
+				background-image: url('../images/cards/card-tanner.png');
+			}
+
+			.card-front.villager {
+				background-image: url('../images/cards/card-villager.png');
+			}
 		}
 
 		.card.flipped {

@@ -23,20 +23,10 @@ export default class Table extends React.Component {
 			socket.emit('startGameCountdown', gameInfo.uid);
 		}
 
-		if (gameInfo.inProgress && gameInfo.status === 'Dealing..') {
+		if (gameInfo.inProgress && gameInfo.status === 'Dealing..') {  // todo: refactor this, this could possibly fire multiple times if someone chats during this
 			this.dealCards();
 		}
 	}
-
-	// shouldComponentUpdate() {
-	// 	let gameInfo = this.props.gameInfo;
-
-	// 	if (!gameInfo.inProgress && gameInfo.seatedCount === 2 && gameInfo.seated.seat1.userName === this.props.userInfo.userName) {
-	// 		return false;
-	// 	}
-
-	// 	return true;
-	// }
 
 	leaveGame() {
 		this.props.updateSeatedUsers(null);
@@ -89,19 +79,25 @@ export default class Table extends React.Component {
 		});
 	}
 
-	dealCards() {
+	dealCards() { // todo: turn this whole method into CSS animations and add/remove classes and use setstate for observers.
 		let $cards = $('section.table .card'),
 			endSeatTop = ['20px', '70px', '210px', '320px', '70px', '210px', '320px', '190px', '190px', '190px'],
-			endSeatLeft = ['260px', '430px', '500px', '360px', '90px', '20px', '160px', '180px', '260px', '340px'];
+			endSeatLeft = ['260px', '430px', '500px', '360px', '90px', '20px', '160px', '180px', '260px', '340px'],
+			userSeat = Object.keys(gameInfo.seated).find((seat) => {
+				return gameInfo.seated[seat].userName === this.props.userInfo.userName;
+			});
+
+		console.log(this.props.gameInfo);
 
 		$cards.each(function (index) {
 			$(this).animate({
 				top: endSeatTop[index],
 				left: endSeatLeft[index]
-			}, 2000);
+			}, 2000, function () {
+
+			});
 		});
 	}
-
 	render() {
 		return (
 			<section className="table">
