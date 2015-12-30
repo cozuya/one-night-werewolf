@@ -148,6 +148,10 @@ class App extends React.Component {
 		socket.emit('updateSeatedUsers', data);
 	}
 
+	updateTableState(tableState) {
+
+	}
+
 	handleNewChat(chat) {
 		socket.emit('newGameChat', chat, this.props.gameInfo.uid);
 	}
@@ -167,6 +171,7 @@ class App extends React.Component {
 					onCreateGameSubmit={this.onCreateGameSubmit.bind(this)}
 					leaveCreateGame={this.onLeaveCreateGame.bind(this)}
 					gameInfo={this.props.gameInfo}
+					changeTableState={this.props.updateTableState}
 					routeToDefault={this.handleRouteToDefault.bind(this)}
 					updateSeatedUsers={this.updateSeatedUsersInGame.bind(this)}
 					quickDefault={this.makeQuickDefault.bind(this)}

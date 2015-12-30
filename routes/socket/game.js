@@ -53,7 +53,6 @@ export function sendGameInfo(socket, uid) {
 	if (game.inProgress) {
 		if (socket.handshake.session) {
 			let player = getInternalPlayerInGameByUserName(game, socket.handshake.session.passport.user);
-			console.log(player);
 			cloneGame.chats = player ? combineInprogressChats(game, player) : combineInprogressChats(game);
 		} else {
 			cloneGame.chats = combineInprogressChats(game);

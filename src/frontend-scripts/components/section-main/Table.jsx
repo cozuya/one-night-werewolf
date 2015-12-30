@@ -23,9 +23,32 @@ export default class Table extends React.Component {
 			socket.emit('startGameCountdown', gameInfo.uid);
 		}
 
-		if (gameInfo.inProgress && gameInfo.status === 'Dealing..') {  // todo: refactor this, this could possibly fire multiple times if someone chats during this
+		if (gameInfo.tableState.cardsDealt === 'in progress') {
+			this.dealCards();
+
+			setTimeout(() => { // todo: add seat to userinfo, check for that before firing reveal.
+				this.revealCard('1');
+			}, 2000);
+		}
+	}
+
+	componentDidMount() {
+		console.log(this.props.gameInfo);
+		if (this.props.gameInfo.tableState.cardsDealt === true) {
 			this.dealCards();
 		}
+	}
+
+	revealCard(seatNumber) {
+		let $cardFlipper = $(`section.table div.card${seatNumber} div.card-flipper`);
+
+		$cardFlipper.addClass('flip');
+
+		console.log($cardFlipper);
+
+		setTimeout(() => {
+			$cardFlipper.removeClass('flip');			
+		}, 3000);
 	}
 
 	leaveGame() {
@@ -64,40 +87,49 @@ export default class Table extends React.Component {
 
 	unStartedGame() {
 		let reactDoesntLetMePutClassNameLogicInJSXForNoReason = (num) => {
-			return `card card${num}`;
-		};
+				return `card card${num}`;
+			},
+			reactDoesntLetMePutClassNameLogicInJSXForNoReason2 = () => {
+				let classes = 'card-front',
+					role = this.props.gameInfo.tableState.playerPerceivedRole;
+
+				if (role) {
+					classes = `${classes} ${role}`;
+				}
+
+				return classes;
+			}
 
 		return _.range(1, 11).map((num) => {
 			return (
 				<div key={num} className={reactDoesntLetMePutClassNameLogicInJSXForNoReason(num)}>
 					<div className="card-flipper">
 						<div className="card-back"></div>
-						<div className="card-front"></div>
+						<div className={reactDoesntLetMePutClassNameLogicInJSXForNoReason2()}></div>
 					</div>
 				</div>
 			);
 		});
 	}
 
-	dealCards() { // todo: turn this whole method into CSS animations and add/remove classes and use setstate for observers.
-		let $cards = $('section.table .card'),
-			endSeatTop = ['20px', '70px', '210px', '320px', '70px', '210px', '320px', '190px', '190px', '190px'],
-			endSeatLeft = ['260px', '430px', '500px', '360px', '90px', '20px', '160px', '180px', '260px', '340px'],
-			userSeat = Object.keys(gameInfo.seated).find((seat) => {
-				return gameInfo.seated[seat].userName === this.props.userInfo.userName;
-			});
-
-		console.log(this.props.gameInfo);
+	dealCards() {
+		let $cards = $('section.table .card');
+			// endSeatTop = ['20px', '70px', '210px', '320px', '70px', '210px', '320px', '190px', '190px', '190px'],
+			// endSeatLeft = ['260px', '430px', '500px', '360px', '90px', '20px', '160px', '180px', '260px', '340px']
+			// ,
+			// userSeat = Object.keys(gameInfo.seated).find((seat) => {
+			// 	return gameInfo.seated[seat].userName === this.props.userInfo.userName;
+			// })
 
 		$cards.each(function (index) {
-			$(this).animate({
-				top: endSeatTop[index],
-				left: endSeatLeft[index]
-			}, 2000, function () {
-
-			});
+			if (index < 7) {
+				$(this).addClass(`seat${index + 1}`);			
+			} else {
+				$(this).addClass(`mid${index + 1}`);
+			}
 		});
 	}
+
 	render() {
 		return (
 			<section className="table">

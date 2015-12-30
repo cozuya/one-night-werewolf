@@ -41,6 +41,7 @@ export function startGame(game) {
 	}
 
 	game.status = 'Dealing..';
+	game.tableState.cardsDealt = 'in progress';
 	io.in(game.uid).emit('gameUpdate', secureGame(game));
 
 	setTimeout(() => {
@@ -61,7 +62,8 @@ export function startGame(game) {
 		});
 
 		game.status = 'Night begins in 5 seconds.';
-		sendInprogressChats(game);
+		game.tableState.cardsDealt = true;
+		sendInprogressChats(game, true);
 		beginPreNightPhase(game);
 	}, 2000);
 }

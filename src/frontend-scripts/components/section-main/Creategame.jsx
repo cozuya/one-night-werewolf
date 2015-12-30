@@ -152,7 +152,8 @@ export default class Creategame extends React.Component {
 			status: 'Waiting for more players..',
 			chats: [],
 			tableState: {
-				dealt: false
+				dealt: false,
+				playerPerceivedRole: false
 			},
 			inProgress: false,
 			seatedCount: 1,

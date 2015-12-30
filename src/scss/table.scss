@@ -42,6 +42,7 @@
 			left: 260px;
 			position: absolute;
 			perspective: 1000;
+			transition: all 2s;
 
 			.card-flipper {
 				width: 59px;
@@ -68,6 +69,7 @@
 
 			.card-front {
 				transform: rotateY(180deg);
+				background-size: cover;
 			}
 
 			.card-back {

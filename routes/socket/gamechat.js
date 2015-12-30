@@ -39,14 +39,18 @@ export function combineInprogressChats(game, userName) {
 	return tempChats;
 }
 
-export function sendInprogressChats(game) {
+export function sendInprogressChats(game, gameInit) {
 	let sockets = getSocketsByUid(game.uid);
 
-	game.internals.seatedPlayers.forEach((player) => {
+	game.internals.seatedPlayers.forEach((player, index) => {
 		let socket = sockets.playerSockets.find((sock) => {
 				return sock.handshake.session.passport.user === player.userName;
 			}),
 			cloneGame = _.clone(game);
+
+		if (gameInit) { // todo: this doesn't work on refreshing browser - turns everyone into a werewolf.. need to rethink.
+			cloneGame.tableState.playerPerceivedRole = cloneGame.internals.seatedPlayers[index].trueRole; 
+		}
 
 		cloneGame.chats = combineInprogressChats(cloneGame, player.userName);
 		socket.emit('gameUpdate', secureGame(cloneGame));
