@@ -101,15 +101,17 @@ export function startGameCountdown(uid) {
 	countDown;
 
 	game.inProgress = true;
+
+	startGame(game);
 	
-	countDown = setInterval(() => {
-		if (seconds === 0) {
-			clearInterval(countDown);
-			startGame(game);
-		} else {
-			game.status = `Game starts in ${seconds} second${seconds === 1 ? '' : 's'}.`;
-			io.sockets.in(uid).emit('gameUpdate', secureGame(game));
-		}
-		seconds--;
-	}, 1000);
+	// countDown = setInterval(() => {
+	// 	if (seconds === 0) {
+	// 		clearInterval(countDown);
+	// 		startGame(game);
+	// 	} else {
+	// 		game.status = `Game starts in ${seconds} second${seconds === 1 ? '' : 's'}.`;
+	// 		io.sockets.in(uid).emit('gameUpdate', secureGame(game));
+	// 	}
+	// 	seconds--;
+	// }, 1000);
 }

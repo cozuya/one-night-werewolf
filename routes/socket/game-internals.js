@@ -6,6 +6,7 @@ import { sendInprogressChats } from './gamechat.js';
 import _ from 'lodash';
 
 export function startGame(game) {
+	console.log('startgame fired');
 	let allWerewolvesNotInCenter = false,
 		assignRoles = () => {
 			let _roles = _.clone(game.roles);

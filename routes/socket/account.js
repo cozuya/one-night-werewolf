@@ -21,7 +21,7 @@ export function checkUserStatus(socket) {
 
 		cloneGame = _.clone(gameUserIsIn);
 		cloneGame.chats = combineInprogressChats(cloneGame, userName);
-		cloneGame.tableState.playerPerceivedRole = internalPlayer.perceivedRole;
+		cloneGame.tableState.playerPerceivedRole = internalPlayer.perceivedRole;  // todo: this crashes game if a user logs into a 2nd account on same computer without logging out of old
 		socket.join(gameUserIsIn.uid);
 		socket.emit('gameUpdate', secureGame(cloneGame));
 	}
