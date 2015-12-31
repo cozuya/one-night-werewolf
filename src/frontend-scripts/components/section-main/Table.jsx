@@ -86,7 +86,7 @@ export default class Table extends React.Component {
 		}
 	}
 
-	unStartedGame() {
+	createCards() {
 		let reactDoesntLetMePutClassNameLogicInJSXForNoReason = (num) => {
 				return `card card${num}`;
 			},
@@ -101,7 +101,7 @@ export default class Table extends React.Component {
 				return classes;
 			}
 
-		return _.range(1, 11).map((num) => {
+		return _.range(1, 11).map((num) => { // todo: this outputs the player's perceived role to every card instead of just theirs, kinda funny but should probably be looked at eventually.
 			return (
 				<div key={num} className={reactDoesntLetMePutClassNameLogicInJSXForNoReason(num)}>
 					<div className="card-flipper">
@@ -134,6 +134,8 @@ export default class Table extends React.Component {
 	render() {
 		return (
 			<section className="table">
+				<div className="night-blocker night-top"></div>
+				<div className="night-blocker night-bottom"></div>
 				<div className="tableimage"></div>
 				{_.range(1, 8).map((el) => {
 					let seated = this.props.gameInfo.seated[`seat${el}`],
@@ -150,7 +152,7 @@ export default class Table extends React.Component {
 				<div className="seat mid1"></div>
 				<div className="seat mid2"></div>
 				<div className="seat mid3"></div>
-				{this.unStartedGame()}
+					{this.createCards()}
 				<i onClick={this.leaveGame.bind(this)} className={this.validateLeaveButton()}></i>
 				<div className="ui basic small modal">
 					<i className="close icon"></i>

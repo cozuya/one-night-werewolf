@@ -46,6 +46,9 @@ export function startGame(game) {
 	io.in(game.uid).emit('gameUpdate', secureGame(game));
 
 	setTimeout(() => {
+		let seconds = 5,
+			countDown;
+
 		game.internals.seatedPlayers.forEach((player, i) => {
 			player.gameChats = [{
 				gameChat: true,
@@ -62,15 +65,22 @@ export function startGame(game) {
 			timestamp: new Date()
 		});
 
-		game.status = 'Night begins in 5 seconds.';
 		game.tableState.cardsDealt = true;
-		sendInprogressChats(game, true);
+		sendInprogressChats(game);
+		countDown = setInterval(() => {
+			if (seconds === 0) {
+				clearInterval(countDown);
+				beginPreNightPhase(game);
+			} else {
+				game.status = `Night begins in ${seconds} seconds.`;
+				sendInprogressChats(game);
+			}
+			seconds--;
+		}, 1000);
 		beginPreNightPhase(game);
 	}, 2000);
 }
 
-let beginPreNightPhase = () => {
-	// todo: deal with this race condition/overwriting the sendnewgamechat of starting the game
-	// game.status = 'Dealing..';
-	// io.in(game.uid).emit('gameUpdate', secureGame(game));
+let beginPreNightPhase = (game) => {
+
 }

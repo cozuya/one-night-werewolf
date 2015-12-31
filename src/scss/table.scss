@@ -4,6 +4,24 @@
 
 	.table {
 		position: relative;
+		// overflow: hidden;
+
+		.night-blocker {
+			position: absolute;
+			left: 0;
+			width: 585px;
+			height: 220px;
+			background: #000;
+			display: none;
+		}
+
+		.night-top {
+			top: -220px;
+		}
+
+		.night-bottom {
+			top: 440px;
+		}
 
 		.tableimage {
 			position: absolute;
@@ -20,7 +38,7 @@
 		.seat {
 			width: 59px;
 			height: 80px;
-			background: #ccc;
+			background: #e5e5e5;
 			position: absolute;
 			border-radius: 4px;
 			text-align: center;
@@ -35,7 +53,6 @@
 				text-align: center;
 			}
 		}
-		
 
 		.card {
 			top: 190px;
