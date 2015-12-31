@@ -54,6 +54,7 @@ export function sendGameInfo(socket, uid) {
 		if (socket.handshake.session) {
 			let player = getInternalPlayerInGameByUserName(game, socket.handshake.session.passport.user);
 			cloneGame.chats = player ? combineInprogressChats(game, player) : combineInprogressChats(game);
+			cloneGame.gameState.playerPerceivedRole = player.perceivedRole;
 		} else {
 			cloneGame.chats = combineInprogressChats(game);
 		}

@@ -3,7 +3,7 @@
 import mongoose from 'mongoose';
 import GameSettings from '../../models/gamesettings';
 import { games } from './game.js';
-import { secureGame} from './util.js';
+import { secureGame, getInternalPlayerInGameByUserName } from './util.js';
 import { combineInprogressChats } from './gamechat.js';
 import _ from 'lodash';
 
@@ -16,8 +16,11 @@ export function checkUserStatus(socket) {
 	chats, cloneGame;
 
 	if (gameUserIsIn) {
+		let internalPlayer = getInternalPlayerInGameByUserName(gameUserIsIn, socket.handshake.session.passport.user);
+
 		cloneGame = _.clone(gameUserIsIn);
 		cloneGame.chats = combineInprogressChats(cloneGame, socket.handshake.session.passport.user);
+		cloneGame.tableState.playerPerceivedRole = internalPlayer.perceivedRole;
 		socket.join(gameUserIsIn.uid);
 		socket.emit('gameUpdate', secureGame(cloneGame));
 	}

@@ -19,6 +19,7 @@ export function startGame(game) {
 				}
 
 				player.trueRole = role;
+				player.perceivedRole = role;
 				player.seat = index + 1;
 				_roles.splice(roleIndex, 1);
 			});

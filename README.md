@@ -13,7 +13,7 @@ WIP and just getting started!  Estimated alpha deployment: May 2016.
 
 ## Installation ##
 
-Install node - currently works with v5.0.0 and below.
+Install node - currently works with v5.x and below.
 
 Install mongodb, have it in your path.
 

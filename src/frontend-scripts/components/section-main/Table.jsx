@@ -27,13 +27,16 @@ export default class Table extends React.Component {
 			this.dealCards();
 
 			setTimeout(() => { // todo: add seat to userinfo, check for that before firing reveal.
-				this.revealCard('1');
+				let playerSeat = Object.keys(gameInfo.seated).find((seat) => {
+					return gameInfo.seated[seat].userName === this.props.userInfo.userName;
+				});
+
+				this.revealCard(playerSeat.split('seat')[1]);
 			}, 2000);
 		}
 	}
 
 	componentDidMount() {
-		console.log(this.props.gameInfo);
 		if (this.props.gameInfo.tableState.cardsDealt === true) {
 			this.dealCards();
 		}
@@ -43,8 +46,6 @@ export default class Table extends React.Component {
 		let $cardFlipper = $(`section.table div.card${seatNumber} div.card-flipper`);
 
 		$cardFlipper.addClass('flip');
-
-		console.log($cardFlipper);
 
 		setTimeout(() => {
 			$cardFlipper.removeClass('flip');			
