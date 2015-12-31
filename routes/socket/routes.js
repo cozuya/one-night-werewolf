@@ -15,6 +15,7 @@ export default () => {
 		});
 
 		socket.on('getGameList', () => {
+			console.log('ggl');
 			sendGameList(socket);			
 		});
 

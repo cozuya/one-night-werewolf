@@ -74,11 +74,9 @@ export function updateSeatedUsers(socket, data) {
 		io.sockets.in(data.uid).emit('gameUpdate', secureGame(game));
 	} else {
 		for (let key in game.seated) {
-			if (game.seated.hasOwnProperty(key)) {
-				if (game.seated[key].userName === socket.handshake.session.passport.user) {
-					delete game.seated[key];
-					game.seatedCount--;
-				}
+			if (game.seated[key].userName === socket.handshake.session.passport.user) {
+				delete game.seated[key];
+				game.seatedCount--;
 			}
 		}
 
@@ -90,28 +88,26 @@ export function updateSeatedUsers(socket, data) {
 		io.sockets.in(data.uid).emit('gameUpdate', secureGame(game));
 		socket.emit('gameUpdate', {});
 	}
-	sendGameList(socket);
+	// sendGameList(socket);  // todo: this double-updates the game causing mayhem.  commenting out for now but critical this gets addressed at some point.
 }
 
 export function startGameCountdown(uid) {
 	let game = games.find((el) => {
 		return el.uid === uid;
 	}),
-	seconds = 3,
+	seconds = 1,
 	countDown;
 
 	game.inProgress = true;
 
-	startGame(game);
-	
-	// countDown = setInterval(() => {
-	// 	if (seconds === 0) {
-	// 		clearInterval(countDown);
-	// 		startGame(game);
-	// 	} else {
-	// 		game.status = `Game starts in ${seconds} second${seconds === 1 ? '' : 's'}.`;
-	// 		io.sockets.in(uid).emit('gameUpdate', secureGame(game));
-	// 	}
-	// 	seconds--;
-	// }, 1000);
+	countDown = setInterval(() => {
+		if (seconds === 0) {
+			clearInterval(countDown);
+			startGame(game);
+		} else {
+			game.status = `Game starts in ${seconds} second${seconds === 1 ? '' : 's'}.`;
+			io.sockets.in(uid).emit('gameUpdate', secureGame(game));
+		}
+		seconds--;
+	}, 1000);
 }

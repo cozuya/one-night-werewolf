@@ -6,7 +6,6 @@ import { sendInprogressChats } from './gamechat.js';
 import _ from 'lodash';
 
 export function startGame(game) {
-	console.log('startgame fired');
 	let allWerewolvesNotInCenter = false,
 		assignRoles = () => {
 			let _roles = _.clone(game.roles);
@@ -47,7 +46,7 @@ export function startGame(game) {
 	io.in(game.uid).emit('gameUpdate', secureGame(game));
 
 	setTimeout(() => {
-		let seconds = 5,
+		let seconds = 1,
 			countDown;
 
 		game.internals.seatedPlayers.forEach((player, i) => {
@@ -68,24 +67,58 @@ export function startGame(game) {
 
 		game.tableState.cardsDealt = true;
 		sendInprogressChats(game);
-		console.log('settimeout fired');
 		countDown = setInterval(() => {
 			if (seconds === 0) {
 				clearInterval(countDown);
-				console.log('bpnp fired');
-				beginPreNightPhase(game);
+				beginNightPhases(game);
 			} else {
-				console.log('countdown fired');
-				game.status = `Night begins in ${seconds} seconds.`;
+				game.status = `Night begins in ${seconds} second${seconds === 1 ? '' : 's'}.`;
 				sendInprogressChats(game);
 			}
 			seconds--;
 		}, 1000);
-		beginPreNightPhase(game);
 	}, 2000);
 }
 
-let beginPreNightPhase = (game) => {
+let beginNightPhases = (game) => {
 	game.tableState.isNight = true;
+	game.status = 'Night phase #1 ends in 10 seconds';
 	sendInprogressChats(game);
+
+	// round 1: all werewolves minions masons seers and (one robber or troublemaker)
+	// round 2 through x: robbercount + troublemaker count minus 1
+	// round x+1: all insomniacs
+
+	console.log(game);
+
+	let phaseCount,
+		activeRoles = _.clone(game.roles),
+		robberCount, troublemakerCount, insomniacCount, werewolfCount;
+
+	game.internals.centerRoles.forEach((role) => {
+		let index = activeRoles.indexOf(role);
+
+		activeRoles.splice(index, 1);
+	});
+
+	activeRoles.forEach((role) => {
+		switch (role) {
+			case 'robber':
+				robberCount++;
+				break;
+			case 'troublemaker':
+				troublemaker++;
+				break;
+			case 'insomniac':
+				insomniacCount++;
+			case 'werewolf':
+				werewolfCount++;
+		}
+	});
 }
+
+
+
+
+
+
