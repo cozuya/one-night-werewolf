@@ -67,11 +67,14 @@ export function startGame(game) {
 
 		game.tableState.cardsDealt = true;
 		sendInprogressChats(game);
+		console.log('settimeout fired');
 		countDown = setInterval(() => {
 			if (seconds === 0) {
 				clearInterval(countDown);
+				console.log('bpnp fired');
 				beginPreNightPhase(game);
 			} else {
+				console.log('countdown fired');
 				game.status = `Night begins in ${seconds} seconds.`;
 				sendInprogressChats(game);
 			}
@@ -82,5 +85,6 @@ export function startGame(game) {
 }
 
 let beginPreNightPhase = (game) => {
-
+	game.tableState.isNight = true;
+	sendInprogressChats(game);
 }

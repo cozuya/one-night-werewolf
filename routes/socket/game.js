@@ -15,7 +15,7 @@ let deleteGame = (game) => {
 
 export let games = [];
 
-export function sendGameList(socket) {
+export function sendGameList() {
 	let gameList = games.map((game) => {
 		return {
 			kobk: game.kobk,
@@ -28,7 +28,7 @@ export function sendGameList(socket) {
 		};
 	});
 
-	socket.emit('gameList', gameList);
+	io.sockets.emit('gameList', gameList);
 }
 
 export function createGame(socket, game) {
@@ -38,7 +38,7 @@ export function createGame(socket, game) {
 	};
 
 	games.push(game);
-	sendGameList(socket);
+	sendGameList();
 	socket.join(game.uid);
 };
 
@@ -51,10 +51,10 @@ export function sendGameInfo(socket, uid) {
 	socket.join(uid);
 
 	if (game.inProgress) {
-		if (socket.handshake.session) {
+		if (Object.keys(socket.handshake.session.passport).length) {
 			let player = getInternalPlayerInGameByUserName(game, socket.handshake.session.passport.user);
 			cloneGame.chats = player ? combineInprogressChats(game, player) : combineInprogressChats(game);
-			cloneGame.gameState.playerPerceivedRole = player.perceivedRole;
+			cloneGame.gameState.playerPerceivedRole = player.perceivedRole ? player.perceivedRole : undefined;
 		} else {
 			cloneGame.chats = combineInprogressChats(game);
 		}
@@ -97,7 +97,11 @@ export function startGameCountdown(uid) {
 	let game = games.find((el) => {
 		return el.uid === uid;
 	}),
-	seconds = 1,
+	seconds = 3,
+	countDown;
+
+	game.inProgress = true;
+	
 	countDown = setInterval(() => {
 		if (seconds === 0) {
 			clearInterval(countDown);
@@ -108,6 +112,4 @@ export function startGameCountdown(uid) {
 		}
 		seconds--;
 	}, 1000);
-
-	game.inProgress = true;
 }

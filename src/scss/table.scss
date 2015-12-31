@@ -1,26 +1,36 @@
 .table-container {
 	background: #fafafa;
 	padding: 0;
+	overflow: hidden;
+
 
 	.table {
 		position: relative;
-		// overflow: hidden;
 
-		.night-blocker {
+		.nightblocker {
 			position: absolute;
 			left: 0;
 			width: 585px;
 			height: 220px;
 			background: #000;
-			display: none;
+			transition: all ease-in .5s;
+			z-index: 3;
 		}
 
-		.night-top {
+		.nightblocker.nightblocker-top {
 			top: -220px;
 		}
 
-		.night-bottom {
+		.nightblocker.nightblocker-bottom {
 			top: 440px;
+		}
+
+		.nightblocker.nightblocker-top-blocked {
+			top: 0px;
+		}
+
+		.nightblocker.nightblocker-bottom-blocked {
+			top: 220px;
 		}
 
 		.tableimage {

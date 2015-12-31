@@ -39,6 +39,7 @@ export default () => {
 		});
 
 		socket.on('startGameCountdown', (uid) => {
+			console.log('sgc fired');
 			startGameCountdown(uid);
 		});
 	});

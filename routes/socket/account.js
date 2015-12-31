@@ -40,12 +40,14 @@ export function handleUpdatedGameSettings(socket, data) {
 }
 
 export function sendUserGameSettings(socket) {
+	var username;
+
 	try {
-		var username = socket.handshake.session.passport.user;  // todo: this errors out some times/is undefined
+		username = socket.handshake.session.passport.user;  // todo: this errors out some times/is undefined
 	} catch (e) {
 		console.log('sendUserGameSettings errored out');
 	}
-	
+
 	GameSettings.findOne({username}, (err, settings) => {
 		if (err) {
 			console.log(err);

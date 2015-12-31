@@ -19,7 +19,9 @@ export default class Table extends React.Component {
 	componentDidUpdate() {
 		let gameInfo = this.props.gameInfo;
 
-		if (!gameInfo.inProgress && gameInfo.seatedCount === 2 && gameInfo.seated.seat1.userName === this.props.userInfo.userName) {
+		if (!gameInfo.inProgress && gameInfo.seatedCount === 2 && gameInfo.seated.seat1.userName === this.props.userInfo.userName && !gameInfo.inProgress) {
+			console.log(this.props.gameInfo);
+			console.log('sgc fired');
 			socket.emit('startGameCountdown', gameInfo.uid);
 		}
 
@@ -34,7 +36,16 @@ export default class Table extends React.Component {
 				this.revealCard(playerSeat.split('seat')[1]);
 			}, 2000);
 		}
+
 	}
+
+	// shouldComponentUpdate() {
+	// 	if (!gameInfo.inProgress && gameInfo.seatedCount === 2 && gameInfo.seated.seat1.userName === this.props.userInfo.userName) {
+	// 		return false;
+	// 	}
+
+	// 	return true;
+	// }
 
 	componentDidMount() {
 		if (this.props.gameInfo.tableState.cardsDealt === true) {
@@ -49,7 +60,7 @@ export default class Table extends React.Component {
 
 		setTimeout(() => {
 			$cardFlipper.removeClass('flip');			
-		}, 3000);
+		}, 4000);
 	}
 
 	leaveGame() {
@@ -94,7 +105,7 @@ export default class Table extends React.Component {
 				let classes = 'card-front',
 					role = this.props.gameInfo.tableState.playerPerceivedRole;
 
-				if (role) {
+				if (role) { // todo: check against player's seat in userinfo and only put that class on that seat as opposed to all classes
 					classes = `${classes} ${role}`;
 				}
 
@@ -131,11 +142,27 @@ export default class Table extends React.Component {
 		});
 	}
 
+	nightBlockerStatusTop () {
+		if (this.props.gameInfo.tableState.isNight) {
+			return "nightblocker nightblocker-top-blocked";
+		} else {
+			return "nightblocker nightblocker-top";
+		}
+	}
+
+	nightBlockerStatusBottom () {
+		if (this.props.gameInfo.tableState.isNight) {
+			return "nightblocker nightblocker-bottom-blocked";
+		} else {
+			return "nightblocker nightblocker-bottom";
+		}
+	}
+
 	render() {
 		return (
 			<section className="table">
-				<div className="night-blocker night-top"></div>
-				<div className="night-blocker night-bottom"></div>
+				<div className={this.nightBlockerStatusTop()}></div>
+				<div className={this.nightBlockerStatusBottom()}></div>
 				<div className="tableimage"></div>
 				{_.range(1, 8).map((el) => {
 					let seated = this.props.gameInfo.seated[`seat${el}`],
