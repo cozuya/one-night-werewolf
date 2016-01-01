@@ -49,8 +49,8 @@ export function sendInprogressChats(game) {
 			cloneGame = _.clone(game);
 		
 		cloneGame.tableState.playerPerceivedRole = cloneGame.internals.seatedPlayers[index].perceivedRole;
-
-		if (cloneGame.tableState.phase === player.nightAction.phase) {
+		
+		if (cloneGame.tableState.phase === player.nightAction.phase && !player.nightPhaseComplete) {
 			cloneGame.tableState.nightAction = cloneGame.internals.seatedPlayers[index].nightAction;
 		}
 

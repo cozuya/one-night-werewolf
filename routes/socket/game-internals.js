@@ -97,7 +97,7 @@ let beginNightPhases = (game) => {
 				let nightAction = {
 					action: 'seer',
 					phase: 1,
-					gameChat: 'As a SEER, you wake up, and may look at one player\'s card, or two of the center cards.'
+					gameChat: 'You wake up, and may look at one player\'s card, or two of the center cards.'
 				};
 
 				player.nightAction = nightAction;
@@ -106,7 +106,7 @@ let beginNightPhases = (game) => {
 			robber: () => {
 				let nightAction = {
 					action: 'robber',
-					gameChat: 'As a ROBBER, you wake up, and may exchange your card with another player\'s, and view your new role.'
+					gameChat: 'You wake up, and may exchange your card with another player\'s, and view your new role.'
 				};
 
 				player.nightAction = nightAction;
@@ -123,7 +123,7 @@ let beginNightPhases = (game) => {
 			troublemaker: () => {
 				let nightAction = {
 					action: 'troublemaker',
-					gameChat: 'As a TROUBLEMAKER, you wake up, and may switch cards between two other players without viewing them.'
+					gameChat: 'You wake up, and may switch cards between two other players without viewing them.'
 				};
 
 				player.nightAction = nightAction;
@@ -140,7 +140,7 @@ let beginNightPhases = (game) => {
 			insomniac: () => {
 				let nightAction = {
 					action: 'insomniac',
-					gameChat: 'As a INSOMNIAC, you wake up, and may view your card again.'
+					gameChat: 'You wake up, and may view your card again.'
 				};
 
 				player.nightAction = nightAction;
@@ -187,15 +187,14 @@ let beginNightPhases = (game) => {
 					}),
 					nightAction = {
 						action: 'werewolf',
-						others,
 						phase: 1
 					},
 					message;
 			
 				if (werewolves.length === 1) {
-					message = 'As a WEREWOLF, you wake up, and see no other WEREWOLVES. You may look at a center card';				
+					message = 'You wake up, and see no other WEREWOLVES. You may look at a center card';				
 				} else {
-					message = 'As a WEREWOLF, you wake up, and see that the other WEREWOLVES in this game are:';
+					message = 'You wake up, and see that the other WEREWOLVES in this game are:';
 				}
 
 				others.forEach((userName) => {
@@ -219,9 +218,9 @@ let beginNightPhases = (game) => {
 					message;
 
 				if (!werewolves.length) {
-					message = 'As a MINION, you wake up, and see that there are no WEREWOLVES. Be careful - you lose if no villager is eliminated'
+					message = 'You wake up, and see that there are no WEREWOLVES. Be careful - you lose if no villager is eliminated'
 				} else {
-					message = 'As a MINION, you wake up, and see that the WEREWOLVES in this game are: ';
+					message = 'You wake up, and see that the WEREWOLVES in this game are: ';
 				}
 
 				others.forEach((userName) => {
@@ -247,9 +246,9 @@ let beginNightPhases = (game) => {
 					message;
 
 				if (!others.length === 1) {
-					message = 'As a MASON, you wake up, and see that you are the only mason';
+					message = 'You wake up, and see that you are the only mason';
 				} else {
-					message = 'As a MASON, you wake up, and see that the MASONS in this game are: ';				
+					message = 'You wake up, and see that the MASONS in this game are: ';				
 				}
 
 				others.forEach((userName) => {
@@ -301,21 +300,26 @@ let nightPhases = (game, phases) => {
 						chat: player.nightAction.gameChat,
 						seat: player.seat,
 						timestamp: new Date()
-					}
-
+					};
+					
 					player.gameChats.push(chat);
 				});
 
 				countDown = setInterval(() => {
 					if (seconds === 0) {
-						clearInterval(countDown);
 						phasesPlayers.forEach((player) => {
+							player.nightPhaseComplete = true;
 							player.nightAction = {};
 						});
+						console.log(game.internals.seatedPlayers[0]);
+						console.log(game.internals.seatedPlayers[1]);
+						console.log(game.internals.seatedPlayers[2]);
+						console.log('Hello World!');
 						sendInprogressChats(game);
 						phasesIndex++;
+						clearInterval(countDown);
 					} else {
-						game.status = `Night phase ${(phasesIndex + 1).toString()} of ${phasesCount + 1} ends in ${seconds} second${seconds === 1 ? '' : 's'}.`;
+						game.status = `Night phase ${(phasesIndex).toString()} of ${phasesCount} ends in ${seconds} second${seconds === 1 ? '' : 's'}.`;
 						sendInprogressChats(game);
 					}
 					seconds--;
@@ -326,9 +330,10 @@ let nightPhases = (game, phases) => {
 
 	// console.log(game.internals.seatedPlayers);
 	
+	phasesFn();
+
 	if (phases.length > 1) {
+		phasesIndex++;
 		phasesTimer = setInterval(phasesFn, 10000);
-	} else {
-		phasesFn();
 	}
 }
