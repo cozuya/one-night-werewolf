@@ -15,7 +15,6 @@ export default () => {
 		});
 
 		socket.on('getGameList', () => {
-			console.log('ggl');
 			sendGameList(socket);			
 		});
 
@@ -40,7 +39,6 @@ export default () => {
 		});
 
 		socket.on('startGameCountdown', (uid) => {
-			console.log('sgc fired');
 			startGameCountdown(uid);
 		});
 	});

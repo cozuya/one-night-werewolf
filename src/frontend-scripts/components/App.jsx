@@ -94,7 +94,8 @@ class App extends React.Component {
 				inProgress: false,
 				kobk: true,
 				name: 'New Game',
-				roles: ['werewolf', 'werewolf', 'seer', 'robber', 'troublemaker', 'insomniac', 'hunter', 'villager', 'villager', 'villager'],
+				// roles: ['werewolf', 'werewolf', 'seer', 'robber', 'troublemaker', 'insomniac', 'hunter', 'villager', 'villager', 'villager'],
+				roles: ['werewolf', 'werewolf', 'robber', 'troublemaker', 'insomniac', 'robber', 'troublemaker', 'insomniac', 'robber', 'troublemaker'],
 				seated: {
 					seat1: {
 						userName: this.props.userInfo.userName
@@ -103,7 +104,7 @@ class App extends React.Component {
 				status: 'Waiting for more players..',
 				chats: [],
 				tableState: {
-					dealt: false
+					cardsDealt: false
 				},
 				seatedCount: 1,
 				time: '3:00',

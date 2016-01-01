@@ -20,6 +20,7 @@ export function startGame(game) {
 
 				player.trueRole = role;
 				player.perceivedRole = role;
+				player.nightAction = {};
 				player.seat = index + 1;
 				_roles.splice(roleIndex, 1);
 			});
@@ -81,42 +82,125 @@ export function startGame(game) {
 }
 
 let beginNightPhases = (game) => {
-	game.tableState.isNight = true;
-	game.status = 'Night phase #1 ends in 10 seconds';
-	sendInprogressChats(game);
-
 	// round 1: all werewolves minions masons seers and (one robber or troublemaker)
 	// round 2 through x: robbercount + troublemaker count minus 1
 	// round x+1: all insomniacs
 
-	console.log(game);
+	let phases = [[]],
+		roleChangerInPhase1 = false,
+		werewolfCount = 0,
+		insomniacs = [];
 
-	let phaseCount,
-		activeRoles = _.clone(game.roles),
-		robberCount, troublemakerCount, insomniacCount, werewolfCount;
-
-	game.internals.centerRoles.forEach((role) => {
-		let index = activeRoles.indexOf(role);
-
-		activeRoles.splice(index, 1);
-	});
-
-	activeRoles.forEach((role) => {
-		switch (role) {
-			case 'robber':
-				robberCount++;
-				break;
-			case 'troublemaker':
-				troublemaker++;
-				break;
-			case 'insomniac':
-				insomniacCount++;
+	game.internals.seatedPlayers.forEach((player) => {
+		switch (player.trueRole) {
 			case 'werewolf':
 				werewolfCount++;
+				phases[0].push(player);
+				break;
+			case 'minion':
+				phases[0].push(player);
+				break;
+			case 'mason':
+				phases[0].push(player);
+				break;
+			case 'seer':
+				player.nightAction.action = 'seer';
+				phases[0].push(player);
+				break;
+			case 'robber':
+				player.nightAction.action = 'robber';
+				if (roleChangerInPhase1) {
+					phases.push([player]);
+				} else {
+					roleChangerInPhase1 = true;
+					phases[0].push(player);
+				}
+				break;
+			case 'troublemaker':
+				player.nightAction.action = 'troublemaker';
+				if (roleChangerInPhase1) {
+					phases.push([player]);
+				} else {
+					roleChangerInPhase1 = true;
+					phases[0].push(player);
+				}
+				break;
+			case 'insomniac':
+				player.nightAction.action = 'insomniac';
+				insomniacs.push(player);
+				break;
 		}
 	});
+
+	if (insomniacs.length) {
+		phases.push([...insomniacs]);
+	}
+
+	phases[0].forEach((phasePlayers) => {
+		let werewolves = phasePlayers.filter((player) => {
+				if (player.trueRole === 'werewolf') {
+					return player.userName;
+				}
+			}),
+			masons = phasePlayers.filter((player) => {
+				if (player.trueRole === 'mason') {
+					return player.userName;
+				}
+			});
+
+		// todo: set up gamechat text for all werewolves minions and masons.  Should do this here.
+
+		phasePlayers.forEach((player) => {
+			if (player.trueRole === 'werewolf') {
+				player.nightAction = {
+					action: 'werewolf',
+					werewolves
+				};
+			}
+
+			if (player.trueRole === 'minion') {
+				player.nightAction = {
+					action: 'minion',
+					werewolves
+				};
+			}
+
+			if (player.trueRole === 'mason') {
+				player.nightAction = {
+					action: 'mason',
+					masons
+				};
+			}
+		});
+	});
+
+	game.tableState.isNight = true;
+	nightPhases(game, phases, werewolfCount);
 }
 
+let nightPhases = (game, phases, werewolfCount) => {
+	phases.forEach((phasePlayers, index) => {   // not working as desired
+		let seconds = 10,
+			countDown;
+
+		countDown = setInterval(() => {
+			if (seconds === 0) {
+				clearInterval(countDown);
+				phasePlayers.forEach((player) => {
+					player.nightAction = undefined;
+				});
+				sendInprogressChats(game);
+			} else {
+				game.status = `Night phase ${(index + 1).toString()} of ${phases.length} ends in ${seconds} second${seconds === 1 ? '' : 's'}.`;
+				sendInprogressChats(game);
+			}
+			seconds--;
+		}, 1000);
+	});
+
+
+	console.log(phases);
+}
 
 
 
