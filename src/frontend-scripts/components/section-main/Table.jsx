@@ -19,7 +19,7 @@ export default class Table extends React.Component {
 	componentDidUpdate() {
 		let gameInfo = this.props.gameInfo;
 		
-		if (!gameInfo.inProgress && gameInfo.seatedCount === 2 && gameInfo.seated.seat1.userName === this.props.userInfo.userName && !gameInfo.inProgress) {
+		if (!gameInfo.inProgress && gameInfo.seatedCount === 7 && gameInfo.seated.seat1.userName === this.props.userInfo.userName && !gameInfo.inProgress) {
 			socket.emit('startGameCountdown', gameInfo.uid);
 		}
 

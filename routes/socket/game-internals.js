@@ -47,7 +47,7 @@ export function startGame(game) {
 	io.in(game.uid).emit('gameUpdate', secureGame(game));
 
 	setTimeout(() => {
-		let seconds = 5,
+		let seconds = 1,
 			countDown;
 
 		game.internals.seatedPlayers.forEach((player, i) => {
@@ -96,6 +96,7 @@ let beginNightPhases = (game) => {
 			seer: () => {
 				let nightAction = {
 					action: 'seer',
+					phase: 1,
 					gameChat: 'As a SEER, you wake up, and may look at one player\'s card, or two of the center cards.'
 				};
 
@@ -111,8 +112,10 @@ let beginNightPhases = (game) => {
 				player.nightAction = nightAction;
 
 				if (roleChangerInPhase1) {
+					player.nightAction.phase = phases.length + 1;
 					phases.push([player]);
 				} else {
+					player.nightAction.phase = 1;
 					roleChangerInPhase1 = true;
 					phases[0].push(player);
 				}
@@ -126,8 +129,10 @@ let beginNightPhases = (game) => {
 				player.nightAction = nightAction;
 				player.nightAction.action = 'troublemaker';
 				if (roleChangerInPhase1) {
+					player.nightAction.phase = phases.length + 1;
 					phases.push([player]);
 				} else {
+					player.nightAction.phase = 1;
 					roleChangerInPhase1 = true;
 					phases[0].push(player);
 				}
@@ -157,6 +162,10 @@ let beginNightPhases = (game) => {
 	});
 
 	if (insomniacs.length) {
+		insomniacs.forEach((player) => {
+			player.nightAction.phase = phases.length + 1;
+		});
+
 		phases.push([...insomniacs]);
 	}
 
@@ -178,7 +187,8 @@ let beginNightPhases = (game) => {
 					}),
 					nightAction = {
 						action: 'werewolf',
-						others
+						others,
+						phase: 1
 					},
 					message;
 			
@@ -203,7 +213,8 @@ let beginNightPhases = (game) => {
 					}),
 					nightAction = {
 						action: 'minion',
-						others
+						others,
+						phase: 1
 					},
 					message;
 
@@ -230,7 +241,8 @@ let beginNightPhases = (game) => {
 						return userName !== player.userName;
 					}),
 					nightAction = {
-						action: 'mason'
+						action: 'mason',
+						phase: 1
 					},
 					message;
 
@@ -264,16 +276,18 @@ let beginNightPhases = (game) => {
 	game.tableState.isNight = true;
 	game.status = 'Night begins..';
 	sendInprogressChats(game);
-	setTimeout(() => { // todo: restructure this so we can have a brief "sleep" for phase 1 players.
+	setTimeout(() => {
+		game.tableState.phase = 1;
 		nightPhases(game, phases);
-	}, 5000);
+	}, 3000);
 }
 
 let nightPhases = (game, phases) => {
 	let phasesIndex = 0,
+		phasesCount = phases.length,
 		phasesTimer,
 		phasesFn = () => {
-			if (phasesIndex === phases.length && phases.length > 1) {
+			if (phasesIndex === phasesCount && phasesCount > 1) {
 				clearInterval(phasesTimer);
 			} else {
 				let seconds = 10,
@@ -288,6 +302,7 @@ let nightPhases = (game, phases) => {
 						seat: player.seat,
 						timestamp: new Date()
 					}
+
 					player.gameChats.push(chat);
 				});
 
@@ -300,7 +315,7 @@ let nightPhases = (game, phases) => {
 						sendInprogressChats(game);
 						phasesIndex++;
 					} else {
-						game.status = `Night phase ${(phasesIndex + 1).toString()} of ${phases.length} ends in ${seconds} second${seconds === 1 ? '' : 's'}.`;
+						game.status = `Night phase ${(phasesIndex + 1).toString()} of ${phasesCount + 1} ends in ${seconds} second${seconds === 1 ? '' : 's'}.`;
 						sendInprogressChats(game);
 					}
 					seconds--;
@@ -308,9 +323,12 @@ let nightPhases = (game, phases) => {
 			}
 		};
 
-	phasesFn();
+
+	// console.log(game.internals.seatedPlayers);
 	
 	if (phases.length > 1) {
 		phasesTimer = setInterval(phasesFn, 10000);
+	} else {
+		phasesFn();
 	}
 }

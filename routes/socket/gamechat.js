@@ -49,7 +49,11 @@ export function sendInprogressChats(game) {
 			cloneGame = _.clone(game);
 		
 		cloneGame.tableState.playerPerceivedRole = cloneGame.internals.seatedPlayers[index].perceivedRole;
-		cloneGame.tableState.nightAction = cloneGame.internals.seatedPlayers[index].nightAction;
+
+		if (cloneGame.tableState.phase === player.nightAction.phase) {
+			cloneGame.tableState.nightAction = cloneGame.internals.seatedPlayers[index].nightAction;
+		}
+
 		cloneGame.chats = combineInprogressChats(cloneGame, player.userName);
 		socket.emit('gameUpdate', secureGame(cloneGame));
 	});
