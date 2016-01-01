@@ -127,10 +127,6 @@ export default class Table extends React.Component {
 		let $cards = $('section.table .card');
 			// endSeatTop = ['20px', '70px', '210px', '320px', '70px', '210px', '320px', '190px', '190px', '190px'],
 			// endSeatLeft = ['260px', '430px', '500px', '360px', '90px', '20px', '160px', '180px', '260px', '340px']
-			// ,
-			// userSeat = Object.keys(gameInfo.seated).find((seat) => {
-			// 	return gameInfo.seated[seat].userName === this.props.userInfo.userName;
-			// })
 
 		$cards.each(function (index) {
 			if (index < 7) {
@@ -142,7 +138,7 @@ export default class Table extends React.Component {
 	}
 
 	nightBlockerStatusTop () {
-		if (this.props.gameInfo.tableState.isNight) {
+		if (this.props.gameInfo.tableState.isNight && !Object.keys(this.props.gameInfo.tableState.nightAction).length) {
 			return "nightblocker nightblocker-top-blocked";
 		} else {
 			return "nightblocker nightblocker-top";
@@ -150,7 +146,7 @@ export default class Table extends React.Component {
 	}
 
 	nightBlockerStatusBottom () {
-		if (this.props.gameInfo.tableState.isNight) {
+		if (this.props.gameInfo.tableState.isNight && !Object.keys(this.props.gameInfo.tableState.nightAction).length) {
 			return "nightblocker nightblocker-bottom-blocked";
 		} else {
 			return "nightblocker nightblocker-bottom";
