@@ -136,41 +136,99 @@ let beginNightPhases = (game) => {
 		phases.push([...insomniacs]);
 	}
 
+	// todo: set up gamechats for the rest of the roles.  probably migrate out of this function.
+
 	phases[0].forEach((phasePlayers) => {
 		let werewolves = phasePlayers.filter((player) => {
-				if (player.trueRole === 'werewolf') {
-					return player.userName;
-				}
+				return player.trueRole === 'werewolf';
+			}),
+			minions = phasePlayers.filter((player) => {
+				return player.trueRole === 'minion';
 			}),
 			masons = phasePlayers.filter((player) => {
-				if (player.trueRole === 'mason') {
-					return player.userName;
-				}
+				return player.trueRole === 'mason';
 			});
 
-		// todo: set up gamechat text for all werewolves minions and masons.  Should do this here.
+		werewolves.forEach((player) => {
+			let nightAction = {
+					action: 'werewolf'
+				},
+				userNames = werewolves.map((player) => {
+					return player.userName;
+				}),
+				message;
 
-		phasePlayers.forEach((player) => {
-			if (player.trueRole === 'werewolf') {
-				player.nightAction = {
-					action: 'werewolf',
-					werewolves
-				};
+
+			if (werewolves.length === 1) {
+				message = 'As a WEREWOLF, you wake up, and see no other WEREWOLVES. You may look at a center card.';				
+			} else {
+				message = 'As a WEREWOLF, you wake up, and see that the WEREWOLVES in this game are:';
 			}
 
-			if (player.trueRole === 'minion') {
-				player.nightAction = {
-					action: 'minion',
-					werewolves
-				};
+			userNames.forEach((userName) => {
+				message += ' ';
+				message += userName.toUpperCase();
+			});
+
+			message += '.';
+
+			nightAction.gameChat = message;
+			nightAction.rolesLikeYours = userNames;
+			player.nightAction = nightAction;
+		});
+
+		minions.forEach((player) => {
+			let nightAction = {
+					action: 'minion'
+				},
+				userNames = werewolves.map((player) => {
+					return player.userName;
+				}),				
+				message;
+
+			if (!werewolves.length) {
+				message = 'As a MINION, you wake up, and see that there are no WEREWOLVES. Be careful - you lose if no villager is eliminated.'
+			} else {
+				message = 'As a MINION, you wake up, and see that the WEREWOLVES in this game are: ';
 			}
 
-			if (player.trueRole === 'mason') {
-				player.nightAction = {
-					action: 'mason',
-					masons
-				};
+			userNames.forEach((userName) => {
+				message += ' ';
+				message += userName.toUpperCase();
+			});
+
+			message += '.';
+
+			nightAction.rolesLikeYours = werewolves;
+			nightAction.gameChat = message;
+			player.nightAction = nightAction;
+		});
+
+		masons.forEach((player) => {
+			let nightAction = {
+					action: 'mason'
+				},
+				userNames = masons.map((player) => {
+					return player.userName;
+				}),
+				message;
+
+			if (masons.length === 1) {
+				message = 'As a MASON, you wake up, and see that you are the only mason.';
+			} else {
+				message = 'As a MASON, you wake up, and see that the MASONS in this game are: ';				
 			}
+
+			userNames.forEach((userName) => {
+				message += ' ';
+				message += userName.toUpperCase();
+			});
+
+			message += '.';			
+
+			nightAction.rolesLikeYours = masons;
+			nightAction.gameChat = message;
+			player.nightAction = nightAction;
 		});
 	});
 
