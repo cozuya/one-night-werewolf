@@ -19,7 +19,7 @@ export default class Table extends React.Component {
 	componentDidUpdate() {
 		let gameInfo = this.props.gameInfo;
 		
-		if (!gameInfo.inProgress && gameInfo.seatedCount === 4 && gameInfo.seated.seat1.userName === this.props.userInfo.userName && !gameInfo.inProgress) {  // todo: should do this on the back end - 1st seat could be disconnected
+		if (!gameInfo.inProgress && gameInfo.seatedCount === 7 && gameInfo.seated.seat1.userName === this.props.userInfo.userName && !gameInfo.inProgress) {  // todo: should do this on the back end - 1st seat could be disconnected
 			socket.emit('startGameCountdown', gameInfo.uid);
 		}
 
@@ -34,8 +34,6 @@ export default class Table extends React.Component {
 				this.revealCard(playerSeat.split('seat')[1]);
 			}, 2000);
 		}
-
-		console.log(gameInfo);
 	}
 
 	// shouldComponentUpdate() {

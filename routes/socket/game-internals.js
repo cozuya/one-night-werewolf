@@ -47,7 +47,7 @@ export function startGame(game) {
 	io.in(game.uid).emit('gameUpdate', secureGame(game));
 
 	setTimeout(() => {
-		let seconds = 1,
+		let seconds = 5,
 			countDown;
 
 		game.internals.seatedPlayers.forEach((player, i) => {
@@ -311,7 +311,24 @@ let nightPhases = (game, phases) => {
 		phasesTimer,
 		phasesFn = () => {
 			if (phasesIndex === phasesCount && phasesCount > 1) {
+				console.log('Hello World!'); // todo this whole block doesn't work.
 				clearInterval(phasesTimer);
+				game.tableState.isNight = false;
+				game.status = 'Day begins..';
+				game.internals.seatedPlayers.forEach((player, i) => {
+					player.gameChats.push = {
+						gameChat: true,
+						userName: player.userName,
+						chat: 'Night ends and the day phase begins.',
+						seat: i + 1,
+						timestamp: new Date()
+					};
+				});
+				sendInprogressChats(game);
+				setTimeout(() => {
+					dayPhase(game);
+				}, 3000);
+				// todo: clear out nightaction object in all player's internals, waking them up, then move to new fn "dayPhase".
 			} else {
 				let seconds = 10,
 					countDown,
@@ -335,16 +352,12 @@ let nightPhases = (game, phases) => {
 							player.nightPhaseComplete = true;
 							player.nightAction = {};
 						});
-						// console.log(game.internals.seatedPlayers[0]);
-						// console.log(game.internals.seatedPlayers[1]);
-						// console.log(game.internals.seatedPlayers[2]);
 						phasesIndex++;
 						game.tableState.phase++;
 						sendInprogressChats(game);
 						clearInterval(countDown);
 					} else {
 						game.status = `Night phase ${(phasesIndex).toString()} of ${phasesCount} ends in ${seconds} second${seconds === 1 ? '' : 's'}.`;
-						console.log(game.internals.seatedPlayers[0].nightAction);
 						game.wtf = true;
 						sendInprogressChats(game);
 					}
@@ -353,13 +366,14 @@ let nightPhases = (game, phases) => {
 			}
 		};
 
-
-	// console.log(game.internals.seatedPlayers);
-	
 	phasesFn();
 
 	if (phases.length > 1) {
 		phasesIndex++;
 		phasesTimer = setInterval(phasesFn, 10000);
 	}
+}
+
+let dayPhase = (game) => {
+	console.log('day starts');
 }

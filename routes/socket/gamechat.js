@@ -53,10 +53,11 @@ export function sendInprogressChats(game) {
 
 		if (cloneGame.tableState.phase === player.nightAction.phase && !player.nightPhaseComplete) {
 			cloneGame.tableState.nightAction = cloneGame.internals.seatedPlayers[index].nightAction;
+		} else {
+			cloneGame.tableState.nightAction = {};
 		}
 
 		cloneGame.chats = combineInprogressChats(cloneGame, player.userName);
-
 		sock.emit('gameUpdate', secureGame(cloneGame));
 	});
 
