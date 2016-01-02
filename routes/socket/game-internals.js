@@ -201,6 +201,7 @@ let beginNightPhases = (game) => {
 					message;
 			
 				if (werewolves.length === 1) {
+					nightAction.singleWerewolf = true;
 					message = 'You wake up, and see no other WEREWOLVES. You may look at a center card';				
 				} else {
 					message = 'You wake up, and see that the other WEREWOLVES in this game are:';
@@ -311,7 +312,7 @@ let nightPhases = (game, phases) => {
 		phasesTimer,
 		phasesFn = () => {
 			if (phasesIndex === phasesCount && phasesCount > 1) {
-				console.log('Hello World!'); // todo this whole block doesn't work.
+				// todo this whole block doesn't work.
 				clearInterval(phasesTimer);
 				game.tableState.isNight = false;
 				game.status = 'Day begins..';
@@ -328,7 +329,6 @@ let nightPhases = (game, phases) => {
 				setTimeout(() => {
 					dayPhase(game);
 				}, 3000);
-				// todo: clear out nightaction object in all player's internals, waking them up, then move to new fn "dayPhase".
 			} else {
 				let seconds = 10,
 					countDown,

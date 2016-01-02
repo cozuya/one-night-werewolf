@@ -19,7 +19,7 @@ export default class Table extends React.Component {
 	componentDidUpdate() {
 		let gameInfo = this.props.gameInfo;
 		
-		if (!gameInfo.inProgress && gameInfo.seatedCount === 7 && gameInfo.seated.seat1.userName === this.props.userInfo.userName && !gameInfo.inProgress) {  // todo: should do this on the back end - 1st seat could be disconnected
+		if (!gameInfo.inProgress && gameInfo.seatedCount === 2 && gameInfo.seated.seat1.userName === this.props.userInfo.userName && !gameInfo.inProgress) {  // todo: should do this on the back end - 1st seat could be disconnected
 			socket.emit('startGameCountdown', gameInfo.uid);
 		}
 
@@ -34,15 +34,27 @@ export default class Table extends React.Component {
 				this.revealCard(playerSeat.split('seat')[1]);
 			}, 2000);
 		}
+
+		if (gameInfo.isNight && gameInfo.tableState.nightAction.action === 'werewolf' && gameInfo.tableState.nightAction.singleWerewolf) {
+			highlightCards([8, 9, 10]);
+		}
+		console.log(gameInfo.tableState);
 	}
 
-	// shouldComponentUpdate() {
-	// 	if (!gameInfo.inProgress && gameInfo.seatedCount === 2 && gameInfo.seated.seat1.userName === this.props.userInfo.userName) {
-	// 		return false;
-	// 	}
+	highlightCards(cards) { // array of numbers 1-10
+		let $cards = $('section.table .card').not(function (index, el) {
+			return !$(this).hasClass(cards[0]) || !$(this).hasClass(cards[1]) || !$(this).hasClass(cards[2]); // terrible
+		});
 
-	// 	return true;
-	// }
+		console.log($cards);
+
+		$cards.addClass('.card-notify');
+
+		setTimeout(() => {
+			$cards.removeClass('.card-notify');
+		}, 2000);
+
+	}
 
 	componentDidMount() {
 		if (this.props.gameInfo.tableState.cardsDealt === true) {
@@ -78,6 +90,8 @@ export default class Table extends React.Component {
 	}
 
 	clickedSeat(e) {
+		console.log('clickedseat fired');
+
 		let seated = this.props.gameInfo.seated,
 			userInfo = this.props.userInfo,
 			$seat = $(e.currentTarget),
@@ -111,7 +125,7 @@ export default class Table extends React.Component {
 
 		return _.range(1, 11).map((num) => { // todo: this outputs the player's perceived role to every card instead of just theirs, kinda funny but should probably be looked at eventually.
 			return (
-				<div key={num} className={reactDoesntLetMePutClassNameLogicInJSXForNoReason(num)}>
+				<div key={num} onClick={this.handleCardClick.bind(this)} className={reactDoesntLetMePutClassNameLogicInJSXForNoReason(num)}>
 					<div className="card-flipper">
 						<div className="card-back"></div>
 						<div className={reactDoesntLetMePutClassNameLogicInJSXForNoReason2()}></div>
@@ -121,17 +135,20 @@ export default class Table extends React.Component {
 		});
 	}
 
+	handleCardClick(e) {
+		console.log('hcc fired');
+		if (this.props.gameInfo.tableState.nightAction.action === 'werewolf') {
+			console.log(e.currentTarget);
+		}
+	}
+
 	dealCards() {
 		let $cards = $('section.table .card');
 			// endSeatTop = ['20px', '70px', '210px', '320px', '70px', '210px', '320px', '190px', '190px', '190px'],
 			// endSeatLeft = ['260px', '430px', '500px', '360px', '90px', '20px', '160px', '180px', '260px', '340px']
 
 		$cards.each(function (index) {
-			if (index < 7) {
-				$(this).addClass(`seat${index + 1}`);			
-			} else {
-				$(this).addClass(`mid${index + 1}`);
-			}
+			$(this).addClass(`seat${index + 1}`);
 		});
 	}
 
@@ -157,7 +174,7 @@ export default class Table extends React.Component {
 				<div className={this.nightBlockerStatusTop()}></div>
 				<div className={this.nightBlockerStatusBottom()}></div>
 				<div className="tableimage"></div>
-				{_.range(1, 8).map((el) => {
+				{_.range(1, 11).map((el) => {
 					let seated = this.props.gameInfo.seated[`seat${el}`],
 						classes = () => {
 							return seated ? `seat seat${el}` : `seat seat${el} empty`;
@@ -169,9 +186,6 @@ export default class Table extends React.Component {
 
 					return <div key={el} className={classes()} data-seatnumber={seatNumber()} onClick={this.clickedSeat.bind(this)}><span className="username">{user}</span></div>
 				})}
-				<div className="seat mid1"></div>
-				<div className="seat mid2"></div>
-				<div className="seat mid3"></div>
 					{this.createCards()}
 				<i onClick={this.leaveGame.bind(this)} className={this.validateLeaveButton()}></i>
 				<div className="ui basic small modal">

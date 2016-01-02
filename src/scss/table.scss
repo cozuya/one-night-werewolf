@@ -186,19 +186,19 @@
 			left: 160px;
 		}
 
-		.mid1 {
+		.seat8 {
 			top: 190px;
 			left: 180px;
 			display: none;
 		}
 
-		.mid2 {
+		.seat9 {
 			top: 190px;
 			left: 260px;
 			display: none;
 		}
 
-		.mid3 {
+		.seat10 {
 			top: 190px;
 			left: 340px;
 			display: none;
@@ -211,6 +211,18 @@
 			opacity: 0.3;
 			cursor: pointer;
 			font-size: 30px;
+		}
+
+		.card-notify {
+			box-shadow: 0 0 4px 4px $notification;
+		}
+
+		.card-select {
+			box-shadow: 0 0 4px 4px $selection;
+		}
+
+		.card-proceed {
+			box-shadow: 0 0 4px 4px $proceed;
 		}
 	}	
 }
