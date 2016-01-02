@@ -42,20 +42,22 @@ export function combineInprogressChats(game, userName) {
 export function sendInprogressChats(game) {
 	let sockets = getSocketsByUid(game.uid);
 
-	game.internals.seatedPlayers.forEach((player, index) => {
-		let socket = sockets.playerSockets.find((sock) => {
-				return sock.handshake.session.passport.user === player.userName;
-			}),
-			cloneGame = _.clone(game);
-		
+	sockets.playerSockets.forEach((sock, index) => {
+		let cloneGame = _.clone(game),
+			userName = sock.handshake.session.passport.user,
+			player = cloneGame.internals.seatedPlayers.find((user) => {
+				return user.userName === userName;
+			});
+
 		cloneGame.tableState.playerPerceivedRole = cloneGame.internals.seatedPlayers[index].perceivedRole;
-		
+
 		if (cloneGame.tableState.phase === player.nightAction.phase && !player.nightPhaseComplete) {
 			cloneGame.tableState.nightAction = cloneGame.internals.seatedPlayers[index].nightAction;
 		}
 
 		cloneGame.chats = combineInprogressChats(cloneGame, player.userName);
-		socket.emit('gameUpdate', secureGame(cloneGame));
+
+		sock.emit('gameUpdate', secureGame(cloneGame));
 	});
 
 	if (sockets.observerSockets.length) {

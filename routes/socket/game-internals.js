@@ -155,6 +155,15 @@ let beginNightPhases = (game) => {
 			},
 			mason: () => {
 				phases[0].push(player);
+			},
+			villager: () => {
+				return;
+			},
+			hunter: () => {
+				return;
+			},
+			tanner: () => {
+				return;
 			}
 		};
 
@@ -266,6 +275,21 @@ let beginNightPhases = (game) => {
 			},
 			robber: () => {
 				return;
+			},
+			seer: () => {
+				return;
+			},
+			insomniac: () => {
+				return;
+			},
+			villager: () => {
+				return;
+			},
+			hunter: () => {
+				return;
+			},
+			tanner: () => {
+				return;
 			}
 		};
 
@@ -311,15 +335,17 @@ let nightPhases = (game, phases) => {
 							player.nightPhaseComplete = true;
 							player.nightAction = {};
 						});
-						console.log(game.internals.seatedPlayers[0]);
-						console.log(game.internals.seatedPlayers[1]);
-						console.log(game.internals.seatedPlayers[2]);
-						console.log('Hello World!');
-						sendInprogressChats(game);
+						// console.log(game.internals.seatedPlayers[0]);
+						// console.log(game.internals.seatedPlayers[1]);
+						// console.log(game.internals.seatedPlayers[2]);
 						phasesIndex++;
+						game.tableState.phase++;
+						sendInprogressChats(game);
 						clearInterval(countDown);
 					} else {
 						game.status = `Night phase ${(phasesIndex).toString()} of ${phasesCount} ends in ${seconds} second${seconds === 1 ? '' : 's'}.`;
+						console.log(game.internals.seatedPlayers[0].nightAction);
+						game.wtf = true;
 						sendInprogressChats(game);
 					}
 					seconds--;
