@@ -3,6 +3,7 @@
 import { startGameCountdown, updateGameChat, sendGameList, createGame, sendGameInfo, updateSeatedUsers, games } from './game.js';
 import { checkUserStatus, handleUpdatedGameSettings, sendUserGameSettings } from './account.js';
 import { addNewGameChat } from './gamechat.js';
+import { updateUserNightActionEvent } from './game-nightactions.js';
 
 export default () => {
 	io.on('connection', (socket) => {
@@ -40,6 +41,10 @@ export default () => {
 
 		socket.on('startGameCountdown', (uid) => {
 			startGameCountdown(uid);
+		});
+
+		socket.on('userNightActionEvent', (data) => {
+			updateUserNightActionEvent(socket, data);
 		});
 	});
 }

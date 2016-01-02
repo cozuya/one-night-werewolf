@@ -18,14 +18,29 @@ export function startGame(game) {
 					allWerewolvesNotInCenter = true;
 				}
 
-				player.trueRole = role;
-				player.perceivedRole = role;
-				player.nightAction = {};
-				player.seat = index + 1;
-				_roles.splice(roleIndex, 1);
+				if (player.userName === 'jin') {
+					player.trueRole = 'werewolf';
+					player.perceivedRole = 'werewolf';
+					player.nightAction = {};
+					player.seat = 1;
+				}
+
+				if (player.userName === 'paul') {
+					player.trueRole = 'insomniac';
+					player.perceivedRole = 'insomniac';
+					player.nightAction = {};
+					player.seat = 1;
+				}
+
+				// player.trueRole = role;
+				// player.perceivedRole = role;
+				// player.nightAction = {};
+				// player.seat = index + 1;
+				// _roles.splice(roleIndex, 1);
 			});
 
-			game.internals.centerRoles = [..._roles];
+			// game.internals.centerRoles = [..._roles];
+			game.internals.centerRoles = ['werewolf', 'robber', 'troublemaker', 'robber', 'troublemaker', 'insomniac', 'robber', 'troublemaker']
 		};
 
 	Object.keys(game.seated).map((seat, i) => {
@@ -47,7 +62,7 @@ export function startGame(game) {
 	io.in(game.uid).emit('gameUpdate', secureGame(game));
 
 	setTimeout(() => {
-		let seconds = 5,
+		let seconds = 1,
 			countDown;
 
 		game.internals.seatedPlayers.forEach((player, i) => {
@@ -78,7 +93,7 @@ export function startGame(game) {
 			}
 			seconds--;
 		}, 1000);
-	}, 2000);
+	}, 50);
 }
 
 let beginNightPhases = (game) => {
@@ -328,7 +343,7 @@ let nightPhases = (game, phases) => {
 				sendInprogressChats(game);
 				setTimeout(() => {
 					dayPhase(game);
-				}, 3000);
+				}, 50);
 			} else {
 				let seconds = 10,
 					countDown,

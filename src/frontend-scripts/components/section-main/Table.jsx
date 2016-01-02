@@ -16,7 +16,7 @@ $.fn.progress = Progress;
 $.fn.modal = Modal;
 
 export default class Table extends React.Component {
-	componentDidUpdate() {
+	componentDidUpdate(prevProps) {
 		let gameInfo = this.props.gameInfo;
 		
 		if (!gameInfo.inProgress && gameInfo.seatedCount === 2 && gameInfo.seated.seat1.userName === this.props.userInfo.userName && !gameInfo.inProgress) {  // todo: should do this on the back end - 1st seat could be disconnected
@@ -35,23 +35,21 @@ export default class Table extends React.Component {
 			}, 2000);
 		}
 
-		if (gameInfo.isNight && gameInfo.tableState.nightAction.action === 'werewolf' && gameInfo.tableState.nightAction.singleWerewolf) {
-			highlightCards([8, 9, 10]);
+		if (gameInfo.tableState.isNight && gameInfo.tableState.nightAction.action === 'werewolf' && gameInfo.tableState.nightAction.singleWerewolf && !prevProps.gameInfo.tableState.nightAction.singleWerewolf) {
+			this.highlightCards([8, 9, 10]);
 		}
 		console.log(gameInfo.tableState);
 	}
 
 	highlightCards(cards) { // array of numbers 1-10
-		let $cards = $('section.table .card').not(function (index, el) {
-			return !$(this).hasClass(cards[0]) || !$(this).hasClass(cards[1]) || !$(this).hasClass(cards[2]); // terrible
-		});
+		let $cards2 = $('section.table').add('.card8').add('.card9').add('.card10');
 
-		console.log($cards);
+		console.log($cards2);
 
-		$cards.addClass('.card-notify');
+		$cards2.addClass('card-notify');
 
 		setTimeout(() => {
-			$cards.removeClass('.card-notify');
+			$cards2.removeClass('card-notify');
 		}, 2000);
 
 	}
@@ -125,7 +123,7 @@ export default class Table extends React.Component {
 
 		return _.range(1, 11).map((num) => { // todo: this outputs the player's perceived role to every card instead of just theirs, kinda funny but should probably be looked at eventually.
 			return (
-				<div key={num} onClick={this.handleCardClick.bind(this)} className={reactDoesntLetMePutClassNameLogicInJSXForNoReason(num)}>
+				<div key={num} data-cardnumber={num} onClick={this.handleCardClick.bind(this)} className={reactDoesntLetMePutClassNameLogicInJSXForNoReason(num)}>
 					<div className="card-flipper">
 						<div className="card-back"></div>
 						<div className={reactDoesntLetMePutClassNameLogicInJSXForNoReason2()}></div>
@@ -136,9 +134,16 @@ export default class Table extends React.Component {
 	}
 
 	handleCardClick(e) {
-		console.log('hcc fired');
 		if (this.props.gameInfo.tableState.nightAction.action === 'werewolf') {
-			console.log(e.currentTarget);
+			let gameInfo = this.props.gameInfo;
+
+			socket.emit('userNightActionEvent', {
+				player: this.props.userInfo.userName,
+				uid: gameInfo.uid,
+				role: 'singleWerewolf',
+				action: $(e.currentTarget).attr('data-cardnumber')
+			});
+			console.log('hcc fired');
 		}
 	}
 

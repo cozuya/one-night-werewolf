@@ -69,6 +69,7 @@
 			left: 260px;
 			position: absolute;
 			perspective: 1000;
+			-webkit-perspective: 1000;
 			transition: all 2s;
 
 			.card-flipper {
@@ -189,19 +190,16 @@
 		.seat8 {
 			top: 190px;
 			left: 180px;
-			display: none;
 		}
 
 		.seat9 {
 			top: 190px;
 			left: 260px;
-			display: none;
 		}
 
 		.seat10 {
 			top: 190px;
 			left: 340px;
-			display: none;
 		}
 
 		.remove.icon {
