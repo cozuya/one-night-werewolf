@@ -211,7 +211,8 @@ let beginNightPhases = (game) => {
 					}),
 					nightAction = {
 						action: 'werewolf',
-						phase: 1
+						phase: 1,
+						completed: false
 					},
 					message;
 			

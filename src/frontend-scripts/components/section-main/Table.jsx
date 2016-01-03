@@ -17,7 +17,8 @@ $.fn.modal = Modal;
 
 export default class Table extends React.Component {
 	componentDidUpdate(prevProps) {
-		let gameInfo = this.props.gameInfo;
+		let gameInfo = this.props.gameInfo,
+			tableState = gameInfo.tableState;
 		
 		if (!gameInfo.inProgress && gameInfo.seatedCount === 2 && gameInfo.seated.seat1.userName === this.props.userInfo.userName && !gameInfo.inProgress) {  // todo: should do this on the back end - 1st seat could be disconnected
 			socket.emit('startGameCountdown', gameInfo.uid);
@@ -35,23 +36,31 @@ export default class Table extends React.Component {
 			}, 2000);
 		}
 
-		if (gameInfo.tableState.isNight && gameInfo.tableState.nightAction.action === 'werewolf' && gameInfo.tableState.nightAction.singleWerewolf && !prevProps.gameInfo.tableState.nightAction.singleWerewolf) {
-			this.highlightCards([8, 9, 10]);
+		if (tableState.isNight && tableState.nightAction.action === 'werewolf' && tableState.nightAction.singleWerewolf) {
+			if (!prevProps.gameInfo.tableState.nightAction.singleWerewolf) {
+				this.highlightCards([8, 9, 10]);
+			}
+
+			if (prevProps.gameInfo.tableState.nightAction && !prevProps.gameInfo.tableState.nightAction.completed && tableState.nightAction.roleClicked) {
+
+				$(`section.table .card${tableState.nightAction.seatClicked} .card-front`).addClass(tableState.nightAction.roleClicked);
+				this.revealCard(tableState.nightAction.seatClicked);
+			}
 		}
-		console.log(gameInfo.tableState);
+
+		// console.log(gameInfo.tableState);
 	}
 
 	highlightCards(cards) { // array of numbers 1-10
-		let $cards2 = $('section.table').add('.card8').add('.card9').add('.card10');
+		// todo: obv badly needs to be rewritten.
 
-		console.log($cards2);
+		let $cards2 = $('section.table').add('.card8').add('.card9').add('.card10');
 
 		$cards2.addClass('card-notify');
 
 		setTimeout(() => {
 			$cards2.removeClass('card-notify');
 		}, 2000);
-
 	}
 
 	componentDidMount() {
@@ -110,11 +119,15 @@ export default class Table extends React.Component {
 		let reactDoesntLetMePutClassNameLogicInJSXForNoReason = (num) => {
 				return `card card${num}`;
 			},
-			reactDoesntLetMePutClassNameLogicInJSXForNoReason2 = () => {
-				let classes = 'card-front',
-					role = this.props.gameInfo.tableState.playerPerceivedRole;
+			reactDoesntLetMePutClassNameLogicInJSXForNoReason2 = (num) => {
+				let classes = `card-front seat-${num}`,
+					role = this.props.gameInfo.tableState.playerPerceivedRole,
+					playerSeat = Object.keys(this.props.gameInfo.seated).find((seat) => {
+						return this.props.gameInfo.seated[seat].userName === this.props.userInfo.userName;
+					});
 
-				if (role) { // todo: check against player's seat in userinfo and only put that class on that seat as opposed to all classes
+
+				if (role && num === parseInt(playerSeat.split('seat')[1])) {
 					classes = `${classes} ${role}`;
 				}
 
@@ -126,7 +139,7 @@ export default class Table extends React.Component {
 				<div key={num} data-cardnumber={num} onClick={this.handleCardClick.bind(this)} className={reactDoesntLetMePutClassNameLogicInJSXForNoReason(num)}>
 					<div className="card-flipper">
 						<div className="card-back"></div>
-						<div className={reactDoesntLetMePutClassNameLogicInJSXForNoReason2()}></div>
+						<div className={reactDoesntLetMePutClassNameLogicInJSXForNoReason2(num)}></div>
 					</div>
 				</div>
 			);
@@ -138,12 +151,11 @@ export default class Table extends React.Component {
 			let gameInfo = this.props.gameInfo;
 
 			socket.emit('userNightActionEvent', {
-				player: this.props.userInfo.userName,
+				userName: this.props.userInfo.userName,
 				uid: gameInfo.uid,
 				role: 'singleWerewolf',
 				action: $(e.currentTarget).attr('data-cardnumber')
 			});
-			console.log('hcc fired');
 		}
 	}
 
