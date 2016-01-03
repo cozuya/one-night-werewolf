@@ -19,17 +19,17 @@ export function startGame(game) {
 				}
 
 				if (player.userName === 'jin') {
-					player.trueRole = 'werewolf';
-					player.perceivedRole = 'werewolf';
+					player.trueRole = 'insomniac';
+					player.perceivedRole = 'insomniac';
 					player.nightAction = {};
 					player.seat = 1;
 				}
 
 				if (player.userName === 'paul') {
-					player.trueRole = 'insomniac';
-					player.perceivedRole = 'insomniac';
+					player.trueRole = 'werewolf';
+					player.perceivedRole = 'werewolf';
 					player.nightAction = {};
-					player.seat = 1;
+					player.seat = 2;
 				}
 
 				// player.trueRole = role;
@@ -155,7 +155,8 @@ let beginNightPhases = (game) => {
 			insomniac: () => {
 				let nightAction = {
 					action: 'insomniac',
-					gameChat: 'You wake up, and may view your card again.'
+					gameChat: 'You wake up, and may view your card again.',
+					completed: false
 				};
 
 				player.nightAction = nightAction;

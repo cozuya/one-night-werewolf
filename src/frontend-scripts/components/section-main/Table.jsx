@@ -41,12 +41,27 @@ export default class Table extends React.Component {
 				this.highlightCards([8, 9, 10]);
 			}
 
+			console.log(prevProps.gameInfo.tableState.nightAction);
+			console.log(gameInfo.tableState.nightAction);
+
 			if (prevProps.gameInfo.tableState.nightAction && !prevProps.gameInfo.tableState.nightAction.completed && tableState.nightAction.roleClicked) {
 
 				$(`section.table .card${tableState.nightAction.seatClicked} .card-front`).addClass(tableState.nightAction.roleClicked);
 				this.revealCard(tableState.nightAction.seatClicked);
 			}
 		}
+
+		if (tableState.isNight && tableState.nightAction.action === 'insomniac') {
+			if (!prevProps.gameInfo.tableState.nightAction) {
+				// this.highlightCards([8, 9, 10]);  todo: highlight player's card
+			}
+
+			if (prevProps.gameInfo.tableState.nightAction && !prevProps.gameInfo.tableState.nightAction.completed && tableState.nightAction.roleClicked) {
+
+				$(`section.table .card${tableState.nightAction.seatClicked} .card-front`).addClass(tableState.nightAction.roleClicked);
+				this.revealCard(tableState.nightAction.seatClicked);
+			}
+		}		
 
 		// console.log(gameInfo.tableState);
 	}
@@ -134,7 +149,7 @@ export default class Table extends React.Component {
 				return classes;
 			}
 
-		return _.range(1, 11).map((num) => { // todo: this outputs the player's perceived role to every card instead of just theirs, kinda funny but should probably be looked at eventually.
+		return _.range(1, 11).map((num) => { 
 			return (
 				<div key={num} data-cardnumber={num} onClick={this.handleCardClick.bind(this)} className={reactDoesntLetMePutClassNameLogicInJSXForNoReason(num)}>
 					<div className="card-flipper">
@@ -147,15 +162,31 @@ export default class Table extends React.Component {
 	}
 
 	handleCardClick(e) {
-		if (this.props.gameInfo.tableState.nightAction.action === 'werewolf') {
-			let gameInfo = this.props.gameInfo;
+		let $card = $(e.currentTarget),
+			gameInfo = this.props.gameInfo;
 
+		if (!gameInfo.tableState.nightAction.completed && gameInfo.tableState.nightAction.action === 'werewolf' && $card.attr('data-cardnumber') > 7) {
 			socket.emit('userNightActionEvent', {
 				userName: this.props.userInfo.userName,
 				uid: gameInfo.uid,
 				role: 'singleWerewolf',
 				action: $(e.currentTarget).attr('data-cardnumber')
 			});
+		}
+
+		if (!gameInfo.tableState.nightAction.completed && gameInfo.tableState.nightAction.action === 'insomniac') {
+			let playerSeat = Object.keys(gameInfo.seated).find((seat) => {
+				return gameInfo.seated[seat].userName === this.props.userInfo.userName;
+			});
+
+			if ($card.attr('data-cardnumber') === playerSeat.split('seat')[1]) {
+				socket.emit('userNightActionEvent', {
+					userName: this.props.userInfo.userName,
+					uid: gameInfo.uid,
+					role: 'insomniac',
+					action: $(e.currentTarget).attr('data-cardnumber')
+				});
+			}
 		}
 	}
 
