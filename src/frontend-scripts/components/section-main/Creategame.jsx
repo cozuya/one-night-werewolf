@@ -15,7 +15,7 @@ socket = socket();
 
 export default class Creategame extends React.Component {
 	constructor() {
-		this.handleChangeRole = this.handleChangeRole.bind(this);
+		this.handleChangeRole = this.handleChangeRole.bind(this);  // todo: remove these
 		this.createNewGame = this.createNewGame.bind(this);
 
 		this.state = {

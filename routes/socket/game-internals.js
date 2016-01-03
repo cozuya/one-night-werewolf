@@ -19,8 +19,8 @@ export function startGame(game) {
 				}
 
 				if (player.userName === 'jin') {
-					player.trueRole = 'insomniac';
-					player.perceivedRole = 'insomniac';
+					player.trueRole = 'robber';
+					player.perceivedRole = 'robber';
 					player.nightAction = {};
 					player.seat = 1;
 				}
@@ -31,6 +31,13 @@ export function startGame(game) {
 					player.nightAction = {};
 					player.seat = 2;
 				}
+
+				// if (player.userName === 'heihachi') {
+				// 	player.trueRole = 'werewolf';
+				// 	player.perceivedRole = 'werewolf';
+				// 	player.nightAction = {};
+				// 	player.seat = 3;
+				// }
 
 				// player.trueRole = role;
 				// player.perceivedRole = role;
@@ -374,7 +381,7 @@ let nightPhases = (game, phases) => {
 						sendInprogressChats(game);
 						clearInterval(countDown);
 					} else {
-						game.status = `Night phase ${(phasesIndex).toString()} of ${phasesCount} ends in ${seconds} second${seconds === 1 ? '' : 's'}.`;
+						game.status = `Night phase ${phases.length === 1 ? 1 : (phasesIndex).toString()} of ${phasesCount} ends in ${seconds} second${seconds === 1 ? '' : 's'}.`;
 						game.wtf = true;
 						sendInprogressChats(game);
 					}

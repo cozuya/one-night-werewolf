@@ -16,6 +16,12 @@ $.fn.progress = Progress;
 $.fn.modal = Modal;
 
 export default class Table extends React.Component {
+	constructor() {
+		this.state = {
+			firstTroublemakerClickedSeat: ''
+		};
+	}
+
 	componentDidUpdate(prevProps) {
 		let gameInfo = this.props.gameInfo,
 			tableState = gameInfo.tableState;
@@ -41,9 +47,6 @@ export default class Table extends React.Component {
 				this.highlightCards([8, 9, 10]);
 			}
 
-			console.log(prevProps.gameInfo.tableState.nightAction);
-			console.log(gameInfo.tableState.nightAction);
-
 			if (prevProps.gameInfo.tableState.nightAction && !prevProps.gameInfo.tableState.nightAction.completed && tableState.nightAction.roleClicked) {
 
 				$(`section.table .card${tableState.nightAction.seatClicked} .card-front`).addClass(tableState.nightAction.roleClicked);
@@ -61,9 +64,45 @@ export default class Table extends React.Component {
 				$(`section.table .card${tableState.nightAction.seatClicked} .card-front`).addClass(tableState.nightAction.roleClicked);
 				this.revealCard(tableState.nightAction.seatClicked);
 			}
+		}
+
+		if (tableState.isNight && tableState.nightAction.action === 'troublemaker') {
+			if (!prevProps.gameInfo.tableState.nightAction) {
+				// this.highlightCards([8, 9, 10]);  todo: highlight player's card
+			}
+
+			if (prevProps.gameInfo.tableState.nightAction && !prevProps.gameInfo.tableState.nightAction.completed && tableState.nightAction.seatsClicked) {
+				this.swapCards(tableState.nightAction.seatsClicked);
+			}
+		}
+
+		if (tableState.isNight && tableState.nightAction.action === 'robber') {
+			if (!prevProps.gameInfo.tableState.nightAction) {
+				// this.highlightCards([8, 9, 10]);  todo: highlight player's card
+			}
+
+			if (prevProps.gameInfo.tableState.nightAction && !prevProps.gameInfo.tableState.nightAction.completed && tableState.nightAction.seatClicked) {
+				let playerSeat = Object.keys(gameInfo.seated).find((seat) => {
+					return gameInfo.seated[seat].userName === this.props.userInfo.userName;
+				}).split('seat')[1];
+
+				this.swapCards([tableState.nightAction.seatClicked, playerSeat]);
+				setTimeout(() => {
+					$(`section.table .card${playerSeat} .card-front`).addClass(tableState.nightAction.seatClicked);
+					this.revealCard(playerSeat);		
+				}, 2000);
+			}
 		}		
 
 		// console.log(gameInfo.tableState);
+	}
+
+	swapCards(cards) {
+		let $card1 = $(`section.table .seat${cards[0]}`),
+			$card2 = $(`section.table .seat${cards[1]}`);
+
+		$card1.removeClass(`seat${cards[0]}`).addClass(`seat${cards[1]}`);
+		$card2.removeClass(`seat${cards[1]}`).addClass(`seat${cards[0]}`);
 	}
 
 	highlightCards(cards) { // array of numbers 1-10
@@ -84,7 +123,7 @@ export default class Table extends React.Component {
 		}
 	}
 
-	revealCard(seatNumber) {
+	revealCard(seatNumber) { // string
 		let $cardFlipper = $(`section.table div.card${seatNumber} div.card-flipper`);
 
 		$cardFlipper.addClass('flip');
@@ -177,9 +216,9 @@ export default class Table extends React.Component {
 		if (!gameInfo.tableState.nightAction.completed && gameInfo.tableState.nightAction.action === 'insomniac') {
 			let playerSeat = Object.keys(gameInfo.seated).find((seat) => {
 				return gameInfo.seated[seat].userName === this.props.userInfo.userName;
-			});
+			}).split('seat')[1];
 
-			if ($card.attr('data-cardnumber') === playerSeat.split('seat')[1]) {
+			if ($card.attr('data-cardnumber') === playerSeat) {
 				socket.emit('userNightActionEvent', {
 					userName: this.props.userInfo.userName,
 					uid: gameInfo.uid,
@@ -188,6 +227,39 @@ export default class Table extends React.Component {
 				});
 			}
 		}
+
+		if (!gameInfo.tableState.nightAction.completed && gameInfo.tableState.nightAction.action === 'troublemaker') {
+			if (this.state.firstTroublemakerClickedSeat) {
+				if ($card.attr('data-cardnumber') !== this.state.firstTroublemakerClickedSeat) {
+					socket.emit('userNightActionEvent', {
+						userName: this.props.userInfo.userName,
+						uid: gameInfo.uid,
+						role: 'troublemaker',
+						action: [this.state.firstTroublemakerClickedSeat, $card.attr('data-cardnumber')]
+					});
+				}
+			} else {
+				this.setState({
+					firstTroublemakerClickedSeat: $card.attr('data-cardnumber')
+				});
+			}
+		}
+
+		if (!gameInfo.tableState.nightAction.completed && gameInfo.tableState.nightAction.action === 'robber') {
+			let playerSeat = Object.keys(gameInfo.seated).find((seat) => {
+				return gameInfo.seated[seat].userName === this.props.userInfo.userName;
+			}).split('seat')[1];
+
+			if ($card.attr('data-cardnumber') !== playerSeat) {
+				socket.emit('userNightActionEvent', {
+					userName: this.props.userInfo.userName,
+					uid: gameInfo.uid,
+					role: 'robber',
+					action: $card.attr('data-cardnumber')
+				});
+			}
+
+		}		
 	}
 
 	dealCards() {
