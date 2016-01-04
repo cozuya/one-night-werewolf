@@ -18,7 +18,7 @@ $.fn.modal = Modal;
 export default class Table extends React.Component {
 	constructor() {
 		this.state = {
-			firstTroublemakerClickedSeat: ''
+			firstClickedCard: ''
 		};
 	}
 
@@ -86,11 +86,26 @@ export default class Table extends React.Component {
 					return gameInfo.seated[seat].userName === this.props.userInfo.userName;
 				}).split('seat')[1];
 
+				console.log(tableState.nightAction);
+
 				this.swapCards([tableState.nightAction.seatClicked, playerSeat]);
 				setTimeout(() => {
-					$(`section.table .card${playerSeat} .card-front`).addClass(tableState.nightAction.seatClicked);
-					this.revealCard(playerSeat);		
+					$(`section.table .card${tableState.nightAction.seatClicked} .card-front`).addClass(tableState.nightAction.newRole);
+					this.revealCard(tableState.nightAction.seatClicked);
 				}, 2000);
+			}
+		}
+
+		if (tableState.isNight && tableState.nightAction.action === 'seer') {
+			if (!prevProps.gameInfo.tableState.nightAction) {
+				// this.highlightCards([8, 9, 10]);  todo: highlight player's card
+			}
+
+			if (prevProps.gameInfo.tableState.nightAction && !prevProps.gameInfo.tableState.nightAction.completed && tableState.nightAction.roleClicked) {
+
+				// todo
+				// $(`section.table .card${tableState.nightAction.seatClicked} .card-front`).addClass(tableState.nightAction.roleClicked);
+				// this.revealCard(tableState.nightAction.seatClicked);
 			}
 		}		
 
@@ -98,8 +113,8 @@ export default class Table extends React.Component {
 	}
 
 	swapCards(cards) {
-		let $card1 = $(`section.table .seat${cards[0]}`),
-			$card2 = $(`section.table .seat${cards[1]}`);
+		let $card1 = $(`section.table .card${cards[0]}`),
+			$card2 = $(`section.table .card${cards[1]}`);
 
 		$card1.removeClass(`seat${cards[0]}`).addClass(`seat${cards[1]}`);
 		$card2.removeClass(`seat${cards[1]}`).addClass(`seat${cards[0]}`);
@@ -151,8 +166,6 @@ export default class Table extends React.Component {
 	}
 
 	clickedSeat(e) {
-		console.log('clickedseat fired');
-
 		let seated = this.props.gameInfo.seated,
 			userInfo = this.props.userInfo,
 			$seat = $(e.currentTarget),
@@ -229,19 +242,44 @@ export default class Table extends React.Component {
 		}
 
 		if (!gameInfo.tableState.nightAction.completed && gameInfo.tableState.nightAction.action === 'troublemaker') {
-			if (this.state.firstTroublemakerClickedSeat) {
-				if ($card.attr('data-cardnumber') !== this.state.firstTroublemakerClickedSeat) {
+			if (this.state.firstClickedCard) {
+				if ($card.attr('data-cardnumber') !== this.state.firstClickedCard) {
 					socket.emit('userNightActionEvent', {
 						userName: this.props.userInfo.userName,
 						uid: gameInfo.uid,
 						role: 'troublemaker',
-						action: [this.state.firstTroublemakerClickedSeat, $card.attr('data-cardnumber')]
+						action: [this.state.firstClickedCard, $card.attr('data-cardnumber')]
 					});
 				}
 			} else {
 				this.setState({
-					firstTroublemakerClickedSeat: $card.attr('data-cardnumber')
+					firstClickedCard: $card.attr('data-cardnumber')
 				});
+			}
+		}
+
+		if (!gameInfo.tableState.nightAction.completed && gameInfo.tableState.nightAction.action === 'seer') {
+			let cardNum = parseInt($card.attr('data-cardnumber'));
+
+			if (this.state.firstClickedCard || cardNum < 8) {
+				let action = [$card.attr('data-cardnumber')];
+
+				if (this.state.firstClickedCard) {
+					action.push(this.state.firstClickedCard);
+				}
+				
+				socket.emit('userNightActionEvent', {
+					userName: this.props.userInfo.userName,
+					uid: gameInfo.uid,
+					role: 'troublemaker',
+					action
+				});
+			} else {
+				if (cardNum > 7) {
+					this.setState({
+						firstClickedCard: $card.attr('data-cardnumber')
+					});
+				}
 			}
 		}
 
@@ -258,14 +296,11 @@ export default class Table extends React.Component {
 					action: $card.attr('data-cardnumber')
 				});
 			}
-
-		}		
+		}
 	}
 
 	dealCards() {
 		let $cards = $('section.table .card');
-			// endSeatTop = ['20px', '70px', '210px', '320px', '70px', '210px', '320px', '190px', '190px', '190px'],
-			// endSeatLeft = ['260px', '430px', '500px', '360px', '90px', '20px', '160px', '180px', '260px', '340px']
 
 		$cards.each(function (index) {
 			$(this).addClass(`seat${index + 1}`);

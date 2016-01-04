@@ -70,7 +70,8 @@
 			position: absolute;
 			perspective: 1000;
 			-webkit-perspective: 1000;
-			transition: all 2s;
+			transition-property: top, left;
+			transition-duration: 1.5s;
 
 			.card-flipper {
 				width: 59px;

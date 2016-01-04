@@ -203,7 +203,7 @@ export default () => {
 		});
 	});	
 
-	// autologin crap remove later
+	// todo: autologin crap remove later
 
 		$('body').on('click', '.loginquick', function(event) {
 			event.preventDefault();

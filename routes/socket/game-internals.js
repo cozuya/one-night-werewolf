@@ -19,8 +19,8 @@ export function startGame(game) {
 				}
 
 				if (player.userName === 'jin') {
-					player.trueRole = 'robber';
-					player.perceivedRole = 'robber';
+					player.trueRole = 'seer';
+					player.perceivedRole = 'seer';
 					player.nightAction = {};
 					player.seat = 1;
 				}
@@ -33,8 +33,8 @@ export function startGame(game) {
 				}
 
 				// if (player.userName === 'heihachi') {
-				// 	player.trueRole = 'werewolf';
-				// 	player.perceivedRole = 'werewolf';
+				// 	player.trueRole = 'villager';
+				// 	player.perceivedRole = 'villager';
 				// 	player.nightAction = {};
 				// 	player.seat = 3;
 				// }
@@ -345,6 +345,7 @@ let nightPhases = (game, phases) => {
 						gameChat: true,
 						userName: player.userName,
 						chat: 'Night ends and the day phase begins.',
+						
 						seat: i + 1,
 						timestamp: new Date()
 					};
@@ -382,7 +383,6 @@ let nightPhases = (game, phases) => {
 						clearInterval(countDown);
 					} else {
 						game.status = `Night phase ${phases.length === 1 ? 1 : (phasesIndex).toString()} of ${phasesCount} ends in ${seconds} second${seconds === 1 ? '' : 's'}.`;
-						game.wtf = true;
 						sendInprogressChats(game);
 					}
 					seconds--;

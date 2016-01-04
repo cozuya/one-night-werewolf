@@ -50,7 +50,7 @@ export function updateUserNightActionEvent(socket, data) {
 						return player.seat === parseInt(data.action[1]);
 					});
 
-				seat1player.trueRole = data.action[1];
+				seat1player.trueRole = data.action[1]; // todo: need to delay this assignment until the end of the phase or beginning of phase 2 - otherwise could display "post swap" info to seer/ww. add cb to sendinprogresschats?
 				seat2player.trueRole = data.action[0];
 				player.nightAction.seatsClicked = data.action;
 				player.nightAction.completed = true;
@@ -65,13 +65,23 @@ export function updateUserNightActionEvent(socket, data) {
 					}),
 					_role = player.trueRole;
 
-				player.trueRole = swappedPlayer.trueRole;
+				player.trueRole = swappedPlayer.trueRole; // todo: need to delay this assignment until the end of the phase or beginning of phase 2 - otherwise could display "post swap" info to seer/ww. add cb to sendinprogresschats?
 				player.perceivedRole = swappedPlayer.trueRole;
 				swappedPlayer.trueRole = _role;
 
 				player.nightAction.seatClicked = data.action;
+				player.nightAction.newRole = player.trueRole;
 				player.nightAction.completed = true;
 				chat.chat = `You exchange cards between yourself and ${swappedPlayer.userName.toUpperCase()} and view your new role, which is a ${player.trueRole.toUpperCase()}.`;
+			},
+			seer() {
+				// todo
+			},
+			minion() {
+				// todo
+			},
+			mason() {
+				// todo
 			}
 		};
 
