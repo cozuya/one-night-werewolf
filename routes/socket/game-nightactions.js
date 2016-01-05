@@ -91,17 +91,10 @@ export function updateUserNightActionEvent(socket, data) {
 				if (data.action.length === 1) {
 					let playerClicked = game.internals.seatedPlayers[parseInt(data.action) - 1].userName;
 
-					console.log(playerClicked);
-					chat.chat = `You select to see the card of ${playerClicked} and it is a ${rolesClicked[0]}.`;
+					chat.chat = `You select to see the card of ${playerClicked.toUpperCase()} and it is a ${rolesClicked[0].toUpperCase()}.`;
 				} else {
-					chat.chat = `You select to see the ${selectedCard[data.action[0]]} and ${selectedCard[data.action[0]]} cards and they are a ${rolesClicked[0]} and ${rolesClicked[1]}.`
+					chat.chat = `You select to see the ${selectedCard[data.action[1]].toUpperCase()} and ${selectedCard[data.action[0]].toUpperCase()} cards and they are a ${rolesClicked[1].toUpperCase()} and a ${rolesClicked[0].toUpperCase()}.`
 				}
-			},
-			minion() {
-				// todo
-			},
-			mason() {
-				// todo
 			}
 		};
 

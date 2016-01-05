@@ -42,15 +42,23 @@ export default class Table extends React.Component {
 			}, 2000);
 		}
 
-		if (tableState.isNight && tableState.nightAction.action === 'werewolf' && tableState.nightAction.singleWerewolf) {
-			if (!prevProps.gameInfo.tableState.nightAction.singleWerewolf) {
-				this.highlightCards([8, 9, 10]);
-			}
+		if (tableState.isNight && tableState.nightAction.action === 'werewolf') {
+			if (tableState.nightAction.singleWerewolf) {
+				if (!prevProps.gameInfo.tableState.nightAction.singleWerewolf) {
+					this.highlightCards([8, 9, 10]);
+				}
 
-			if (prevProps.gameInfo.tableState.nightAction && !prevProps.gameInfo.tableState.nightAction.completed && tableState.nightAction.roleClicked) {
+				if (prevProps.gameInfo.tableState.nightAction && !prevProps.gameInfo.tableState.nightAction.completed && tableState.nightAction.roleClicked) {
 
-				$(`section.table .card${tableState.nightAction.seatClicked} .card-front`).addClass(tableState.nightAction.roleClicked);
-				this.revealCard(tableState.nightAction.seatClicked);
+					$(`section.table .card${tableState.nightAction.seatClicked} .card-front`).addClass(tableState.nightAction.roleClicked);
+					this.revealCard(tableState.nightAction.seatClicked);
+				}
+			} else {
+				console.log(prevProps.gameInfo.tableState);
+				if (!Object.keys(prevProps.gameInfo.tableState.nightAction)) { // todo doesn't work
+					console.log('Hello World!');
+					// this.highlightCards([8, 9, 10]);  todo: highlight player's card
+				}
 			}
 		}
 
@@ -102,10 +110,24 @@ export default class Table extends React.Component {
 			}
 
 			if (prevProps.gameInfo.tableState.nightAction && !prevProps.gameInfo.tableState.nightAction.completed && tableState.nightAction.rolesClicked) {
+
 				tableState.nightAction.rolesClicked.forEach((role, index) => {
-					$(`section.table .card${tableState.nightAction.seatClicked} .card-front`).addClass(tableState.nightAction.roleClicked);
-					this.revealCard(tableState.nightAction.seatClicked);
+					console.log(tableState.nightAction);
+					$(`section.table .card${tableState.nightAction.seatsClicked[index]} .card-front`).addClass(tableState.nightAction.rolesClicked[index]);
+					this.revealCard(tableState.nightAction.seatsClicked[index]);
 				});
+			}
+		}
+
+		if (tableState.isNight && tableState.nightAction.action === 'minion') { // todo: probably doesn't work.
+			if (!prevProps.gameInfo.tableState.nightAction.minion) {
+				// this.highlightCards([8, 9, 10]);
+			}
+		}
+
+		if (tableState.isNight && tableState.nightAction.action === 'mason') { // todo: probably doesn't work.
+			if (!prevProps.gameInfo.tableState.nightAction.mason) {
+				// this.highlightCards([8, 9, 10]);
 			}
 		}		
 
@@ -271,7 +293,7 @@ export default class Table extends React.Component {
 				socket.emit('userNightActionEvent', {
 					userName: this.props.userInfo.userName,
 					uid: gameInfo.uid,
-					role: 'troublemaker',
+					role: 'seer',
 					action
 				});
 			} else {

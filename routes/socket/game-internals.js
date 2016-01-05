@@ -19,8 +19,8 @@ export function startGame(game) {
 				}
 
 				if (player.userName === 'jin') {
-					player.trueRole = 'seer';
-					player.perceivedRole = 'seer';
+					player.trueRole = 'werewolf';
+					player.perceivedRole = 'werewolf';
 					player.nightAction = {};
 					player.seat = 1;
 				}
