@@ -75,7 +75,27 @@ export function updateUserNightActionEvent(socket, data) {
 				chat.chat = `You exchange cards between yourself and ${swappedPlayer.userName.toUpperCase()} and view your new role, which is a ${player.trueRole.toUpperCase()}.`;
 			},
 			seer() {
-				// todo
+				let selectedCard = {
+					8: 'CENTER LEFT',
+					9: 'CENTER MIDDLE',
+					10: 'CENTER RIGHT'
+				},
+				rolesClicked = data.action.map((role) => {
+					return getTrueRoleBySeatNumber(game, role);
+				});
+
+				player.nightAction.rolesClicked = rolesClicked;
+				player.nightAction.seatsClicked = data.action;
+				player.nightAction.completed = true;
+
+				if (data.action.length === 1) {
+					let playerClicked = game.internals.seatedPlayers[parseInt(data.action) - 1].userName;
+
+					console.log(playerClicked);
+					chat.chat = `You select to see the card of ${playerClicked} and it is a ${rolesClicked[0]}.`;
+				} else {
+					chat.chat = `You select to see the ${selectedCard[data.action[0]]} and ${selectedCard[data.action[0]]} cards and they are a ${rolesClicked[0]} and ${rolesClicked[1]}.`
+				}
 			},
 			minion() {
 				// todo

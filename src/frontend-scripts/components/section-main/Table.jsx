@@ -101,11 +101,11 @@ export default class Table extends React.Component {
 				// this.highlightCards([8, 9, 10]);  todo: highlight player's card
 			}
 
-			if (prevProps.gameInfo.tableState.nightAction && !prevProps.gameInfo.tableState.nightAction.completed && tableState.nightAction.roleClicked) {
-
-				// todo
-				// $(`section.table .card${tableState.nightAction.seatClicked} .card-front`).addClass(tableState.nightAction.roleClicked);
-				// this.revealCard(tableState.nightAction.seatClicked);
+			if (prevProps.gameInfo.tableState.nightAction && !prevProps.gameInfo.tableState.nightAction.completed && tableState.nightAction.rolesClicked) {
+				tableState.nightAction.rolesClicked.forEach((role, index) => {
+					$(`section.table .card${tableState.nightAction.seatClicked} .card-front`).addClass(tableState.nightAction.roleClicked);
+					this.revealCard(tableState.nightAction.seatClicked);
+				});
 			}
 		}		
 
@@ -259,10 +259,10 @@ export default class Table extends React.Component {
 		}
 
 		if (!gameInfo.tableState.nightAction.completed && gameInfo.tableState.nightAction.action === 'seer') {
-			let cardNum = parseInt($card.attr('data-cardnumber'));
+			let cardNum = $card.attr('data-cardnumber');
 
-			if (this.state.firstClickedCard || cardNum < 8) {
-				let action = [$card.attr('data-cardnumber')];
+			if (this.state.firstClickedCard || parseInt(cardNum) < 8) {
+				let action = [cardNum];
 
 				if (this.state.firstClickedCard) {
 					action.push(this.state.firstClickedCard);
@@ -275,9 +275,9 @@ export default class Table extends React.Component {
 					action
 				});
 			} else {
-				if (cardNum > 7) {
+				if (parseInt(cardNum) > 7) {
 					this.setState({
-						firstClickedCard: $card.attr('data-cardnumber')
+						firstClickedCard: cardNum
 					});
 				}
 			}
