@@ -50,6 +50,8 @@ export function updateUserNightActionEvent(socket, data) {
 						return player.seat === parseInt(data.action[1]);
 					});
 
+				console.log(data.action);
+
 				seat1player.trueRole = data.action[1]; // todo: need to delay this assignment until the end of the phase or beginning of phase 2 - otherwise could display "post swap" info to seer/ww. add cb to sendinprogresschats?
 				seat2player.trueRole = data.action[0];
 				player.nightAction.seatsClicked = data.action;

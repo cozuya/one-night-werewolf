@@ -60,22 +60,23 @@ export default class Table extends React.Component {
 		}
 
 		if (tableState.isNight && tableState.nightAction.action === 'insomniac') {
-			console.log(prevProps);
-			if (!prevProps.gameInfo.tableState.nightAction) {
-				console.log(userInfo.seatNumber);  // todo fix this, does not get to this block.
+			if (!prevProps.gameInfo.tableState.nightAction.action) {
 				this.highlightCards([parseInt(userInfo.seatNumber)]);
 			}
 
 			if (prevProps.gameInfo.tableState.nightAction && !prevProps.gameInfo.tableState.nightAction.completed && tableState.nightAction.roleClicked) {
-
 				$(`section.table .card${tableState.nightAction.seatClicked} .card-front`).addClass(tableState.nightAction.roleClicked);
 				this.revealCard(tableState.nightAction.seatClicked);
 			}
 		}
 
 		if (tableState.isNight && tableState.nightAction.action === 'troublemaker') {
-			if (!prevProps.gameInfo.tableState.nightAction) {
-				// this.highlightCards([8, 9, 10]);  todo: highlight player's card
+			if (!prevProps.gameInfo.tableState.nightAction.action) {
+				let nonPlayersCards = _.range(1, 8).filter((seatNumber) => {
+					return seatNumber !== parseInt(userInfo.seatNumber);
+				});
+
+				this.highlightCards(nonPlayersCards);
 			}
 
 			if (prevProps.gameInfo.tableState.nightAction && !prevProps.gameInfo.tableState.nightAction.completed && tableState.nightAction.seatsClicked) {
@@ -84,18 +85,16 @@ export default class Table extends React.Component {
 		}
 
 		if (tableState.isNight && tableState.nightAction.action === 'robber') {
-			if (!prevProps.gameInfo.tableState.nightAction) {
-				// this.highlightCards([8, 9, 10]);  todo: highlight player's card
+			if (!prevProps.gameInfo.tableState.nightAction.action) {
+				let nonPlayersCards = _.range(1, 8).filter((seatNumber) => {
+					return seatNumber !== parseInt(userInfo.seatNumber);
+				});
+
+				this.highlightCards(nonPlayersCards);
 			}
 
 			if (prevProps.gameInfo.tableState.nightAction && !prevProps.gameInfo.tableState.nightAction.completed && tableState.nightAction.seatClicked) {
-				let playerSeat = Object.keys(gameInfo.seated).find((seat) => {
-					return gameInfo.seated[seat].userName === this.props.userInfo.userName;
-				}).split('seat')[1];
-
-				console.log(tableState.nightAction);
-
-				this.swapCards([tableState.nightAction.seatClicked, playerSeat]);
+				this.swapCards([tableState.nightAction.seatClicked, userInfo.seatNumber]);
 				setTimeout(() => {
 					$(`section.table .card${tableState.nightAction.seatClicked} .card-front`).addClass(tableState.nightAction.newRole);
 					this.revealCard(tableState.nightAction.seatClicked);
@@ -104,14 +103,18 @@ export default class Table extends React.Component {
 		}
 
 		if (tableState.isNight && tableState.nightAction.action === 'seer') {
-			if (!prevProps.gameInfo.tableState.nightAction) {
-				// this.highlightCards([8, 9, 10]);  todo: highlight player's card
+			if (!prevProps.gameInfo.tableState.nightAction.action) {
+				let nonPlayersCards = _.range(1, 11).filter((seatNumber) => {
+					return seatNumber !== parseInt(userInfo.seatNumber);
+				});
+
+				this.highlightCards(nonPlayersCards);
 			}
 
 			if (prevProps.gameInfo.tableState.nightAction && !prevProps.gameInfo.tableState.nightAction.completed && tableState.nightAction.rolesClicked) {
 
-				tableState.nightAction.rolesClicked.forEach((role, index) => {
-					console.log(tableState.nightAction);
+				tableState.nightAction.rolesClicked.forEach((role, index) => {  // todo: make sure this works.
+					console.log(tableState.nightAction); 
 					$(`section.table .card${tableState.nightAction.seatsClicked[index]} .card-front`).addClass(tableState.nightAction.rolesClicked[index]);
 					this.revealCard(tableState.nightAction.seatsClicked[index]);
 				});
@@ -150,25 +153,25 @@ export default class Table extends React.Component {
 			$cards.forEach(($card) => {
 				$card.addClass('card-notify');				
 			});
-		}, 1000);
+		}, 1500);
 
 		setTimeout(() => {
 			$cards.forEach(($card) => {
 				$card.removeClass('card-notify');				
 			});
-		}, 1750);
+		}, 2250);
 
 		setTimeout(() => {
 			$cards.forEach(($card) => {
 				$card.addClass('card-notify');				
 			});
-		}, 2500);
+		}, 3250);
 
 		setTimeout(() => {
 			$cards.forEach(($card) => {
 				$card.removeClass('card-notify');				
 			});
-		}, 3250);
+		}, 4000);
 	}
 
 	componentDidMount() {
@@ -281,7 +284,7 @@ export default class Table extends React.Component {
 		}
 
 		if (!gameInfo.tableState.nightAction.completed && gameInfo.tableState.nightAction.action === 'troublemaker') {
-			if (this.state.firstClickedCard) {
+			if (this.state.firstClickedCard && $card.attr('data-cardnumber') !== this.props.userInfo.seatNumber) {
 				if ($card.attr('data-cardnumber') !== this.state.firstClickedCard) {
 					socket.emit('userNightActionEvent', {
 						userName: this.props.userInfo.userName,
@@ -290,7 +293,7 @@ export default class Table extends React.Component {
 						action: [this.state.firstClickedCard, $card.attr('data-cardnumber')]
 					});
 				}
-			} else {
+			} else if ($card.attr('data-cardnumber') !== this.props.userInfo.seatNumber) {
 				this.setState({
 					firstClickedCard: $card.attr('data-cardnumber')
 				});

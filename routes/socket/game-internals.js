@@ -19,22 +19,22 @@ export function startGame(game) {
 				}
 
 				if (player.userName === 'jin') {
-					player.trueRole = 'werewolf';
-					player.perceivedRole = 'werewolf';
+					player.trueRole = 'seer';
+					player.perceivedRole = 'seer';
 					player.nightAction = {};
 					player.seat = 1;
 				}
 
 				if (player.userName === 'paul') {
-					player.trueRole = 'insomniac';
-					player.perceivedRole = 'insomniac';
+					player.trueRole = 'werewolf';
+					player.perceivedRole = 'werewolf';
 					player.nightAction = {};
 					player.seat = 2;
 				}
 
 				// if (player.userName === 'heihachi') {
-				// 	player.trueRole = 'villager';
-				// 	player.perceivedRole = 'villager';
+				// 	player.trueRole = 'robber';
+				// 	player.perceivedRole = 'robber';
 				// 	player.nightAction = {};
 				// 	player.seat = 3;
 				// }
