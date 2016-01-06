@@ -25,7 +25,6 @@ export default class Game extends React.Component {
 								updateSeatedUsers={this.props.updateSeatedUsers}
 								gameInfo={this.props.gameInfo}
 								userInfo={this.props.userInfo}
-								changeTableState={this.props.changeTableState}
 							/>
 						</div>
 						<div className="six wide column chat-container">

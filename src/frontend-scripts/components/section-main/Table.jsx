@@ -24,8 +24,9 @@ export default class Table extends React.Component {
 
 	componentDidUpdate(prevProps) {
 		let gameInfo = this.props.gameInfo,
+			userInfo = this.props.userInfo,
 			tableState = gameInfo.tableState;
-		
+
 		if (!gameInfo.inProgress && gameInfo.seatedCount === 2 && gameInfo.seated.seat1.userName === this.props.userInfo.userName && !gameInfo.inProgress) {  // todo: should do this on the back end - 1st seat could be disconnected
 			socket.emit('startGameCountdown', gameInfo.uid);
 		}
@@ -33,12 +34,8 @@ export default class Table extends React.Component {
 		if (gameInfo.tableState.cardsDealt === 'in progress') {
 			this.dealCards();
 
-			setTimeout(() => { // todo: add seat to userinfo, check for that before firing reveal.
-				let playerSeat = Object.keys(gameInfo.seated).find((seat) => {
-					return gameInfo.seated[seat].userName === this.props.userInfo.userName;
-				});
-
-				this.revealCard(playerSeat.split('seat')[1]);
+			setTimeout(() => {
+				this.revealCard(userInfo.seatNumber);
 			}, 2000);
 		}
 
@@ -63,8 +60,10 @@ export default class Table extends React.Component {
 		}
 
 		if (tableState.isNight && tableState.nightAction.action === 'insomniac') {
+			console.log(prevProps);
 			if (!prevProps.gameInfo.tableState.nightAction) {
-				// this.highlightCards([8, 9, 10]);  todo: highlight player's card
+				console.log(userInfo.seatNumber);  // todo fix this, does not get to this block.
+				this.highlightCards([parseInt(userInfo.seatNumber)]);
 			}
 
 			if (prevProps.gameInfo.tableState.nightAction && !prevProps.gameInfo.tableState.nightAction.completed && tableState.nightAction.roleClicked) {
@@ -143,15 +142,33 @@ export default class Table extends React.Component {
 	}
 
 	highlightCards(cards) { // array of numbers 1-10
-		// todo: obv badly needs to be rewritten.
-
-		let $cards2 = $('section.table').add('.card8').add('.card9').add('.card10');
-
-		$cards2.addClass('card-notify');
+		let $cards = cards.map((cardNum) => {
+			return $(`section.table .card${cardNum}`);
+		});
 
 		setTimeout(() => {
-			$cards2.removeClass('card-notify');
-		}, 2000);
+			$cards.forEach(($card) => {
+				$card.addClass('card-notify');				
+			});
+		}, 1000);
+
+		setTimeout(() => {
+			$cards.forEach(($card) => {
+				$card.removeClass('card-notify');				
+			});
+		}, 1750);
+
+		setTimeout(() => {
+			$cards.forEach(($card) => {
+				$card.addClass('card-notify');				
+			});
+		}, 2500);
+
+		setTimeout(() => {
+			$cards.forEach(($card) => {
+				$card.removeClass('card-notify');				
+			});
+		}, 3250);
 	}
 
 	componentDidMount() {

@@ -26,8 +26,8 @@ export function startGame(game) {
 				}
 
 				if (player.userName === 'paul') {
-					player.trueRole = 'werewolf';
-					player.perceivedRole = 'werewolf';
+					player.trueRole = 'insomniac';
+					player.perceivedRole = 'insomniac';
 					player.nightAction = {};
 					player.seat = 2;
 				}
@@ -47,7 +47,7 @@ export function startGame(game) {
 			});
 
 			// game.internals.centerRoles = [..._roles];
-			game.internals.centerRoles = ['werewolf', 'robber', 'troublemaker', 'robber', 'troublemaker', 'insomniac', 'robber', 'troublemaker']
+			game.internals.centerRoles = ['werewolf', 'robber', 'troublemaker', 'robber', 'troublemaker', 'insomniac', 'robber', 'troublemaker'];
 		};
 
 	Object.keys(game.seated).map((seat, i) => {
@@ -252,7 +252,7 @@ let beginNightPhases = (game) => {
 					message;
 
 				if (!werewolves.length) {
-					message = 'You wake up, and see that there are no WEREWOLVES. Be careful - you lose if no villager is eliminated'
+					message = 'You wake up, and see that there are no WEREWOLVES in this game. Be careful - you lose if no villager is eliminated'
 				} else {
 					message = 'You wake up, and see that the WEREWOLVES in this game are: ';
 				}

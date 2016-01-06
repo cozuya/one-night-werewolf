@@ -78,11 +78,12 @@ class App extends React.Component {
 	}
 
 	onCreateGameSubmit(game) {
-		let { dispatch } = this.props;
+		let { dispatch, userInfo } = this.props;
 
+		userInfo.seatNumber = '1'; // todo: remove this when a player leaves a game they're seated at
 		dispatch(updateGameInfo(game));
 		dispatch(updateMidsection('game'));
-		dispatch(updateUser(this.props.userInfo));
+		dispatch(updateUser(userInfo));
 		socket.emit('createGame', game);
 	}
 
@@ -111,46 +112,27 @@ class App extends React.Component {
 				uid: Math.random().toString(36).substring(6)
 			};
 
-
+		userInfo.seatNumber = '1';
 		dispatch(updateGameInfo(game));
 		dispatch(updateMidsection('game'));
 		dispatch(updateUser(userInfo));
 		socket.emit('createGame', game);
 	}
 
-	// componentDidUpdate() {
-	// 	let { dispatch } = this.props;
-
-	// 	if (this.userInfo) {
-	// 		console.log('hi');
-	// 		if (this.userInfo.userName === 'jin') {
-	// 			console.log('Hello World!');
-	// 			this.makeQuickDefault();
-	// 		}
-
-	// 		if (this.userInfo.userName === 'paul') {
-	// 			dispatch(updateMidsection('game'));
-	// 			dispatch(updateGameInfo());
-	// 		}
-	// 	}
-	// }
-
 	// ***** end dev helpers *****
 
 	updateSeatedUsersInGame(seatNumber) {
 		let uid = this.props.gameInfo.uid,
-			userInfo = this.props.userInfo,
+			{ dispatch, userInfo } = this.props,
 			data = {
 				uid,
 				seatNumber,
 				userInfo
 			};
 
+		userInfo.seatNumber = seatNumber;
+		dispatch(updateUser(userInfo));
 		socket.emit('updateSeatedUsers', data);
-	}
-
-	updateTableState(tableState) {
-
 	}
 
 	handleNewChat(chat) {
@@ -172,7 +154,6 @@ class App extends React.Component {
 					onCreateGameSubmit={this.onCreateGameSubmit.bind(this)}
 					leaveCreateGame={this.onLeaveCreateGame.bind(this)}
 					gameInfo={this.props.gameInfo}
-					changeTableState={this.props.updateTableState}
 					routeToDefault={this.handleRouteToDefault.bind(this)}
 					updateSeatedUsers={this.updateSeatedUsersInGame.bind(this)}
 					quickDefault={this.makeQuickDefault.bind(this)}
