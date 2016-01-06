@@ -31,9 +31,6 @@ export function updateUserNightActionEvent(socket, data) {
 				player.nightAction.completed = true;
 				chat.chat = `You select the ${selectedCard[data.action]} card and it is revealed to be a ${roleClicked.toUpperCase()}.`;
 			},
-			multiWerewolf() {
-				// todo
-			},
 			insomniac() {
 				let roleClicked = getTrueRoleBySeatNumber(game, data.action);
 
@@ -49,8 +46,6 @@ export function updateUserNightActionEvent(socket, data) {
 						seat2player = game.internals.seatedPlayers.find((player) => {
 						return player.seat === parseInt(data.action[1]);
 					});
-
-				console.log(data.action);
 
 				seat1player.trueRole = data.action[1]; // todo: need to delay this assignment until the end of the phase or beginning of phase 2 - otherwise could display "post swap" info to seer/ww. add cb to sendinprogresschats?
 				seat2player.trueRole = data.action[0];
