@@ -18,19 +18,19 @@ export function startGame(game) {
 					allWerewolvesNotInCenter = true;
 				}
 
-				// if (player.userName === 'jin') {
-				// 	player.trueRole = 'mason';
-				// 	player.perceivedRole = 'mason';
-				// 	player.nightAction = {};
-				// 	player.seat = 1;
-				// }
+				if (player.userName === 'jin') {
+					player.trueRole = 'minion';
+					player.perceivedRole = 'minion';
+					player.nightAction = {};
+					player.seat = 1;
+				}
 
-				// if (player.userName === 'paul') {
-				// 	player.trueRole = 'mason';
-				// 	player.perceivedRole = 'mason';
-				// 	player.nightAction = {};
-				// 	player.seat = 2;
-				// }
+				if (player.userName === 'paul') {
+					player.trueRole = 'werewolf';
+					player.perceivedRole = 'werewolf';
+					player.nightAction = {};
+					player.seat = 2;
+				}
 
 				// if (player.userName === 'heihachi') {
 				// 	player.trueRole = 'robber';
@@ -39,15 +39,15 @@ export function startGame(game) {
 				// 	player.seat = 3;
 				// }
 
-				player.trueRole = role;
-				player.perceivedRole = role;
-				player.nightAction = {};
-				player.seat = index + 1;
-				_roles.splice(roleIndex, 1);
+				// player.trueRole = role;
+				// player.perceivedRole = role;
+				// player.nightAction = {};
+				// player.seat = index + 1;
+				// _roles.splice(roleIndex, 1);
 			});
 
-			game.internals.centerRoles = [..._roles];
-			// game.internals.centerRoles = ['werewolf', 'robber', 'troublemaker', 'robber', 'troublemaker', 'insomniac', 'robber', 'troublemaker'];
+			// game.internals.centerRoles = [..._roles];
+			game.internals.centerRoles = ['werewolf', 'robber', 'troublemaker', 'robber', 'troublemaker', 'insomniac', 'robber', 'troublemaker'];
 		};
 
 	Object.keys(game.seated).map((seat, i) => {
@@ -114,25 +114,22 @@ let beginNightPhases = (game) => {
 		werewolves, masons;
 
 	game.internals.seatedPlayers.forEach((player) => {
-		let playerMap = {
-			seer: () => {
-				let nightAction = {
+		switch (player.trueRole) {
+			case 'seer':
+				player.nightAction = {
 					action: 'seer',
 					phase: 1,
 					gameChat: 'You wake up, and may look at one player\'s card, or two of the center cards.'
 				};
-
-				player.nightAction = nightAction;
 				phases[0].push(player);
-			},
-			robber: () => {
-				let nightAction = {
+				break;
+
+			case 'robber':
+				player.nightAction = {
 					action: 'robber',
 					gameChat: 'You wake up, and may exchange your card with another player\'s, and view your new role.'
 				};
 
-				player.nightAction = nightAction;
-
 				if (roleChangerInPhase1) {
 					player.nightAction.phase = phases.length + 1;
 					phases.push([player]);
@@ -141,15 +138,15 @@ let beginNightPhases = (game) => {
 					roleChangerInPhase1 = true;
 					phases[0].push(player);
 				}
-			},
-			troublemaker: () => {
-				let nightAction = {
+				break;
+			
+			case 'troublemaker':
+				player.nightAction = {
 					action: 'troublemaker',
 					gameChat: 'You wake up, and may switch cards between two other players without viewing them.'
 				};
-
-				player.nightAction = nightAction;
 				player.nightAction.action = 'troublemaker';
+
 				if (roleChangerInPhase1) {
 					player.nightAction.phase = phases.length + 1;
 					phases.push([player]);
@@ -158,39 +155,25 @@ let beginNightPhases = (game) => {
 					roleChangerInPhase1 = true;
 					phases[0].push(player);
 				}
-			},
-			insomniac: () => {
-				let nightAction = {
+				break;
+
+			case 'insomniac':
+				player.nightAction = {
 					action: 'insomniac',
 					gameChat: 'You wake up, and may view your card again.',
 					completed: false
 				};
 
-				player.nightAction = nightAction;
 				player.nightAction.action = 'insomniac';
 				insomniacs.push(player);
-			},
-			werewolf: () => {
-				phases[0].push(player);
-			},
-			minion: () => {
-				phases[0].push(player);
-			},
-			mason: () => {
-				phases[0].push(player);
-			},
-			villager: () => {
-				return;
-			},
-			hunter: () => {
-				return;
-			},
-			tanner: () => {
-				return;
-			}
-		};
+				break;
 
-		playerMap[player.trueRole]();
+			default:
+				if (player.trueRole === 'werewolf' || player.trueRole === 'minion' || player.trueRole === 'mason') {
+					phases[0].push(player);
+				}
+				break;
+		};
 	});
 
 	if (insomniacs.length) {
@@ -210,20 +193,22 @@ let beginNightPhases = (game) => {
 	});
 
 	phases[0].forEach((player) => {
-		let playerMap = {
-			werewolf: () => {
-				let others = werewolves.map((werewolf) => {
-						return werewolf.userName;
-					}).filter((userName) => {
-						return userName !== player.userName;
-					}),
-					nightAction = {
-						action: 'werewolf',
-						phase: 1,
-						completed: false
-					},
-					message;
+		let others, nightAction, message;
+
+		switch (player.trueRole) {
+			case 'werewolf':
+				nightAction = {
+					action: 'werewolf',
+					phase: 1,
+					completed: false
+				},
 			
+				others = werewolves.map((werewolf) => {
+					return werewolf.userName;
+				}).filter((userName) => {
+					return userName !== player.userName;
+				});
+
 				if (werewolves.length === 1) {
 					nightAction.singleWerewolf = true;
 					message = 'You wake up, and see no other WEREWOLVES. You may look at a center card';				
@@ -242,17 +227,17 @@ let beginNightPhases = (game) => {
 					return player.seat;
 				});
 				player.nightAction = nightAction;
-			},
-			minion: () => {
-				let others = werewolves.map((werewolf) => {
-						return werewolf.userName;
-					}),
-					nightAction = {
-						action: 'minion',
-						others,
-						phase: 1
-					},
-					message;
+				break;
+
+			case 'minion':
+				nightAction = {
+					action: 'minion',
+					phase: 1
+				};
+
+				others = werewolves.map((werewolf) => {
+					return werewolf.userName;
+				});
 
 				if (!werewolves.length) {
 					message = 'You wake up, and see that there are no WEREWOLVES in this game. Be careful - you lose if no villager is eliminated'
@@ -272,8 +257,9 @@ let beginNightPhases = (game) => {
 				});
 				nightAction.gameChat = message;
 				player.nightAction = nightAction;
-			},
-			mason: () => {
+				break;
+			
+			case 'mason': {
 				let otherMasons = masons.filter((mason) => {
 						return mason.userName !== player.userName;
 					}),
@@ -282,12 +268,12 @@ let beginNightPhases = (game) => {
 					}),
 					otherMasonsSeatNumbers = otherMasons.map((mason) => {
 						return mason.seat;
-					}),
-					nightAction = {
-						action: 'mason',
-						phase: 1
-					},
-					message;
+					});
+				
+				nightAction = {
+					action: 'mason',
+					phase: 1
+				};
 
 				if (!otherMasons.length === 1) {
 					message = 'You wake up, and see that you are the only mason';
@@ -305,31 +291,8 @@ let beginNightPhases = (game) => {
 				nightAction.others = otherMasonsSeatNumbers;
 				nightAction.gameChat = message;
 				player.nightAction = nightAction;
-			},
-			troublemaker: () => {
-				return;
-			},
-			robber: () => {
-				return;
-			},
-			seer: () => {
-				return;
-			},
-			insomniac: () => {
-				return;
-			},
-			villager: () => {
-				return;
-			},
-			hunter: () => {
-				return;
-			},
-			tanner: () => {
-				return;
 			}
-		};
-
-		playerMap[player.trueRole]();
+		}
 	});
 
 	game.tableState.isNight = true;
@@ -346,8 +309,11 @@ let nightPhases = (game, phases) => {
 		phasesCount = phases.length,
 		phasesTimer,
 		phasesFn = () => {
+			console.log(phasesIndex);
+			console.log(phasesCount);
 			if (phasesIndex === phasesCount && phasesCount > 1) {
 				// todo this whole block doesn't work.
+				console.log('Hello World!');
 				clearInterval(phasesTimer);
 				game.tableState.isNight = false;
 				game.status = 'Day begins..';
@@ -355,12 +321,12 @@ let nightPhases = (game, phases) => {
 					player.gameChats.push = {
 						gameChat: true,
 						userName: player.userName,
-						chat: 'Night ends and the day phase begins.',
-						
+						chat: 'Night ends and the day phase begins.',						
 						seat: i + 1,
 						timestamp: new Date()
 					};
 				});
+				console.log('hi');
 				sendInprogressChats(game);
 				setTimeout(() => {
 					dayPhase(game);

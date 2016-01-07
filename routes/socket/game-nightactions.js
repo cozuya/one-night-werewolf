@@ -95,7 +95,6 @@ export function updateUserNightActionEvent(socket, data) {
 			}
 		};
 
-	console.log(data);
 	if (!player.nightAction.completed) {
 		eventMap[data.role]();
 	}
