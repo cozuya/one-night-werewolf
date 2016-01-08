@@ -4,7 +4,6 @@ import React from 'react';
 
 export default class Menu extends React.Component {
 	render() {
-		// console.log(this.props);
 		let userName = this.props.userInfo.userName,
 			rightSection = (() => {
 				if (userName) {

@@ -8,44 +8,42 @@ import Settings from './Settings.jsx';
 import Game from './Game.jsx';
 
 export default class Main extends React.Component {
-	variableWidth() {
-		let classes = this.props.midsection === 'game' ? 'thirteen' : 'ten';
-
-		classes += ' wide column section-main';  // yes semantic requires classes in specific order... ascii shrug
-		return classes;
-	}
-	
 	render() {
-		let midsection = () => {
-			switch (this.props.midsection) {
-				case 'createGame':
-					return <Creategame
-								userInfo={this.props.userInfo}
-								onCreateGameSubmit={this.props.onCreateGameSubmit}
-								onLeaveCreateGame={this.props.onLeaveCreateGame}
-							/>
-				case 'game':
-					return <Game
-								updateSeatedUsers={this.props.updateSeatedUsers}
-								userInfo={this.props.userInfo}
-								gameInfo={this.props.gameInfo}
-								newChat={this.props.newChat}
-							/>
-				case 'settings':
-					return <Settings
-								routeToDefault={this.props.routeToDefault}
-								userInfo={this.props.userInfo}
-							/>
-				default:
-					return <Defaultmid
-								quickDefault={this.props.quickDefault} />
-			}
-		};
-
 		return (
-			<section className={this.variableWidth()}>
+			<section className={
+				(() => {
+					let classes = this.props.midsection === 'game' ? 'thirteen' : 'ten';
+
+					classes += ' wide column section-main';  // yes semantic requires classes in specific order... ascii shrug
+					return classes;
+				})()
+			}>
 				<Menu userInfo={this.props.userInfo} />
-				{midsection()}
+				{(() => {
+					switch (this.props.midsection) {
+						case 'createGame':
+							return <Creategame
+										userInfo={this.props.userInfo}
+										onCreateGameSubmit={this.props.onCreateGameSubmit}
+										onLeaveCreateGame={this.props.onLeaveCreateGame}
+									/>
+						case 'game':
+							return <Game
+										updateSeatedUsers={this.props.updateSeatedUsers}
+										userInfo={this.props.userInfo}
+										gameInfo={this.props.gameInfo}
+										newChat={this.props.newChat}
+									/>
+						case 'settings':
+							return <Settings
+										onLeaveSettings={this.props.onLeaveSettings}
+										userInfo={this.props.userInfo}
+									/>
+						default:
+							return <Defaultmid
+							quickDefault={this.props.quickDefault} />
+					}
+				})()}
 			</section>
 		);
 	}

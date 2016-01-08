@@ -53,10 +53,14 @@ export default class Settings extends React.Component {
 		});
 	}
 
+	leaveSettings() {
+		this.props.onLeaveSettings('default');
+	}
+
 	render() {
 		return (
 			<section className="settings">
-				<i className="remove icon" onClick={this.props.routeToDefault}></i>
+				<i className="remove icon" onClick={this.leaveSettings.bind(this)}></i>
 				<div className="ui header">
 					<div className="content">
 						Game settings

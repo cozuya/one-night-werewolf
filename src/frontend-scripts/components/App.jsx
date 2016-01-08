@@ -136,14 +136,14 @@ class App extends React.Component {
 					onCreateGameSubmit={this.handleCreateGameSubmit.bind(this)}
 					onLeaveCreateGame={this.handleRoute.bind(this)}
 					gameInfo={this.props.gameInfo}
-					routeToDefault={this.handleRoute.bind(this)}
+					onLeaveSettings={this.handleRoute.bind(this)}
 					updateSeatedUsers={this.updateSeatedUsersInGame.bind(this)}
 					quickDefault={this.makeQuickDefault.bind(this)}
 					newChat={this.handleNewChat.bind(this)}
 				/>
 				<RightSidebar
 					userInfo={this.props.userInfo}
-					settingClick={this.handleRoute.bind(this)}
+					onSettingsButtonClick={this.handleRoute.bind(this)}
 				/>
 			</section>
 		);

@@ -1,7 +1,6 @@
 'use strict';
 
 import React from 'react';
-import ReactDOM from 'react-dom';
 import $ from 'jquery';
 
 export default class Gamechat extends React.Component {
@@ -13,6 +12,7 @@ export default class Gamechat extends React.Component {
 	}
 
 	clickExpand(e) {
+		// todo: this feature
 	}
 
 	handleKeyup(e) {
@@ -31,10 +31,10 @@ export default class Gamechat extends React.Component {
 	}
 
 	handleSubmit(e) {
-		let input = ReactDOM.findDOMNode(this.refs.chatinput),
+		let input = $(e.currentTarget).find('input')[0],
 			$button = $(e.currentTarget).find('button'),
 			$clearIcon = $button.parent().next(),
-			seat = Object.keys(this.props.gameInfo.seated).find((seat) => {
+			seat = Object.keys(this.props.gameInfo.seated).find((seat) => { // todo: replace this with userinfo.seatnumber after that is implemented to work on reconnection event
 				return this.props.gameInfo.seated[seat].userName === this.props.userInfo.userName;
 			});
 
@@ -73,7 +73,7 @@ export default class Gamechat extends React.Component {
 
 		if (chatCount < 20) {
 			$chatPusher.css({
-				height: 290 - chatCount * 15,
+				height: 290 - chatCount * 16,
 			});
 		} else {
 			$chatPusher.remove();
@@ -92,19 +92,19 @@ export default class Gamechat extends React.Component {
 	}
 
 	handleTimestamps(timestamp) {
-		if (!this.props.userInfo.userName) {
-			return;
-		}
+		let userInfo = this.props.userInfo;
 
-		let minutes = (`0${new Date(timestamp).getMinutes()}`).slice(-2),
-			seconds = (`0${new Date(timestamp).getSeconds()}`).slice(-2);
+		if (userInfo.userName) {
+			let minutes = (`0${new Date(timestamp).getMinutes()}`).slice(-2),
+				seconds = (`0${new Date(timestamp).getSeconds()}`).slice(-2);
 
-		if (this.props.userInfo.gameSettings.enableTimestamps) {
-			return (
-				<span className="chat-timestamp">
-					({minutes}: {seconds})
-				</span>
-			);
+			if (userInfo.gameSettings.enableTimestamps) {
+				return (
+					<span className="chat-timestamp">
+						({minutes}: {seconds})
+					</span>
+				);
+			}
 		}
 	}
 
@@ -112,6 +112,7 @@ export default class Gamechat extends React.Component {
 		let gameInfo = this.props.gameInfo;
 
 		// todo: make the logged in user's chats a different color than everyone else's chats
+		// todo: make roles different colors and make seated player names different colors
 
 		return gameInfo.chats.map((chat, i) => {
 			if (chat.gameChat && (this.state.chatFilter === 'Game' || this.state.chatFilter === 'All')) {
@@ -122,7 +123,7 @@ export default class Gamechat extends React.Component {
 					</div>
 				);
 			} else if (!chat.gameChat && this.state.chatFilter !== 'Game') {
-				let isSeated = !!Object.keys(gameInfo.seated).find((seat) => {
+				let isSeated = !!Object.keys(gameInfo.seated).find((seat) => { // todo: replace this with userinfo.seatnumber after that is implemented to work on reconnection event
 					return gameInfo.seated[seat].userName === chat.userName;
 				});
 
@@ -162,7 +163,7 @@ export default class Gamechat extends React.Component {
 				<form className="segment inputbar" onSubmit={this.handleSubmit.bind(this)}>
 					<i className="large expand icon" onClick={this.clickExpand.bind(this)}></i>
 					<div className={this.props.userInfo.userName ? "ui action input" : "ui action input disabled"}>
-						<input placeholder="Chat.." ref="chatinput" onKeyUp={this.handleKeyup.bind(this)}></input>
+						<input placeholder="Chat.." onKeyUp={this.handleKeyup.bind(this)}></input>
 						<button className="ui primary button disabled">Chat</button>
 					</div>
 					<i className="large delete icon app-hidden"></i>
