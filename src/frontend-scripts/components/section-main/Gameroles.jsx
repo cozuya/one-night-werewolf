@@ -28,13 +28,12 @@ export default class Gameroles extends React.Component {
 				<div className="ui right pointing label">
   					Roles in this game:
 				</div>
-					{(() => { // todo fix this =/
-						this.props.roles.map((role, i) => {
+					{(() => {
+						return this.props.roles.map((role, i) => {
 							return (
 								<div key={i}>
 									<div className={
 										((role) => {
-											console.log(role);
 											return `roles ${role}`;
 										})(role)
 									}></div>

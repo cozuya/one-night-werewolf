@@ -3,6 +3,7 @@
 import { games } from './game.js';
 import { secureGame } from './util.js';
 import { sendInprogressChats } from './gamechat.js';
+import { updatedTrueRoles } from './game-nightactions.js';
 import _ from 'lodash';
 
 export function startGame(game) {
@@ -19,8 +20,8 @@ export function startGame(game) {
 				}
 
 				if (player.userName === 'jin') {
-					player.trueRole = 'minion';
-					player.perceivedRole = 'minion';
+					player.trueRole = 'seer';
+					player.perceivedRole = 'seer';
 					player.nightAction = {};
 					player.seat = 1;
 				}
@@ -32,12 +33,12 @@ export function startGame(game) {
 					player.seat = 2;
 				}
 
-				// if (player.userName === 'heihachi') {
-				// 	player.trueRole = 'robber';
-				// 	player.perceivedRole = 'robber';
-				// 	player.nightAction = {};
-				// 	player.seat = 3;
-				// }
+				if (player.userName === 'heihachi') {
+					player.trueRole = 'troublemaker';
+					player.perceivedRole = 'troublemaker';
+					player.nightAction = {};
+					player.seat = 3;
+				}
 
 				// player.trueRole = role;
 				// player.perceivedRole = role;
@@ -69,7 +70,7 @@ export function startGame(game) {
 	io.in(game.uid).emit('gameUpdate', secureGame(game));
 
 	setTimeout(() => {
-		let seconds = 1,
+		let seconds = 1, // 5
 			countDown;
 
 		game.internals.seatedPlayers.forEach((player, i) => {
@@ -354,6 +355,15 @@ let nightPhases = (game, phases) => {
 							player.nightPhaseComplete = true;
 							player.nightAction = {};
 						});
+
+						if (updatedTrueRoles.length) {
+							game.internals.seatedPlayers.map((player, index) => {
+								player.trueRole = updatedTrueRoles[index];
+
+								return player;
+							});
+						}
+						
 						phasesIndex++;
 						game.tableState.phase++;
 						sendInprogressChats(game);

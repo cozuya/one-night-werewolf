@@ -1,7 +1,5 @@
 'use strict';
 
-// let Chatroom = require('../models/chatroom');
-
 import _ from 'lodash';
 import { games } from './game.js';
 import { secureGame, getInternalPlayerInGameByUserName, getSocketsByUid } from './util.js';

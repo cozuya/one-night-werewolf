@@ -55,7 +55,7 @@ export function sendGameInfo(socket, uid) {
 			let player = getInternalPlayerInGameByUserName(game, socket.handshake.session.passport.user);
 			
 			cloneGame.chats = player ? combineInprogressChats(game, player) : combineInprogressChats(game);
-			cloneGame.gameState.playerPerceivedRole = player.perceivedRole ? player.perceivedRole : undefined;
+			// cloneGame.gameState.playerPerceivedRole = player.perceivedRole ? player.perceivedRole : undefined; // todo: crashes game, do I even need this for anything?
 		} else {
 			cloneGame.chats = combineInprogressChats(game);
 		}

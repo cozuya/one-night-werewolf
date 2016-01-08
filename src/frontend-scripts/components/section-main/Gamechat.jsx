@@ -2,6 +2,8 @@
 
 import React from 'react';
 import $ from 'jquery';
+import socket from 'socket.io-client';
+socket = socket();
 
 export default class Gamechat extends React.Component {
 	constructor() {
@@ -41,14 +43,15 @@ export default class Gamechat extends React.Component {
 		e.preventDefault();
 
 		if (input.value) {
-			this.props.newChat({
+			let chat = {
 				userName: this.props.userInfo.userName,
 				chat: input.value,
 				gameChat: false,
 				seat: seat ? parseInt(seat.split('seat')[1]) : '',
 				inProgress: this.props.gameInfo.inProgress
-			});
+			};
 
+			socket.emit('newGameChat', chat, this.props.gameInfo.uid);
 			input.value = '';
 			input.focus();
 			$button.addClass('disabled');
@@ -112,7 +115,7 @@ export default class Gamechat extends React.Component {
 		let gameInfo = this.props.gameInfo;
 
 		// todo: make the logged in user's chats a different color than everyone else's chats
-		// todo: make roles different colors and make seated player names different colors
+		// todo: make roles different colors and make seated player names different colors (regex)
 
 		return gameInfo.chats.map((chat, i) => {
 			if (chat.gameChat && (this.state.chatFilter === 'Game' || this.state.chatFilter === 'All')) {

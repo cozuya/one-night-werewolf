@@ -117,10 +117,6 @@ class App extends React.Component {
 		socket.emit('updateSeatedUsers', data);
 	}
 
-	handleNewChat(chat) {
-		socket.emit('newGameChat', chat, this.props.gameInfo.uid);
-	}
-
 	render() {
 		return (
 			<section className="ui grid">
@@ -139,7 +135,6 @@ class App extends React.Component {
 					onLeaveSettings={this.handleRoute.bind(this)}
 					updateSeatedUsers={this.updateSeatedUsersInGame.bind(this)}
 					quickDefault={this.makeQuickDefault.bind(this)}
-					newChat={this.handleNewChat.bind(this)}
 				/>
 				<RightSidebar
 					userInfo={this.props.userInfo}

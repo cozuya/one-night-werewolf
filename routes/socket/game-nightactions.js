@@ -4,6 +4,8 @@ import { sendInprogressChats } from './gamechat.js';
 import { games } from './game.js';
 import _ from 'lodash';
 
+export let updatedTrueRoles = [];
+
 export function updateUserNightActionEvent(socket, data) {
 	let game = games.find((el) => {
 			return el.uid === data.uid;
@@ -43,28 +45,42 @@ export function updateUserNightActionEvent(socket, data) {
 				let seat1player = game.internals.seatedPlayers.find((player) => {
 						return player.seat === parseInt(data.action[0]);
 					}),
-						seat2player = game.internals.seatedPlayers.find((player) => {
+					seat2player = game.internals.seatedPlayers.find((player) => {
 						return player.seat === parseInt(data.action[1]);
 					});
 
-				seat1player.trueRole = data.action[1]; // todo: need to delay this assignment until the end of the phase or beginning of phase 2 - otherwise could display "post swap" info to seer/ww. add cb to sendinprogresschats?
-				seat2player.trueRole = data.action[0];
+				updatedTrueRoles = game.internals.seatedPlayers.map((player, index) => {
+					if (player.userName === seat1player.userName) {
+						return seat2player.trueRole;
+					} else if (player.userName === seat2player.userName) {
+						return seat1player.trueRole;
+					} else {
+						return player.trueRole;
+					}
+				});
+
 				player.nightAction.seatsClicked = data.action;
 				player.nightAction.completed = true;
 				chat.chat = `You swap the two cards between ${seat1player.userName.toUpperCase()} and ${seat2player.userName.toUpperCase()}.`;
 			},
 			robber() {
-				let player = game.internals.seatedPlayers.find((player) => {
+				let robberPlayer = game.internals.seatedPlayers.find((player) => {
 						return player.userName === data.userName;
 					}),
-						swappedPlayer = game.internals.seatedPlayers.find((player) => {
+					swappedPlayer = game.internals.seatedPlayers.find((player) => {
 						return player.seat === parseInt(data.action);
 					}),
 					_role = player.trueRole;
 
-				player.trueRole = swappedPlayer.trueRole; // todo: need to delay this assignment until the end of the phase or beginning of phase 2 - otherwise could display "post swap" info to seer/ww. add cb to sendinprogresschats?
-				player.perceivedRole = swappedPlayer.trueRole;
-				swappedPlayer.trueRole = _role;
+				updatedTrueRoles = game.internals.seatedPlayers.map((player, index) => {
+					if (player.userName === robberPlayer.userName) {
+						return swappedPlayer.trueRole;
+					} else if (player.userName === swappedPlayer.userName) {
+						return robberPlayer.trueRole;
+					} else {
+						return player.trueRole;
+					}
+				});
 
 				player.nightAction.seatClicked = data.action;
 				player.nightAction.newRole = player.trueRole;
@@ -98,6 +114,7 @@ export function updateUserNightActionEvent(socket, data) {
 	if (!player.nightAction.completed) {
 		eventMap[data.role]();
 	}
+
 	player.gameChats.push(chat);
 	sendInprogressChats(game);
 }
