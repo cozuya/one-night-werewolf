@@ -53,31 +53,13 @@ class App extends React.Component {
 		socket.emit('getGameList');
 	}
 
-	onLeaveCreateGame() {
+	handleRoute(route) {
 		let { dispatch } = this.props;
 
-		dispatch(updateMidsection('default'));
+		dispatch(updateMidsection(route));
 	}
 
-	leftSidebarHandleCreateGameClick() {
-		let { dispatch } = this.props;
-
-		dispatch(updateMidsection('createGame'));
-	}
-
-	rightSidebarHandleSettingClick() {
-		let { dispatch } = this.props;
-
-		dispatch(updateMidsection('settings'));
-	}
-
-	handleRouteToDefault() {
-		let { dispatch } = this.props;
-
-		dispatch(updateMidsection('default'));
-	}
-
-	onCreateGameSubmit(game) {
+	handleCreateGameSubmit(game) {
 		let { dispatch, userInfo } = this.props;
 
 		userInfo.seatNumber = '1'; // todo: remove this when a player leaves a game they're seated at
@@ -146,22 +128,22 @@ class App extends React.Component {
 					userInfo={this.props.userInfo}
 					midsection={this.props.midSection}
 					gameList={this.props.gameList}
-					onCreateGameButtonClick={this.leftSidebarHandleCreateGameClick.bind(this)}
+					onCreateGameButtonClick={this.handleRoute.bind(this)}
 				/>
 				<Main
 					userInfo={this.props.userInfo}
 					midsection={this.props.midSection}
-					onCreateGameSubmit={this.onCreateGameSubmit.bind(this)}
-					leaveCreateGame={this.onLeaveCreateGame.bind(this)}
+					onCreateGameSubmit={this.handleCreateGameSubmit.bind(this)}
+					onLeaveCreateGame={this.handleRoute.bind(this)}
 					gameInfo={this.props.gameInfo}
-					routeToDefault={this.handleRouteToDefault.bind(this)}
+					routeToDefault={this.handleRoute.bind(this)}
 					updateSeatedUsers={this.updateSeatedUsersInGame.bind(this)}
 					quickDefault={this.makeQuickDefault.bind(this)}
 					newChat={this.handleNewChat.bind(this)}
 				/>
 				<RightSidebar
 					userInfo={this.props.userInfo}
-					settingClick={this.rightSidebarHandleSettingClick.bind(this)}
+					settingClick={this.handleRoute.bind(this)}
 				/>
 			</section>
 		);

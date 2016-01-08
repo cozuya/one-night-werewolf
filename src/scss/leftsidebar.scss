@@ -3,6 +3,10 @@
 		cursor: pointer;
 		padding: 10px 0;
 
+		.inprogress {
+			background: #DAE3FF;
+		}
+
 		> div:first-child {
 			> span {
 				float: right;
@@ -14,6 +18,10 @@
 
 			.gamename {
 				float: left;
+			}
+
+			.kobk {
+				color: $werewolfteam;
 			}
 
 			&:after {

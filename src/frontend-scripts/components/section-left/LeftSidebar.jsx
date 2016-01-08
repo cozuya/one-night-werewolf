@@ -6,7 +6,7 @@ import SidebarGame from './SidebarGame.jsx';
 
 export default class LeftSidebar extends React.Component {
 	createGameClick() {
-		this.props.onCreateGameButtonClick();
+		this.props.onCreateGameButtonClick('createGame');
 	}
 
 	visibleStatus() {

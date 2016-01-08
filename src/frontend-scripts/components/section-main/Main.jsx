@@ -12,7 +12,6 @@ export default class Main extends React.Component {
 		let classes = this.props.midsection === 'game' ? 'thirteen' : 'ten';
 
 		classes += ' wide column section-main';  // yes semantic requires classes in specific order... ascii shrug
-
 		return classes;
 	}
 	
@@ -23,7 +22,7 @@ export default class Main extends React.Component {
 					return <Creategame
 								userInfo={this.props.userInfo}
 								onCreateGameSubmit={this.props.onCreateGameSubmit}
-								leaveCreateGame={this.props.leaveCreateGame}
+								onLeaveCreateGame={this.props.onLeaveCreateGame}
 							/>
 				case 'game':
 					return <Game

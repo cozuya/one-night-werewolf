@@ -85,6 +85,7 @@ export function updateSeatedUsers(socket, data) {
 			deleteGame(game);
 		}
 
+		sendGameList();
 		socket.leave(game.uid);
 		io.sockets.in(data.uid).emit('gameUpdate', secureGame(game));
 		socket.emit('gameUpdate', {});

@@ -25,11 +25,13 @@ export default class SidebarGame extends React.Component {
 		},
 		game = this.props.game;
 
+		// todo front end only gamelength countdown?
+
 		return (
-			<div className="ui vertical segment" key={this.props.key} data-uid={game.uid} onClick={this.routeToGame}>
+			<div className={game.inProgress ? "ui vertical segment inprogress" : "ui vertical segment"} key={this.props.key} data-uid={game.uid} onClick={this.routeToGame}>
 				<div>
-					<span className="gamename">{game.name}</span>
-					<span className="gamelength">{game.time}</span>
+					<span className={game.kobk ? "gamename kobk" : "gamename"}>{game.name}</span>
+					<span className="gamelength">{game.time}</span> 
 					<span className="seatedcount">{game.seatedCount}/7</span>
 				</div>
 				<div className="rolelist">
