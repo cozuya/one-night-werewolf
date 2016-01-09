@@ -396,24 +396,38 @@ let dayPhase = (game) => {
 		if (seconds === 0) {
 			clearInterval(countDown);
 		} else {
-			let status = `Day ends in ${seconds} second${seconds === 1 ? '' : 's'}`;
+			let status;
 
-			if (seconds === 3) { // 15
-				status += '. VOTE NOW.';
-				game.tableState.isVotable = true;
+			if (seconds < 60) {
+				status = `Day ends in ${seconds} second${seconds === 1 ? '' : 's'}`;
 
-				game.internals.seatedPlayers.forEach((player) => {
-					player.gameChats.push({
-						gameChat: true,
-						userName: player.userName,
-						chat: 'The game is coming to an end and you must select a player for elimination.',
-						seat: player.seat,
-						timestamp: new Date()
+				if (seconds === 15) {
+					game.internals.seatedPlayers.forEach((player) => {
+						player.gameChats.push({
+							gameChat: true,
+							userName: player.userName,
+							chat: 'The game is coming to an end and you must select a player for elimination.',
+							seat: player.seat,
+							timestamp: new Date()
+						});
 					});
-				});
-			}
+					game.tableState.isVotable = {
+						enabled: true,
+						completed: false
+					};
+				}
 
-			status += '.';
+				if (seconds < 15) {
+					status += '. VOTE NOW';
+				}
+
+				status += '.';
+			} else {
+				let minutes = Math.floor(seconds / 60),
+					remander = seconds - minutes * 60;
+
+				status = `Day ends in ${minutes}: ${remander < 10 ? `0${remander}` : remander}.`;  // yo dawg, I heard you like template strings.
+			}
 
 			game.status = status;
 			sendInprogressChats(game);

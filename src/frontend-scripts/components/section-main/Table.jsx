@@ -39,6 +39,14 @@ export default class Table extends React.Component {
 		if (tableState.isNight) {
 			this.processNightActions(prevTableState);
 		}
+
+		if (tableState.isVotable.enabled && !prevTableState.isVotable.enabled && userInfo.seatNumber) {
+			let nonPlayersCards = _.range(1, 8).filter((seatNumber) => {
+				return seatNumber !== parseInt(userInfo.seatNumber);
+			});
+
+			this.highlightCards(nonPlayersCards);
+		}
 	}
 
 	processNightActions(prevTableState) {
@@ -205,7 +213,7 @@ export default class Table extends React.Component {
 
 	validateLeaveButton() {
 		let gameInfo = this.props.gameInfo,
-			isUserSeated = !!Object.keys(gameInfo.seated).find((seat) => {
+			isUserSeated = !!Object.keys(gameInfo.seated).find((seat) => { // todo check userinfo
 				return gameInfo.seated[seat].userName === this.props.userInfo.userName;
 			});
 
@@ -220,7 +228,7 @@ export default class Table extends React.Component {
 		let seated = this.props.gameInfo.seated,
 			userInfo = this.props.userInfo,
 			$seat = $(e.currentTarget),
-			isUserAlreadySeated = !!Object.keys(seated).find((seat) => {
+			isUserAlreadySeated = !!Object.keys(seated).find((seat) => { // todo check userinfo
 				return seated[seat].userName === userInfo.userName;
 			});
 
@@ -247,7 +255,7 @@ export default class Table extends React.Component {
 							(() => {
 								let classes = `card-front seat-${num}`,
 									role = this.props.gameInfo.tableState.playerPerceivedRole,
-									playerSeat = Object.keys(this.props.gameInfo.seated).find((seat) => {
+									playerSeat = Object.keys(this.props.gameInfo.seated).find((seat) => { // todo check userinfo
 										return this.props.gameInfo.seated[seat].userName === this.props.userInfo.userName;
 									});
 
@@ -336,6 +344,10 @@ export default class Table extends React.Component {
 				data.action = cardNumber;
 				socket.emit('userNightActionEvent', data);
 			}
+		}
+
+		if (gameInfo.tableState.isVotable && !gameInfo.tableState.isVotable.completed) {
+			// todo add red around clicked card - use state?			
 		}
 	}
 
