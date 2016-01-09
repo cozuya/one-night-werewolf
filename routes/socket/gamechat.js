@@ -47,7 +47,7 @@ export function sendInprogressChats(game) {
 				return user.userName === userName;
 			});
 
-		// cloneGame.tableState.playerPerceivedRole = cloneGame.internals.seatedPlayers[index].perceivedRole;
+		cloneGame.tableState.playerPerceivedRole = cloneGame.internals.seatedPlayers[index].perceivedRole;
 
 		if (cloneGame.tableState.phase === player.nightAction.phase && !player.nightPhaseComplete) {
 			cloneGame.tableState.nightAction = cloneGame.internals.seatedPlayers[index].nightAction;

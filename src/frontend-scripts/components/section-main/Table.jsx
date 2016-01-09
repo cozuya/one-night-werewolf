@@ -28,10 +28,6 @@ export default class Table extends React.Component {
 			tableState = gameInfo.tableState,
 			prevTableState = prevProps.gameInfo.tableState;
 
-		if (!gameInfo.inProgress && gameInfo.seatedCount === 3 && gameInfo.seated.seat1.userName === userInfo.userName && !gameInfo.inProgress) {  // todo: should do this on the back end - 1st seat could be disconnected
-			socket.emit('startGameCountdown', gameInfo.uid);
-		}
-
 		if (gameInfo.tableState.cardsDealt === 'in progress') {
 			this.dealCards();
 

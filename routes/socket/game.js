@@ -55,7 +55,7 @@ export function sendGameInfo(socket, uid) {
 			let player = getInternalPlayerInGameByUserName(game, socket.handshake.session.passport.user);
 			
 			cloneGame.chats = player ? combineInprogressChats(game, player) : combineInprogressChats(game);
-			// cloneGame.gameState.playerPerceivedRole = player.perceivedRole ? player.perceivedRole : undefined; // todo: crashes game, do I even need this for anything?
+			cloneGame.gameState.playerPerceivedRole = player ? player.perceivedRole : undefined;
 		} else {
 			cloneGame.chats = combineInprogressChats(game);
 		}
@@ -72,7 +72,12 @@ export function updateSeatedUsers(socket, data) {
 	if (data.seatNumber !== null) {
 		game.seated[`seat${data.seatNumber}`] = data.userInfo;
 		game.seatedCount++;
-		io.sockets.in(data.uid).emit('gameUpdate', secureGame(game));
+
+		if (game.seatedCount === 2) {
+			startGameCountdown(game);
+		} else {
+			io.sockets.in(data.uid).emit('gameUpdate', secureGame(game));
+		}
 	} else {
 		for (let key in game.seated) {
 			if (game.seated[key].userName === socket.handshake.session.passport.user) {
@@ -93,11 +98,8 @@ export function updateSeatedUsers(socket, data) {
 	// sendGameList(socket);  // todo: this double-updates the game causing mayhem.  commenting out for now but critical this gets addressed at some point.
 }
 
-export function startGameCountdown(uid) {
-	let game = games.find((el) => {
-		return el.uid === uid;
-	}),
-	seconds = 1,
+let startGameCountdown = (game) => {
+	let seconds = 1,
 	countDown;
 
 	game.inProgress = true;
@@ -108,8 +110,8 @@ export function startGameCountdown(uid) {
 			startGame(game);
 		} else {
 			game.status = `Game starts in ${seconds} second${seconds === 1 ? '' : 's'}.`;
-			io.sockets.in(uid).emit('gameUpdate', secureGame(game));
+			io.sockets.in(game.uid).emit('gameUpdate', secureGame(game));
 		}
 		seconds--;
 	}, 1000);
-}
+};

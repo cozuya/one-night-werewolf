@@ -309,31 +309,29 @@ let nightPhases = (game, phases) => {
 	let phasesIndex = 0,
 		phasesCount = phases.length,
 		phasesTimer,
-		phasesFn = () => {
-			console.log(phasesIndex);
-			console.log(phasesCount);
-			if (phasesIndex === phasesCount && phasesCount > 1) {
-				// todo this whole block doesn't work.
-				console.log('Hello World!');
-				clearInterval(phasesTimer);
-				game.tableState.isNight = false;
-				game.status = 'Day begins..';
-				game.internals.seatedPlayers.forEach((player, i) => {
-					player.gameChats.push = {
-						gameChat: true,
-						userName: player.userName,
-						chat: 'Night ends and the day phase begins.',						
-						seat: i + 1,
-						timestamp: new Date()
-					};
+		endPhases = () => {
+			clearInterval(phasesTimer);
+			game.tableState.isNight = false;
+			game.status = 'Day begins..';
+			game.internals.seatedPlayers.forEach((player, i) => {
+				player.gameChats.push({
+					gameChat: true,
+					userName: player.userName,
+					chat: 'Night ends and the day begins.',						
+					seat: i + 1,
+					timestamp: new Date()
 				});
-				console.log('hi');
-				sendInprogressChats(game);
-				setTimeout(() => {
-					dayPhase(game);
-				}, 50);
+			});
+			sendInprogressChats(game);
+			setTimeout(() => {
+				dayPhase(game);
+			}, 50);
+		},
+		phasesFn = () => {
+			if (phasesIndex === phasesCount && phasesCount > 1) {
+				endPhases();
 			} else {
-				let seconds = 10,
+				let seconds = 1, // 10
 					countDown,
 					phasesPlayers = phases[phasesIndex];
 
@@ -367,6 +365,9 @@ let nightPhases = (game, phases) => {
 						phasesIndex++;
 						game.tableState.phase++;
 						sendInprogressChats(game);
+						if (phasesCount === 1) {
+							endPhases();
+						}
 						clearInterval(countDown);
 					} else {
 						game.status = `Night phase ${phases.length === 1 ? 1 : (phasesIndex).toString()} of ${phasesCount} ends in ${seconds} second${seconds === 1 ? '' : 's'}.`;
@@ -386,5 +387,37 @@ let nightPhases = (game, phases) => {
 }
 
 let dayPhase = (game) => {
-	console.log('day starts');
-}
+	let seconds = (() => {
+		let _time = game.time.split(':');
+
+		return !_time[0] ? parseInt(_time[1]) : parseInt(_time[0]) * 60 + parseInt(_time[1]);
+	})(),
+	countDown = setInterval(() => {
+		if (seconds === 0) {
+			clearInterval(countDown);
+		} else {
+			let status = `Day ends in ${seconds} second${seconds === 1 ? '' : 's'}`;
+
+			if (seconds === 3) { // 15
+				status += '. VOTE NOW.';
+				game.tableState.isVotable = true;
+
+				game.internals.seatedPlayers.forEach((player) => {
+					player.gameChats.push({
+						gameChat: true,
+						userName: player.userName,
+						chat: 'The game is coming to an end and you must select a player for elimination.',
+						seat: player.seat,
+						timestamp: new Date()
+					});
+				});
+			}
+
+			status += '.';
+
+			game.status = status;
+			sendInprogressChats(game);
+			seconds--;
+		}
+	}, 1000);
+};

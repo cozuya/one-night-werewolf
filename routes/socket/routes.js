@@ -1,6 +1,6 @@
 'use strict';
 
-import { startGameCountdown, updateGameChat, sendGameList, createGame, sendGameInfo, updateSeatedUsers, games } from './game.js';
+import { updateGameChat, sendGameList, createGame, sendGameInfo, updateSeatedUsers, games } from './game.js';
 import { checkUserStatus, handleUpdatedGameSettings, sendUserGameSettings } from './account.js';
 import { addNewGameChat } from './gamechat.js';
 import { updateUserNightActionEvent } from './game-nightactions.js';
@@ -37,10 +37,6 @@ export default () => {
 
 		socket.on('newGameChat', (chat, uid) => {
 			addNewGameChat(chat, uid);
-		});
-
-		socket.on('startGameCountdown', (uid) => {
-			startGameCountdown(uid);
 		});
 
 		socket.on('userNightActionEvent', (data) => {
