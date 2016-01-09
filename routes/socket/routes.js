@@ -4,6 +4,7 @@ import { updateGameChat, sendGameList, createGame, sendGameInfo, updateSeatedUse
 import { checkUserStatus, handleUpdatedGameSettings, sendUserGameSettings } from './account.js';
 import { addNewGameChat } from './gamechat.js';
 import { updateUserNightActionEvent } from './game-nightactions.js';
+import { updateSelectedElimination } from './game-internals.js';
 
 export default () => {
 	io.on('connection', (socket) => {
@@ -41,6 +42,10 @@ export default () => {
 
 		socket.on('userNightActionEvent', (data) => {
 			updateUserNightActionEvent(socket, data);
+		});
+
+		socket.on('updateSelectedForElimination', (data) => {
+			updateSelectedElimination(data);
 		});
 	});
 }

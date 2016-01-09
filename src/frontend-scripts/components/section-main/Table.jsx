@@ -36,11 +36,11 @@ export default class Table extends React.Component {
 			}, 2000);
 		}
 
-		if (tableState.isNight) {
+		if (tableState.isNight && userInfo.seatNumber) {
 			this.processNightActions(prevTableState);
 		}
 
-		if (tableState.isVotable.enabled && !prevTableState.isVotable.enabled && userInfo.seatNumber) {
+		if (userInfo.seatNumber && tableState.isVotable && tableState.isVotable.enabled && !prevTableState.isVotable) {
 			let nonPlayersCards = _.range(1, 8).filter((seatNumber) => {
 				return seatNumber !== parseInt(userInfo.seatNumber);
 			});
@@ -195,6 +195,11 @@ export default class Table extends React.Component {
 		if (this.props.gameInfo.tableState.cardsDealt === true) {
 			this.dealCards();
 		}
+
+		$('section.table .progress').progress({
+			percent: 100,
+			total: 1
+		});
 	}
 
 	revealCard(seatNumber) { // string
@@ -277,6 +282,7 @@ export default class Table extends React.Component {
 		let $card = $(e.currentTarget),
 			cardNumber = $card.attr('data-cardnumber'),
 			gameInfo = this.props.gameInfo,
+			userInfo = this.props.userInfo,
 			data = {
 				userName: this.props.userInfo.userName,
 				uid: gameInfo.uid
@@ -347,7 +353,13 @@ export default class Table extends React.Component {
 		}
 
 		if (gameInfo.tableState.isVotable && !gameInfo.tableState.isVotable.completed) {
-			// todo add red around clicked card - use state?			
+			$card.parent().find('.card').removeClass('card-select');
+			$card.addClass('card-select');
+			socket.emit('updateSelectedForElimination', {
+				uid: gameInfo.uid,
+				seatNumber: userInfo.seatNumber,
+				selectedForElimination: cardNumber // todo: very possible that this could be wrong PLAYER i.e. current user is TM and swaps cards 1 and 2 then selects player 2 (actually now card 1) and this variable will be card 1.  probably add "data-originalseatnumber" attribute.
+			});
 		}
 	}
 
@@ -383,7 +395,15 @@ export default class Table extends React.Component {
 							},
 							user = seated ? this.props.gameInfo.seated[`seat${el}`].userName : '';
 
-						return <div key={el} className={classes()} data-seatnumber={seatNumber()} onClick={this.clickedSeat.bind(this)}><span className="username">{user}</span></div>
+						return <div>
+									<div key={el} className={classes()} data-seatnumber={seatNumber()} onClick={this.clickedSeat.bind(this)}>
+										<span className="username">{user}</span>
+									</div>
+									<div className="ui indicating red progress app-hidden">
+										<div className="bar"></div>
+									</div>
+								</div>
+
 					})}
 					{this.createCards()}
 				<i onClick={this.leaveGame.bind(this)} className={this.validateLeaveButton()}></i>

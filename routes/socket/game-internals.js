@@ -322,6 +322,8 @@ let nightPhases = (game, phases) => {
 					timestamp: new Date()
 				});
 			});
+
+			// todo unseated game chat
 			sendInprogressChats(game);
 			setTimeout(() => {
 				dayPhase(game);
@@ -386,6 +388,15 @@ let nightPhases = (game, phases) => {
 	}
 }
 
+export function updateSelectedElimination(data) {
+	let game = games.find((el) => {
+			return el.uid === data.uid;
+		}),
+		player = game.internals.seatedPlayers[parseInt(data.seatNumber) - 1];
+
+	player.selectedForElimination = parseInt(data.selectedForElimination - 1);	
+};
+
 let dayPhase = (game) => {
 	let seconds = (() => {
 		let _time = game.time.split(':');
@@ -395,6 +406,8 @@ let dayPhase = (game) => {
 	countDown = setInterval(() => {
 		if (seconds === 0) {
 			clearInterval(countDown);
+			// todo: "the game ends!" gamechat
+			eliminationPhase(game);
 		} else {
 			let status;
 
@@ -410,6 +423,8 @@ let dayPhase = (game) => {
 							seat: player.seat,
 							timestamp: new Date()
 						});
+
+						// todo unseated game chat
 					});
 					game.tableState.isVotable = {
 						enabled: true,
@@ -424,9 +439,9 @@ let dayPhase = (game) => {
 				status += '.';
 			} else {
 				let minutes = Math.floor(seconds / 60),
-					remander = seconds - minutes * 60;
+					remainder = seconds - minutes * 60;
 
-				status = `Day ends in ${minutes}: ${remander < 10 ? `0${remander}` : remander}.`;  // yo dawg, I heard you like template strings.
+				status = `Day ends in ${minutes}: ${remainder < 10 ? `0${remainder}` : remainder}.`;  // yo dawg, I heard you like template strings.
 			}
 
 			game.status = status;
@@ -434,4 +449,9 @@ let dayPhase = (game) => {
 			seconds--;
 		}
 	}, 1000);
+};
+
+let eliminationPhase = (game) => {
+	console.log('elim starts');
+	
 };
