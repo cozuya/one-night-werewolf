@@ -44,6 +44,33 @@
 			background-repeat: repeat;
 		}
 
+		.seat-container {
+			position: relative;
+		}
+
+		.seat-container1 .progress {
+			margin: 0;
+			position: absolute;
+			display: block !important;
+			left: 285px;
+			top: 70px;
+			width: 160px;
+			z-index: 1;
+			transform: rotate(18deg);
+
+			&:after {
+				content: '';
+				width: 0;
+				height: 0;
+				border-style: solid;
+				position: absolute;
+				border-width: 22px 0 22px 30px;
+				border-color: rgba(0, 0, 0, 0) rgba(0, 0, 0, 0) rgba(0, 0, 0, 0) #007bff;
+				left: 155px;
+				top: -9px;
+			}
+		}
+
 		.seat {
 			width: 59px;
 			height: 80px;

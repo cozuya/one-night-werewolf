@@ -453,5 +453,6 @@ let dayPhase = (game) => {
 
 let eliminationPhase = (game) => {
 	console.log('elim starts');
-	
+	console.log(game.internals.seatedPlayers[0]);
+	console.log(game);
 };

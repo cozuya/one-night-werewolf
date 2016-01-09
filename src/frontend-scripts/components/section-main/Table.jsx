@@ -395,7 +395,12 @@ export default class Table extends React.Component {
 							},
 							user = seated ? this.props.gameInfo.seated[`seat${el}`].userName : '';
 
-						return <div>
+						return (
+								<div className={
+									(() => {
+										return `seat-container seat-container${el}`;								
+									})()
+								}>
 									<div key={el} className={classes()} data-seatnumber={seatNumber()} onClick={this.clickedSeat.bind(this)}>
 										<span className="username">{user}</span>
 									</div>
@@ -403,6 +408,7 @@ export default class Table extends React.Component {
 										<div className="bar"></div>
 									</div>
 								</div>
+							);
 
 					})}
 					{this.createCards()}
