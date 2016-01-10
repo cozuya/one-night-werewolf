@@ -55,6 +55,10 @@ export function sendInprogressChats(game) {
 			cloneGame.tableState.nightAction = {};
 		}
 
+		if (cloneGame.tableState.phase === 'elimination') {
+			cloneGame.tableState.elimination = cloneGame.internals.seatedPlayers[index].selectedForElimination;
+		}
+
 		cloneGame.chats = combineInprogressChats(cloneGame, player.userName);
 		sock.emit('gameUpdate', secureGame(cloneGame));
 	});
