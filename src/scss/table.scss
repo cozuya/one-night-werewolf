@@ -48,28 +48,60 @@
 			position: relative;
 		}
 
-		.seat-container1 .progress {
+		.seat-container .eliminator {
 			margin: 0;
 			position: absolute;
-			display: block !important;
-			left: 285px;
-			top: 70px;
-			width: 160px;
+			width: 20px;
+			height: 26px;
 			z-index: 1;
-			transform: rotate(18deg);
+			background: #db2828;
+			opacity: 0;
+			transition: width 2s, opacity 5s;
 
 			&:after {
+				transition: opacity 5s, left 2s, top 2s;
+				opacity: 0;
 				content: '';
 				width: 0;
 				height: 0;
 				border-style: solid;
 				position: absolute;
 				border-width: 22px 0 22px 30px;
-				border-color: rgba(0, 0, 0, 0) rgba(0, 0, 0, 0) rgba(0, 0, 0, 0) #007bff;
-				left: 155px;
+				border-color: rgba(0, 0, 0, 0) rgba(0, 0, 0, 0) rgba(0, 0, 0, 0) #DB2828;
+				left: 15px;
 				top: -9px;
 			}
 		}
+
+		.seat-container1 .eliminator {
+			left: 285px;
+			top: 70px;
+		}
+
+		.seat-container1 .eliminator.target-seat2 {
+			transform: rotate(18deg);
+			opacity: .7;
+			width: 150px;
+
+			&:after {
+				opacity: .7;
+				left: 149px;
+				top: -9px;
+			}
+		}
+
+		.seat-container1 .eliminator.target-seat3 {
+			left: 260px;
+			top: 135px;
+			transform: rotate(39deg);
+			width: 275px;
+
+			&:after {
+				opacity: .7;
+				left: 275px;
+				top: -9px;
+			}
+		}		
 
 		.seat {
 			width: 59px;

@@ -4,7 +4,6 @@ import React from 'react';
 import $ from 'jquery';
 import Popup from 'semantic-ui-popup';
 import Dropdown from 'semantic-ui-dropdown';
-import Progress from 'semantic-ui-progress';
 import Modal from 'semantic-ui-modal';
 import socket from 'socket.io-client';
 import _ from 'lodash';
@@ -12,7 +11,6 @@ import _ from 'lodash';
 socket = socket();
 $.fn.dropdown = Dropdown;
 $.fn.popup = Popup;
-$.fn.progress = Progress;
 $.fn.modal = Modal;
 
 export default class Table extends React.Component {
@@ -27,6 +25,8 @@ export default class Table extends React.Component {
 			userInfo = this.props.userInfo,
 			tableState = gameInfo.tableState,
 			prevTableState = prevProps.gameInfo.tableState;
+
+			// $('section.table .seat-container1 .eliminator').addClass('target-seat2');
 
 		if (gameInfo.tableState.cardsDealt === 'in progress') {
 			this.dealCards();
@@ -195,11 +195,6 @@ export default class Table extends React.Component {
 		if (this.props.gameInfo.tableState.cardsDealt === true) {
 			this.dealCards();
 		}
-
-		$('section.table .progress').progress({
-			percent: 100,
-			total: 1
-		});
 	}
 
 	revealCard(seatNumber) { // string
@@ -396,17 +391,19 @@ export default class Table extends React.Component {
 							user = seated ? this.props.gameInfo.seated[`seat${el}`].userName : '';
 
 						return (
-								<div className={
+								<div key={el} className={
 									(() => {
 										return `seat-container seat-container${el}`;								
 									})()
 								}>
-									<div key={el} className={classes()} data-seatnumber={seatNumber()} onClick={this.clickedSeat.bind(this)}>
+									<div className={classes()} data-seatnumber={seatNumber()} onClick={this.clickedSeat.bind(this)}>
 										<span className="username">{user}</span>
 									</div>
-									<div className="ui indicating red progress app-hidden">
-										<div className="bar"></div>
-									</div>
+									<div className={
+										(() => {
+											return `eliminator`; // todo add class etc
+										})()
+									}></div>
 								</div>
 							);
 
