@@ -56,7 +56,7 @@
 			z-index: 1;
 			background: #db2828;
 			opacity: 0;
-			transition: width 2s, opacity 5s;
+			transition: width 2s, opacity 2s;
 
 			&:after {
 				transition: opacity 5s, left 2s, top 2s;

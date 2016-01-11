@@ -381,14 +381,15 @@ export default class Table extends React.Component {
 				<div className={this.nightBlockerStatus('bottom')}></div>
 				<div className="tableimage"></div>
 					{_.range(1, 11).map((el) => {
-						let seated = this.props.gameInfo.seated[`seat${el}`],
+						let gameInfo = this.props.gameInfo,
+							seated = gameInfo.seated[`seat${el}`],
 							classes = () => {
 								return seated ? `seat seat${el}` : `seat seat${el} empty`;
 							},
 							seatNumber = () => {
 								return el;
 							},
-							user = seated ? this.props.gameInfo.seated[`seat${el}`].userName : '';
+							user = seated ? gameInfo.seated[`seat${el}`].userName : '';
 
 						return (
 								<div key={el} className={
@@ -401,7 +402,13 @@ export default class Table extends React.Component {
 									</div>
 									<div className={
 										(() => {
-											return `eliminator`; // todo add class etc
+											let classes = 'eliminator';
+
+											if (el < 8 && gameInfo.tableState.eliminations && Object.keys(gameInfo.tableState.eliminations[el - 1]).length) {
+												classes += ` target-seat${gameInfo.tableState.eliminations[el - 1].seatNumber + 1}`;
+											}
+
+											return classes;
 										})()
 									}></div>
 								</div>

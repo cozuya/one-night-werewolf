@@ -406,7 +406,6 @@ let dayPhase = (game) => {
 	countDown = setInterval(() => {
 		if (seconds === 0) {
 			clearInterval(countDown);
-			// todo: "the game ends!" gamechat
 			eliminationPhase(game);
 		} else {
 			let status;
@@ -452,7 +451,38 @@ let dayPhase = (game) => {
 };
 
 let eliminationPhase = (game) => {
-	console.log('elim starts');
-	console.log(game.internals.seatedPlayers[0]);
+	let index = 0,
+		countDown;
+
+	game.chats.push({
+		gameChat: true,
+		chat: 'The game ends.',
+		timestamp: new Date()
+	});
+
+	game.tableState = {
+		isNight: false,
+		phase: 'elimination',
+		eliminations: [{}, {}, {}, {}, {}, {}, {}] // dev: remove
+	};
+
+	countDown = setInterval(() => {
+		if (index === 2) { // dev: 6
+			clearInterval(countDown);
+		} else {
+			let noSelection = index === 7 ? 0 : index + 1;
+
+			game.tableState.eliminations[index] = {
+				seatNumber: game.internals.seatedPlayers[index].selectedForElimination ? game.internals.seatedPlayers[index].selectedForElimination : noSelection,
+				transparent: false
+			};
+
+			sendInprogressChats(game);
+			index++;
+		}
+	}, 1000);
+
+	console.log(game.tableState.eliminations);
 	// console.log(game);
+
 };
