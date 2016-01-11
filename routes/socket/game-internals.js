@@ -484,5 +484,4 @@ let eliminationPhase = (game) => {
 
 	console.log(game.tableState.eliminations);
 	// console.log(game);
-
 };
