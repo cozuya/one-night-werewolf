@@ -479,9 +479,9 @@ let eliminationPhase = (game) => {
 
 			sendInprogressChats(game);
 			index++;
+			console.log(game.tableState.eliminations);
 		}
 	}, 1000);
 
-	console.log(game.tableState.eliminations);
 	// console.log(game);
 };

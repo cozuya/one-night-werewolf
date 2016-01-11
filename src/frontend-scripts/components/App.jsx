@@ -90,7 +90,7 @@ class App extends React.Component {
 					cardsDealt: false
 				},
 				seatedCount: 1,
-				time: ':17',
+				time: ':3',
 				uid: Math.random().toString(36).substring(6)
 			};
 
