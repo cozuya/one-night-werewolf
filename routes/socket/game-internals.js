@@ -23,21 +23,21 @@ export function startGame(game) {
 					player.trueRole = 'seer';
 					player.perceivedRole = 'seer';
 					player.nightAction = {};
-					player.seat = 1;
+					player.seat = 0;
 				}
 
 				if (player.userName === 'paul') {
 					player.trueRole = 'werewolf';
 					player.perceivedRole = 'werewolf';
 					player.nightAction = {};
-					player.seat = 2;
+					player.seat = 1;
 				}
 
 				if (player.userName === 'heihachi') {
 					player.trueRole = 'troublemaker';
 					player.perceivedRole = 'troublemaker';
 					player.nightAction = {};
-					player.seat = 3;
+					player.seat = 2;
 				}
 
 				// player.trueRole = role;
@@ -277,7 +277,7 @@ let beginNightPhases = (game) => {
 				};
 
 				if (!otherMasons.length === 1) {
-					message = 'You wake up, and see that you are the only mason';
+					message = 'You wake up, and see that you are the only MASON';
 				} else {
 					message = 'You wake up, and see that the MASONS in this game are: ';				
 				}
@@ -318,7 +318,7 @@ let nightPhases = (game, phases) => {
 					gameChat: true,
 					userName: player.userName,
 					chat: 'Night ends and the day begins.',						
-					seat: i + 1,
+					seat: i,
 					timestamp: new Date()
 				});
 			});
@@ -392,9 +392,10 @@ export function updateSelectedElimination(data) {
 	let game = games.find((el) => {
 			return el.uid === data.uid;
 		}),
-		player = game.internals.seatedPlayers[parseInt(data.seatNumber) - 1];
+		player = game.internals.seatedPlayers[parseInt(data.seatNumber)];
 
-	player.selectedForElimination = parseInt(data.selectedForElimination - 1);	
+	player.selectedForElimination = parseInt(data.selectedForElimination);	
+	console.log(player);
 };
 
 let dayPhase = (game) => {
@@ -470,7 +471,7 @@ let eliminationPhase = (game) => {
 		if (index === 2) { // dev: 6
 			clearInterval(countDown);
 		} else {
-			let noSelection = index === 7 ? 0 : index + 1;
+			let noSelection = index === 6 ? 0 : index + 1;
 
 			game.tableState.eliminations[index] = {
 				seatNumber: game.internals.seatedPlayers[index].selectedForElimination ? game.internals.seatedPlayers[index].selectedForElimination : noSelection,

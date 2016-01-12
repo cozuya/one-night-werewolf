@@ -26,6 +26,7 @@ export default class Table extends React.Component {
 			tableState = gameInfo.tableState,
 			prevTableState = prevProps.gameInfo.tableState;
 
+		// console.log(gameInfo);
 			// $('section.table .seat-container1 .eliminator').addClass('target-seat2');
 
 		if (gameInfo.tableState.cardsDealt === 'in progress') {
@@ -41,7 +42,7 @@ export default class Table extends React.Component {
 		}
 
 		if (userInfo.seatNumber && tableState.isVotable && tableState.isVotable.enabled && !prevTableState.isVotable) {
-			let nonPlayersCards = _.range(1, 8).filter((seatNumber) => {
+			let nonPlayersCards = _.range(0, 7).filter((seatNumber) => {
 				return seatNumber !== parseInt(userInfo.seatNumber);
 			});
 
@@ -59,7 +60,7 @@ export default class Table extends React.Component {
 				case 'werewolf':
 					if (tableState.nightAction.singleWerewolf) {
 						if (!prevTableState.nightAction.singleWerewolf) {
-							this.highlightCards([8, 9, 10]);
+							this.highlightCards([7, 8, 9]);
 						}
 
 						if (prevTableState.nightAction && !prevTableState.nightAction.completed && tableState.nightAction.roleClicked) {
@@ -91,7 +92,7 @@ export default class Table extends React.Component {
 				
 				case 'troublemaker':
 					if (!prevTableState.nightAction.action) {
-						let nonPlayersCards = _.range(1, 8).filter((seatNumber) => {
+						let nonPlayersCards = _.range(0, 7).filter((seatNumber) => {
 							return seatNumber !== parseInt(userInfo.seatNumber);
 						});
 
@@ -105,7 +106,7 @@ export default class Table extends React.Component {
 
 				case 'robber':
 					if (!prevTableState.nightAction.action) {
-						let nonPlayersCards = _.range(1, 8).filter((seatNumber) => {
+						let nonPlayersCards = _.range(0, 7).filter((seatNumber) => {
 							return seatNumber !== parseInt(userInfo.seatNumber);
 						});
 
@@ -123,7 +124,7 @@ export default class Table extends React.Component {
 
 				case 'seer':
 					if (!prevTableState.nightAction.action) {
-						let nonPlayersCards = _.range(1, 11).filter((seatNumber) => {
+						let nonPlayersCards = _.range(0, 10).filter((seatNumber) => {
 							return seatNumber !== parseInt(userInfo.seatNumber);
 						});
 
@@ -242,7 +243,7 @@ export default class Table extends React.Component {
 	}
 
 	createCards() {
-		return _.range(1, 11).map((num) => { 
+		return _.range(0, 10).map((num) => { 
 			return (
 				<div key={num} data-cardnumber={num} onClick={this.handleCardClick.bind(this)} className={
 						(() => {
@@ -283,7 +284,7 @@ export default class Table extends React.Component {
 				uid: gameInfo.uid
 			};
 
-		if (!gameInfo.tableState.nightAction.completed && gameInfo.tableState.nightAction.action === 'werewolf' && $card.attr('data-cardnumber') > 7) {
+		if (!gameInfo.tableState.nightAction.completed && gameInfo.tableState.nightAction.action === 'werewolf' && $card.attr('data-cardnumber') > 6) {
 			data.role = 'singleWerewolf';
 			data.action = cardNumber;
 			socket.emit('userNightActionEvent', data);
@@ -316,7 +317,7 @@ export default class Table extends React.Component {
 		}
 
 		if (!gameInfo.tableState.nightAction.completed && gameInfo.tableState.nightAction.action === 'seer') {
-			if (this.state.firstClickedCard || parseInt(cardNumber) < 8) {
+			if (this.state.firstClickedCard || parseInt(cardNumber) < 7) {
 				let action = [cardNumber];
 
 				if (this.state.firstClickedCard) {
@@ -327,7 +328,7 @@ export default class Table extends React.Component {
 				data.action = action;				
 				socket.emit('userNightActionEvent', data);
 			} else {
-				if (parseInt(cardNumber) > 7) {
+				if (parseInt(cardNumber) > 6) {
 					this.setState({
 						firstClickedCard: cardNumber
 					});
@@ -362,7 +363,7 @@ export default class Table extends React.Component {
 		let $cards = $('section.table .card');
 
 		$cards.each(function (index) {
-			$(this).addClass(`seat${index + 1}`);
+			$(this).addClass(`seat${index}`);
 		});
 	}
 
@@ -380,7 +381,7 @@ export default class Table extends React.Component {
 				<div className={this.nightBlockerStatus('top')}></div>
 				<div className={this.nightBlockerStatus('bottom')}></div>
 				<div className="tableimage"></div>
-					{_.range(1, 11).map((el) => {
+					{_.range(0, 10).map((el) => {
 						let gameInfo = this.props.gameInfo,
 							seated = gameInfo.seated[`seat${el}`],
 							classes = () => {
@@ -404,8 +405,8 @@ export default class Table extends React.Component {
 										(() => {
 											let classes = 'eliminator';
 
-											if (el < 8 && gameInfo.tableState.eliminations && Object.keys(gameInfo.tableState.eliminations[el - 1]).length) {
-												classes += ` target-seat${gameInfo.tableState.eliminations[el - 1].seatNumber + 1}`;
+											if (el < 7 && gameInfo.tableState.eliminations && Object.keys(gameInfo.tableState.eliminations[el]).length) {
+												classes += ` target-seat${gameInfo.tableState.eliminations[el].seatNumber}`;
 											}
 
 											return classes;

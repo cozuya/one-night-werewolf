@@ -125,7 +125,7 @@ export default class Creategame extends React.Component {
 			name: $('section.creategame div.gamename > div > input').val().length ? $('section.creategame div.gamename > div > input').val() : 'New Game',
 			roles: this.state.roles,
 			seated: {
-				seat1: this.props.userInfo
+				seat0: this.props.userInfo
 			},
 			status: 'Waiting for more players..',
 			chats: [],
@@ -137,6 +137,7 @@ export default class Creategame extends React.Component {
 			seatedCount: 1,
 			uid: Math.random().toString(36).substring(6)
 		});
+		
 	}
 
 	render() {

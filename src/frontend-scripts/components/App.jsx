@@ -62,7 +62,8 @@ class App extends React.Component {
 	handleCreateGameSubmit(game) {
 		let { dispatch, userInfo } = this.props;
 
-		userInfo.seatNumber = '1'; // todo: remove this when a player leaves a game they're seated at
+		console.log(game);
+		userInfo.seatNumber = '0'; // todo: remove this when a player leaves a game they're seated at
 		dispatch(updateGameInfo(game));
 		dispatch(updateMidsection('game'));
 		dispatch(updateUser(userInfo));
@@ -80,7 +81,7 @@ class App extends React.Component {
 				// roles: ['werewolf', 'werewolf', 'seer', 'robber', 'troublemaker', 'insomniac', 'hunter', 'villager', 'villager', 'villager'],
 				roles: ['werewolf', 'werewolf', 'robber', 'troublemaker', 'mason', 'minion', 'troublemaker', 'mason', 'robber', 'troublemaker'],
 				seated: {
-					seat1: {
+					seat0: {
 						userName: this.props.userInfo.userName
 					}
 				},
@@ -94,7 +95,7 @@ class App extends React.Component {
 				uid: Math.random().toString(36).substring(6)
 			};
 
-		userInfo.seatNumber = '1';
+		userInfo.seatNumber = '0';
 		dispatch(updateGameInfo(game));
 		dispatch(updateMidsection('game'));
 		dispatch(updateUser(userInfo));

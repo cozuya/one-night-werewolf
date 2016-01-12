@@ -22,9 +22,9 @@ export function updateUserNightActionEvent(socket, data) {
 		eventMap = {
 			singleWerewolf() {
 				let selectedCard = {
-					8: 'CENTER LEFT',
-					9: 'CENTER MIDDLE',
-					10: 'CENTER RIGHT'
+					7: 'CENTER LEFT',
+					8: 'CENTER MIDDLE',
+					9: 'CENTER RIGHT'
 				},
 				roleClicked = getTrueRoleBySeatNumber(game, data.action);
 
@@ -89,9 +89,9 @@ export function updateUserNightActionEvent(socket, data) {
 			},
 			seer() {
 				let selectedCard = {
-					8: 'CENTER LEFT',
-					9: 'CENTER MIDDLE',
-					10: 'CENTER RIGHT'
+					7: 'CENTER LEFT',
+					8: 'CENTER MIDDLE',
+					9: 'CENTER RIGHT'
 				},
 				rolesClicked = data.action.map((role) => {
 					return getTrueRoleBySeatNumber(game, role);
@@ -102,7 +102,7 @@ export function updateUserNightActionEvent(socket, data) {
 				player.nightAction.completed = true;
 
 				if (data.action.length === 1) {
-					let playerClicked = game.internals.seatedPlayers[parseInt(data.action) - 1].userName;
+					let playerClicked = game.internals.seatedPlayers[parseInt(data.action)].userName;
 
 					chat.chat = `You select to see the card of ${playerClicked.toUpperCase()} and it is a ${rolesClicked[0].toUpperCase()}.`;
 				} else {
@@ -122,9 +122,9 @@ export function updateUserNightActionEvent(socket, data) {
 let getTrueRoleBySeatNumber = (game, num) => {
 	num = parseInt(num);
 
-	if (num < 8) {
-		return game.internals.seatedPlayers[num - 1].trueRole;
+	if (num < 7) {
+		return game.internals.seatedPlayers[num].trueRole;
 	} else {
-		return game.internals.centerRoles[num - 8];
+		return game.internals.centerRoles[num - 7];
 	}
 }

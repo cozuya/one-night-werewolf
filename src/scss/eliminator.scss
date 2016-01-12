@@ -24,12 +24,12 @@
 		}
 	}
 
-	.seat-container1 .eliminator {
+	.seat-container0 .eliminator {
 		left: 285px;
 		top: 70px;
 	}
 
-	.seat-container1 .eliminator.target-seat2 {
+	.seat-container0 .eliminator.target-seat1 {
 		transform: rotate(18deg);
 		opacity: .7;
 		width: 150px;
@@ -41,7 +41,7 @@
 		}
 	}
 
-	.seat-container1 .eliminator.target-seat3 {
+	.seat-container0 .eliminator.target-seat2 {
 		left: 260px;
 		top: 135px;
 		transform: rotate(39deg);
@@ -54,12 +54,12 @@
 		}
 	}
 
-	.seat-container2 .eliminator {
+	.seat-container1 .eliminator {
 		top: 75px;
 		left: 300px;
 	}
 
-	.seat-container2 .eliminator.target-seat1 {
+	.seat-container1 .eliminator.target-seat0 {
 		width: 150px;
 		transform: rotate(198deg);
 		opacity: .7;
@@ -71,7 +71,6 @@
 		}
 	}
 	
-
 	.seat-container3 .eliminator {
 		top: 240px;
 		left: 520px;
