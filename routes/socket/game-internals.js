@@ -6,7 +6,11 @@ import { sendInprogressChats } from './gamechat.js';
 import { updatedTrueRoles } from './game-nightactions.js';
 import _ from 'lodash';
 
-export function startGame(game) {
+let game;
+
+export function startGame(currentGame) {
+	game = currentGame;
+
 	let allWerewolvesNotInCenter = false,
 		assignRoles = () => {
 			let _roles = _.clone(game.roles);
@@ -94,7 +98,7 @@ export function startGame(game) {
 		countDown = setInterval(() => {
 			if (seconds === 0) {
 				clearInterval(countDown);
-				beginNightPhases(game);
+				beginNightPhases();
 			} else {
 				game.status = `Night begins in ${seconds} second${seconds === 1 ? '' : 's'}.`;
 				sendInprogressChats(game);
@@ -104,7 +108,7 @@ export function startGame(game) {
 	}, 50);
 }
 
-let beginNightPhases = (game) => {
+let beginNightPhases = () => {
 	// round 1: all werewolves minions masons seers and (one robber or troublemaker)
 	// round 2 through x: robbercount + troublemaker count minus 1
 	// round x+1: all insomniacs
@@ -301,11 +305,11 @@ let beginNightPhases = (game) => {
 	sendInprogressChats(game);
 	setTimeout(() => {
 		game.tableState.phase = 1;
-		nightPhases(game, phases);
+		nightPhases(phases);
 	}, 3000);
 }
 
-let nightPhases = (game, phases) => {
+let nightPhases = (phases) => {
 	let phasesIndex = 0,
 		phasesCount = phases.length,
 		phasesTimer,
@@ -326,7 +330,7 @@ let nightPhases = (game, phases) => {
 			// todo unseated game chat
 			sendInprogressChats(game);
 			setTimeout(() => {
-				dayPhase(game);
+				dayPhase();
 			}, 50);
 		},
 		phasesFn = () => {
@@ -394,11 +398,10 @@ export function updateSelectedElimination(data) {
 		}),
 		player = game.internals.seatedPlayers[parseInt(data.seatNumber)];
 
-	player.selectedForElimination = parseInt(data.selectedForElimination);	
-	console.log(player);
+	player.selectedForElimination = data.selectedForElimination;
 };
 
-let dayPhase = (game) => {
+let dayPhase = () => {
 	let seconds = (() => {
 		let _time = game.time.split(':');
 
@@ -407,14 +410,14 @@ let dayPhase = (game) => {
 	countDown = setInterval(() => {
 		if (seconds === 0) {
 			clearInterval(countDown);
-			eliminationPhase(game);
+			eliminationPhase();
 		} else {
 			let status;
 
 			if (seconds < 60) {
 				status = `Day ends in ${seconds} second${seconds === 1 ? '' : 's'}`;
 
-				if (seconds === 15) {
+				if (seconds === 3) { // dev: 15
 					game.internals.seatedPlayers.forEach((player) => {
 						player.gameChats.push({
 							gameChat: true,
@@ -451,7 +454,7 @@ let dayPhase = (game) => {
 	}, 1000);
 };
 
-let eliminationPhase = (game) => {
+let eliminationPhase = () => {
 	let index = 0,
 		countDown;
 
@@ -470,19 +473,23 @@ let eliminationPhase = (game) => {
 	countDown = setInterval(() => {
 		if (index === 2) { // dev: 6
 			clearInterval(countDown);
+			endGame();
 		} else {
 			let noSelection = index === 6 ? 0 : index + 1;
 
 			game.tableState.eliminations[index] = {
-				seatNumber: game.internals.seatedPlayers[index].selectedForElimination ? game.internals.seatedPlayers[index].selectedForElimination : noSelection,
+				seatNumber: game.internals.seatedPlayers[index].selectedForElimination ? parseInt(game.internals.seatedPlayers[index].selectedForElimination) : noSelection,
 				transparent: false
 			};
 
 			sendInprogressChats(game);
 			index++;
-			console.log(game.tableState.eliminations);
 		}
 	}, 1000);
 
 	// console.log(game);
 };
+
+let endGame = () => {
+	console.log('endGame');	
+}

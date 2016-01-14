@@ -62,7 +62,6 @@ class App extends React.Component {
 	handleCreateGameSubmit(game) {
 		let { dispatch, userInfo } = this.props;
 
-		console.log(game);
 		userInfo.seatNumber = '0'; // todo: remove this when a player leaves a game they're seated at
 		dispatch(updateGameInfo(game));
 		dispatch(updateMidsection('game'));
@@ -91,7 +90,7 @@ class App extends React.Component {
 					cardsDealt: false
 				},
 				seatedCount: 1,
-				time: ':3',
+				time: ':4',
 				uid: Math.random().toString(36).substring(6)
 			};
 

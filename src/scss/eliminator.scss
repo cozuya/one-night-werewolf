@@ -24,15 +24,12 @@
 		}
 	}
 
-	.seat-container0 .eliminator {
-		left: 285px;
-		top: 70px;
-	}
-
 	.seat-container0 .eliminator.target-seat1 {
 		transform: rotate(18deg);
 		opacity: .7;
 		width: 150px;
+		left: 285px;
+		top: 70px;
 
 		&:after {
 			opacity: .7;
@@ -46,22 +43,6 @@
 		top: 135px;
 		transform: rotate(39deg);
 		width: 275px;
-
-		&:after {
-			opacity: .7;
-			left: 275px;
-			top: -9px;
-		}
-	}
-
-	.seat-container1 .eliminator {
-		top: 75px;
-		left: 300px;
-	}
-
-	.seat-container1 .eliminator.target-seat0 {
-		width: 150px;
-		transform: rotate(198deg);
 		opacity: .7;
 
 		&:after {
@@ -70,6 +51,34 @@
 			top: -9px;
 		}
 	}
+
+	.seat-container1 .eliminator.target-seat0 {
+		top: 78px;
+		left: 312px;
+		width: 150px;
+		transform: rotate(198deg);
+		opacity: .7;
+
+		&:after {
+			opacity: .7;
+			left: 150px;
+			top: -9px;
+		}
+	}
+
+	.seat-container1 .eliminator.target-seat2 {
+		top: 155px;
+		left: 422px;
+		width: 130px;
+		transform: rotate(64deg);
+		opacity: .7;
+
+		&:after {
+			opacity: .7;
+			left: 130px;
+			top: -9px;
+		}
+	}	
 	
 	.seat-container3 .eliminator {
 		top: 240px;
