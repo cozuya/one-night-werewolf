@@ -26,9 +26,6 @@ export default class Table extends React.Component {
 			tableState = gameInfo.tableState,
 			prevTableState = prevProps.gameInfo.tableState;
 
-		console.log(gameInfo);
-			// $('section.table .seat-container1 .eliminator').addClass('target-seat2');
-
 		if (gameInfo.tableState.cardsDealt === 'in progress') {
 			this.dealCards();
 

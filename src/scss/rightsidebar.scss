@@ -1,0 +1,34 @@
+// $werewolfteam: #DC6969;
+// $villageteam: #4B6A90;
+// $tannerteam: #DCB469;
+// $notification: #FBBD08;
+// $selection: #DB2828;
+// $proceed: #2185D0;
+
+.section-right {
+	padding-left: 0 !important;
+	padding-right: 0 !important;
+
+	.header {
+		padding: 5px;
+
+		i {
+			float: right;
+		}
+
+		> div {
+			&:after {
+				content: '';
+				display: table;
+				clear: both;
+			}
+			> div {
+				float: left;
+
+				.playername {
+					color: $villageteam;
+				}
+			}
+		}
+	}
+}
