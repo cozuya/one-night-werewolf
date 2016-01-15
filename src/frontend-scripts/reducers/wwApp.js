@@ -5,6 +5,7 @@ import { UPDATE_USER, updateUser } from '../actions/actions.js';
 import { UPDATE_MIDSECTION, updateMidsection} from '../actions/actions.js';
 import { UPDATE_GAMELIST, updateGameList} from '../actions/actions.js';
 import { UPDATE_GAMEINFO, updateGameInfo} from '../actions/actions.js';
+import { UPDATE_USERLIST, updateUserList} from '../actions/actions.js';
 
 let userInfo = (state = {}, action) => {
 	switch (action.type) {
@@ -42,9 +43,19 @@ let gameInfo = (state = {}, action) => {
 	}
 };
 
+let userList = (state = [], action) => {
+	switch (action.type) {
+		case UPDATE_USERLIST:
+			return state = action.userList;
+		default:
+			return state;
+	}
+};
+
 export default combineReducers({
 	userInfo,
 	midSection,
 	gameList,
-	gameInfo
+	gameInfo,
+	userList
 });

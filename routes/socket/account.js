@@ -7,6 +7,8 @@ import { secureGame, getInternalPlayerInGameByUserName } from './util.js';
 import { combineInprogressChats } from './gamechat.js';
 import _ from 'lodash';
 
+export let userList = [];
+
 export function checkUserStatus(socket) {
 	let userName = socket.handshake.session.passport.user,
 		gameUserIsIn = games.find((game) => {
@@ -25,7 +27,13 @@ export function checkUserStatus(socket) {
 		socket.join(gameUserIsIn.uid);
 		socket.emit('gameUpdate', secureGame(cloneGame));
 	}
-}
+
+	userList.unshift({
+		userName
+	});
+
+	io.sockets.emit('userList', userList);
+};
 
 export function handleUpdatedGameSettings(socket, data) {
 	let username = socket.handshake.session.passport.user;
@@ -37,7 +45,7 @@ export function handleUpdatedGameSettings(socket, data) {
 		settings.save();
 		socket.emit('gameSettings', settings);
 	});
-}
+};
 
 export function sendUserGameSettings(socket) {
 	var username;
@@ -55,4 +63,4 @@ export function sendUserGameSettings(socket) {
 
 		socket.emit('gameSettings', settings);
 	});
-}
+};

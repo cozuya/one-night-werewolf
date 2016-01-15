@@ -35,3 +35,12 @@ export function updateGameInfo(gameInfo) {
 		gameInfo
 	}
 }
+
+export const UPDATE_USERLIST = 'UPDATE_USERLIST';
+
+export function updateUserList(userList) {
+	return {
+		type: UPDATE_USERLIST,
+		userList
+	}
+}

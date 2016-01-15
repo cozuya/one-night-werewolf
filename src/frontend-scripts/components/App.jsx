@@ -5,7 +5,7 @@ import Main from './section-main/Main.jsx'
 import RightSidebar from './section-right/RightSidebar.jsx'
 import React from 'react';
 import { connect } from 'react-redux';
-import { updateUser, updateMidsection, updateGameList, updateGameInfo } from '../actions/actions.js';
+import { updateUser, updateMidsection, updateGameList, updateGameInfo, updateUserList } from '../actions/actions.js';
 import socket from 'socket.io-client';
 
 socket = socket();
@@ -49,6 +49,10 @@ class App extends React.Component {
 				dispatch(updateGameInfo(game));
 			}
 		});
+
+		socket.on('userList', (list) => {
+			dispatch(updateUserList(list));
+		})
 
 		socket.emit('getGameList');
 	}
@@ -138,6 +142,7 @@ class App extends React.Component {
 				/>
 				<RightSidebar
 					userInfo={this.props.userInfo}
+					userList={this.props.userList}
 					onSettingsButtonClick={this.handleRoute.bind(this)}
 				/>
 			</section>

@@ -2,6 +2,7 @@
 
 import React from 'react';
 import Playerlist from './Playerlist.jsx';
+import Generalchat from './Generalchat.jsx';
 
 export default class RightSidebar extends React.Component {
 	clickSettingsButton() {
@@ -11,11 +12,9 @@ export default class RightSidebar extends React.Component {
 	render() {
 		return (
 			<section className="section-right three wide column">
-				<section className="header">
+				<section className="right-header">
 				{(() => {
 					let userInfo = this.props.userInfo;
-
-					// todo not working as desired
 
 					if (userInfo.userName && !userInfo.seatNumber) {
 						return (
@@ -29,8 +28,15 @@ export default class RightSidebar extends React.Component {
 					}
 				})()}
 				</section>
-				<Playerlist />
+				<Playerlist
+					userList={this.props.userList}
+				/>
+				<div className="ui divider"></div>
 			</section>
 		);
 	}
+
+				// 	<Generalchat
+				// 	userInfo={this.props.userInfo}
+				// />
 };

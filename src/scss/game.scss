@@ -71,12 +71,19 @@
 			}
 
 			.inputbar {
+				.icon {
+					position: relative;
+					top: 7px;
+					left: 4px;
+				}
+
 				span {
 					padding-left: 20px;
 				}
 
 				.input {
-					width: 290px;
+					float: right;
+					width: 320px;
 					
 					button {
 						padding: 0px 10px;

@@ -160,11 +160,7 @@ export default class Gamechat extends React.Component {
 					</div>
 				</section>
 				<form className="segment inputbar" onSubmit={this.handleSubmit.bind(this)}>
-					{(() => {
-						if (this.props.gameInfo.inProgress && this.props.userInfo.seatNumber) {
-							return <i className="large expand icon" onClick={this.clickExpand.bind(this)}></i>
-						}
-					})()}
+					<i className="large expand icon" onClick={this.clickExpand.bind(this)}></i>
 					<div className={this.props.userInfo.userName ? "ui action input" : "ui action input disabled"}>
 						<input placeholder="Chat.." onKeyUp={this.handleKeyup.bind(this)}></input>
 						<button className="ui primary button disabled">Chat</button>
