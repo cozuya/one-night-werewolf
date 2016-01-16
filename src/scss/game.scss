@@ -71,10 +71,11 @@
 			}
 
 			.inputbar {
-				.icon {
+				.expando-container {
 					position: relative;
 					top: 7px;
 					left: 4px;
+					float: left;
 				}
 
 				span {

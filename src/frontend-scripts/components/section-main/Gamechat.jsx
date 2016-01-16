@@ -13,8 +13,12 @@ export default class Gamechat extends React.Component {
 		};
 	}
 
+	displayHotkeys() {
+		// todo
+	}
+
 	clickExpand(e) {
-		// todo: this feature
+		$(e.currentTarget).next().toggleClass('app-hidden');
 	}
 
 	handleKeyup(e) {
@@ -148,10 +152,10 @@ export default class Gamechat extends React.Component {
 		return (
 			<section className="gamechat">
 				<section className="ui pointing menu">
-					<a className={this.state.chatFilter === 'All' ? "item active" : "item"} onClick={this.handleChatFilterClick.bind(this)}>All</a>
-					<a className={this.state.chatFilter === 'Chat' ? "item active" : "item"} onClick={this.handleChatFilterClick.bind(this)}>Chat</a>
-					<a className={this.state.chatFilter === 'Game' ? "item active" : "item"} onClick={this.handleChatFilterClick.bind(this)}>Game</a>
-					<i className={this.state.lock ? "large lock icon" : "large unlock alternate icon"} onClick={this.handleChatLockClick.bind(this)}></i>
+					<a className={this.state.chatFilter === 'All' ? 'item active' : 'item'} onClick={this.handleChatFilterClick.bind(this)}>All</a>
+					<a className={this.state.chatFilter === 'Chat' ? 'item active' : 'item'} onClick={this.handleChatFilterClick.bind(this)}>Chat</a>
+					<a className={this.state.chatFilter === 'Game' ? 'item active' : 'item'} onClick={this.handleChatFilterClick.bind(this)}>Game</a>
+					<i className={this.state.lock ? 'large lock icon' : 'large unlock alternate icon'} onClick={this.handleChatLockClick.bind(this)}></i>
 				</section>
 				<section className="segment chats">
 					<div className="chatpusher"></div>
@@ -161,8 +165,15 @@ export default class Gamechat extends React.Component {
 				</section>
 				<form className="segment inputbar" onSubmit={this.handleSubmit.bind(this)}>
 					{(() => {
-						if (this.props.gameInfo.inProgress && this.props.userInfo.seatNumber) {
-							return <i className="large expand icon" onClick={this.clickExpand.bind(this)}></i>
+						if (this.props.gameInfo.inProgress && this.props.userInfo.seatNumber && !this.props.gameInfo.tableState.isNight) {
+							return (
+								<div className="expando-container">
+									<i className="large expand icon" onClick={this.clickExpand.bind(this)}></i>
+									<div className="hotkey-container app-hidden">
+										{this.displayHotkeys()}
+									</div>
+								</div>
+							);
 						}
 					})()}
 					<div className={this.props.userInfo.userName ? "ui action input" : "ui action input disabled"}>
