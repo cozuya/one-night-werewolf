@@ -52,10 +52,21 @@ class App extends React.Component {
 
 		socket.on('userList', (list) => {
 			dispatch(updateUserList(list));
+		});
+
+		socket.on('updateSeatForUser', (seatNumber) => {
+			let user = this.props.userInfo;
+
+			user.seatNumber = seatNumber;
+			dispatch(updateUser(user));
 		})
 
 		socket.emit('getGameList');
 	}
+
+	// componentDidUpdate() {
+	// 	console.log(this.props.userInfo);
+	// }
 
 	handleRoute(route) {
 		let { dispatch } = this.props;

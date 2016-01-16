@@ -26,6 +26,7 @@ export function checkUserStatus(socket) {
 		// cloneGame.tableState.playerPerceivedRole = internalPlayer.perceivedRole;  // todo: this crashes server if a user logs into a 2nd account on same computer without logging out of old
 		socket.join(gameUserIsIn.uid);
 		socket.emit('gameUpdate', secureGame(cloneGame));
+		socket.emit('updateSeatForUser', internalPlayer.seat);
 	}
 
 	userList.unshift({

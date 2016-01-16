@@ -76,19 +76,37 @@
 					top: 7px;
 					left: 4px;
 					float: left;
+					cursor: pointer;
+					
+					.hotkey-container {
+						position: absolute;
+						width: 110px;
+						height: 70px;
+						right: 30px;
+						background: #eee;
+						bottom: 0;
+					}
 				}
 
 				span {
 					padding-left: 20px;
 				}
 
+
 				.input {
-					float: right;
-					width: 320px;
+					float: left;
+					width: 290px;
 					
 					button {
 						padding: 0px 10px;
 					}
+				}
+
+				> .icon {
+					float: left;
+					position: relative;
+					top: 10px;
+					cursor: pointer;
 				}
 			}
 		}

@@ -9,12 +9,43 @@ export default class Gamechat extends React.Component {
 	constructor() {
 		this.state = {
 			chatFilter: 'All',
-			lock: false
+			lock: false,
+			hotkey: 'init'
 		};
 	}
 
 	displayHotkeys() {
-		// todo
+		let textLeft, textRight;
+
+		switch (this.state.hotkey) {
+			case 'init':
+				textLeft = 'Claim';
+				textRight = 'Think';
+				break;
+		}
+
+		return (
+			<div className="hotkey-container app-hidden">
+				<div className="hotkey-left" onClick={this.handleLeftHotkeyClick.bind(this)}>
+					{textLeft}
+				</div>
+				<div className="hotkey-right" onClick={this.handleRightHotkeyClick.bind(this)}>
+					{textRight}
+				</div>
+			</div>
+		);
+	}
+
+	handleLeftHotkeyClick(e) {
+		console.log(e.currentTarget.textContent);
+	}
+
+	handleRightHotkeyClick(e) {
+		console.log(e.currentTarget);
+	}
+
+	handleChatClearClick(e) {
+		$(e.currentTarget).addClass('app-hidden').prev().find('input').val('');
 	}
 
 	clickExpand(e) {
@@ -91,7 +122,6 @@ export default class Gamechat extends React.Component {
 		}
 	}
 
-
 	handleChatFilterClick(e) {
 		this.setState({
 			chatFilter: $(e.currentTarget).text()
@@ -165,13 +195,14 @@ export default class Gamechat extends React.Component {
 				</section>
 				<form className="segment inputbar" onSubmit={this.handleSubmit.bind(this)}>
 					{(() => {
-						if (this.props.gameInfo.inProgress && this.props.userInfo.seatNumber && !this.props.gameInfo.tableState.isNight) {
+						let gameInfo = this.props.gameInfo,
+							userInfo = this.props.userInfo;
+						
+						if (gameInfo.inProgress && (userInfo.seatNumber || userInfo.seatNumber === 0) && !gameInfo.tableState.isNight) {
 							return (
 								<div className="expando-container">
 									<i className="large expand icon" onClick={this.clickExpand.bind(this)}></i>
-									<div className="hotkey-container app-hidden">
-										{this.displayHotkeys()}
-									</div>
+									{this.displayHotkeys()}
 								</div>
 							);
 						}
@@ -180,7 +211,7 @@ export default class Gamechat extends React.Component {
 						<input placeholder="Chat.." onKeyUp={this.handleKeyup.bind(this)}></input>
 						<button className="ui primary button disabled">Chat</button>
 					</div>
-					<i className="large delete icon app-hidden"></i>
+					<i className="large delete icon app-hidden" onClick={this.handleChatClearClick.bind(this)}></i>
 				</form>
 			</section>
 		);
