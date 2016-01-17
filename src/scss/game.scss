@@ -85,6 +85,21 @@
 						right: 30px;
 						background: #eee;
 						bottom: 0;
+						border: 1px solid #bbb;
+
+						div:first-child {
+							width: 55px;
+							border-right: 1px solid #bbb;
+						}
+
+						div {
+							width: 53px;
+							float: left;
+							height: 70px;
+							font-size: 18px;
+							text-align: center;
+							padding-top: 8px;
+						}
 					}
 				}
 

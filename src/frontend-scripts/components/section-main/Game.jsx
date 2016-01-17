@@ -6,12 +6,9 @@ import Gamechat from './Gamechat.jsx';
 import Gameroles from './Gameroles.jsx';
 
 export default class Game extends React.Component {
-	constructor() {
-		
-	}
-
-	componentDidMount() {
-		
+	roleState(state = '') {
+		// todo: this isn't working the way I want/gameroles is not being updated.
+		return state;
 	}
 
 	render() {
@@ -33,6 +30,7 @@ export default class Game extends React.Component {
 							<Gamechat
 								gameInfo={this.props.gameInfo}
 								userInfo={this.props.userInfo}
+								roleState={this.roleState.bind(this)}
 							/>
 						</div>
 					</div>
@@ -41,6 +39,7 @@ export default class Game extends React.Component {
 					<Gameroles
 						userInfo={this.props.userInfo}
 						roles={this.props.gameInfo.roles}
+						roleState={this.roleState}
 					/>
 				</div>
 			</section>

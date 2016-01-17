@@ -19,8 +19,8 @@ export default class Gamechat extends React.Component {
 
 		switch (this.state.hotkey) {
 			case 'init':
-				textLeft = 'Claim';
-				textRight = 'Think';
+				textLeft = 'I claim..';
+				textRight = 'I think..';
 				break;
 		}
 
@@ -37,7 +37,21 @@ export default class Gamechat extends React.Component {
 	}
 
 	handleLeftHotkeyClick(e) {
-		console.log(e.currentTarget.textContent);
+		let keyText = $(e.currentTarget).text();
+
+		console.log(keyText);
+
+		switch (keyText) {
+			case 'I claim..':
+				let self = this;
+				console.log('Hello World!');
+
+				this.props.roleState('notify');
+				setTimeout(function () {
+					self.props.roleState('');	
+				}, 2000);
+				break;
+		}
 	}
 
 	handleRightHotkeyClick(e) {

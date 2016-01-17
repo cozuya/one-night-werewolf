@@ -20,6 +20,10 @@
 		background-repeat: no-repeat;
 	}
 
+	.notify {
+		box-shadow: 0 0 4px 4px $notification;
+	}
+
 	.roles.werewolf {
 		background-image: url('../images/cards/card-werewolf.png');
 	}

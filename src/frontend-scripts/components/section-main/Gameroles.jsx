@@ -22,6 +22,10 @@ export default class Gameroles extends React.Component {
 		}
 	}
 
+	// componentDidUpdate() {
+	// 	console.log(this.props);
+	// }
+
 	render() {
 		return (
 			<section className="gameroles">
@@ -34,7 +38,7 @@ export default class Gameroles extends React.Component {
 								<div key={i}>
 									<div className={
 										((role) => {
-											return `roles ${role}`;
+											return `roles ${role} ${this.props.roleState}`;
 										})(role)
 									}></div>
 									<div className="ui small popup transition hidden top left" dangerouslySetInnerHTML={{__html: roleMap[role].description}}></div>
