@@ -27,13 +27,13 @@
 	.seat-container0 .eliminator.target-seat1 {
 		transform: rotate(18deg);
 		opacity: .7;
-		width: 150px;
+		width: 120px;
 		left: 285px;
 		top: 70px;
 
 		&:after {
-			opacity: .7;
-			left: 149px;
+			opacity: 1;
+			left: 120px;
 			top: -9px;
 		}
 	}
@@ -67,15 +67,15 @@
 	}
 
 	.seat-container1 .eliminator.target-seat2 {
-		top: 155px;
-		left: 422px;
-		width: 130px;
+		top: 135px;
+		left: 438px;
+		width: 80px;
 		transform: rotate(64deg);
 		opacity: .7;
 
 		&:after {
-			opacity: .7;
-			left: 130px;
+			opacity: 1;
+			left: 80px;
 			top: -9px;
 		}
 	}	
