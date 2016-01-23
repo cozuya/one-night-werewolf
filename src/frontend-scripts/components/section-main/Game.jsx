@@ -4,12 +4,19 @@ import React from 'react';
 import Table from './Table.jsx';
 import Gamechat from './Gamechat.jsx';
 import Gameroles from './Gameroles.jsx';
+import { connect } from 'react-redux';
+import { updateExpandoInfo } from '../../actions/actions.js';
 
-export default class Game extends React.Component {
-	roleState(state = '') {
-		// todo: this isn't working the way I want/gameroles is not being updated.
-		return state;
+class Game extends React.Component {
+	roleState(state) {
+		let { dispatch } = this.props;
+
+		dispatch(updateExpandoInfo(state));
 	}
+
+	// componentDidUpdate () {
+	// 	console.log(this.props);
+	// }
 
 	render() {
 		return (
@@ -39,10 +46,16 @@ export default class Game extends React.Component {
 					<Gameroles
 						userInfo={this.props.userInfo}
 						roles={this.props.gameInfo.roles}
-						roleState={this.roleState}
+						roleState={this.props.expandoInfo}
 					/>
 				</div>
 			</section>
 		);
 	}
 };
+
+let select = (state) => {
+	return state;
+}
+
+export default connect(select)(Game);

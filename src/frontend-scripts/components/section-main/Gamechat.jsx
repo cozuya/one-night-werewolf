@@ -37,18 +37,17 @@ export default class Gamechat extends React.Component {
 	}
 
 	handleLeftHotkeyClick(e) {
-		let keyText = $(e.currentTarget).text();
-
-		console.log(keyText);
+		let keyText = $(e.currentTarget).text(),
+			$input = $(e.currentTarget).parent().parent().next().find('input');
 
 		switch (keyText) {
 			case 'I claim..':
 				let self = this;
-				console.log('Hello World!');
 
+				$input.val('I claim to be the ');
 				this.props.roleState('notify');
 				setTimeout(function () {
-					self.props.roleState('');	
+					self.props.roleState('');
 				}, 2000);
 				break;
 		}

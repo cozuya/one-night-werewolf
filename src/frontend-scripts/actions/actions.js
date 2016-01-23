@@ -44,3 +44,12 @@ export function updateUserList(userList) {
 		userList
 	}
 }
+
+export const UPDATE_EXPANDOINFO = 'UPDATE_EXPANDOINFO';
+
+export function updateExpandoInfo(info) {
+	return {
+		type: UPDATE_EXPANDOINFO,
+		info
+	}
+}

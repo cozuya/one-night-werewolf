@@ -22,9 +22,13 @@ export default class Gameroles extends React.Component {
 		}
 	}
 
-	// componentDidUpdate() {
-	// 	console.log(this.props);
-	// }
+	handleRoleClick(e) {
+
+	}
+
+componentDidUpdate () {
+		console.log(this.props);
+	}	
 
 	render() {
 		return (
@@ -36,10 +40,16 @@ export default class Gameroles extends React.Component {
 						return this.props.roles.map((role, i) => {
 							return (
 								<div key={i}>
-									<div className={
-										((role) => {
-											return `roles ${role} ${this.props.roleState}`;
-										})(role)
+									<div onClick={this.handleRoleClick.bind(this)} className={
+										(() => {
+											let notifyClass;
+
+											if (this.props.roleState === 'notify') {
+												notifyClass = 'notify';
+											}
+
+											return `roles ${role} ${this.props.roleState} ${notifyClass}`;
+										})()
 									}></div>
 									<div className="ui small popup transition hidden top left" dangerouslySetInnerHTML={{__html: roleMap[role].description}}></div>
 								</div>
