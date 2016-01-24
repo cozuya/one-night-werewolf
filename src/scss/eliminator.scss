@@ -19,7 +19,7 @@
 			position: absolute;
 			border-width: 22px 0 22px 30px;
 			border-color: rgba(0, 0, 0, 0) rgba(0, 0, 0, 0) rgba(0, 0, 0, 0) #DB2828;
-			left: 15px;
+			left: 15px;	
 			top: -9px;
 		}
 	}
@@ -40,14 +40,14 @@
 
 	.seat-container0 .eliminator.target-seat2 {
 		left: 260px;
-		top: 135px;
+		top: 125px;
 		transform: rotate(39deg);
-		width: 275px;
+		width: 240px;
 		opacity: .7;
 
 		&:after {
-			opacity: .7;
-			left: 275px;
+			opacity: 1;
+			left: 240px;
 			top: -9px;
 		}
 	}
@@ -60,7 +60,7 @@
 		opacity: .7;
 
 		&:after {
-			opacity: .7;
+			opacity: 1;
 			left: 150px;
 			top: -9px;
 		}
