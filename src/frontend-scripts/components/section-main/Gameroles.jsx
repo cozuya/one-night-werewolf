@@ -23,12 +23,12 @@ export default class Gameroles extends React.Component {
 	}
 
 	handleRoleClick(e) {
-
+		console.log(e.currentTarget);		
 	}
 
-componentDidUpdate () {
-		console.log(this.props);
-	}	
+	// componentDidUpdate () {
+	// 	console.log(this.props);
+	// }	
 
 	render() {
 		return (
@@ -42,12 +42,8 @@ componentDidUpdate () {
 								<div key={i}>
 									<div onClick={this.handleRoleClick.bind(this)} className={
 										(() => {
-											let notifyClass;
-
-											if (this.props.roleState === 'notify') {
-												notifyClass = 'notify';
-											}
-
+											let notifyClass = this.props.roleState === 'notify' ? 'notify' : '';
+											
 											return `roles ${role} ${this.props.roleState} ${notifyClass}`;
 										})()
 									}></div>

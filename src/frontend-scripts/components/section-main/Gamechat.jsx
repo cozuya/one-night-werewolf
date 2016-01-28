@@ -46,9 +46,9 @@ export default class Gamechat extends React.Component {
 
 				$input.val('I claim to be the ');
 				this.props.roleState('notify');
-				setTimeout(function () {
-					self.props.roleState('');
-				}, 2000);
+				setTimeout(() => {
+					this.props.roleState('');
+				}, 1000);
 				break;
 		}
 	}
@@ -62,7 +62,10 @@ export default class Gamechat extends React.Component {
 	}
 
 	clickExpand(e) {
-		$(e.currentTarget).next().toggleClass('app-hidden');
+		let $icon = $(e.currentTarget);
+
+		$icon.toggleClass('expand').toggleClass('compress');
+		$icon.next().toggleClass('app-hidden');
 	}
 
 	handleKeyup(e) {
