@@ -37,3 +37,17 @@ export function getInternalPlayerInGameByUserName(game, userName) {
 		return player.userName === userName;
 	});
 }
+
+// prod
+// export let timers = {
+// 	startGamePause: 5,
+// 	phaseTime: 10,
+// 	endingGame: 15
+// }
+
+// dev
+export let timers = {
+	startGamePause: 1,
+	phaseTime: 1,
+	endingGame: 3
+}

@@ -42,8 +42,6 @@ export default class Gamechat extends React.Component {
 
 		switch (keyText) {
 			case 'I claim..':
-				let self = this;
-
 				$input.val('I claim to be the ');
 				this.props.roleState('notify');
 				setTimeout(() => {

@@ -37,6 +37,7 @@ class Game extends React.Component {
 							<Gamechat
 								gameInfo={this.props.gameInfo}
 								userInfo={this.props.userInfo}
+								clickedGameRole={this.props.gameRoleInfo}
 								roleState={this.roleState.bind(this)}
 							/>
 						</div>

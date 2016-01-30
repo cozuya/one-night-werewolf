@@ -1,7 +1,7 @@
 'use strict';
 
 import { games } from './game.js';
-import { secureGame } from './util.js';
+import { secureGame, timers } from './util.js';
 import { sendInprogressChats } from './gamechat.js';
 import { updatedTrueRoles } from './game-nightactions.js';
 import _ from 'lodash';
@@ -74,7 +74,7 @@ export function startGame(currentGame) {
 	io.in(game.uid).emit('gameUpdate', secureGame(game));
 
 	setTimeout(() => {
-		let seconds = 1, // 5
+		let seconds = timers.startGamePause,
 			countDown;
 
 		game.internals.seatedPlayers.forEach((player, i) => {
@@ -337,7 +337,7 @@ let nightPhases = (phases) => {
 			if (phasesIndex === phasesCount && phasesCount > 1) {
 				endPhases();
 			} else {
-				let seconds = 1, // 10
+				let seconds = timers.phaseTime,
 					countDown,
 					phasesPlayers = phases[phasesIndex];
 
@@ -417,7 +417,7 @@ let dayPhase = () => {
 			if (seconds < 60) {
 				status = `Day ends in ${seconds} second${seconds === 1 ? '' : 's'}`;
 
-				if (seconds === 3) { // dev: 15
+				if (seconds === timers.endingGame) {
 					game.internals.seatedPlayers.forEach((player) => {
 						player.gameChats.push({
 							gameChat: true,
