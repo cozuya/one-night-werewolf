@@ -39,14 +39,14 @@ export function getInternalPlayerInGameByUserName(game, userName) {
 }
 
 // prod
-// export let timers = {
+// export let devStatus = { // can't think of a better name.  This object assists in development.
 // 	startGamePause: 5,
 // 	phaseTime: 10,
 // 	endingGame: 15
 // }
 
 // dev
-export let timers = {
+export let devStatus = {
 	startGamePause: 1,
 	phaseTime: 1,
 	endingGame: 3

@@ -1,7 +1,7 @@
 'use strict';
 
 import { games } from './game.js';
-import { secureGame, timers } from './util.js';
+import { secureGame, devStatus } from './util.js';
 import { sendInprogressChats } from './gamechat.js';
 import { updatedTrueRoles } from './game-nightactions.js';
 import _ from 'lodash';
@@ -74,7 +74,7 @@ export function startGame(currentGame) {
 	io.in(game.uid).emit('gameUpdate', secureGame(game));
 
 	setTimeout(() => {
-		let seconds = timers.startGamePause,
+		let { startGamePause } = devStatus,
 			countDown;
 
 		game.internals.seatedPlayers.forEach((player, i) => {
@@ -96,14 +96,14 @@ export function startGame(currentGame) {
 		game.tableState.cardsDealt = true;
 		sendInprogressChats(game);
 		countDown = setInterval(() => {
-			if (seconds === 0) {
+			if (startGamePause === 0) {
 				clearInterval(countDown);
 				beginNightPhases();
 			} else {
-				game.status = `Night begins in ${seconds} second${seconds === 1 ? '' : 's'}.`;
+				game.status = `Night begins in ${startGamePause} second${startGamePause === 1 ? '' : 's'}.`;
 				sendInprogressChats(game);
 			}
-			seconds--;
+			startGamePause--;
 		}, 1000);
 	}, 50);
 }
@@ -337,7 +337,7 @@ let nightPhases = (phases) => {
 			if (phasesIndex === phasesCount && phasesCount > 1) {
 				endPhases();
 			} else {
-				let seconds = timers.phaseTime,
+				let { phaseTime } = devStatus,
 					countDown,
 					phasesPlayers = phases[phasesIndex];
 
@@ -354,7 +354,7 @@ let nightPhases = (phases) => {
 				});
 
 				countDown = setInterval(() => {
-					if (seconds === 0) {
+					if (phaseTime === 0) {
 						phasesPlayers.forEach((player) => {
 							player.nightPhaseComplete = true;
 							player.nightAction = {};
@@ -376,10 +376,10 @@ let nightPhases = (phases) => {
 						}
 						clearInterval(countDown);
 					} else {
-						game.status = `Night phase ${phases.length === 1 ? 1 : (phasesIndex).toString()} of ${phasesCount} ends in ${seconds} second${seconds === 1 ? '' : 's'}.`;
+						game.status = `Night phase ${phases.length === 1 ? 1 : (phasesIndex).toString()} of ${phasesCount} ends in ${phaseTime} second${phaseTime === 1 ? '' : 's'}.`;
 						sendInprogressChats(game);
 					}
-					seconds--;
+					phaseTime--;
 				}, 1000);
 			}
 		};
@@ -417,7 +417,7 @@ let dayPhase = () => {
 			if (seconds < 60) {
 				status = `Day ends in ${seconds} second${seconds === 1 ? '' : 's'}`;
 
-				if (seconds === timers.endingGame) {
+				if (seconds === devStatus.endingGame) {
 					game.internals.seatedPlayers.forEach((player) => {
 						player.gameChats.push({
 							gameChat: true,
