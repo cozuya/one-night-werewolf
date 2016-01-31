@@ -13,7 +13,7 @@ socket = socket();
 class App extends React.Component {
 	componentWillMount() {
 		let { dispatch } = this.props,
-			classList = document.getElementById('game-container').classList;
+			{ classList } = document.getElementById('game-container');
 
 		if (classList.length) {
 			let name = {
@@ -86,8 +86,7 @@ class App extends React.Component {
 
 	// ***** dev helpers only *****
 	makeQuickDefault() {
-		let { dispatch } = this.props,
-			userInfo = this.props.userInfo,
+		let { dispatch, userInfo } = this.props,
 			game = {
 				inProgress: false,
 				kobk: true,
@@ -119,7 +118,7 @@ class App extends React.Component {
 	// ***** end dev helpers *****
 
 	updateSeatedUsersInGame(seatNumber) {
-		let uid = this.props.gameInfo.uid,
+		let { uid } = this.props.gameInfo,
 			{ dispatch, userInfo } = this.props,
 			data = {
 				uid,

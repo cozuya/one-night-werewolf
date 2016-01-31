@@ -21,45 +21,25 @@ export default () => {
 				userList.splice(userIndex, 1);
 				io.sockets.emit('userList', userList);
 			}
-		});
-
-		socket.on('getGameInfo', (uid) => {
+		}).on('getGameInfo', (uid) => {
 			sendGameInfo(socket, uid);
-		});
-		
-		socket.on('createGame', (game) => {
+		}).on('createGame', (game) => {
 			createGame(socket, game);
-		});
-
-		socket.on('getGameList', () => {
+		}).on('getGameList', () => {
 			sendGameList(socket);			
-		});
-
-		socket.on('updateSeatedUsers', (data) => {
+		}).on('updateSeatedUsers', (data) => {
 			updateSeatedUsers(socket, data);
-		});
-
-		socket.on('checkNewlyConnectedUserStatus', () => {
+		}).on('checkNewlyConnectedUserStatus', () => {
 			checkUserStatus(socket);
-		});
-
-		socket.on('updateGameSettings', (data) => {
+		}).on('updateGameSettings', (data) => {
 			handleUpdatedGameSettings(socket, data);
-		});
-
-		socket.on('getUserGameSettings', () => {
+		}).on('getUserGameSettings', () => {
 			sendUserGameSettings(socket);			
-		});
-
-		socket.on('newGameChat', (chat, uid) => {
+		}).on('newGameChat', (chat, uid) => {
 			addNewGameChat(chat, uid);
-		});
-
-		socket.on('userNightActionEvent', (data) => {
+		}).on('userNightActionEvent', (data) => {
 			updateUserNightActionEvent(socket, data);
-		});
-
-		socket.on('updateSelectedForElimination', (data) => {
+		}).on('updateSelectedForElimination', (data) => {
 			updateSelectedElimination(data);
 		});
 	});

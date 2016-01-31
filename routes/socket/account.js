@@ -10,19 +10,19 @@ import _ from 'lodash';
 export let userList = [];
 
 export function checkUserStatus(socket) {
-	let userName = socket.handshake.session.passport.user,
+	let { user } = socket.handshake.session.passport,
 		gameUserIsIn = games.find((game) => {
 			return !!Object.keys(game.seated).find((seat) => {
-				return game.seated[seat].userName === userName;
+				return game.seated[seat].userName === user;
 			});
 		}),
 		chats, cloneGame;
 
 	if (gameUserIsIn) {
-		let internalPlayer = getInternalPlayerInGameByUserName(gameUserIsIn, userName);
+		let internalPlayer = getInternalPlayerInGameByUserName(gameUserIsIn, user);
 
 		cloneGame = _.clone(gameUserIsIn);
-		cloneGame.chats = combineInprogressChats(cloneGame, userName);
+		cloneGame.chats = combineInprogressChats(cloneGame, user);
 		// cloneGame.tableState.playerPerceivedRole = internalPlayer.perceivedRole;  // todo: this crashes server if a user logs into a 2nd account on same computer without logging out of old
 		socket.join(gameUserIsIn.uid);
 		socket.emit('gameUpdate', secureGame(cloneGame));
@@ -30,16 +30,14 @@ export function checkUserStatus(socket) {
 	}
 
 	userList.unshift({
-		userName
+		user
 	});
 
 	io.sockets.emit('userList', userList);
 };
 
 export function handleUpdatedGameSettings(socket, data) {
-	let username = socket.handshake.session.passport.user;
-
-	GameSettings.findOne({username}, (err, settings) => {
+	GameSettings.findOne(socket.handshake.session.passport.user, (err, settings) => {
 		for (let setting in data) {
 			settings.gameSettings[setting] = data[setting];
 		}

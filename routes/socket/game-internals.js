@@ -74,7 +74,7 @@ export function startGame(currentGame) {
 	io.in(game.uid).emit('gameUpdate', secureGame(game));
 
 	setTimeout(() => {
-		let { startGamePause } = devStatus,
+		let { nightPhasePause } = devStatus,
 			countDown;
 
 		game.internals.seatedPlayers.forEach((player, i) => {
@@ -96,14 +96,14 @@ export function startGame(currentGame) {
 		game.tableState.cardsDealt = true;
 		sendInprogressChats(game);
 		countDown = setInterval(() => {
-			if (startGamePause === 0) {
+			if (nightPhasePause === 0) {
 				clearInterval(countDown);
 				beginNightPhases();
 			} else {
-				game.status = `Night begins in ${startGamePause} second${startGamePause === 1 ? '' : 's'}.`;
+				game.status = `Night begins in ${nightPhasePause} second${nightPhasePause === 1 ? '' : 's'}.`;
 				sendInprogressChats(game);
 			}
-			startGamePause--;
+			nightPhasePause--;
 		}, 1000);
 	}, 50);
 }

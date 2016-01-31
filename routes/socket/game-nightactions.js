@@ -122,9 +122,5 @@ export function updateUserNightActionEvent(socket, data) {
 let getTrueRoleBySeatNumber = (game, num) => {
 	num = parseInt(num);
 
-	if (num < 7) {
-		return game.internals.seatedPlayers[num].trueRole;
-	} else {
-		return game.internals.centerRoles[num - 7];
-	}
+	return num < 7 ? game.internals.seatedPlayers[num].trueRole : game.internals.centerRoles[num - 7];
 }

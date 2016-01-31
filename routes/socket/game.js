@@ -3,20 +3,18 @@
 // let Chatroom = require('../models/chatroom');
 
 import { startGame } from './game-internals.js';
-import { secureGame, getInternalPlayerInGameByUserName } from './util.js';
+import { secureGame, getInternalPlayerInGameByUserName, devStatus } from './util.js';
 import { combineInprogressChats } from './gamechat.js';
 import _ from 'lodash';
 
 let deleteGame = (game) => {
-	let index = games.indexOf(game);
-
-	games.splice(index, 1);
+	games.splice(games.indexOf(game), 1);
 };
 
 export let games = [];
 
 export function sendGameList() {
-	let gameList = games.map((game) => {
+	io.sockets.emit('gameList', games.map((game) => {
 		return {
 			kobk: game.kobk,
 			time: game.time,
@@ -26,9 +24,7 @@ export function sendGameList() {
 			inProgress: game.inProgress,
 			uid: game.uid
 		};
-	});
-
-	io.sockets.emit('gameList', gameList);
+	}));
 }
 
 export function createGame(socket, game) {
@@ -73,7 +69,7 @@ export function updateSeatedUsers(socket, data) {
 		game.seated[`seat${data.seatNumber}`] = data.userInfo;
 		game.seatedCount++;
 
-		if (game.seatedCount === 2) { // dev: 7
+		if (game.seatedCount === devStatus.seatedCountToStartGame) {
 			startGameCountdown(game);
 		} else {
 			io.sockets.in(data.uid).emit('gameUpdate', secureGame(game));
@@ -99,19 +95,19 @@ export function updateSeatedUsers(socket, data) {
 }
 
 let startGameCountdown = (game) => {
-	let seconds = 1,
+	let { startGamePause } = devStatus,
 	countDown;
 
 	game.inProgress = true;
 
 	countDown = setInterval(() => {
-		if (seconds === 0) {
+		if (startGamePause === 0) {
 			clearInterval(countDown);
 			startGame(game);
 		} else {
-			game.status = `Game starts in ${seconds} second${seconds === 1 ? '' : 's'}.`;
+			game.status = `Game starts in ${startGamePause} second${startGamePause === 1 ? '' : 's'}.`;
 			io.sockets.in(game.uid).emit('gameUpdate', secureGame(game));
 		}
-		seconds--;
+		startGamePause--;
 	}, 1000);
 };
