@@ -23,36 +23,36 @@ export function startGame(currentGame) {
 					allWerewolvesNotInCenter = true;
 				}
 
-				if (player.userName === 'jin') {
-					player.trueRole = 'seer';
-					player.perceivedRole = 'seer';
-					player.nightAction = {};
-					player.seat = 0;
-				}
+				// if (player.userName === 'jin') {
+				// 	player.trueRole = 'seer';
+				// 	player.perceivedRole = 'seer';
+				// 	player.nightAction = {};
+				// 	player.seat = 0;
+				// }
 
-				if (player.userName === 'paul') {
-					player.trueRole = 'werewolf';
-					player.perceivedRole = 'werewolf';
-					player.nightAction = {};
-					player.seat = 1;
-				}
+				// if (player.userName === 'paul') {
+				// 	player.trueRole = 'werewolf';
+				// 	player.perceivedRole = 'werewolf';
+				// 	player.nightAction = {};
+				// 	player.seat = 1;
+				// }
 
-				if (player.userName === 'heihachi') {
-					player.trueRole = 'troublemaker';
-					player.perceivedRole = 'troublemaker';
-					player.nightAction = {};
-					player.seat = 2;
-				}
+				// if (player.userName === 'heihachi') {
+				// 	player.trueRole = 'troublemaker';
+				// 	player.perceivedRole = 'troublemaker';
+				// 	player.nightAction = {};
+				// 	player.seat = 2;
+				// }
 
-				// player.trueRole = role;
-				// player.perceivedRole = role;
-				// player.nightAction = {};
-				// player.seat = index + 1;
-				// _roles.splice(roleIndex, 1);
+				player.trueRole = role;
+				player.perceivedRole = role;
+				player.nightAction = {};
+				player.seat = index + 1;
+				_roles.splice(roleIndex, 1);
 			});
 
-			// game.internals.centerRoles = [..._roles];
-			game.internals.centerRoles = ['werewolf', 'robber', 'troublemaker', 'robber', 'troublemaker', 'insomniac', 'robber', 'troublemaker'];
+			game.internals.centerRoles = [..._roles];
+			// game.internals.centerRoles = ['werewolf', 'robber', 'troublemaker', 'robber', 'troublemaker', 'insomniac', 'robber', 'troublemaker'];
 		};
 
 	Object.keys(game.seated).map((seat, i) => {
@@ -471,25 +471,51 @@ let eliminationPhase = () => {
 	};
 
 	countDown = setInterval(() => {
-		if (index === 2) { // dev: 6
+		if (index === devStatus.playerCountToEndGame) {
 			clearInterval(countDown);
 			endGame();
 		} else {
 			let noSelection = index === 6 ? 0 : index + 1;
 
 			game.tableState.eliminations[index] = {
-				seatNumber: game.internals.seatedPlayers[index].selectedForElimination ? parseInt(game.internals.seatedPlayers[index].selectedForElimination) : noSelection,
-				transparent: false
+				seatNumber: game.internals.seatedPlayers[index].selectedForElimination ? parseInt(game.internals.seatedPlayers[index].selectedForElimination) : noSelection
 			};
 
 			sendInprogressChats(game);
 			index++;
 		}
 	}, 1000);
-
-	// console.log(game);
 };
 
 let endGame = () => {
-	console.log('endGame');	
+	let playersSelectedForElimination = game.tableState.eliminations.map((elimination) => {
+			return elimination.seatNumber;
+		}),
+		modeMap = {},
+		maxCount = 1,
+		eliminatedPlayersIndex = [];
+
+	// playersSelectedForElimination = [1, 1, 3, 4, 5, 6, 0];  // dev: remove
+
+	playersSelectedForElimination.forEach((el, i) => {
+		if (!modeMap[el]) {
+			modeMap[el] = 1;
+		} else {
+			modeMap[el]++;
+		}
+
+		if (modeMap[el] > maxCount) {
+			eliminatedPlayersIndex = [el];
+			maxCount = modeMap[el];
+		} else if (modeMap[el] === maxCount) {
+			eliminatedPlayersIndex.push(el);
+			maxCount = modeMap[el];
+		}
+	});
+
+	game.tableState.eliminations.map((elimination) => {
+		elimination.transparent = eliminatedPlayersIndex.indexOf(elimination.seatNumber) === -1 ? true : false;
+	});
+
+	sendInprogressChats(game);
 }

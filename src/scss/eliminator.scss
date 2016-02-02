@@ -23,7 +23,14 @@
 			top: -9px;
 		}
 	}
-	
+
+	.seat-container .eliminator.transparent {
+		opacity: .1 !important;
+	}
+
+	.seat-container .eliminator.transparent:after {
+		opacity: .7 !important;
+	}
 
 	.seat-container0 .eliminator.target-seat1 {
 		transform: rotate(18deg);

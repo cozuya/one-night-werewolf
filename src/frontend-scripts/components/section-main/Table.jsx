@@ -21,8 +21,7 @@ export default class Table extends React.Component {
 	}
 
 	componentDidUpdate(prevProps) {
-		let gameInfo = this.props.gameInfo,
-			userInfo = this.props.userInfo,
+		let { gameInfo, userInfo } = this.props,
 			tableState = gameInfo.tableState,
 			prevTableState = prevProps.gameInfo.tableState;
 
@@ -45,11 +44,12 @@ export default class Table extends React.Component {
 
 			this.highlightCards(nonPlayersCards);
 		}
+
+		console.log(gameInfo);
 	}
 
 	processNightActions(prevTableState) {
-		let gameInfo = this.props.gameInfo,
-			userInfo = this.props.userInfo,
+		let { gameInfo, userInfo } = this.props,
 			tableState = gameInfo.tableState;
 
 		if (tableState) {
@@ -210,7 +210,7 @@ export default class Table extends React.Component {
 	}
 
 	validateLeaveButton() {
-		let gameInfo = this.props.gameInfo,
+		let { gameInfo } = this.props,
 			isUserSeated = !!Object.keys(gameInfo.seated).find((seat) => { // todo check userinfo
 				return gameInfo.seated[seat].userName === this.props.userInfo.userName;
 			});
@@ -223,8 +223,8 @@ export default class Table extends React.Component {
 	}
 
 	clickedSeat(e) {
-		let seated = this.props.gameInfo.seated,
-			userInfo = this.props.userInfo,
+		let { seated } = this.props.gameInfo,
+			{ userInfo } = this.props,
 			$seat = $(e.currentTarget),
 			isUserAlreadySeated = !!Object.keys(seated).find((seat) => { // todo check userinfo
 				return seated[seat].userName === userInfo.userName;
@@ -274,8 +274,7 @@ export default class Table extends React.Component {
 	handleCardClick(e) {
 		let $card = $(e.currentTarget),
 			cardNumber = $card.attr('data-cardnumber'),
-			gameInfo = this.props.gameInfo,
-			userInfo = this.props.userInfo,
+			{ gameInfo, userInfo } = this.props,
 			data = {
 				userName: this.props.userInfo.userName,
 				uid: gameInfo.uid
@@ -345,7 +344,7 @@ export default class Table extends React.Component {
 			}
 		}
 
-		if (gameInfo.tableState.isVotable && !gameInfo.tableState.isVotable.completed) {
+		if (gameInfo.tableState.isVotable && !gameInfo.tableState.isVotable.completed) {  // todo: players can vote to eliminate themselves...
 			$card.parent().find('.card').removeClass('card-select');
 			$card.addClass('card-select');
 			socket.emit('updateSelectedForElimination', {
@@ -379,7 +378,7 @@ export default class Table extends React.Component {
 				<div className={this.nightBlockerStatus('bottom')}></div>
 				<div className="tableimage"></div>
 					{_.range(0, 10).map((el) => {
-						let gameInfo = this.props.gameInfo,
+						let { gameInfo } = this.props,
 							seated = gameInfo.seated[`seat${el}`],
 							classes = () => {
 								return seated ? `seat seat${el}` : `seat seat${el} empty`;
@@ -404,6 +403,10 @@ export default class Table extends React.Component {
 
 											if (el < 7 && gameInfo.tableState.eliminations && Object.keys(gameInfo.tableState.eliminations[el]).length) {
 												classes += ` target-seat${gameInfo.tableState.eliminations[el].seatNumber}`;
+											}
+
+											if (gameInfo.tableState.eliminations && gameInfo.tableState.eliminations[el] && gameInfo.tableState.eliminations[el].transparent) {
+												classes += ' transparent';
 											}
 
 											return classes;
