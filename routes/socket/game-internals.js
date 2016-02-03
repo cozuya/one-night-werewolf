@@ -245,6 +245,7 @@ let beginNightPhases = () => {
 				});
 
 				if (!werewolves.length) {
+					game.internals.soloMinion = true;
 					message = 'You wake up, and see that there are no WEREWOLVES in this game. Be careful - you lose if no villager is eliminated'
 				} else {
 					message = 'You wake up, and see that the WEREWOLVES in this game are: ';
@@ -493,7 +494,28 @@ let endGame = () => {
 		}),
 		modeMap = {},
 		maxCount = 1,
-		eliminatedPlayersIndex = [];
+		eliminatedPlayersIndex = [],
+		determineWinningSeats = () => {
+			let winners = [],
+				{ seatedPlayers } = game.internals,
+				werewolfEliminated = false,
+				tannerEliminations = [];
+
+			eliminatedPlayersIndex.forEach((eliminatedPlayer) => {
+				if (seatedPlayers[eliminatedPlayer].trueRole === 'werewolf' || seatedPlayers[eliminatedPlayer].trueRole === 'minion' && game.internals.soloMinion) {
+					werewolfEliminated = true;
+				}
+
+				if (seatedPlayers[eliminatedPlayer].trueRole === 'tanner') {
+					tannerEliminations.push(eliminatedPlayer);
+				}
+
+				// todo hunter
+			});
+
+			// todo loop through seatedPlayers, add win boolean and team they were on to set up for db save
+		},
+		winningSeats;
 
 	// playersSelectedForElimination = [1, 1, 3, 4, 5, 6, 0];  // dev: remove
 
@@ -513,9 +535,25 @@ let endGame = () => {
 		}
 	});
 
+	// todo add hunter elim before transparents
+
 	game.tableState.eliminations.map((elimination) => {
 		elimination.transparent = eliminatedPlayersIndex.indexOf(elimination.seatNumber) === -1 ? true : false;
 	});
 
 	sendInprogressChats(game);
+
+	winningSeats = determineWinningSeats();
+
+	setTimeout(() => {
+		game.internals.seatedPlayers.map((player) => {
+
+		});
+
+		game.chats.push({
+			gameChat: true,
+			chat: 'The game ends.',
+			timestamp: new Date()
+		});
+	}, 6000);
 }
