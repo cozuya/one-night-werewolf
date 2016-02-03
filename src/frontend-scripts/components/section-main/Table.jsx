@@ -44,8 +44,6 @@ export default class Table extends React.Component {
 
 			this.highlightCards(nonPlayersCards);
 		}
-
-		console.log(gameInfo);
 	}
 
 	processNightActions(prevTableState) {
