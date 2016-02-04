@@ -554,10 +554,18 @@ let endGame = () => {
 	}
 
 	setTimeout(() => {
+		let winningPlayersList = seatedPlayers.filter((player) => {
+			return player.wonGame;
+		}).map((player) => {
+			return player.userName.toUpperCase();
+		}).join(' ');
+
+		console.log(winningPlayersList);
+
 		game.chats.push({
 			gameChat: true,
-			chat: '',
+			chat: `The winning players are ${winningPlayersList}.`,
 			timestamp: new Date()
 		});
-	}, 6000);
+	}, 1000);
 }
