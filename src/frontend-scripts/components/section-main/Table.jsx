@@ -22,10 +22,12 @@ export default class Table extends React.Component {
 
 	componentDidUpdate(prevProps) {
 		let { gameInfo, userInfo } = this.props,
-			tableState = gameInfo.tableState,
+			{ tableState } = gameInfo,
 			prevTableState = prevProps.gameInfo.tableState;
 
-		if (gameInfo.tableState.cardsDealt === 'in progress') {
+			console.log(tableState);
+
+		if (tableState.cardsDealt === 'in progress') {
 			this.dealCards();
 
 			setTimeout(() => {
@@ -43,6 +45,12 @@ export default class Table extends React.Component {
 			});
 
 			this.highlightCards(nonPlayersCards);
+		}
+
+		if (tableState.cardRoles) {
+			tableState.cardRoles.forEach((role, index) => {
+				this.revealCard(index);
+			});
 		}
 	}
 
@@ -198,9 +206,11 @@ export default class Table extends React.Component {
 
 		$cardFlipper.addClass('flip');
 
-		setTimeout(() => {
-			$cardFlipper.removeClass('flip');			
-		}, 4000);
+		if (!this.props.gameInfo.tableState.cardRoles) {
+			setTimeout(() => {
+				$cardFlipper.removeClass('flip');			
+			}, 4000);
+		}
 	}
 
 	leaveGame() {
@@ -250,14 +260,16 @@ export default class Table extends React.Component {
 						<div className={
 							(() => {
 								let classes = `card-front seat-${num}`,
-									role = this.props.gameInfo.tableState.playerPerceivedRole,
+									{ tableState } = this.props.gameInfo,
+									{ playerPerceivedRole } = tableState,
 									playerSeat = Object.keys(this.props.gameInfo.seated).find((seat) => { // todo check userinfo
 										return this.props.gameInfo.seated[seat].userName === this.props.userInfo.userName;
 									});
 
-
-								if (role && num === parseInt(playerSeat.split('seat')[1])) {
-									classes = `${classes} ${role}`;
+								if (playerPerceivedRole && num === parseInt(playerSeat.split('seat')[1])) {
+									classes = `${classes} ${playerPerceivedRole}`;
+								} else if (tableState.cardRoles && tableState.cardRoles[num]) {
+									classes = `${classes} ${tableState.cardRoles[num]}`;
 								}
 
 								return classes;

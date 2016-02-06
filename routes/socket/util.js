@@ -39,21 +39,25 @@ export function getInternalPlayerInGameByUserName(game, userName) {
 }
 
 // prod
-export let devStatus = { // can't think of a better name.  This object assists in development.
-	nightPhasePause: 5,
-	phaseTime: 10,
-	endingGame: 15,
-	seatedCountToStartGame: 7,
-	startGamePause: 5,
-	playerCountToEndGame: 7
-}
+// export let devStatus = { // can't think of a better name.  This object assists in development.
+// 	nightPhasePause: 5,
+// 	phaseTime: 10,
+// 	endingGame: 15,
+// 	seatedCountToStartGame: 7,
+// 	startGamePause: 5,
+//	playerCountToEndGame: 7,
+//	revealWinnersPause: 6000,
+//	revealAllCardsPause: 6000
+// }
 
 // dev
-// export let devStatus = {
-// 	nightPhasePause: 1,
-// 	phaseTime: 1,
-// 	endingGame: 3,
-// 	seatedCountToStartGame: 2,
-// 	startGamePause: 1,
-// 	playerCountToEndGame: 2
-// }
+export let devStatus = {
+	nightPhasePause: 1,
+	phaseTime: 1,
+	endingGame: 3,
+	seatedCountToStartGame: 2,
+	startGamePause: 1,
+	playerCountToEndGame: 2,
+	revealWinnersPause: 1000,
+	revealAllCardsPause: 1500
+}

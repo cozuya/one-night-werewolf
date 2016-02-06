@@ -534,22 +534,27 @@ let endGame = () => {
 		let werewolfEliminated = false,
 			tannerEliminations = [];
 
-		eliminatedPlayersIndex.forEach((eliminatedPlayer) => {
-			if (seatedPlayers[eliminatedPlayer].trueRole === 'werewolf' || seatedPlayers[eliminatedPlayer].trueRole === 'minion' && game.internals.soloMinion) {
-				werewolfEliminated = true;
-			}
+		// crashes game for dev with less than 7 players (dev)
 
-			if (seatedPlayers[eliminatedPlayer].trueRole === 'tanner') {
-				tannerEliminations.push(eliminatedPlayer);
-			}
-		});
+		// eliminatedPlayersIndex.forEach((eliminatedPlayer) => {
+		// 	if (seatedPlayers[eliminatedPlayer].trueRole === 'werewolf' || seatedPlayers[eliminatedPlayer].trueRole === 'minion' && game.internals.soloMinion) {
+		// 		werewolfEliminated = true;
+		// 	}
+
+		// 	if (seatedPlayers[eliminatedPlayer].trueRole === 'tanner') {
+		// 		tannerEliminations.push(eliminatedPlayer);
+		// 	}
+		// });
 
 		seatedPlayers.forEach((player, index) => {
-			let { trueRole } = player;
 
-			if (!werewolfEliminated && (trueRole === 'werewolf' || trueRole === 'minion') || tannerEliminations.indexOf(index) !== -1 || (werewolfEliminated && (trueRole !== 'werewolf' && trueRole !== 'minion' && trueRole !== 'tanner')) || ((trueRole !== 'werewolf' && trueRole !== 'minion' && trueRole !== 'tanner') && !eliminatedPlayersIndex.length)) {
-				player.wonGame = true;
-			}
+			// todo this doesn't quite match the rules re: tanner
+
+			// crashes game for dev with less than 7 players (dev)
+
+			// if (!werewolfEliminated && (trueRole === 'werewolf' || trueRole === 'minion') || tannerEliminations.indexOf(index) !== -1 || (werewolfEliminated && (trueRole !== 'werewolf' && trueRole !== 'minion' && trueRole !== 'tanner')) || ((trueRole !== 'werewolf' && trueRole !== 'minion' && trueRole !== 'tanner') && !eliminatedPlayersIndex.length)) {
+			// 	player.wonGame = true;
+			// }
 		});
 	}
 
@@ -560,12 +565,28 @@ let endGame = () => {
 			return player.userName.toUpperCase();
 		}).join(' ');
 
-		console.log(winningPlayersList);
-
 		game.chats.push({
 			gameChat: true,
 			chat: `The winning players are ${winningPlayersList}.`,
 			timestamp: new Date()
 		});
-	}, 1000);
+
+		game.tableState.cardRoles = [];
+
+		// game.tableState.cardRoles[eliminatedPlayersIndex] todo put string of role of eliminated players at their indexes
+
+		seatedPlayers.map((player) => {
+			return player.trueRole;
+		});
+
+		sendInprogressChats(game);
+	}, devStatus.revealLosersPause);
+
+	setTimeout(() => {
+		game.tableState.cardRoles = seatedPlayers.map((player) => {
+			return player.trueRole;
+		});
+
+		sendInprogressChats(game);
+	}, devStatus.revealAllCardsPause);
 }
