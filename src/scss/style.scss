@@ -57,3 +57,14 @@ body {
 	height: 400px;
 	background-image: url('../images/1127X400.jpeg');
 }
+.row-video {
+	background: #ccc;
+	min-height: 630px;
+	padding: 0 !important;
+
+	.video-container {
+		background: #666;
+		width: 840px;
+		margin: 0 auto;
+	}
+}
