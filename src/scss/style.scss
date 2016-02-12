@@ -56,6 +56,7 @@ body {
 	text-align: center;
 	height: 400px;
 	background-image: url('../images/1127X400.jpeg');
+	margin-top: 45px;
 }
 .row-video {
 	background: #ccc;
@@ -67,4 +68,12 @@ body {
 		width: 840px;
 		margin: 0 auto;
 	}
+}
+#top-menu {
+	margin-left: 5.7%;
+	width: 88.6%; 
+}
+#general-info, #top-menu{
+	background: #eee;
+
 }
