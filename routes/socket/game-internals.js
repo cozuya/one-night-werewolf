@@ -536,15 +536,18 @@ let endGame = () => {
 
 		// crashes game for dev with less than 7 players (dev)
 
-		// eliminatedPlayersIndex.forEach((eliminatedPlayer) => {
-		// 	if (seatedPlayers[eliminatedPlayer].trueRole === 'werewolf' || seatedPlayers[eliminatedPlayer].trueRole === 'minion' && game.internals.soloMinion) {
-		// 		werewolfEliminated = true;
-		// 	}
+		console.log(eliminatedPlayersIndex);
 
-		// 	if (seatedPlayers[eliminatedPlayer].trueRole === 'tanner') {
-		// 		tannerEliminations.push(eliminatedPlayer);
-		// 	}
-		// });
+		eliminatedPlayersIndex.forEach((eliminatedPlayer) => {
+			console.log(eliminatedPlayer);
+			if (seatedPlayers[eliminatedPlayer].trueRole === 'werewolf' || seatedPlayers[eliminatedPlayer].trueRole === 'minion' && game.internals.soloMinion) {
+				werewolfEliminated = true;
+			}
+
+			if (seatedPlayers[eliminatedPlayer].trueRole === 'tanner') {
+				tannerEliminations.push(eliminatedPlayer);
+			}
+		});
 
 		seatedPlayers.forEach((player, index) => {
 
@@ -552,9 +555,9 @@ let endGame = () => {
 
 			// crashes game for dev with less than 7 players (dev)
 
-			// if (!werewolfEliminated && (trueRole === 'werewolf' || trueRole === 'minion') || tannerEliminations.indexOf(index) !== -1 || (werewolfEliminated && (trueRole !== 'werewolf' && trueRole !== 'minion' && trueRole !== 'tanner')) || ((trueRole !== 'werewolf' && trueRole !== 'minion' && trueRole !== 'tanner') && !eliminatedPlayersIndex.length)) {
-			// 	player.wonGame = true;
-			// }
+			if (!werewolfEliminated && (trueRole === 'werewolf' || trueRole === 'minion') || tannerEliminations.indexOf(index) !== -1 || (werewolfEliminated && (trueRole !== 'werewolf' && trueRole !== 'minion' && trueRole !== 'tanner')) || ((trueRole !== 'werewolf' && trueRole !== 'minion' && trueRole !== 'tanner') && !eliminatedPlayersIndex.length)) {
+				player.wonGame = true;
+			}
 		});
 	}
 
@@ -589,4 +592,6 @@ let endGame = () => {
 
 		sendInprogressChats(game);
 	}, devStatus.revealAllCardsPause);
+
+	console.log(game);
 }

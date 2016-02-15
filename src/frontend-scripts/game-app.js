@@ -15,7 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
 	account();
 	polyfills();
 	
-	console.log('%c%s', 'color: teal; background: #eee; font-size: 20px; font-style: italic; font-family: verdana', 'Welcome to One Night Werewolf');
+	console.log('%c%s', 'color: teal; background: #eee; font-size: 14px; font-style: italic; font-family: verdana', 'Welcome to One Night Werewolf');
 	
 	if (container) {
 		let store = createStore(wwApp);
