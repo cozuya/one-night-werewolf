@@ -592,6 +592,4 @@ let endGame = () => {
 
 		sendInprogressChats(game);
 	}, devStatus.revealAllCardsPause);
-
-	console.log(game);
 }
