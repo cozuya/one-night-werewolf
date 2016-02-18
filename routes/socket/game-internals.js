@@ -555,7 +555,7 @@ let endGame = () => {
 
 			// crashes game for dev with less than 7 players (dev)
 
-			if (!werewolfEliminated && (trueRole === 'werewolf' || trueRole === 'minion') || tannerEliminations.indexOf(index) !== -1 || (werewolfEliminated && (trueRole !== 'werewolf' && trueRole !== 'minion' && trueRole !== 'tanner')) || ((trueRole !== 'werewolf' && trueRole !== 'minion' && trueRole !== 'tanner') && !eliminatedPlayersIndex.length)) {
+			if (!werewolfEliminated && (player.trueRole === 'werewolf' || player.trueRole === 'minion') || tannerEliminations.indexOf(index) !== -1 || (werewolfEliminated && (player.trueRole !== 'werewolf' && player.trueRole !== 'minion' && player.trueRole !== 'tanner')) || ((player.trueRole !== 'werewolf' && player.trueRole !== 'minion' && player.trueRole !== 'tanner') && !eliminatedPlayersIndex.length)) {
 				player.wonGame = true;
 			}
 		});
