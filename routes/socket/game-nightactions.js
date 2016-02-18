@@ -50,7 +50,7 @@ export function updateUserNightActionEvent(socket, data) {
 					});
 
 				updatedTrueRoles = game.internals.seatedPlayers.map((player, index) => {
-					if (player.userName === seat1player.userName) {
+					if (player.userName === seat1player.userName) { // todo this errored while trying to do this nightaction
 						return seat2player.trueRole;
 					} else if (player.userName === seat2player.userName) {
 						return seat1player.trueRole;

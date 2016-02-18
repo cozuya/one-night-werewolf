@@ -539,7 +539,6 @@ let endGame = () => {
 		console.log(eliminatedPlayersIndex);
 
 		eliminatedPlayersIndex.forEach((eliminatedPlayer) => {
-			console.log(eliminatedPlayer);
 			if (seatedPlayers[eliminatedPlayer].trueRole === 'werewolf' || seatedPlayers[eliminatedPlayer].trueRole === 'minion' && game.internals.soloMinion) {
 				werewolfEliminated = true;
 			}
@@ -566,7 +565,8 @@ let endGame = () => {
 			return player.wonGame;
 		}).map((player) => {
 			return player.userName.toUpperCase();
-		}).join(' ');
+		}).join(' '),
+			cardRoles = [];
 
 		game.chats.push({
 			gameChat: true,
@@ -574,9 +574,11 @@ let endGame = () => {
 			timestamp: new Date()
 		});
 
-		game.tableState.cardRoles = [];
+		eliminatedPlayersIndex.forEach((index) => {
+			cardRoles[index] = seatedPlayers[index].trueRole;
+		});
 
-		// game.tableState.cardRoles[eliminatedPlayersIndex] todo put string of role of eliminated players at their indexes
+		game.tableState.cardRoles = cardRoles;
 
 		seatedPlayers.map((player) => {
 			return player.trueRole;

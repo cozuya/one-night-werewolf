@@ -12,7 +12,7 @@ export let devStatus = { // can't think of a better name.  This object assists i
 	seatedCountToStartGame: 7,
 	startGamePause: 5,
 	playerCountToEndGame: 7,
-	revealWinnersPause: 8000,
+	revealWinnersPause: 10000,
 	revealAllCardsPause: 14000
 }
 

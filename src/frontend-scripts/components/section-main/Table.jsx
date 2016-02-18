@@ -268,7 +268,7 @@ export default class Table extends React.Component {
 
 								if (playerPerceivedRole && num === parseInt(playerSeat.split('seat')[1])) {
 									classes = `${classes} ${playerPerceivedRole}`;
-								} else if (tableState.cardRoles && tableState.cardRoles[num]) {
+								} else if (tableState.cardRoles && tableState.cardRoles[num] !== null) { // nfc why this returns null instead of undefined but it shore does
 									classes = `${classes} ${tableState.cardRoles[num]}`;
 								}
 
