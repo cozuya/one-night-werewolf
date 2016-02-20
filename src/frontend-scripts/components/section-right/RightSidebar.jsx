@@ -32,6 +32,9 @@ export default class RightSidebar extends React.Component {
 					userList={this.props.userList}
 				/>
 				<div className="ui divider"></div>
+				<section className="generalchat">
+					<h3 className="ui header">General chat:</h3>
+				</section>
 			</section>
 		);
 	}

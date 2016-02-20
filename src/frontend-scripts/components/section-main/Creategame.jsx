@@ -176,6 +176,7 @@ export default class Creategame extends React.Component {
 								<div className="menu"></div>
 							</i>
 							<div className="menu">
+								<div className="item">0:05</div>
 								<div className="item">0:30</div>
 								<div className="item">1:00</div>
 								<div className="item">1:30</div>

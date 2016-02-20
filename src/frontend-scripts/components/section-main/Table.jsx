@@ -32,7 +32,7 @@ export default class Table extends React.Component {
 
 			setTimeout(() => {
 				this.revealCard(userInfo.seatNumber);
-			}, 2000);
+			}, 1500);
 		}
 
 		if (tableState.isNight && userInfo.seatNumber) {
@@ -268,7 +268,8 @@ export default class Table extends React.Component {
 
 								if (playerPerceivedRole && num === parseInt(playerSeat.split('seat')[1])) {
 									classes = `${classes} ${playerPerceivedRole}`;
-								} else if (tableState.cardRoles && tableState.cardRoles[num] !== null) { // nfc why this returns null instead of undefined but it shore does
+								} else if (tableState.cardRoles && !!tableState.cardRoles[num]) {
+									console.log(tableState.cardRoles[num]);
 									classes = `${classes} ${tableState.cardRoles[num]}`;
 								}
 

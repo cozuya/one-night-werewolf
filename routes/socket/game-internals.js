@@ -47,7 +47,7 @@ export function startGame(currentGame) {
 				player.trueRole = role;
 				player.perceivedRole = role;
 				player.nightAction = {};
-				player.seat = index + 1;
+				player.seat = index;
 				_roles.splice(roleIndex, 1);
 			});
 
@@ -498,8 +498,6 @@ let endGame = () => {
 		eliminatedPlayersIndex = [],
 		{ seatedPlayers } = game.internals;
 
-	// playersSelectedForElimination = [1, 1, 3, 4, 5, 6, 0];  // dev: remove
-
 	playersSelectedForElimination.forEach((el, i) => {
 		if (!modeMap[el]) {
 			modeMap[el] = 1;
@@ -536,8 +534,6 @@ let endGame = () => {
 
 		// crashes game for dev with less than 7 players (dev)
 
-		console.log(eliminatedPlayersIndex);
-
 		eliminatedPlayersIndex.forEach((eliminatedPlayer) => {
 			if (seatedPlayers[eliminatedPlayer].trueRole === 'werewolf' || seatedPlayers[eliminatedPlayer].trueRole === 'minion' && game.internals.soloMinion) {
 				werewolfEliminated = true;
@@ -562,10 +558,10 @@ let endGame = () => {
 
 	setTimeout(() => {
 		let winningPlayersList = seatedPlayers.filter((player) => {
-			return player.wonGame;
-		}).map((player) => {
-			return player.userName.toUpperCase();
-		}).join(' '),
+				return player.wonGame;
+			}).map((player) => {
+				return player.userName.toUpperCase();
+			}).join(' '),
 			cardRoles = [];
 
 		game.chats.push({
@@ -577,6 +573,8 @@ let endGame = () => {
 		eliminatedPlayersIndex.forEach((index) => {
 			cardRoles[index] = seatedPlayers[index].trueRole;
 		});
+
+		console.log(cardRoles);
 
 		game.tableState.cardRoles = cardRoles;
 
@@ -591,6 +589,8 @@ let endGame = () => {
 		game.tableState.cardRoles = seatedPlayers.map((player) => {
 			return player.trueRole;
 		});
+
+		console.log(game.tableState.cardRoles);
 
 		sendInprogressChats(game);
 	}, devStatus.revealAllCardsPause);

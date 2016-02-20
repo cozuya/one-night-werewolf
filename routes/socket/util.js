@@ -12,8 +12,8 @@ export let devStatus = { // can't think of a better name.  This object assists i
 	seatedCountToStartGame: 7,
 	startGamePause: 5,
 	playerCountToEndGame: 7,
-	revealWinnersPause: 10000,
-	revealAllCardsPause: 14000
+	revealLosersPause: 5000,
+	revealAllCardsPause: 11000
 }
 
 // dev 2p
@@ -24,7 +24,7 @@ export let devStatus = { // can't think of a better name.  This object assists i
 // 	seatedCountToStartGame: 2,
 // 	startGamePause: 1,
 // 	playerCountToEndGame: 2,
-// 	revealWinnersPause: 1000,
+// 	revealLosersPause: 1000,
 // 	revealAllCardsPause: 1500
 // }
 
@@ -37,7 +37,7 @@ export let devStatus = { // can't think of a better name.  This object assists i
 // 	seatedCountToStartGame: 7,
 // 	startGamePause: 1,
 // 	playerCountToEndGame: 7,
-// 	revealWinnersPause: 1000,
+// 	revealLosersPause: 1000,
 // 	revealAllCardsPause: 1500
 // }
 

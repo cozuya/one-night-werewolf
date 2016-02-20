@@ -57,6 +57,7 @@
 			border-radius: 4px;
 			text-align: center;
 			padding: 5px;
+			cursor: pointer;
 
 			.username {
 				position: absolute;
@@ -66,6 +67,10 @@
 				width: 100%;
 				text-align: center;
 			}
+		}
+
+		.seat.seat7, .seat.seat8, .seat.seat9 {
+			background: none;
 		}
 
 		.card {

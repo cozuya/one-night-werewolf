@@ -50,7 +50,7 @@ export function updateUserNightActionEvent(socket, data) {
 					});
 
 				updatedTrueRoles = game.internals.seatedPlayers.map((player, index) => {
-					if (player.userName === seat1player.userName) { // todo this errored while trying to do this nightaction
+					if (player.userName === seat1player.userName) {
 						return seat2player.trueRole;
 					} else if (player.userName === seat2player.userName) {
 						return seat1player.trueRole;
@@ -63,29 +63,31 @@ export function updateUserNightActionEvent(socket, data) {
 				player.nightAction.completed = true;
 				chat.chat = `You swap the two cards between ${seat1player.userName.toUpperCase()} and ${seat2player.userName.toUpperCase()}.`;
 			},
-			robber() {
+			robber() {  // todo off by one?
 				let robberPlayer = game.internals.seatedPlayers.find((player) => {
 						return player.userName === data.userName;
 					}),
 					swappedPlayer = game.internals.seatedPlayers.find((player) => {
 						return player.seat === parseInt(data.action);
-					}),
-					_role = player.trueRole;
+					});
 
 				updatedTrueRoles = game.internals.seatedPlayers.map((player, index) => {
 					if (player.userName === robberPlayer.userName) {
 						return swappedPlayer.trueRole;
-					} else if (player.userName === swappedPlayer.userName) {
-						return robberPlayer.trueRole;
-					} else {
-						return player.trueRole;
 					}
-				});
 
+					if (player.userName === swappedPlayer.userName) {
+						return robberPlayer.trueRole;
+					}
+
+					return player.trueRole;
+				});
+				console.log(updatedTrueRoles);
 				player.nightAction.seatClicked = data.action;
 				player.nightAction.newRole = player.trueRole;
 				player.nightAction.completed = true;
-				chat.chat = `You exchange cards between yourself and ${swappedPlayer.userName.toUpperCase()} and view your new role, which is a ${player.trueRole.toUpperCase()}.`;
+				console.log(player.nightAction);
+				chat.chat = `You exchange cards between yourself and ${swappedPlayer.userName.toUpperCase()} and view your new role, which is a ${swappedPlayer.trueRole.toUpperCase()}.`;
 			},
 			seer() {
 				let selectedCard = {
