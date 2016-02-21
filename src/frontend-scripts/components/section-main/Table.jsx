@@ -49,7 +49,9 @@ export default class Table extends React.Component {
 
 		if (tableState.cardRoles) {
 			tableState.cardRoles.forEach((role, index) => {
-				this.revealCard(index);
+				if (role) {
+					this.revealCard(index);
+				}
 			});
 		}
 	}
@@ -267,9 +269,9 @@ export default class Table extends React.Component {
 									});
 
 								if (playerPerceivedRole && num === parseInt(playerSeat.split('seat')[1])) {
+									console.log('Hello World!');
 									classes = `${classes} ${playerPerceivedRole}`;
 								} else if (tableState.cardRoles && !!tableState.cardRoles[num]) {
-									console.log(tableState.cardRoles[num]);
 									classes = `${classes} ${tableState.cardRoles[num]}`;
 								}
 

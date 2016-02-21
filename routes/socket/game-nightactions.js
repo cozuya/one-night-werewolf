@@ -63,13 +63,14 @@ export function updateUserNightActionEvent(socket, data) {
 				player.nightAction.completed = true;
 				chat.chat = `You swap the two cards between ${seat1player.userName.toUpperCase()} and ${seat2player.userName.toUpperCase()}.`;
 			},
-			robber() {  // todo off by one?
+			robber() {
 				let robberPlayer = game.internals.seatedPlayers.find((player) => {
 						return player.userName === data.userName;
 					}),
 					swappedPlayer = game.internals.seatedPlayers.find((player) => {
 						return player.seat === parseInt(data.action);
-					});
+					}),
+					swappedPlayerOriginalRole = swappedPlayer.trueRole;
 
 				updatedTrueRoles = game.internals.seatedPlayers.map((player, index) => {
 					if (player.userName === robberPlayer.userName) {
@@ -84,7 +85,7 @@ export function updateUserNightActionEvent(socket, data) {
 				});
 				console.log(updatedTrueRoles);
 				player.nightAction.seatClicked = data.action;
-				player.nightAction.newRole = player.trueRole;
+				player.nightAction.newRole = swappedPlayerOriginalRole;
 				player.nightAction.completed = true;
 				console.log(player.nightAction);
 				chat.chat = `You exchange cards between yourself and ${swappedPlayer.userName.toUpperCase()} and view your new role, which is a ${swappedPlayer.trueRole.toUpperCase()}.`;

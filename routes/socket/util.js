@@ -54,7 +54,7 @@ export function getSocketsByUid(uid) {
 		});
 
 		sockets.playerSockets = roomSockets.filter((socket) => {
-			return seatedPlayerNames.indexOf(socket.handshake.session.passport.user) >= 0;
+			return seatedPlayerNames.indexOf(socket.handshake.session.passport.user) >= 0;  // todo this errored some how at beginning of game
 		}),
 		sockets.observerSockets = roomSockets.filter((socket) => {
 			return seatedPlayerNames.indexOf(socket.handshake.session.passport.user) === -1;

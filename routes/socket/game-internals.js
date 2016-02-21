@@ -534,6 +534,8 @@ let endGame = () => {
 
 		// crashes game for dev with less than 7 players (dev)
 
+		console.log(eliminatedPlayersIndex);
+
 		eliminatedPlayersIndex.forEach((eliminatedPlayer) => {
 			if (seatedPlayers[eliminatedPlayer].trueRole === 'werewolf' || seatedPlayers[eliminatedPlayer].trueRole === 'minion' && game.internals.soloMinion) {
 				werewolfEliminated = true;
@@ -574,8 +576,6 @@ let endGame = () => {
 			cardRoles[index] = seatedPlayers[index].trueRole;
 		});
 
-		console.log(cardRoles);
-
 		game.tableState.cardRoles = cardRoles;
 
 		seatedPlayers.map((player) => {
@@ -589,8 +589,6 @@ let endGame = () => {
 		game.tableState.cardRoles = seatedPlayers.map((player) => {
 			return player.trueRole;
 		});
-
-		console.log(game.tableState.cardRoles);
 
 		sendInprogressChats(game);
 	}, devStatus.revealAllCardsPause);
