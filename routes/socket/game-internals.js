@@ -559,18 +559,7 @@ let endGame = () => {
 	}
 
 	setTimeout(() => {
-		let winningPlayersList = seatedPlayers.filter((player) => {
-				return player.wonGame;
-			}).map((player) => {
-				return player.userName.toUpperCase();
-			}).join(' '),
-			cardRoles = [];
-
-		game.chats.push({
-			gameChat: true,
-			chat: `The winning players are ${winningPlayersList}.`,
-			timestamp: new Date()
-		});
+		let cardRoles = [];
 
 		eliminatedPlayersIndex.forEach((index) => {
 			cardRoles[index] = seatedPlayers[index].trueRole;
@@ -586,9 +575,27 @@ let endGame = () => {
 	}, devStatus.revealLosersPause);
 
 	setTimeout(() => {
+		let winningPlayers = seatedPlayers.filter((player) => {
+				return player.wonGame;
+			}),
+			winningPlayersIndex = winningPlayers.map((player) => {
+				return player.seat;
+			}),
+			winningPlayersList = winningPlayers.map((player) => {
+				return player.userName.toUpperCase();
+			}).join(' ');
+
+		game.chats.push({
+			gameChat: true,
+			chat: `The winning players are ${winningPlayersList}.`,
+			timestamp: new Date()
+		});
+
 		game.tableState.cardRoles = seatedPlayers.map((player) => {
 			return player.trueRole;
 		});
+
+		game.tableState.winningPlayersIndex = winningPlayersIndex;
 
 		sendInprogressChats(game);
 	}, devStatus.revealAllCardsPause);

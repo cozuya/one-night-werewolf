@@ -268,8 +268,11 @@ export default class Table extends React.Component {
 										return this.props.gameInfo.seated[seat].userName === this.props.userInfo.userName;
 									});
 
+								if (tableState.winningPlayersIndex && tableState.winningPlayersIndex.indexOf(num) !== -1) {
+									classes = `${classes} card-proceed`;
+								}
+
 								if (playerPerceivedRole && num === parseInt(playerSeat.split('seat')[1])) {
-									console.log('Hello World!');
 									classes = `${classes} ${playerPerceivedRole}`;
 								} else if (tableState.cardRoles && !!tableState.cardRoles[num]) {
 									classes = `${classes} ${tableState.cardRoles[num]}`;
