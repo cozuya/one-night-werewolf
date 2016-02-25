@@ -33,6 +33,8 @@ export function checkUserStatus(socket) {
 		user
 	});
 
+	console.log(userList);
+
 	io.sockets.emit('userList', userList);
 };
 

@@ -3,6 +3,10 @@
 import React from 'react';
 
 export default class Playerlist extends React.Component {
+	componentDidUpdate() {
+		console.log(this.props);
+	}
+
 	render() {
 		return (
 			<section className="playerlist">
@@ -11,7 +15,7 @@ export default class Playerlist extends React.Component {
 				{this.props.userList.map((user, i) => {
 					return (
 						<div className="" key={i}>
-							{user.userName}
+							{user.user}
 						</div>
 					);
 				})}

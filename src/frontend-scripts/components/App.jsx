@@ -15,7 +15,7 @@ class App extends React.Component {
 		let { dispatch } = this.props,
 			{ classList } = document.getElementById('game-container');
 
-		if (classList.length) {
+		if (classList.length) {  // todo: needs to be migrated out as non logged in users still need to see the userlist
 			let name = {
 				userName: classList[0].split('username-')[1]
 			}
