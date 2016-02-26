@@ -18,9 +18,9 @@ export function checkUserStatus(socket) {
 		}),
 		chats, cloneGame;
 
-	if (gameUserIsIn) {
+	if (user && gameUserIsIn) {
 		let internalPlayer = getInternalPlayerInGameByUserName(gameUserIsIn, user);
-
+		// todo userlist doesn't work right when you refresh while a player is seated
 		cloneGame = _.clone(gameUserIsIn);
 		cloneGame.chats = combineInprogressChats(cloneGame, user);
 		// cloneGame.tableState.playerPerceivedRole = internalPlayer.perceivedRole;  // todo: this crashes server if a user logs into a 2nd account on same computer without logging out of old
@@ -29,9 +29,11 @@ export function checkUserStatus(socket) {
 		socket.emit('updateSeatForUser', internalPlayer.seat); // todo: errors on reload some times
 	}
 
-	userList.unshift({
-		user
-	});
+	if (user) {
+		userList.unshift({
+			user
+		});
+	}
 
 	console.log(userList);
 

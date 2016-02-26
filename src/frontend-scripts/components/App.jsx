@@ -13,20 +13,22 @@ socket = socket();
 class App extends React.Component {
 	componentWillMount() {
 		let { dispatch } = this.props,
-			{ classList } = document.getElementById('game-container');
+			{ classList } = document.getElementById('game-container'),
+			name;
 
 		if (classList.length) {  // todo: needs to be migrated out as non logged in users still need to see the userlist
-			let name = {
+			name = {
 				userName: classList[0].split('username-')[1]
 			}
 
 			dispatch(updateUser(name));
 			socket.emit('getUserGameSettings');
-			setTimeout(() => {
-				// probably a better way to do this but oh well
-				socket.emit('checkNewlyConnectedUserStatus');
-			}, 500);
 		}
+
+		setTimeout(() => {
+			// probably a better way to do this but oh well
+			socket.emit('checkNewlyConnectedUserStatus');
+		}, 500);
 
 		socket.on('gameSettings', (settings) => {
 			let user = this.props.userInfo;
