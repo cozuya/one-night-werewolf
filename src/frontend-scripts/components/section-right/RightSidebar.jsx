@@ -3,10 +3,13 @@
 import React from 'react';
 import Playerlist from './Playerlist.jsx';
 import Generalchat from './Generalchat.jsx';
+import $ from 'jQuery';
 
 export default class RightSidebar extends React.Component {
-	clickSettingsButton() {
-		this.props.onSettingsButtonClick('settings');
+	clickSettingsButton(e) {
+		if (!$(e.currentTarget).hasClass('disabled')) {
+			this.props.onSettingsButtonClick('settings');
+		}
 	}
 
 	render() {
@@ -16,7 +19,7 @@ export default class RightSidebar extends React.Component {
 				{(() => {
 					let userInfo = this.props.userInfo;
 
-					if (userInfo.userName && !userInfo.seatNumber) {
+					if (userInfo.userName) {
 						return (
 							<div>
 								<div>

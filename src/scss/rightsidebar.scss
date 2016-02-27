@@ -7,6 +7,11 @@
 
 		i {
 			float: right;
+			cursor: pointer;
+		}
+
+		i.disabled {
+			cursor: not-allowed;
 		}
 
 		> div {
