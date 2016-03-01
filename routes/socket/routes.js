@@ -13,7 +13,7 @@ export default () => {
 			let { passport } = socket.handshake.session;
 
 			if (passport && Object.keys(passport).length) {
-				let userIndex = _.findIndex(userList, (user, index) => {
+				let userIndex = _.findIndex(userList, (user, index) => {  // todo remove this as I don't need IE support on the server....
 						return user.userName === passport.user;
 					}),
 					game = games.find((game) => {

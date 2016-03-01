@@ -65,6 +65,8 @@ export function updateSeatedUsers(socket, data) {
 		return el.uid === data.uid;
 	});
 
+	socket.join(data.uid);
+
 	// console.log(data);
 
 	if (data.seatNumber !== null) {

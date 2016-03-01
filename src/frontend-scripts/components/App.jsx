@@ -87,15 +87,13 @@ class App extends React.Component {
 
 		if (autoPlayers.indexOf(userInfo.userName) !== -1 && !Object.keys(gameInfo).length) {
 			userInfo.seatNumber = (autoPlayers.indexOf(userInfo.userName) + 1).toString();
-			// dispatch(updateGameInfo(game));
-			// dispatch(updateMidsection('game'));
-			// dispatch(updateUser(userInfo));
+			dispatch(updateUser(userInfo));
 
 			socket.emit('updateSeatedUsers', {
 				uid: 'devgame',
 				seatNumber: userInfo.seatNumber,
 				userInfo
-			})
+			});
 		}
 	}
 
