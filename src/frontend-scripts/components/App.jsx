@@ -13,15 +13,12 @@ socket = socket();
 class App extends React.Component {
 	componentWillMount() {
 		let { dispatch } = this.props,
-			{ classList } = document.getElementById('game-container'),
-			name;
+			{ classList } = document.getElementById('game-container');
 
-		if (classList.length) {  // todo: needs to be migrated out as non logged in users still need to see the userlist
-			name = {
+		if (classList.length) {
+			dispatch(updateUser({
 				userName: classList[0].split('username-')[1]
-			}
-
-			dispatch(updateUser(name));
+			}));
 			socket.emit('getUserGameSettings');
 		}
 
@@ -66,10 +63,6 @@ class App extends React.Component {
 		socket.emit('getGameList');
 	}
 
-	// componentDidUpdate() {
-	// 	console.log(this.props.userInfo);
-	// }
-
 	handleRoute(route) {
 		let { dispatch } = this.props;
 
@@ -87,6 +80,25 @@ class App extends React.Component {
 	}
 
 	// ***** dev helpers only *****
+
+	componentDidUpdate() {
+		let autoPlayers = ['Jaina', 'Rexxar', 'Malfurian', 'Thrall', 'Valeera'],
+			{ userInfo, gameInfo, dispatch } = this.props;
+
+		if (autoPlayers.indexOf(userInfo.userName) !== -1 && !Object.keys(gameInfo).length) {
+			userInfo.seatNumber = (autoPlayers.indexOf(userInfo.userName) + 1).toString();
+			// dispatch(updateGameInfo(game));
+			// dispatch(updateMidsection('game'));
+			// dispatch(updateUser(userInfo));
+
+			socket.emit('updateSeatedUsers', {
+				uid: 'devgame',
+				seatNumber: userInfo.seatNumber,
+				userInfo
+			})
+		}
+	}
+
 	makeQuickDefault() {
 		let { dispatch, userInfo } = this.props,
 			game = {
@@ -107,7 +119,8 @@ class App extends React.Component {
 				},
 				seatedCount: 1,
 				time: ':16',
-				uid: Math.random().toString(36).substring(6)
+				// uid: Math.random().toString(36).substring(2)
+				uid: 'devgame'
 			};
 
 		userInfo.seatNumber = '0';
@@ -127,6 +140,8 @@ class App extends React.Component {
 				seatNumber,
 				userInfo
 			};
+
+			console.log('Hello World!');
 
 		userInfo.seatNumber = seatNumber;
 		dispatch(updateUser(userInfo));

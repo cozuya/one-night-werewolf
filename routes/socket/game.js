@@ -7,7 +7,7 @@ import { secureGame, getInternalPlayerInGameByUserName, devStatus } from './util
 import { combineInprogressChats } from './gamechat.js';
 import _ from 'lodash';
 
-let deleteGame = (game) => {
+export let deleteGame = (game) => {
 	games.splice(games.indexOf(game), 1);
 };
 
@@ -64,6 +64,8 @@ export function updateSeatedUsers(socket, data) {
 	let game = games.find((el) => {
 		return el.uid === data.uid;
 	});
+
+	// console.log(data);
 
 	if (data.seatNumber !== null) {
 		game.seated[`seat${data.seatNumber}`] = data.userInfo;

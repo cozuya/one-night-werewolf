@@ -56,6 +56,13 @@ export default class Table extends React.Component {
 		}
 	}
 
+	componentDidMount() {
+		if (this.props.gameInfo.tableState.cardsDealt === true) {
+			this.dealCards();
+		}
+	}
+
+
 	processNightActions(prevTableState) {
 		let { gameInfo, userInfo } = this.props,
 			tableState = gameInfo.tableState;
@@ -197,12 +204,6 @@ export default class Table extends React.Component {
 		}, 3000);
 	}
 
-	componentDidMount() {
-		if (this.props.gameInfo.tableState.cardsDealt === true) {
-			this.dealCards();
-		}
-	}
-
 	revealCard(seatNumber) { // string
 		let $cardFlipper = $(`section.table div.card${seatNumber} div.card-flipper`);
 
@@ -219,26 +220,11 @@ export default class Table extends React.Component {
 		this.props.updateSeatedUsers(null);
 	}
 
-	validateLeaveButton() {
-		let { gameInfo } = this.props,
-			isUserSeated = !!Object.keys(gameInfo.seated).find((seat) => { // todo check userinfo
-				return gameInfo.seated[seat].userName === this.props.userInfo.userName;
-			});
-
-		if (isUserSeated && this.props.gameInfo.seatedCount === 2) { // todo (far in the future): clear this when game is completed
-			return 'app-hidden';
-		} else {
-			return 'remove icon';
-		}
-	}
-
 	clickedSeat(e) {
 		let { seated } = this.props.gameInfo,
 			{ userInfo } = this.props,
 			$seat = $(e.currentTarget),
-			isUserAlreadySeated = !!Object.keys(seated).find((seat) => { // todo check userinfo
-				return seated[seat].userName === userInfo.userName;
-			});
+			isUserAlreadySeated = !!userInfo.seatNumber;
 
 		if (userInfo.userName) {
 			if ($seat.hasClass('empty') && !isUserAlreadySeated) {
@@ -388,14 +374,15 @@ export default class Table extends React.Component {
 	}
 
 	render() {
+		let { gameInfo, userInfo } = this.props;
+
 		return (
 			<section className="table">
 				<div className={this.nightBlockerStatus('top')}></div>
 				<div className={this.nightBlockerStatus('bottom')}></div>
 				<div className="tableimage"></div>
 					{_.range(0, 10).map((el) => {
-						let { gameInfo } = this.props,
-							seated = gameInfo.seated[`seat${el}`],
+						let seated = gameInfo.seated[`seat${el}`],
 							classes = () => {
 								return seated ? `seat seat${el}` : `seat seat${el} empty`;
 							},
@@ -433,7 +420,16 @@ export default class Table extends React.Component {
 
 					})}
 					{this.createCards()}
-				<i onClick={this.leaveGame.bind(this)} className={this.validateLeaveButton()}></i>
+				<i onClick={this.leaveGame.bind(this)} className={(() => {
+					if (!!userInfo.seatNumber && gameInfo.seatedCount === 7) {
+						return 'app-hidden';
+					} else {
+						return 'remove icon';
+					}
+				})()}></i>
+				<div className="table-uid">
+					Game ID: {gameInfo.uid}
+				</div>
 				<div className="ui basic small modal">
 					<i className="close icon"></i>
 					<div className="ui header">You will need to sign in or sign up for an account to play.</div>

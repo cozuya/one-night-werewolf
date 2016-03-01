@@ -12,21 +12,22 @@ export let userList = [];
 export function checkUserStatus(socket) {
 	let { user } = socket.handshake.session.passport,
 		gameUserIsIn = games.find((game) => {
-			return !!Object.keys(game.seated).find((seat) => {
+			return Object.keys(game.seated).find((seat) => {
 				return game.seated[seat].userName === user;
 			});
 		}),
 		chats, cloneGame;
 
-	if (user && gameUserIsIn) {
+	// console.log(user);
+	// console.log(gameUserIsIn);
+
+	if (user && gameUserIsIn && gameUserIsIn.inProgress) {
 		let internalPlayer = getInternalPlayerInGameByUserName(gameUserIsIn, user);
-		// todo userlist doesn't work right when you refresh while a player is seated
 		cloneGame = _.clone(gameUserIsIn);
 		cloneGame.chats = combineInprogressChats(cloneGame, user);
-		// cloneGame.tableState.playerPerceivedRole = internalPlayer.perceivedRole;  // todo: this crashes server if a user logs into a 2nd account on same computer without logging out of old
 		socket.join(gameUserIsIn.uid);
 		socket.emit('gameUpdate', secureGame(cloneGame));
-		socket.emit('updateSeatForUser', internalPlayer.seat); // todo: errors on reload some times
+		socket.emit('updateSeatForUser', internalPlayer.seat);
 	}
 
 	if (user) {
@@ -34,8 +35,6 @@ export function checkUserStatus(socket) {
 			user
 		});
 	}
-
-	console.log(userList);
 
 	io.sockets.emit('userList', userList);
 };

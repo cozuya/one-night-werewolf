@@ -3,9 +3,9 @@
 import React from 'react';
 
 export default class Playerlist extends React.Component {
-	componentDidUpdate() {
-		console.log(this.props);
-	}
+	// componentDidUpdate() {
+	// 	console.log(this.props);
+	// }
 
 	render() {
 		return (
