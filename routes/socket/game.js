@@ -72,7 +72,7 @@ export function updateSeatedUsers(socket, data) {
 	if (data.seatNumber !== null) {
 		game.seated[`seat${data.seatNumber}`] = data.userInfo;
 
-		if (game.seatedCount === devStatus.seatedCountToStartGame) {
+		if (Object.keys(game.seated).length === devStatus.seatedCountToStartGame) {
 			startGameCountdown(game);
 		} else {
 			io.sockets.in(data.uid).emit('gameUpdate', secureGame(game));
