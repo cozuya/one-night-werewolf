@@ -81,14 +81,20 @@ class App extends React.Component {
 
 	// ***** dev helpers only *****
 
-	componentDidUpdate() {
+	componentDidUpdate(prevProps) {
 		let autoPlayers = ['Jaina', 'Rexxar', 'Malfurian', 'Thrall', 'Valeera'],
-			{ userInfo, gameInfo, dispatch } = this.props;
+			{ userInfo, gameInfo, dispatch } = this.props,
+			prevSeatedNames = [];
 
-		if (autoPlayers.indexOf(userInfo.userName) !== -1 && !Object.keys(gameInfo).length) {
+			if (Object.keys(prevProps).length && prevProps.gameInfo && prevProps.gameInfo.seated) {
+				prevSeatedNames = Object.keys(prevProps.gameInfo.seated).map((seatName) => {
+					return prevProps.gameInfo.seated[seatName].userName;
+				});
+			}
+
+		if (!prevSeatedNames.indexOf(userInfo.userName) !== -1 && autoPlayers.indexOf(userInfo.userName) !== -1 && !Object.keys(gameInfo).length) {
 			userInfo.seatNumber = (autoPlayers.indexOf(userInfo.userName) + 1).toString();
 			dispatch(updateUser(userInfo));
-
 			socket.emit('updateSeatedUsers', {
 				uid: 'devgame',
 				seatNumber: userInfo.seatNumber,
@@ -115,7 +121,6 @@ class App extends React.Component {
 				tableState: {
 					cardsDealt: false
 				},
-				seatedCount: 1,
 				time: ':16',
 				// uid: Math.random().toString(36).substring(2)
 				uid: 'devgame'
@@ -138,8 +143,6 @@ class App extends React.Component {
 				seatNumber,
 				userInfo
 			};
-
-			console.log('Hello World!');
 
 		userInfo.seatNumber = seatNumber;
 		dispatch(updateUser(userInfo));

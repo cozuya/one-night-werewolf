@@ -9,12 +9,32 @@ import _ from 'lodash';
 
 export default () => {
 	io.on('connection', (socket) => {
-		socket.on('disconnect', () => {
+		socket.on('getGameInfo', (uid) => {
+			sendGameInfo(socket, uid);
+		}).on('createGame', (game) => {
+			createGame(socket, game);
+		}).on('getGameList', () => {
+			sendGameList(socket);			
+		}).on('updateSeatedUsers', (data) => {
+			updateSeatedUsers(socket, data);
+		}).on('checkNewlyConnectedUserStatus', () => {
+			checkUserStatus(socket);
+		}).on('updateGameSettings', (data) => {
+			handleUpdatedGameSettings(socket, data);
+		}).on('getUserGameSettings', () => {
+			sendUserGameSettings(socket);			
+		}).on('newGameChat', (chat, uid) => {
+			addNewGameChat(chat, uid);
+		}).on('userNightActionEvent', (data) => {
+			updateUserNightActionEvent(socket, data);
+		}).on('updateSelectedForElimination', (data) => {
+			updateSelectedElimination(data);
+		}).on('disconnect', () => {
 			let { passport } = socket.handshake.session;
 
 			if (passport && Object.keys(passport).length) {
-				let userIndex = _.findIndex(userList, (user, index) => {  // todo remove this as I don't need IE support on the server....
-						return user.userName === passport.user;
+				let userIndex = userList.findIndex((user) => {
+						return user.user === passport.user;
 					}),
 					game = games.find((game) => {
 						return Object.keys(game.seated).find((seatName) => {
@@ -35,7 +55,6 @@ export default () => {
 							deleteGame(game);
 						} else {
 							delete game.seated[userSeatName];
-							game.seatedCount--;
 							io.sockets.in(game.uid).emit('gameUpdate', game);
 						}
 					}
@@ -45,26 +64,6 @@ export default () => {
 
 				io.sockets.emit('userList', userList);
 			}
-		}).on('getGameInfo', (uid) => {
-			sendGameInfo(socket, uid);
-		}).on('createGame', (game) => {
-			createGame(socket, game);
-		}).on('getGameList', () => {
-			sendGameList(socket);			
-		}).on('updateSeatedUsers', (data) => {
-			updateSeatedUsers(socket, data);
-		}).on('checkNewlyConnectedUserStatus', () => {
-			checkUserStatus(socket);
-		}).on('updateGameSettings', (data) => {
-			handleUpdatedGameSettings(socket, data);
-		}).on('getUserGameSettings', () => {
-			sendUserGameSettings(socket);			
-		}).on('newGameChat', (chat, uid) => {
-			addNewGameChat(chat, uid);
-		}).on('userNightActionEvent', (data) => {
-			updateUserNightActionEvent(socket, data);
-		}).on('updateSelectedForElimination', (data) => {
-			updateSelectedElimination(data);
 		});
 	});
-}
+};

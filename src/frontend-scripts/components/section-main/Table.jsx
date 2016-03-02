@@ -25,7 +25,7 @@ export default class Table extends React.Component {
 			{ tableState } = gameInfo,
 			prevTableState = prevProps.gameInfo.tableState;
 
-			console.log(tableState);
+			// console.log(gameInfo);
 
 		if (tableState.cardsDealt === 'in progress') {
 			this.dealCards();
@@ -421,7 +421,7 @@ export default class Table extends React.Component {
 					})}
 					{this.createCards()}
 				<i onClick={this.leaveGame.bind(this)} className={(() => {
-					if (!!userInfo.seatNumber && gameInfo.seatedCount === 7) {
+					if (!!userInfo.seatNumber && Object.keys(gameInfo.seated).length === 7) {
 						return 'app-hidden';
 					} else {
 						return 'remove icon';

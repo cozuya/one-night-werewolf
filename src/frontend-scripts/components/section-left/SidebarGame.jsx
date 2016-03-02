@@ -13,6 +13,7 @@ export default class SidebarGame extends React.Component {
 	}
 
 	render() {
+		console.log(this.props);
 		let setClass = (role) => {
 			return roleMap[role].team;
 		},
@@ -23,9 +24,7 @@ export default class SidebarGame extends React.Component {
 				);
 			});
 		},
-		game = this.props.game;
-
-		// todo front end only gamelength countdown?
+		{ game } = this.props;
 
 		return (
 			<div className={game.inProgress ? "ui vertical segment inprogress" : "ui vertical segment"} key={this.props.key} data-uid={game.uid} onClick={this.routeToGame}>

@@ -20,7 +20,7 @@ export function sendGameList() {
 			time: game.time,
 			name: game.name,
 			roles: game.roles,
-			seatedCount: game.seatedCount,
+			seatedCount: Object.keys(game.seated).length,
 			inProgress: game.inProgress,
 			uid: game.uid
 		};
@@ -71,7 +71,6 @@ export function updateSeatedUsers(socket, data) {
 
 	if (data.seatNumber !== null) {
 		game.seated[`seat${data.seatNumber}`] = data.userInfo;
-		game.seatedCount++;
 
 		if (game.seatedCount === devStatus.seatedCountToStartGame) {
 			startGameCountdown(game);
@@ -82,7 +81,6 @@ export function updateSeatedUsers(socket, data) {
 		for (let key in game.seated) {
 			if (game.seated[key].userName === socket.handshake.session.passport.user) {
 				delete game.seated[key];
-				game.seatedCount--;
 			}
 		}
 
