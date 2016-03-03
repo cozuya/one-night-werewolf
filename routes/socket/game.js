@@ -66,7 +66,7 @@ export function updateSeatedUsers(socket, data) {
 	});
 
 	socket.join(data.uid);
-
+	// console.log(game);
 	// console.log(data);
 
 	if (data.seatNumber !== null) {

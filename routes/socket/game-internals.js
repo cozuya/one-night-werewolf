@@ -410,6 +410,7 @@ let dayPhase = () => {
 	})(),
 	countDown = setInterval(() => {
 		if (seconds === 0) {
+			game.status = 'The game ends.';
 			clearInterval(countDown);
 			eliminationPhase();
 		} else {
@@ -427,8 +428,6 @@ let dayPhase = () => {
 							seat: player.seat,
 							timestamp: new Date()
 						});
-
-						// todo unseated game chat
 					});
 					game.tableState.isVotable = {
 						enabled: true,
@@ -496,9 +495,11 @@ let endGame = () => {
 		modeMap = {},
 		maxCount = 1,
 		eliminatedPlayersIndex = [],
-		{ seatedPlayers } = game.internals;
+		{ seatedPlayers } = game.internals,
+		werewolfEliminated = false,
+		tannerEliminations = [];
 
-	playersSelectedForElimination.forEach((el, i) => {
+	playersSelectedForElimination.forEach((el) => {
 		if (!modeMap[el]) {
 			modeMap[el] = 1;
 		} else {
@@ -515,64 +516,67 @@ let endGame = () => {
 	});
 
 	seatedPlayers.forEach((player, index) => {
-		if (player.trueRole === 'hunter' && eliminatedPlayersIndex.indexOf(index) !== -1) {
+		if (player.trueRole === 'hunter' && eliminatedPlayersIndex.indexOf(index) !== -1 && eliminatedPlayersIndex.length !== 7) {
 			eliminatedPlayersIndex.push(game.tableState.eliminations[index]);
 		}
 	});
 
 	game.tableState.eliminations.forEach((elimination) => {
-		elimination.transparent = eliminatedPlayersIndex.indexOf(elimination.seatNumber) === -1 ? true : false;
+		let transparent = false;
+
+		if (eliminatedPlayersIndex.length === 7 || eliminatedPlayersIndex.indexOf(elimination.seatNumber) === -1) {
+			transparent = true;
+		}
+
+		elimination.transparent = transparent;
 	});
 
 	sendInprogressChats(game);
 
-	if (eliminatedPlayersIndex.length === 7) {
-		// todo make every player lose
-	} else {
-		let werewolfEliminated = false,
-			tannerEliminations = [];
+	eliminatedPlayersIndex.forEach((eliminatedPlayer) => {
+		if (seatedPlayers[eliminatedPlayer].trueRole === 'werewolf' || seatedPlayers[eliminatedPlayer].trueRole === 'minion' && game.internals.soloMinion) {
+			werewolfEliminated = true;
+		}
 
-		// crashes game for dev with less than 7 players (dev)
+		if (seatedPlayers[eliminatedPlayer].trueRole === 'tanner') {
+			tannerEliminations.push(eliminatedPlayer);
+		}
+	});
 
-		console.log(eliminatedPlayersIndex);
+	seatedPlayers.forEach((player, index) => {
 
-		eliminatedPlayersIndex.forEach((eliminatedPlayer) => {
-			if (seatedPlayers[eliminatedPlayer].trueRole === 'werewolf' || seatedPlayers[eliminatedPlayer].trueRole === 'minion' && game.internals.soloMinion) {
-				werewolfEliminated = true;
-			}
+		// todo this doesn't quite match the rules re: tanner
 
-			if (seatedPlayers[eliminatedPlayer].trueRole === 'tanner') {
-				tannerEliminations.push(eliminatedPlayer);
-			}
-		});
+		if (!werewolfEliminated && (player.trueRole === 'werewolf' || player.trueRole === 'minion') || 
+			
+			tannerEliminations.indexOf(index) !== -1 || 
+			
+			(werewolfEliminated && (player.trueRole !== 'werewolf' && player.trueRole !== 'minion' && player.trueRole !== 'tanner')) || 
+			
+			((player.trueRole !== 'werewolf' && player.trueRole !== 'minion' && player.trueRole !== 'tanner') && !eliminatedPlayersIndex.length) || 
+			
+			(eliminatedPlayersIndex.length === 7 && (player.trueRole !== 'minion' && player.trueRole !== 'werewolf' && player.trueRole !== 'tanner'))) {
+			player.wonGame = true;
+		}
+	});
 
-		seatedPlayers.forEach((player, index) => {
+	if (eliminatedPlayersIndex.length !== 7) {
+		setTimeout(() => {
+			let cardRoles = [];
 
-			// todo this doesn't quite match the rules re: tanner
+			eliminatedPlayersIndex.forEach((index) => {
+				cardRoles[index] = seatedPlayers[index].trueRole;
+			});
 
-			// crashes game for dev with less than 7 players (dev)
+			game.tableState.cardRoles = cardRoles;
 
-			if (!werewolfEliminated && (player.trueRole === 'werewolf' || player.trueRole === 'minion') || tannerEliminations.indexOf(index) !== -1 || (werewolfEliminated && (player.trueRole !== 'werewolf' && player.trueRole !== 'minion' && player.trueRole !== 'tanner')) || ((player.trueRole !== 'werewolf' && player.trueRole !== 'minion' && player.trueRole !== 'tanner') && !eliminatedPlayersIndex.length)) {
-				player.wonGame = true;
-			}
-		});
+			seatedPlayers.map((player) => {
+				return player.trueRole;
+			});
+
+			sendInprogressChats(game);
+		}, devStatus.revealLosersPause);
 	}
-
-	setTimeout(() => {
-		let cardRoles = [];
-
-		eliminatedPlayersIndex.forEach((index) => {
-			cardRoles[index] = seatedPlayers[index].trueRole;
-		});
-
-		game.tableState.cardRoles = cardRoles;
-
-		seatedPlayers.map((player) => {
-			return player.trueRole;
-		});
-
-		sendInprogressChats(game);
-	}, devStatus.revealLosersPause);
 
 	setTimeout(() => {
 		let winningPlayers = seatedPlayers.filter((player) => {
