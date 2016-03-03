@@ -13,7 +13,6 @@ export default class SidebarGame extends React.Component {
 	}
 
 	render() {
-		console.log(this.props);
 		let setClass = (role) => {
 			return roleMap[role].team;
 		},

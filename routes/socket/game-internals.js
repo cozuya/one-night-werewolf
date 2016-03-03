@@ -1,5 +1,7 @@
 'use strict';
 
+import mongoose from 'mongoose';
+import Game from '../../models/game';
 import { games } from './game.js';
 import { secureGame, devStatus } from './util.js';
 import { sendInprogressChats } from './gamechat.js';
@@ -587,7 +589,18 @@ let endGame = () => {
 			}),
 			winningPlayersList = winningPlayers.map((player) => {
 				return player.userName.toUpperCase();
-			}).join(' ');
+			}).join(' '),
+			saveGame = new Game({
+				uid: game.uid,
+				time: game.time,
+				date: new Date(),
+				roles: game.roles,
+				winningPlayers: winningPlayers.map((player) => {
+					return player.userName;
+				}),
+				losingPlayers: ['todo'],
+				kobk: game.kobk
+			});
 
 		game.chats.push({
 			gameChat: true,
@@ -602,5 +615,8 @@ let endGame = () => {
 		game.tableState.winningPlayersIndex = winningPlayersIndex;
 
 		sendInprogressChats(game);
+
+		saveGame.save();
+
 	}, devStatus.revealAllCardsPause);
 }

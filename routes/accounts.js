@@ -35,8 +35,7 @@ export default () => {
 	});
 
 	app.post('/account/signup', (req, res) => {
-		let username = req.body.username,
-			password = req.body.password;
+		let { username, password } = req.body;
 
 		if (!/^[a-z0-9]+$/i.test(username)) {
 			res.status(401).json({message: 'Sorry, your username can only be alphanumeric.'});

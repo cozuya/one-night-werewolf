@@ -62,7 +62,6 @@ export default class Table extends React.Component {
 		}
 	}
 
-
 	processNightActions(prevTableState) {
 		let { gameInfo, userInfo } = this.props,
 			tableState = gameInfo.tableState;
