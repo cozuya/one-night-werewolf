@@ -2,10 +2,12 @@
 
 import mongoose from 'mongoose';
 import Game from '../../models/game';
+import Account from '../../models/account';
 import { games } from './game.js';
 import { secureGame, devStatus } from './util.js';
 import { sendInprogressChats } from './gamechat.js';
 import { updatedTrueRoles } from './game-nightactions.js';
+import { userList } from './account.js';
 import _ from 'lodash';
 
 let game;
@@ -25,27 +27,6 @@ export function startGame(currentGame) {
 					allWerewolvesNotInCenter = true;
 				}
 
-				// if (player.userName === 'jin') {
-				// 	player.trueRole = 'seer';
-				// 	player.perceivedRole = 'seer';
-				// 	player.nightAction = {};
-				// 	player.seat = 0;
-				// }
-
-				// if (player.userName === 'paul') {
-				// 	player.trueRole = 'werewolf';
-				// 	player.perceivedRole = 'werewolf';
-				// 	player.nightAction = {};
-				// 	player.seat = 1;
-				// }
-
-				// if (player.userName === 'heihachi') {
-				// 	player.trueRole = 'troublemaker';
-				// 	player.perceivedRole = 'troublemaker';
-				// 	player.nightAction = {};
-				// 	player.seat = 2;
-				// }
-
 				player.trueRole = role;
 				player.perceivedRole = role;
 				player.nightAction = {};
@@ -54,7 +35,6 @@ export function startGame(currentGame) {
 			});
 
 			game.internals.centerRoles = [..._roles];
-			// game.internals.centerRoles = ['werewolf', 'robber', 'troublemaker', 'robber', 'troublemaker', 'insomniac', 'robber', 'troublemaker'];
 		};
 
 	Object.keys(game.seated).map((seat, i) => {
@@ -549,6 +529,8 @@ let endGame = () => {
 
 		// todo this doesn't quite match the rules re: tanner
 
+		// todo village team should not win if they vote in a circle when there's a WW seated
+
 		if (!werewolfEliminated && (player.trueRole === 'werewolf' || player.trueRole === 'minion') || 
 			
 			tannerEliminations.indexOf(index) !== -1 || 
@@ -584,8 +566,14 @@ let endGame = () => {
 		let winningPlayers = seatedPlayers.filter((player) => {
 				return player.wonGame;
 			}),
+			losingPlayers = seatedPlayers.filter((player) => {
+				return !player.wonGame;
+			}),
 			winningPlayersIndex = winningPlayers.map((player) => {
 				return player.seat;
+			}),
+			winningPlayerNames = winningPlayers.map((player) => {
+				return player.userName;
 			}),
 			winningPlayersList = winningPlayers.map((player) => {
 				return player.userName.toUpperCase();
@@ -596,9 +584,17 @@ let endGame = () => {
 				date: new Date(),
 				roles: game.roles,
 				winningPlayers: winningPlayers.map((player) => {
-					return player.userName;
+					return {
+						userName: player.userName,
+						role: player.trueRole
+					};
 				}),
-				losingPlayers: ['todo'],
+				losingPlayers: losingPlayers.map((player) => {
+					return {
+						userName: player.userName,
+						role: player.trueRole
+					};
+				}),
 				kobk: game.kobk
 			});
 
@@ -608,15 +604,47 @@ let endGame = () => {
 			timestamp: new Date()
 		});
 
+		saveGame.chats = game.chats.filter((chat) => {
+			return !chat.gameChat;
+		});
+
 		game.tableState.cardRoles = seatedPlayers.map((player) => {
 			return player.trueRole;
 		});
 
 		game.tableState.winningPlayersIndex = winningPlayersIndex;
-
 		sendInprogressChats(game);
-
 		saveGame.save();
+
+		Account.find({username: {$in: seatedPlayers.map((player) => {
+			return player.userName;
+		})}}, (err, results) => {
+			results.forEach((player) => {
+				let winner = false;
+
+				if (winningPlayerNames.indexOf(player.username) !== -1) {
+					player.wins++;
+					winner = true;
+				} else {
+					player.losses++;
+				}
+
+				player.games.push(game.uid);
+				player.save(() => {
+					let userEntry = userList.find((user) => {
+						return user.userName === player.username;
+					});
+
+					if (winner) {
+						userEntry.wins++;
+					} else {
+						userEntry.losses++;
+					}
+
+					io.sockets.emit('userList', userList);
+				});
+			});
+		});
 
 	}, devStatus.revealAllCardsPause);
 }

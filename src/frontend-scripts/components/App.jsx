@@ -30,8 +30,7 @@ class App extends React.Component {
 		socket.on('gameSettings', (settings) => {
 			let user = this.props.userInfo;
 
-			// todo: this needs to also update the gameInfo object on the front and possibly back end.
-			user.gameSettings = settings.gameSettings;
+			user.gameSettings = settings;
 			dispatch(updateUser(user));
 		});
 
@@ -72,7 +71,7 @@ class App extends React.Component {
 	handleCreateGameSubmit(game) {
 		let { dispatch, userInfo } = this.props;
 
-		userInfo.seatNumber = '0'; // todo: remove this when a player leaves a game they're seated at
+		userInfo.seatNumber = '0'; // todo: remove this when a player leaves a game they're seated at  - not sure if this todo is still valid
 		dispatch(updateGameInfo(game));
 		dispatch(updateMidsection('game'));
 		dispatch(updateUser(userInfo));
@@ -109,7 +108,8 @@ class App extends React.Component {
 				inProgress: false,
 				kobk: true,
 				name: 'New Game',
-				roles: ['werewolf', 'werewolf', 'seer', 'robber', 'troublemaker', 'insomniac', 'hunter', 'villager', 'villager', 'villager'],
+				roles: ['werewolf', 'werewolf', 'villager', 'villager', 'villager', 'villager', 'villager', 'villager', 'villager', 'villager'],
+				// roles: ['werewolf', 'werewolf', 'seer', 'robber', 'troublemaker', 'insomniac', 'hunter', 'villager', 'villager', 'villager'],
 				// roles: ['werewolf', 'werewolf', 'robber', 'troublemaker', 'mason', 'minion', 'troublemaker', 'mason', 'robber', 'troublemaker'],
 				seated: {
 					seat0: {
@@ -121,7 +121,7 @@ class App extends React.Component {
 				tableState: {
 					cardsDealt: false
 				},
-				time: ':16',
+				time: ':03',
 				// uid: Math.random().toString(36).substring(2)
 				uid: 'devgame'
 			};

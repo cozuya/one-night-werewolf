@@ -3,9 +3,9 @@
 import React from 'react';
 
 export default class Playerlist extends React.Component {
-	// componentDidUpdate() {
-	// 	console.log(this.props);
-	// }
+	componentWillUpdate (nextProps) {
+		// todo sort list here?
+	}
 
 	render() {
 		return (
@@ -13,9 +13,11 @@ export default class Playerlist extends React.Component {
 				<h3 className="ui header">Logged in players:</h3>
 				<div className="ui divider"></div>
 				{this.props.userList.map((user, i) => {
+					let percent = ((user.wins / (user.wins + user.losses)) * 100).toFixed(0);
+
 					return (
 						<div className="" key={i}>
-							{user.user}
+							{user.userName} (<span className="userlist-stats">{user.wins}</span> / <span className="userlist-stats">{user.losses}</span>) <span className="userlist-stats"> {isNaN(percent) ? '-' : percent}%</span>
 						</div>
 					);
 				})}

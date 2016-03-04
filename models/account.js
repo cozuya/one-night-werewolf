@@ -10,7 +10,15 @@ let Schema = mongoose.Schema,
 			required: true,
 			unique: true
 		},
-		password: String
+		password: String,
+		gameSettings: {
+			disablePopups: Boolean,
+			enableTimestamps: Boolean
+		},
+		games: Array,
+		wins: Number,
+		losses: Number,
+		created: Date
 	});
 
 Account.plugin(passportLocalMongoose);

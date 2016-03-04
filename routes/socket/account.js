@@ -1,7 +1,7 @@
 'use strict';
 
 import mongoose from 'mongoose';
-import GameSettings from '../../models/gamesettings';
+import Account from '../../models/account';
 import { games } from './game.js';
 import { secureGame, getInternalPlayerInGameByUserName } from './util.js';
 import { combineInprogressChats } from './gamechat.js';
@@ -29,23 +29,20 @@ export function checkUserStatus(socket) {
 		socket.emit('gameUpdate', secureGame(cloneGame));
 		socket.emit('updateSeatForUser', internalPlayer.seat);
 	}
-
-	if (user) {
-		userList.unshift({
-			user
-		});
-	}
-
-	io.sockets.emit('userList', userList);
 };
 
 export function handleUpdatedGameSettings(socket, data) {
-	GameSettings.findOne(socket.handshake.session.passport.user, (err, settings) => {
-		for (let setting in data) {
-			settings.gameSettings[setting] = data[setting];
+	Account.findOne({username: socket.handshake.session.passport.user}, (err, account) => {
+		if (err) {
+			console.log(err);
 		}
-		settings.save();
-		socket.emit('gameSettings', settings);
+
+		for (let setting in data) {
+			account.gameSettings[setting] = data[setting];
+		}
+
+		account.save();
+		socket.emit('gameSettings', account.gameSettings);
 	});
 };
 
@@ -58,11 +55,17 @@ export function sendUserGameSettings(socket) {
 		console.log('sendUserGameSettings errored out');
 	}
 
-	GameSettings.findOne({username}, (err, settings) => {
+	Account.findOne({username}, (err, account) => {
 		if (err) {
 			console.log(err);
 		}
 
-		socket.emit('gameSettings', settings);
+		socket.emit('gameSettings', account.gameSettings);
+		userList.unshift({
+			userName: username,
+			wins: account.wins,
+			losses: account.losses
+		});
+		io.sockets.emit('userList', userList);
 	});
 };
