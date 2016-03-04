@@ -69,12 +69,16 @@ export function updateSeatedUsers(socket, data) {
 	// console.log(game);
 
 	if (data.seatNumber !== null) {
-		game.seated[`seat${data.seatNumber}`] = data.userInfo;
+		try {
+			game.seated[`seat${data.seatNumber}`] = data.userInfo;
 
-		if (Object.keys(game.seated).length === devStatus.seatedCountToStartGame) {
-			startGameCountdown(game);
-		} else {
-			io.sockets.in(data.uid).emit('gameUpdate', secureGame(game));
+			if (Object.keys(game.seated).length === devStatus.seatedCountToStartGame) {
+				startGameCountdown(game);
+			} else {
+				io.sockets.in(data.uid).emit('gameUpdate', secureGame(game));
+			}
+		} catch (e) {
+			console.log('updateSeatedUsers blew up as usual');
 		}
 	} else {
 		for (let key in game.seated) {

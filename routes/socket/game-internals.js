@@ -529,15 +529,13 @@ let endGame = () => {
 
 		// todo this doesn't quite match the rules re: tanner
 
-		// todo village team should not win if they vote in a circle when there's a WW seated
-
 		if (!werewolfEliminated && (player.trueRole === 'werewolf' || player.trueRole === 'minion') || 
 			
 			tannerEliminations.indexOf(index) !== -1 || 
 			
 			(werewolfEliminated && (player.trueRole !== 'werewolf' && player.trueRole !== 'minion' && player.trueRole !== 'tanner')) || 
 			
-			((player.trueRole !== 'werewolf' && player.trueRole !== 'minion' && player.trueRole !== 'tanner') && !eliminatedPlayersIndex.length) || 
+			((player.trueRole === 'werewolf' || player.trueRole === 'minion') && eliminatedPlayersIndex.length === 7) || 
 			
 			(eliminatedPlayersIndex.length === 7 && (player.trueRole !== 'minion' && player.trueRole !== 'werewolf' && player.trueRole !== 'tanner'))) {
 			player.wonGame = true;

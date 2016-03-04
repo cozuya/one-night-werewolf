@@ -35,6 +35,12 @@
 		max-height: 250px;
 		overflow-y: scroll;
 		background: #FFFCF9;
+		padding: 10px;
+
+		.userlist-stats-container {
+			float: right;
+			color: #bdbdbd;
+		}
 
 		.divider {
 			margin-bottom: 0;
