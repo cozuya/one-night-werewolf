@@ -9,27 +9,6 @@ export default class LeftSidebar extends React.Component {
 		this.props.onCreateGameButtonClick('createGame');
 	}
 
-	createButton() {
-		let userName = this.props.userInfo.userName,
-			gameBeingCreated = this.props.midsection === 'createGame',
-			disabledText;
-
-		if (userName && !gameBeingCreated) {
-			return (
-				<button className="ui button primary" onClick={this.createGameClick.bind(this)}>Create a new game</button>
-			)
-		} else {
-			if (gameBeingCreated) {
-				disabledText = 'Creating a new game..';
-			} else {
-				disabledText = 'Sign in to make games';
-			}
-			return (
-				<button className="ui button disabled">{disabledText}</button>
-			)
-		}
-	};
-
 	render() {
 		return (
 			<section className={(() => {
@@ -41,10 +20,26 @@ export default class LeftSidebar extends React.Component {
 
 				return classes;
 			})()}>
-				{this.createButton()}
-				{this.props.gameList.map((game, i) => {
-					return <SidebarGame key={i} game={game} />
-				})}
+				{(() => {
+					let { userName } = this.props.userInfo,
+						gameBeingCreated = this.props.midsection === 'createGame',
+						disabledText;
+
+					if (userName && !gameBeingCreated) {
+						return (
+							<button className="ui button primary" onClick={this.createGameClick.bind(this)}>Create a new game</button>
+						)
+					} else {
+						return (
+							<button className="ui button disabled">{gameBeingCreated ? 'Creating a new game..' : 'Sign in to make games'}</button>
+						)
+					}
+				})()}
+				<div className="leftsidebar-gamescontainer">
+					{this.props.gameList.map((game, i) => {
+						return <SidebarGame key={i} game={game} />
+					})}
+				</div>
 			</section>
 		);
 	}
