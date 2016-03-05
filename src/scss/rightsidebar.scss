@@ -37,13 +37,36 @@
 		background: #FFFCF9;
 		padding: 10px;
 
+		> div {
+			&:after {
+				content: '';
+				display: table;
+				clear: both;
+			}
+		}
+
 		.userlist-stats-container {
 			float: right;
 			color: #bdbdbd;
 		}
 
 		.divider {
+			margin-top: 3px;
 			margin-bottom: 0;
+		}
+
+		i {
+			margin-top: -5px;
+		}
+
+
+		.ui.header {
+			float: left;
+			margin-bottom: 0;
+
+			~ div {
+				float: right;
+			}
 		}
 	}
 }

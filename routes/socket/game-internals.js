@@ -1,4 +1,4 @@
-'use strict';
+            'use strict';
 
 import mongoose from 'mongoose';
 import Game from '../../models/game';
@@ -478,6 +478,7 @@ let endGame = () => {
 		maxCount = 1,
 		eliminatedPlayersIndex = [],
 		{ seatedPlayers } = game.internals,
+		werewolfTeamInGame = false,
 		werewolfEliminated = false,
 		tannerEliminations = [];
 
@@ -500,6 +501,10 @@ let endGame = () => {
 	seatedPlayers.forEach((player, index) => {
 		if (player.trueRole === 'hunter' && eliminatedPlayersIndex.indexOf(index) !== -1 && eliminatedPlayersIndex.length !== 7) {
 			eliminatedPlayersIndex.push(game.tableState.eliminations[index]);
+		}
+
+		if (player.trueRole === 'werewolf' || player.trueRole === 'minion') {
+			werewolfTeamInGame = true;
 		}
 	});
 
@@ -533,14 +538,15 @@ let endGame = () => {
 			
 			tannerEliminations.indexOf(index) !== -1 || 
 			
-			(werewolfEliminated && (player.trueRole !== 'werewolf' && player.trueRole !== 'minion' && player.trueRole !== 'tanner')) || 
+			(werewolfEliminated && (player.trueRole !== 'werewolf' && player.trueRole !== 'minion' && player.trueRole !== 'tanner') && eliminatedPlayersIndex.length !== 7) || 
 			
 			((player.trueRole === 'werewolf' || player.trueRole === 'minion') && eliminatedPlayersIndex.length === 7) || 
 			
-			(eliminatedPlayersIndex.length === 7 && (player.trueRole !== 'minion' && player.trueRole !== 'werewolf' && player.trueRole !== 'tanner'))) {
+			(eliminatedPlayersIndex.length === 7 && !werewolfTeamInGame)) {
 			player.wonGame = true;
 		}
 	});
+
 
 	if (eliminatedPlayersIndex.length !== 7) {
 		setTimeout(() => {
@@ -639,7 +645,7 @@ let endGame = () => {
 						userEntry.losses++;
 					}
 
-					io.sockets.emit('userList', userList);
+					io.sockets.emit('userList', {list: userList, totalSockets: Object.keys(io.sockets.sockets).length});
 				});
 			});
 		});

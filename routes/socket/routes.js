@@ -1,6 +1,6 @@
 'use strict';
 
-import { deleteGame, updateGameChat, sendGameList, createGame, sendGameInfo, updateSeatedUsers, games } from './game.js';
+import { deleteGame, updateGameChat, sendGameList, sendUserList, createGame, sendGameInfo, updateSeatedUsers, games } from './game.js';
 import { checkUserStatus, handleUpdatedGameSettings, sendUserGameSettings, userList } from './account.js';
 import { addNewGameChat } from './gamechat.js';
 import { updateUserNightActionEvent } from './game-nightactions.js';
@@ -27,6 +27,8 @@ export default () => {
 			addNewGameChat(chat, uid);
 		}).on('userNightActionEvent', (data) => {
 			updateUserNightActionEvent(socket, data);
+		}).on('getUserList', () => {
+			sendUserList(socket);
 		}).on('updateSelectedForElimination', (data) => {
 			updateSelectedElimination(data);
 		}).on('disconnect', () => {
@@ -62,7 +64,7 @@ export default () => {
 					io.sockets.emit('gameList', games);					
 				}
 
-				io.sockets.emit('userList', userList);
+				io.sockets.emit('userList', {list: userList, totalSockets: Object.keys(io.sockets.sockets).length});
 			}
 		});
 	});

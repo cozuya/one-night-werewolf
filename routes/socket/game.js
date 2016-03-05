@@ -5,6 +5,7 @@
 import { startGame } from './game-internals.js';
 import { secureGame, getInternalPlayerInGameByUserName, devStatus } from './util.js';
 import { combineInprogressChats } from './gamechat.js';
+import { userList } from './account.js';
 import _ from 'lodash';
 
 export let deleteGame = (game) => {
@@ -58,17 +59,26 @@ export function sendGameInfo(socket, uid) {
 	}
 
 	socket.emit('gameUpdate', secureGame(cloneGame));
-}
+};
+
+export function sendUserList(socket) {
+	socket.emit('userList', {list: userList, totalSockets: Object.keys(io.sockets.sockets).length});
+};
 
 export function updateSeatedUsers(socket, data) {
 	let game = games.find((el) => {
 		return el.uid === data.uid;
 	});
 
-	socket.join(data.uid);
+	// console.log(data);
 	// console.log(game);
+	// console.log(socket.handshake.session.passport);
+	// console.log(socket.handshake.session);
+	if (game) {
+		socket.join(data.uid);
+	}
 
-	if (data.seatNumber !== null) {
+	if (socket.handshake.session.passport && data.seatNumber && socket.handshake.session.passport.user === data.userInfo.userName) {
 		try {
 			game.seated[`seat${data.seatNumber}`] = data.userInfo;
 
@@ -80,7 +90,7 @@ export function updateSeatedUsers(socket, data) {
 		} catch (e) {
 			console.log('updateSeatedUsers blew up as usual');
 		}
-	} else {
+	} else if (game) {
 		for (let key in game.seated) {
 			if (game.seated[key].userName === socket.handshake.session.passport.user) {
 				delete game.seated[key];

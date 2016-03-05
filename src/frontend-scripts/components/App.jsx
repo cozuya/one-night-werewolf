@@ -60,6 +60,7 @@ class App extends React.Component {
 		})
 
 		socket.emit('getGameList');
+		socket.emit('getUserList');
 	}
 
 	handleRoute(route) {
@@ -81,25 +82,25 @@ class App extends React.Component {
 	// ***** dev helpers only *****
 
 	componentDidUpdate(prevProps) {
-		let autoPlayers = ['Jaina', 'Rexxar', 'Malfurian', 'Thrall', 'Valeera'],
-			{ userInfo, gameInfo, dispatch } = this.props,
-			prevSeatedNames = [];
+		// let autoPlayers = ['Jaina', 'Rexxar', 'Malfurian', 'Thrall', 'Valeera'],
+		// 	{ userInfo, gameInfo, dispatch } = this.props,
+		// 	prevSeatedNames = [];
 
-			if (Object.keys(prevProps).length && prevProps.gameInfo && prevProps.gameInfo.seated) {
-				prevSeatedNames = Object.keys(prevProps.gameInfo.seated).map((seatName) => {
-					return prevProps.gameInfo.seated[seatName].userName;
-				});
-			}
+		// 	if (Object.keys(prevProps).length && prevProps.gameInfo && prevProps.gameInfo.seated) {
+		// 		prevSeatedNames = Object.keys(prevProps.gameInfo.seated).map((seatName) => {
+		// 			return prevProps.gameInfo.seated[seatName].userName;
+		// 		});
+		// 	}
 
-		if (!prevSeatedNames.indexOf(userInfo.userName) !== -1 && autoPlayers.indexOf(userInfo.userName) !== -1 && !Object.keys(gameInfo).length) {
-			userInfo.seatNumber = (autoPlayers.indexOf(userInfo.userName) + 1).toString();
-			dispatch(updateUser(userInfo));
-			socket.emit('updateSeatedUsers', {
-				uid: 'devgame',
-				seatNumber: userInfo.seatNumber,
-				userInfo
-			});
-		}
+		// if (!prevSeatedNames.indexOf(userInfo.userName) !== -1 && autoPlayers.indexOf(userInfo.userName) !== -1 && !Object.keys(gameInfo).length) {
+		// 	userInfo.seatNumber = (autoPlayers.indexOf(userInfo.userName) + 1).toString();
+		// 	dispatch(updateUser(userInfo));
+		// 	socket.emit('updateSeatedUsers', {
+		// 		uid: 'devgame',
+		// 		seatNumber: userInfo.seatNumber,
+		// 		userInfo
+		// 	});
+		// }
 	}
 
 	makeQuickDefault() {

@@ -25,8 +25,6 @@ export default class Table extends React.Component {
 			{ tableState } = gameInfo,
 			prevTableState = prevProps.gameInfo.tableState;
 
-			// console.log(gameInfo);
-
 		if (tableState.cardsDealt === 'in progress') {
 			this.dealCards();
 
@@ -57,6 +55,7 @@ export default class Table extends React.Component {
 	}
 
 	componentDidMount() {
+		console.log(this.props.gameInfo);
 		if (this.props.gameInfo.tableState.cardsDealt === true) {
 			this.dealCards();
 		}
@@ -357,6 +356,8 @@ export default class Table extends React.Component {
 	}
 
 	dealCards() {
+		// todo rip this out put it into card logic jsx and remove from top and make sure this works for refreshes etc
+		
 		let $cards = $('section.table .card');
 
 		$cards.each(function (index) {

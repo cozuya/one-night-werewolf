@@ -44,7 +44,7 @@ let gameInfo = (state = {}, action) => {
 	}
 };
 
-let userList = (state = [], action) => {
+let userList = (state = {}, action) => {
 	switch (action.type) {
 		case UPDATE_USERLIST:
 			return state = action.userList;

@@ -36,13 +36,9 @@ export default class RightSidebar extends React.Component {
 				/>
 				<div className="ui divider"></div>
 				<section className="generalchat">
-					<h3 className="ui header">General chat:</h3>
+					<h3 className="ui header">Chat</h3>
 				</section>
 			</section>
 		);
 	}
-
-				// 	<Generalchat
-				// 	userInfo={this.props.userInfo}
-				// />
 };

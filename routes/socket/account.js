@@ -66,6 +66,6 @@ export function sendUserGameSettings(socket) {
 			wins: account.wins,
 			losses: account.losses
 		});
-		io.sockets.emit('userList', userList);
+		io.sockets.emit('userList', {list: userList, totalSockets: Object.keys(io.sockets.sockets).length});
 	});
 };
