@@ -10,11 +10,7 @@ import { updatedTrueRoles } from './game-nightactions.js';
 import { userList } from './account.js';
 import _ from 'lodash';
 
-let game;
-
-export function startGame(currentGame) {
-	game = currentGame;
-
+export function startGame(game) {
 	let allWerewolvesNotInCenter = false,
 		assignRoles = () => {
 			let _roles = _.clone(game.roles);
@@ -80,7 +76,7 @@ export function startGame(currentGame) {
 		countDown = setInterval(() => {
 			if (nightPhasePause === 0) {
 				clearInterval(countDown);
-				beginNightPhases();
+				beginNightPhases(game);
 			} else {
 				game.status = `Night begins in ${nightPhasePause} second${nightPhasePause === 1 ? '' : 's'}.`;
 				sendInprogressChats(game);
@@ -90,7 +86,7 @@ export function startGame(currentGame) {
 	}, 50);
 }
 
-let beginNightPhases = () => {
+let beginNightPhases = (game) => {
 	// round 1: all werewolves minions masons seers and (one robber or troublemaker)
 	// round 2 through x: robbercount + troublemaker count minus 1
 	// round x+1: all insomniacs
@@ -288,11 +284,11 @@ let beginNightPhases = () => {
 	sendInprogressChats(game);
 	setTimeout(() => {
 		game.tableState.phase = 1;
-		nightPhases(phases);
+		nightPhases(game, phases);
 	}, 3000);
 }
 
-let nightPhases = (phases) => {
+let nightPhases = (game, phases) => {
 	let phasesIndex = 0,
 		phasesCount = phases.length,
 		phasesTimer,
@@ -313,7 +309,7 @@ let nightPhases = (phases) => {
 			// todo unseated game chat
 			sendInprogressChats(game);
 			setTimeout(() => {
-				dayPhase();
+				dayPhase(game);
 			}, 50);
 		},
 		phasesFn = () => {
@@ -384,7 +380,7 @@ export function updateSelectedElimination(data) {
 	player.selectedForElimination = data.selectedForElimination;
 };
 
-let dayPhase = () => {
+let dayPhase = (game) => {
 	let seconds = (() => {
 		let _time = game.time.split(':');
 
@@ -394,7 +390,7 @@ let dayPhase = () => {
 		if (seconds === 0) {
 			game.status = 'The game ends.';
 			clearInterval(countDown);
-			eliminationPhase();
+			eliminationPhase(game);
 		} else {
 			let status;
 
@@ -436,7 +432,7 @@ let dayPhase = () => {
 	}, 1000);
 };
 
-let eliminationPhase = () => {
+let eliminationPhase = (game) => {
 	let index = 0,
 		countDown;
 
@@ -456,7 +452,7 @@ let eliminationPhase = () => {
 		if (index === devStatus.playerCountToEndGame) {
 			clearInterval(countDown);
 			game.status = 'The game is completed.'
-			endGame();
+			endGame(game);
 		} else {
 			let noSelection = index === 6 ? 0 : index + 1;
 
@@ -470,7 +466,7 @@ let eliminationPhase = () => {
 	}, 1000);
 };
 
-let endGame = () => {
+let endGame = (game) => {
 	let playersSelectedForElimination = game.tableState.eliminations.map((elimination) => {
 			return elimination.seatNumber;
 		}),
@@ -604,7 +600,7 @@ let endGame = () => {
 
 		game.chats.push({
 			gameChat: true,
-			chat: `The winning players are ${winningPlayersList}.`,
+			chat: winningPlayers.length ? `The winning players are ${winningPlayersList}.` : `There are no winning players in this game.`,
 			timestamp: new Date()
 		});
 
@@ -612,7 +608,7 @@ let endGame = () => {
 			return !chat.gameChat;
 		});
 
-		game.tableState.cardRoles = seatedPlayers.map((player) => {
+		game.tableState.cardRoles = seatedPlayers.map((player) => {  // todo find a way to reveal center cards as well, maybe a "nice to have"
 			return player.trueRole;
 		});
 

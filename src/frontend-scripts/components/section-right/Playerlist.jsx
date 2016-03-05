@@ -15,22 +15,25 @@ export default class Playerlist extends React.Component {
 	render() {
 		return (
 			<section className="playerlist">
-				<div>
-					<h3 className="ui header">Lobby</h3>
-					{(() => {
-						if (Object.keys(this.props.userList).length) {
-							return (
-								<div>
-									<span>{this.props.userList.list.length}</span>
-									<i className="large user icon"></i>
-									<span>{this.props.userList.totalSockets - this.props.userList.list.length}</span>
-									<i className="large unhide icon"></i>
-								</div>
-							);
-						}
-					})()}
+				<div className="playerlist-header">
+					<div>
+						<h3 className="ui header">Lobby</h3>
+						{(() => {
+							if (Object.keys(this.props.userList).length) {
+								return (
+									<div>
+										<span>{this.props.userList.list.length}</span>
+										<i className="large user icon"></i>
+										<span>{this.props.userList.totalSockets - this.props.userList.list.length}</span>
+										<i className="large unhide icon"></i>
+									</div>
+								);
+							}
+						})()}
+					</div>
+					<div className="ui divider"></div>
 				</div>
-				<div className="ui divider"></div>
+				<div className="playerlist-body">
 				{(() => {
 					if (Object.keys(this.props.userList).length) {
 						let { list } = this.props.userList;
@@ -72,6 +75,7 @@ export default class Playerlist extends React.Component {
 						});
 					}
 				})()}
+				</div>
 			</section>
 		);
 	}

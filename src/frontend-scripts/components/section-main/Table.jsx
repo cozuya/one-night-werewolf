@@ -25,9 +25,9 @@ export default class Table extends React.Component {
 			{ tableState } = gameInfo,
 			prevTableState = prevProps.gameInfo.tableState;
 
-		if (tableState.cardsDealt === 'in progress') {
-			this.dealCards();
+		console.log(gameInfo);
 
+		if (tableState.cardsDealt === 'in progress') {
 			setTimeout(() => {
 				this.revealCard(userInfo.seatNumber);
 			}, 1500);
@@ -55,9 +55,12 @@ export default class Table extends React.Component {
 	}
 
 	componentDidMount() {
-		console.log(this.props.gameInfo);
-		if (this.props.gameInfo.tableState.cardsDealt === true) {
-			this.dealCards();
+		if (this.props.gameInfo.tableState.cardRoles) {
+			this.props.gameInfo.tableState.cardRoles.forEach((role, index) => {
+				if (role) {
+					this.revealCard(index);
+				}
+			});
 		}
 	}
 
@@ -202,7 +205,7 @@ export default class Table extends React.Component {
 		}, 3000);
 	}
 
-	revealCard(seatNumber) { // string
+	revealCard(seatNumber) { // string  // todo: this should be removed and put into card logic as of now it won't work until an update, not a mount such as someone reloading the page after the game is complete.  plus jquery is dumb here.  will have to add back end logic to remove the flip class.
 		let $cardFlipper = $(`section.table div.card${seatNumber} div.card-flipper`);
 
 		$cardFlipper.addClass('flip');
@@ -238,7 +241,13 @@ export default class Table extends React.Component {
 			return (
 				<div key={num} data-cardnumber={num} onClick={this.handleCardClick.bind(this)} className={
 						(() => {
-							return `card card${num}`;
+							let classes = `card card${num}`;
+
+							if (this.props.gameInfo.tableState.cardsDealt || this.props.gameInfo.tableState.phase === 'elimination') {
+								classes += ` seat${num}`;
+							}
+
+							return classes;
 						})()
 					}>
 					<div className="card-flipper">
@@ -353,16 +362,6 @@ export default class Table extends React.Component {
 				selectedForElimination: cardNumber // todo: very possible that this could be wrong PLAYER i.e. current user is TM and swaps cards 1 and 2 then selects player 2 (actually now card 1) and this variable will be card 1.  probably add "data-originalseatnumber" attribute.
 			});
 		}
-	}
-
-	dealCards() {
-		// todo rip this out put it into card logic jsx and remove from top and make sure this works for refreshes etc
-		
-		let $cards = $('section.table .card');
-
-		$cards.each(function (index) {
-			$(this).addClass(`seat${index}`);
-		});
 	}
 
 	nightBlockerStatus(position) {

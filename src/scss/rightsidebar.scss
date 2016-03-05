@@ -31,13 +31,10 @@
 	}
 
 	.playerlist {
-		height: 250px;
-		max-height: 250px;
-		overflow-y: scroll;
-		background: #FFFCF9;
-		padding: 10px;
+		background: #F8F8F8;
+		padding: 10px 0 10px 10px;
 
-		> div {
+		> div > div {
 			&:after {
 				content: '';
 				display: table;
@@ -59,6 +56,10 @@
 			margin-top: -5px;
 		}
 
+		.playerlist-body {
+			height: 232px;
+			overflow-y: scroll;
+		}
 
 		.ui.header {
 			float: left;
@@ -69,4 +70,10 @@
 			}
 		}
 	}
+
+	.right-sidebar-divider {
+		margin: 0;
+	}
+
+
 }

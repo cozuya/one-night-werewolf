@@ -34,7 +34,7 @@ export default class RightSidebar extends React.Component {
 				<Playerlist
 					userList={this.props.userList}
 				/>
-				<div className="ui divider"></div>
+				<div className="ui divider right-sidebar-divider"></div>
 				<section className="generalchat">
 					<h3 className="ui header">Chat</h3>
 				</section>

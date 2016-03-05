@@ -107,7 +107,7 @@ class App extends React.Component {
 		let { dispatch, userInfo } = this.props,
 			game = {
 				inProgress: false,
-				kobk: true,
+				kobk: false,
 				name: 'New Game',
 				roles: ['werewolf', 'werewolf', 'villager', 'villager', 'villager', 'villager', 'villager', 'villager', 'villager', 'villager'],
 				// roles: ['werewolf', 'werewolf', 'seer', 'robber', 'troublemaker', 'insomniac', 'hunter', 'villager', 'villager', 'villager'],
