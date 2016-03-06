@@ -8,6 +8,7 @@ import { createStore } from 'redux';
 import { Provider } from 'react-redux';
 import wwApp from './reducers/wwapp';
 import polyfills from '../../iso/polyfills.js';
+import $ from 'jquery';
 
 document.addEventListener('DOMContentLoaded', () => {
 	let container = document.getElementById('game-container');
@@ -26,4 +27,12 @@ document.addEventListener('DOMContentLoaded', () => {
 			</Provider>,
 		container);
 	}
+
+	$(document).keydown(function(e) {
+		if (e.ctrlKey) {
+			if (e.keyCode == 65) {
+				return false;
+			}
+		}
+	});
 });

@@ -19,6 +19,12 @@
 		}
 
 		.gamechat {
+			-webkit-touch-callout: none;
+			-webkit-user-select: none;
+			-khtml-user-select: none;
+			-moz-user-select: none;
+			-ms-user-select: none;
+			user-select: none;
 			margin: 0;
 			background: #f6f6f6;
 
@@ -69,6 +75,26 @@
 
 				.chat-user--game, .game-chat, .chat-user--game .chat-timestamp {
 					color: #8B8B8B;
+				}
+
+				.chat-role--village {
+					font-weight: 700;
+					color: $villageteam;
+				}
+
+				.chat-role--werewolf {
+					font-weight: 700;
+					color: $werewolfteam;
+				}
+
+				.chat-role--tanner {
+					font-weight: 700;
+					color: $tannerteam;
+				}
+
+				.chat-player {
+					color: #000;
+					font-weight: 700;
 				}
 			}
 

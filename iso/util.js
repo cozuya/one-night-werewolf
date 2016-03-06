@@ -2,6 +2,8 @@
 
 export const defaultRolesArray = ['werewolf', 'werewolf', 'seer', 'robber', 'troublemaker', 'insomniac', 'hunter', 'villager', 'villager', 'villager'];
 
+export const roleList = ['werewolf', 'minion', 'mason', 'seer', 'robber', 'troublemaker', 'insomniac', 'hunter'];
+
 export const roleMap = {
 	werewolf: {
 		initial: 'WW',

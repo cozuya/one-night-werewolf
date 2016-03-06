@@ -3,6 +3,7 @@
 import React from 'react';
 import $ from 'jquery';
 import socket from 'socket.io-client';
+import { roleList, roleMap } from '../../../../iso/util';
 socket = socket();
 
 export default class Gamechat extends React.Component {
@@ -143,41 +144,68 @@ export default class Gamechat extends React.Component {
 	}
 
 	handleTimestamps(timestamp) {
-		let userInfo = this.props.userInfo;
+		let { userInfo } = this.props;
 
-		if (userInfo.userName) {
+		if (userInfo.userName && userInfo.gameSettings.enableTimestamps) {
 			let minutes = (`0${new Date(timestamp).getMinutes()}`).slice(-2),
 				seconds = (`0${new Date(timestamp).getSeconds()}`).slice(-2);
 
-			if (userInfo.gameSettings.enableTimestamps) {
-				return (
-					<span className="chat-timestamp">
-						({minutes}: {seconds})
-					</span>
-				);
-			}
+			return (
+				<span className="chat-timestamp">
+					({minutes}: {seconds})
+				</span>
+			);
 		}
 	}
 
 	processChats() {
-		let gameInfo = this.props.gameInfo;
+		let { gameInfo } = this.props;
 
 		// todo: make the logged in user's chats a different color than everyone else's chats
 		// todo: make roles different colors and make seated player names different colors (regex)
 
 		return gameInfo.chats.map((chat, i) => {
+			let chatContents = chat.chat,
+				playerRegexes = Object.keys(gameInfo.seated).map((seatName) => {
+					return gameInfo.seated[seatName].userName;
+				}).map((playerName) => {
+					return {
+						playerName,
+						regex: new RegExp(playerName, 'gi')
+					};
+				}),
+				roleRegexes = _.uniq(gameInfo.roles).map((role) => {
+					return {
+						role,
+						team: roleMap[role].team,
+						regex: new RegExp(role, 'gi')
+					};
+				}).concat({
+					role: 'werewolves',
+					team: 'werewolf',
+					regex: /werewolves/gi
+				});
+
+			roleRegexes.forEach((roleRegex) => {
+				chatContents = chatContents.replace(roleRegex.regex, `<span class="chat-role--${roleRegex.team}">${roleRegex.role}</span>`);
+			});
+
+			playerRegexes.forEach((playerRegex) => {
+				chatContents = chatContents.replace(playerRegex.regex, `<span class="chat-player">${playerRegex.playerName}</span>`);
+			});
+
 			if (chat.gameChat && (this.state.chatFilter === 'Game' || this.state.chatFilter === 'All')) {
 				return (
 					<div className="item" key={i}>
 						<span className="chat-user--game">[GAME] {this.handleTimestamps.call(this, chat.timestamp)}: </span>
-						<span className="game-chat">{chat.chat}</span>
+						<span className="game-chat" dangerouslySetInnerHTML={{__html: chatContents}}></span>
 					</div>
 				);
 			} else if (!chat.gameChat && this.state.chatFilter !== 'Game') {
 				return (
 					<div className="item" key={i}>
 						<span className="chat-user">{chat.userName}{this.props.userInfo.seatNumber ? '' : ' (Observer)'}{this.handleTimestamps.call(this, chat.timestamp)}: </span>
-						{chat.chat}
+						<span dangerouslySetInnerHTML={{__html: chatContents}}></span>
 					</div>
 				);
 			};
@@ -222,7 +250,7 @@ export default class Gamechat extends React.Component {
 						}
 					})()}
 					<div className={this.props.userInfo.userName ? "ui action input" : "ui action input disabled"}>
-						<input placeholder="Chat.." onKeyUp={this.handleKeyup.bind(this)}></input>
+						<input placeholder="Chat.." onKeyUp={this.handleKeyup.bind(this)} maxLength="300"></input>
 						<button className="ui primary button disabled">Chat</button>
 					</div>
 					<i className="large delete icon app-hidden" onClick={this.handleChatClearClick.bind(this)}></i>
