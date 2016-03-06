@@ -14,10 +14,6 @@ class Game extends React.Component {
 		dispatch(updateExpandoInfo(state));
 	}
 
-	// componentDidUpdate () {
-	// 	console.log(this.props);
-	// }
-
 	render() {
 		return (
 			<section className="game">

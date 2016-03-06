@@ -9,7 +9,7 @@ $.fn.popup = Popup;
 
 export default class Gameroles extends React.Component {
 	componentDidMount() {
-		if (this.props.userInfo.userName && !this.props.userInfo.gameSettings.disablePopups) {
+		if (!Object.keys(this.props.userInfo).length || !this.props.userInfo.gameSettings.disablePopups) {
 			$('div.roles').popup({
 				inline: true,
 				hoverable: true,
@@ -26,11 +26,13 @@ export default class Gameroles extends React.Component {
 		console.log(e.currentTarget);		
 	}
 
-	// componentDidUpdate () {
-	// 	console.log(this.props);
-	// }	
+	componentDidUpdate () {
+		// console.log(this.props);
+	}
 
 	render() {
+
+		// todo popups don't have team names colors working
 		return (
 			<section className="gameroles">
 				<div className="ui right pointing label">
@@ -44,9 +46,12 @@ export default class Gameroles extends React.Component {
 										(() => {
 											let notifyClass = this.props.roleState === 'notify' ? 'notify' : '';
 											
-											return `roles ${role} ${this.props.roleState} ${notifyClass}`;
+											return `roles role-${role} ${this.props.roleState} ${notifyClass}`;
 										})()
-									}></div>
+									}
+
+									data-role={role}
+									></div>
 									<div className="ui small popup transition hidden top left" dangerouslySetInnerHTML={{__html: roleMap[role].description}}></div>
 								</div>
 							);

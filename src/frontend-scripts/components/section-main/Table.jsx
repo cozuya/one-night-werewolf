@@ -9,7 +9,6 @@ import socket from 'socket.io-client';
 import _ from 'lodash';
 
 socket = socket();
-$.fn.dropdown = Dropdown;
 $.fn.popup = Popup;
 $.fn.modal = Modal;
 
@@ -55,6 +54,18 @@ export default class Table extends React.Component {
 	}
 
 	componentDidMount() {
+		if (!Object.keys(this.props.userInfo).length || !this.props.userInfo.gameSettings.disablePopups) {
+			$('i.warning.sign.icon').popup({
+				inline: true,
+				hoverable: true,
+				lastResort: true,
+				delay: {
+					show: 700,
+					hide: 800
+				}
+			});
+		}
+
 		if (this.props.gameInfo.tableState.cardRoles) {
 			this.props.gameInfo.tableState.cardRoles.forEach((role, index) => {
 				if (role) {
@@ -372,6 +383,10 @@ export default class Table extends React.Component {
 		}
 	}
 
+	reportGame() {
+		// todo flag game for report in db on save so it can be reviewed later
+	}
+
 	render() {
 		let { gameInfo, userInfo } = this.props;
 
@@ -428,6 +443,10 @@ export default class Table extends React.Component {
 				})()}></i>
 				<div className="table-uid">
 					Game ID: {gameInfo.uid}
+					<i className="warning sign icon" onClick={this.reportGame.bind(this)}></i>
+					<div className="ui small popup transition hidden">
+							Report this game to the moderators for review.
+					</div>
 				</div>
 				<div className="ui basic small modal">
 					<i className="close icon"></i>

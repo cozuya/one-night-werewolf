@@ -15,6 +15,14 @@ export default class Gamechat extends React.Component {
 		};
 	}
 
+	componentDidMount() {
+		this.scrollChats();
+	}
+
+	componentDidUpdate() {
+		this.scrollChats();
+	}	
+
 	displayHotkeys() {
 		let textLeft, textRight;
 
@@ -109,14 +117,6 @@ export default class Gamechat extends React.Component {
 		}
 	}
 
-	componentDidMount() {
-		this.scrollChats();
-	}
-
-	componentDidUpdate() {
-		this.scrollChats();
-	}
-
 	scrollChats() {
 		let chatsContainer = document.querySelector('section.segment.chats'),
 			$chatPusher = $('div.chatpusher'),
@@ -162,7 +162,6 @@ export default class Gamechat extends React.Component {
 		let { gameInfo } = this.props;
 
 		// todo: make the logged in user's chats a different color than everyone else's chats
-		// todo: make roles different colors and make seated player names different colors (regex)
 
 		return gameInfo.chats.map((chat, i) => {
 			let chatContents = chat.chat,
@@ -238,16 +237,20 @@ export default class Gamechat extends React.Component {
 				<form className="segment inputbar" onSubmit={this.handleSubmit.bind(this)}>
 					{(() => {
 						let gameInfo = this.props.gameInfo,
-							userInfo = this.props.userInfo;
-						
-						if (gameInfo.inProgress && (userInfo.seatNumber || userInfo.seatNumber === 0) && !gameInfo.tableState.isNight) {
-							return (
-								<div className="expando-container">
-									<i className="large expand icon" onClick={this.clickExpand.bind(this)}></i>
-									{this.displayHotkeys()}
-								</div>
-							);
+							userInfo = this.props.userInfo,
+							classes = 'expando-container';
+
+						if (!gameInfo.inProgress || !userInfo.seatNumber || !gameInfo.tableState.isNight) {
+							classes += ' app-visibility-hidden';
 						}
+						
+						return (
+							<div className={classes}>
+								<i className="large expand icon" onClick={this.clickExpand.bind(this)}></i>
+								{this.displayHotkeys()}
+							</div>
+						);
+						
 					})()}
 					<div className={this.props.userInfo.userName ? "ui action input" : "ui action input disabled"}>
 						<input placeholder="Chat.." onKeyUp={this.handleKeyup.bind(this)} maxLength="300"></input>
