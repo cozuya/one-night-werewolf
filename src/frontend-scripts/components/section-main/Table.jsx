@@ -24,8 +24,6 @@ export default class Table extends React.Component {
 			{ tableState } = gameInfo,
 			prevTableState = prevProps.gameInfo.tableState;
 
-		console.log(gameInfo);
-
 		if (tableState.cardsDealt === 'in progress') {
 			setTimeout(() => {
 				this.revealCard(userInfo.seatNumber);

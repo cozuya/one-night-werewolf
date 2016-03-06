@@ -5,13 +5,19 @@ import Table from './Table.jsx';
 import Gamechat from './Gamechat.jsx';
 import Gameroles from './Gameroles.jsx';
 import { connect } from 'react-redux';
-import { updateExpandoInfo } from '../../actions/actions.js';
+import { updateExpandoInfo, updateClickedGamerole } from '../../actions/actions.js';
 
 class Game extends React.Component {
 	roleState(state) {
 		let { dispatch } = this.props;
 
 		dispatch(updateExpandoInfo(state));
+	}
+
+	selectedGamerole(state) {
+		let { dispatch } = this.props;
+
+		dispatch(updateClickedGamerole(state));
 	}
 
 	render() {
@@ -35,6 +41,7 @@ class Game extends React.Component {
 								userInfo={this.props.userInfo}
 								clickedGameRole={this.props.gameRoleInfo}
 								roleState={this.roleState.bind(this)}
+								selectedGamerole={this.props.clickedGamerole}
 							/>
 						</div>
 					</div>
@@ -44,6 +51,7 @@ class Game extends React.Component {
 						userInfo={this.props.userInfo}
 						roles={this.props.gameInfo.roles}
 						roleState={this.props.expandoInfo}
+						selectedGamerole={this.selectedGamerole.bind(this)}
 					/>
 				</div>
 			</section>

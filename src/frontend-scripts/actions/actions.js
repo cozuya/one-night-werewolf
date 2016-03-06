@@ -53,3 +53,12 @@ export function updateExpandoInfo(info) {
 		info
 	}
 }
+
+export const UPDATE_CLICKEDGAMEROLE = 'UPDATE_CLICKEDGAMEROLE';
+
+export function updateClickedGamerole(info) {
+	return {
+		type: UPDATE_CLICKEDGAMEROLE,
+		info
+	}
+}

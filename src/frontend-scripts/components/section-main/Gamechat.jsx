@@ -19,8 +19,16 @@ export default class Gamechat extends React.Component {
 		this.scrollChats();
 	}
 
-	componentDidUpdate() {
+	componentDidUpdate(prevProps) {
 		this.scrollChats();
+
+		console.log(this.props);
+		console.log(prevProps);
+		if (prevProps && prevProps.selectedGamerole.random !== this.props.selectedGamerole.random && this.props.selectedGamerole.role) {
+			let $input = $('form.inputbar input');
+
+			$input.val($input.val() + this.props.selectedGamerole.role).next().removeClass('disabled');
+		}
 	}	
 
 	displayHotkeys() {

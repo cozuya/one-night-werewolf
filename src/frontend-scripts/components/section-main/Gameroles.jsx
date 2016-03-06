@@ -23,7 +23,10 @@ export default class Gameroles extends React.Component {
 	}
 
 	handleRoleClick(e) {
-		console.log(e.currentTarget);		
+		this.props.selectedGamerole({
+			role: $(e.currentTarget).attr('data-role'),
+			random: Math.random().toString(36).substring(2)
+		});
 	}
 
 	componentDidUpdate () {
