@@ -17,13 +17,12 @@ export default class Gamechat extends React.Component {
 
 	componentDidMount() {
 		this.scrollChats();
-		console.log(this.props);
 	}
 
 	componentDidUpdate(prevProps) {
 		this.scrollChats();
 
-		if (!this.props.isGeneralChat && prevProps && prevProps.selectedGamerole.random !== this.props.selectedGamerole.random && this.props.selectedGamerole.role) {
+		if (prevProps && prevProps.selectedGamerole.random !== this.props.selectedGamerole.random && this.props.selectedGamerole.role) {
 			let $input = $('form.inputbar input');
 
 			$input.val($input.val() + this.props.selectedGamerole.role).next().removeClass('disabled');

@@ -5,7 +5,7 @@ import Main from './section-main/Main.jsx'
 import RightSidebar from './section-right/RightSidebar.jsx'
 import React from 'react';
 import { connect } from 'react-redux';
-import { updateUser, updateMidsection, updateGameList, updateGameInfo, updateUserList } from '../actions/actions.js';
+import { updateUser, updateMidsection, updateGameList, updateGameInfo, updateUserList, updateGeneralChats } from '../actions/actions.js';
 import socket from 'socket.io-client';
 
 socket = socket();
@@ -57,8 +57,13 @@ class App extends React.Component {
 
 			user.seatNumber = seatNumber;
 			dispatch(updateUser(user));
-		})
+		});
 
+		socket.on('generalChats', (chats) => {
+			dispatch(updateGeneralChats(chats));
+		});
+
+		socket.emit('getGeneralChats');
 		socket.emit('getGameList');
 		socket.emit('getUserList');
 	}
@@ -174,6 +179,7 @@ class App extends React.Component {
 					userList={this.props.userList}
 					midsection={this.props.midSection}
 					onSettingsButtonClick={this.handleRoute.bind(this)}
+					generalChats={this.props.generalChats}
 				/>
 			</section>
 		);

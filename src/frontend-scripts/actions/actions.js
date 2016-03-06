@@ -62,3 +62,12 @@ export function updateClickedGamerole(info) {
 		info
 	}
 }
+
+export const UPDATE_GENERALCHATS = 'UPDATE_GENERALCHATS';
+
+export function updateGeneralChats(info) {
+	return {
+		type: UPDATE_GENERALCHATS,
+		info
+	}
+}

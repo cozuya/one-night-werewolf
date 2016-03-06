@@ -8,6 +8,7 @@ import { combineInprogressChats } from './gamechat.js';
 import _ from 'lodash';
 
 export let userList = [];
+let generalChats = [];
 
 export function checkUserStatus(socket) {
 	let { user } = socket.handshake.session.passport,
@@ -68,4 +69,20 @@ export function sendUserGameSettings(socket) {
 		});
 		io.sockets.emit('userList', {list: userList, totalSockets: Object.keys(io.sockets.sockets).length});
 	});
+};
+
+export function handleNewGeneralChat(data) {
+	if (generalChats.length === 100) {
+		generalChats.pop();
+		// todo push/save to db
+	}
+
+	data.time = new Date();
+	generalChats.unshift(data);
+
+	io.sockets.emit('generalChats', generalChats);
+};
+
+export function sendGeneralChats(socket) {
+	socket.emit('generalChats', generalChats);
 };

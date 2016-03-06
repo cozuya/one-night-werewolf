@@ -1,7 +1,7 @@
 'use strict';
 
 import { deleteGame, updateGameChat, sendGameList, sendUserList, createGame, sendGameInfo, updateSeatedUsers, games } from './game.js';
-import { checkUserStatus, handleUpdatedGameSettings, sendUserGameSettings, userList } from './account.js';
+import { sendGeneralChats, handleNewGeneralChat, checkUserStatus, handleUpdatedGameSettings, sendUserGameSettings, userList } from './account.js';
 import { addNewGameChat } from './gamechat.js';
 import { updateUserNightActionEvent } from './game-nightactions.js';
 import { updateSelectedElimination } from './game-internals.js';
@@ -31,6 +31,10 @@ export default () => {
 			sendUserList(socket);
 		}).on('updateSelectedForElimination', (data) => {
 			updateSelectedElimination(data);
+		}).on('newGeneralChat', (data) => {
+			handleNewGeneralChat(data);
+		}).on('getGeneralChats', () => {
+			sendGeneralChats(socket);
 		}).on('disconnect', () => {
 			let { passport } = socket.handshake.session;
 

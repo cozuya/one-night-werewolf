@@ -76,5 +76,18 @@
 		margin: 0;
 	}
 
+	.generalchat {
+		.ui.input {
+			width: 186px;
 
+			input {
+				padding: 2px;
+			}
+
+
+			button {
+				padding: 2px;
+			}
+		}	
+	}
 }
