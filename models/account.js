@@ -13,7 +13,8 @@ let { Schema } = mongoose,
 		password: String,
 		gameSettings: {
 			disablePopups: Boolean,
-			enableTimestamps: Boolean
+			enableTimestamps: Boolean,
+			disableRightSidebarInGame: Boolean
 		},
 		games: Array,
 		wins: Number,

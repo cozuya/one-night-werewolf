@@ -14,7 +14,16 @@ export default class RightSidebar extends React.Component {
 
 	render() {
 		return (
-			<section className="section-right three wide column">
+			<section className={
+				(() => {
+					let classes = 'section-right three wide column';
+
+					if (this.props.midsection === 'game' && this.props.userInfo.gameSettings.disableRightSidebarInGame) {
+						classes += ' app-hidden';
+					}
+
+					return classes;
+				})()}>
 				<section className="right-header">
 				{(() => {
 					let userInfo = this.props.userInfo;

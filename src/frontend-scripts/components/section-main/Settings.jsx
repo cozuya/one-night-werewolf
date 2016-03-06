@@ -51,6 +51,19 @@ export default class Settings extends React.Component {
 				});
 			}
 		});
+
+		$(this.refs.sidebar).checkbox({
+			onChecked() {
+				socket.emit('updateGameSettings', {
+					disableRightSidebarInGame: true
+				});
+			},
+			onUnchecked() {
+				socket.emit('updateGameSettings', {
+					disableRightSidebarInGame: false
+				});
+			}
+		});		
 	}
 
 	leaveSettings() {
@@ -84,6 +97,13 @@ export default class Settings extends React.Component {
 						<h4 className="ui header">Add timestamps to in-game chats</h4>
 						<div className="ui fitted toggle checkbox" ref="timestamps">
 							<input type="checkbox" name="timestamps" defaultChecked={this.props.userInfo.gameSettings.enableTimestamps}></input>
+							<label></label>
+						</div>
+					</div>
+					<div className="four wide column popups">
+						<h4 className="ui header">Hide right sidebar while in games</h4>
+						<div className="ui fitted toggle checkbox" ref="sidebar">
+							<input type="checkbox" name="sidebar" defaultChecked={this.props.userInfo.gameSettings.disableRightSidebarInGame}></input>
 							<label></label>
 						</div>
 					</div>

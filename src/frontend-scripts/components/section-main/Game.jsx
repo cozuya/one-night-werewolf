@@ -25,18 +25,43 @@ class Game extends React.Component {
 			<section className="game">
 				<div className="ui grid">
 					<div className="row">
-						<div className="ten wide column table-container">
+						<div className={
+							(() => {
+								let classes;
+
+								if (this.props.userInfo.gameSettings.disableRightSidebarInGame) {
+									classes = 'nine ';
+								} else {
+									classes = 'ten ';
+								}
+
+								return classes += 'wide column table-container';
+							})()
+						}>
 							<Table
 								updateSeatedUsers={this.props.updateSeatedUsers}
 								gameInfo={this.props.gameInfo}
 								userInfo={this.props.userInfo}
 							/>
 						</div>
-						<div className="six wide column chat-container">
+						<div className={
+							(() => {
+								let classes;
+
+								if (this.props.userInfo.gameSettings.disableRightSidebarInGame) {
+									classes = 'seven ';
+								} else {
+									classes = 'six ';
+								}
+
+								return classes += 'wide column chat-container game-chat';
+							})()
+						}>
 							<section className="gamestatus">
 								{this.props.gameInfo.status}
 							</section>
 							<Gamechat
+								isGeneralChat={false}
 								gameInfo={this.props.gameInfo}
 								userInfo={this.props.userInfo}
 								clickedGameRole={this.props.gameRoleInfo}
@@ -46,7 +71,17 @@ class Game extends React.Component {
 						</div>
 					</div>
 				</div>
-				<div className="row gameroles-container">
+				<div className={
+					(() => {
+						let classes = 'row gameroles-container';
+
+						if (this.props.userInfo.gameSettings.disableRightSidebarInGame) {
+							classes += ' disabledrightsidebar';
+						}
+
+						return classes;
+					})()
+				}>
 					<Gameroles
 						userInfo={this.props.userInfo}
 						roles={this.props.gameInfo.roles}

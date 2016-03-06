@@ -172,6 +172,7 @@ class App extends React.Component {
 				<RightSidebar
 					userInfo={this.props.userInfo}
 					userList={this.props.userList}
+					midsection={this.props.midSection}
 					onSettingsButtonClick={this.handleRoute.bind(this)}
 				/>
 			</section>
