@@ -2,13 +2,50 @@
 
 import mongoose from 'mongoose';
 import Account from '../../models/account';
-import { games } from './game.js';
-import { secureGame, getInternalPlayerInGameByUserName } from './util.js';
-import { combineInprogressChats } from './gamechat.js';
+import { games, deleteGame } from './game';
+import { secureGame, getInternalPlayerInGameByUserName } from './util';
+import { combineInprogressChats } from './gamechat';
 import _ from 'lodash';
 
 export let userList = [];
 let generalChats = [];
+
+export function handleSocketDisconnect(socket) {
+	let { passport } = socket.handshake.session;
+
+	if (passport && Object.keys(passport).length) {
+		let userIndex = userList.findIndex((user) => {
+				return user.user === passport.user;
+			}),
+			game = games.find((game) => {
+				return Object.keys(game.seated).find((seatName) => {
+					return game.seated[seatName].userName === passport.user;
+				});
+			});
+
+		userList.splice(userIndex, 1);
+
+		if (game) {
+			if (!game.inProgress) {
+				let seatedKeys = Object.keys(game.seated),
+					userSeatName = seatedKeys.find((seatName) => {
+						return game.seated[seatName].userName === passport.user;
+					});
+
+				if (seatedKeys.length === 1) {
+					deleteGame(game);
+				} else {
+					delete game.seated[userSeatName];
+					io.sockets.in(game.uid).emit('gameUpdate', game);
+				}
+			}
+
+			io.sockets.emit('gameList', games);					
+		}
+
+		io.sockets.emit('userList', {list: userList, totalSockets: Object.keys(io.sockets.sockets).length});
+	}
+}
 
 export function checkUserStatus(socket) {
 	let { user } = socket.handshake.session.passport,
@@ -78,7 +115,7 @@ export function handleNewGeneralChat(data) {
 	}
 
 	data.time = new Date();
-	generalChats.unshift(data);
+	generalChats.push(data);
 
 	io.sockets.emit('generalChats', generalChats);
 };

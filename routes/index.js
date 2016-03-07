@@ -41,3 +41,20 @@ export default () => {
 		res.render('404');
 	});
 };
+
+process.once('SIGUSR2', () => {
+	io.sockets.sockets.forEach((socket) => {
+    	socket.disconnect();
+	});
+	
+	return process.kill(process.pid, 'SIGUSR2');
+});
+
+
+
+
+
+
+
+
+
