@@ -15,7 +15,7 @@ export function handleSocketDisconnect(socket) {
 
 	if (passport && Object.keys(passport).length) {
 		let userIndex = userList.findIndex((user) => {
-				return user.user === passport.user;
+				return user.userName === passport.user;
 			}),
 			game = games.find((game) => {
 				return Object.keys(game.seated).find((seatName) => {

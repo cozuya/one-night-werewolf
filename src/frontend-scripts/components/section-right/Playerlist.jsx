@@ -4,12 +4,6 @@ import React from 'react';
 
 export default class Playerlist extends React.Component {
 	componentDidUpdate() {
-		// try {
-		// 	console.log(this.props.userList.list[0]);
-		// 	console.log(this.props.userList.list[1]);
-		// } catch (e) {
-		// 	console.log('Hello World!');
-		// }
 	}
 
 	render() {
@@ -42,8 +36,8 @@ export default class Playerlist extends React.Component {
 							let aTotal = a.wins + a.losses,
 								bTotal = b.wins + b.losses;
 
-							if (a.userName === 'coz') {
-								return +1;
+							if (a.userName === 'coz' || a.userName === 'stine') {
+								return -1;
 							}
 
 							if (aTotal > 9 && bTotal > 9) {
@@ -53,10 +47,18 @@ export default class Playerlist extends React.Component {
 									return +1;
 								}
 							} else if (aTotal > 9) {
+								return -1;
+							} else if (bTotal > 9) {
 								return +1;
 							}
 
 							if (a.wins >= b.wins) {
+								return -1;
+							} else if (b.wins > a.wins) {
+								return +1;
+							}
+
+							if (a.userName > b.userName) {
 								return +1;
 							} else {
 								return -1;
