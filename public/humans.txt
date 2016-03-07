@@ -1,0 +1,14 @@
+/* TEAM */
+Author: Chris Ozols
+HTML/CSS assistance: Christine Ozols
+Site: https://github.com/cozuya/one-night-werewolf
+Twitter: https://twitter.com/cozuya
+Location: Minneapolis, MN, USA
+
+/* THANKS */
+People much smarter than me who came up with the concepts behind the original Werewolf games and social deduction games in general.
+
+/* SITE */
+Front end: React, Redux, Sass, SocketIO, SemanticUI.
+Back end: Node with Express, Jade, Passport, Mongodb with Mongoose, SocketIO.
+Build: Gulp, Browserify, Babel.
