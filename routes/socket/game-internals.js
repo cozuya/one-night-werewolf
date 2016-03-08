@@ -619,11 +619,16 @@ let endGame = (game) => {
 			return !chat.gameChat;
 		});
 
-		game.tableState.cardRoles = seatedPlayers.map((player) => {  // todo find a way to reveal center cards as well, maybe a "nice to have"
+		game.tableState.cardRoles = seatedPlayers.map((player) => {
 			return player.trueRole;
 		});
 
+		game.internals.centerRoles.forEach((role) => {
+			game.tableState.cardRoles.push(role);
+		});
+
 		game.tableState.winningPlayersIndex = winningPlayersIndex;
+		game.completedGame = true;
 		sendInprogressChats(game);
 		saveGame.save();
 

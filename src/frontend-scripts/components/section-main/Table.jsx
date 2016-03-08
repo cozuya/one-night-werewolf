@@ -239,7 +239,7 @@ export default class Table extends React.Component {
 			isUserAlreadySeated = !!userInfo.seatNumber;
 
 		if (userInfo.userName) {
-			if ($seat.hasClass('empty') && !isUserAlreadySeated) {
+			if ($seat.hasClass('empty') && !isUserAlreadySeated && !this.props.gameInfo.completedGame) {
 				this.props.updateSeatedUsers($seat.attr('data-seatnumber'));
 			}
 		} else {
@@ -435,7 +435,7 @@ export default class Table extends React.Component {
 					})}
 					{this.createCards()}
 				<i onClick={this.leaveGame.bind(this)} className={(() => {
-					if (!!userInfo.seatNumber && Object.keys(gameInfo.seated).length === 7) {
+					if ((!!userInfo.seatNumber && Object.keys(gameInfo.seated).length === 7) || !gameInfo.completedGame) {
 						return 'app-hidden';
 					} else {
 						return 'remove icon';
