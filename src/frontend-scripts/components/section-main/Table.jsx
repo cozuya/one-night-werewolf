@@ -49,6 +49,8 @@ export default class Table extends React.Component {
 				}
 			});
 		}
+
+		console.log(gameInfo);
 	}
 
 	componentDidMount() {
@@ -274,7 +276,7 @@ export default class Table extends React.Component {
 									classes = `${classes} card-proceed`;
 								}
 
-								if (playerPerceivedRole && num === parseInt(playerSeat.split('seat')[1])) {
+								if (playerPerceivedRole && playerSeat && num === parseInt(playerSeat.split('seat')[1])) {
 									classes = `${classes} ${playerPerceivedRole}`;
 								} else if (tableState.cardRoles && !!tableState.cardRoles[num]) {
 									classes = `${classes} ${tableState.cardRoles[num]}`;

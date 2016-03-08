@@ -14,7 +14,7 @@ export default class Gamechat extends React.Component {
 
 	componentDidMount() {
 		this.scrollChats();
-		console.log(this.props);
+		// console.log(this.props);
 	}
 
 	componentDidUpdate(prevProps) {

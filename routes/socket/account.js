@@ -42,9 +42,12 @@ export function handleSocketDisconnect(socket) {
 
 			io.sockets.emit('gameList', games);					
 		}
-
-		io.sockets.emit('userList', {list: userList, totalSockets: Object.keys(io.sockets.sockets).length});
 	}
+
+	io.sockets.emit('userList', {
+		list: userList,
+		totalSockets: Object.keys(io.sockets.sockets).length
+	});
 }
 
 export function checkUserStatus(socket) {
@@ -88,7 +91,7 @@ export function sendUserGameSettings(socket) {
 	var username;
 
 	try {
-		username = socket.handshake.session.passport.user;  // todo: this errors out some times/is undefined
+		username = socket.handshake.session.passport.user;  // todo: this errors out some times/is undefined - happend 3/7/2016
 	} catch (e) {
 		console.log('sendUserGameSettings errored out');
 	}

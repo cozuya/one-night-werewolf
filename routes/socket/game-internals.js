@@ -91,6 +91,8 @@ let beginNightPhases = (game) => {
 	// round 2 through x: robbercount + troublemaker count minus 1
 	// round x+1: all insomniacs
 
+	console.log(game.internals.centerRoles);
+
 	let phases = [[]],
 		roleChangerInPhase1 = false,
 		insomniacs = [],
@@ -159,6 +161,18 @@ let beginNightPhases = (game) => {
 		};
 	});
 
+	// game.internals.centerRoles.forEach((role) => {
+	// 	let count = 1;
+
+	// 	if (role === 'robber' || role === 'troublemaker') {
+	// 		count++;
+	// 	}
+
+	// 	for (let i = 0; i < count; i++) {
+	// 		phases.push([]);
+	// 	}
+	// });
+
 	if (insomniacs.length) {
 		insomniacs.forEach((player) => {
 			player.nightAction.phase = phases.length + 1;
@@ -224,7 +238,7 @@ let beginNightPhases = (game) => {
 
 				if (!werewolves.length) {
 					game.internals.soloMinion = true;
-					message = 'You wake up, and see that there are no WEREWOLVES in this game. Be careful - you lose if no villager is eliminated'
+					message = 'You wake up, and see that there are no WEREWOLVES in this game. Be careful - you lose if no villager is eliminated.'
 				} else {
 					message = 'You wake up, and see that the WEREWOLVES in this game are: ';
 				}
@@ -267,7 +281,7 @@ let beginNightPhases = (game) => {
 
 				otherMasonsNames.forEach((userName) => {
 					message += ' ';
-					message += userName.toUpperCase();
+					message += userName;
 				});
 
 				message += '.';		
@@ -288,6 +302,8 @@ let beginNightPhases = (game) => {
 	}, 3000);
 }
 
+// todo need to put in dummy phases before the insomniac phase with no players waking up so as to not be able to divine which cards are in the middle
+
 let nightPhases = (game, phases) => {
 	let phasesIndex = 0,
 		phasesCount = phases.length,
@@ -296,17 +312,12 @@ let nightPhases = (game, phases) => {
 			clearInterval(phasesTimer);
 			game.tableState.isNight = false;
 			game.status = 'Day begins..';
-			game.internals.seatedPlayers.forEach((player, i) => {
-				player.gameChats.push({
-					gameChat: true,
-					userName: player.userName,
-					chat: 'Night ends and the day begins.',						
-					seat: i,
-					timestamp: new Date()
-				});
+			game.internals.unSeatedGameChats.push({
+				gameChat: true,
+				chat: 'Night ends and the day begins.',						
+				timestamp: new Date()
 			});
 
-			// todo unseated game chat
 			sendInprogressChats(game);
 			setTimeout(() => {
 				dayPhase(game);

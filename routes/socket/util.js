@@ -1,8 +1,6 @@
 'use strict';
 
 import { games } from './game.js';
-import _  from 'lodash';
-
 
 // prod
 // export let devStatus = { // can't think of a better name.  This object assists in development.
@@ -64,7 +62,7 @@ export function getSocketsByUid(uid) {
 }
 
 export function secureGame(game) {
-	let _game = _.clone(game);
+	let _game = Object.assign({}, game);
 
 	delete _game.internals;
 	return _game;
