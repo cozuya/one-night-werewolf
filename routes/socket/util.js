@@ -37,7 +37,7 @@ export let devStatus = {
 	playerCountToEndGame: 7,
 	revealLosersPause: 1000,
 	revealAllCardsPause: 1500
-}
+};
 
 export function getSocketsByUid(uid) {
 	let game = games.find((el) => {
@@ -53,7 +53,8 @@ export function getSocketsByUid(uid) {
 
 		sockets.playerSockets = roomSockets.filter((socket) => {
 			return seatedPlayerNames.indexOf(socket.handshake.session.passport.user) >= 0;  // todo this errored some how at beginning of game
-		}),
+		});
+
 		sockets.observerSockets = roomSockets.filter((socket) => {
 			return seatedPlayerNames.indexOf(socket.handshake.session.passport.user) === -1;
 		});
@@ -66,7 +67,7 @@ export function secureGame(game) {
 
 	delete _game.internals;
 	return _game;
-};
+}
 
 export function getInternalPlayerInGameByUserName(game, userName) {
 	return game.internals.seatedPlayers.find((player) => {

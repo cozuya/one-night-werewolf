@@ -105,6 +105,7 @@ export default class Gamechat extends React.Component {
 		return (
 			<section className="generalchat">
 				<section className="ui pointing menu">
+					<h3 className="ui header">Chat</h3>
 					<i className={this.state.lock ? 'large lock icon' : 'large unlock alternate icon'} onClick={this.handleChatLockClick.bind(this)}></i>
 				</section>
 				<section className="segment chats">

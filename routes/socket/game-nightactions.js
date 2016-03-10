@@ -4,6 +4,12 @@ import { sendInprogressChats } from './gamechat.js';
 import { games } from './game.js';
 import _ from 'lodash';
 
+let getTrueRoleBySeatNumber = (game, num) => {
+	num = parseInt(num);
+
+	return num < 7 ? game.internals.seatedPlayers[num].trueRole : game.internals.centerRoles[num - 7];
+};
+
 export let updatedTrueRoles = [];
 
 export function updateUserNightActionEvent(socket, data) {
@@ -109,7 +115,7 @@ export function updateUserNightActionEvent(socket, data) {
 
 					chat.chat = `You select to see the card of ${playerClicked.toUpperCase()} and it is a ${rolesClicked[0].toUpperCase()}.`;
 				} else {
-					chat.chat = `You select to see the ${selectedCard[data.action[1]].toUpperCase()} and ${selectedCard[data.action[0]].toUpperCase()} cards and they are a ${rolesClicked[1].toUpperCase()} and a ${rolesClicked[0].toUpperCase()}.`
+					chat.chat = `You select to see the ${selectedCard[data.action[1]].toUpperCase()} and ${selectedCard[data.action[0]].toUpperCase()} cards and they are a ${rolesClicked[1].toUpperCase()} and a ${rolesClicked[0].toUpperCase()}.`;
 				}
 			}
 		};
@@ -120,10 +126,4 @@ export function updateUserNightActionEvent(socket, data) {
 
 	player.gameChats.push(chat);
 	sendInprogressChats(game);
-}
-
-let getTrueRoleBySeatNumber = (game, num) => {
-	num = parseInt(num);
-
-	return num < 7 ? game.internals.seatedPlayers[num].trueRole : game.internals.centerRoles[num - 7];
 }

@@ -152,7 +152,7 @@ export default class Gamechat extends React.Component {
 	handleTimestamps(timestamp) {
 		let { userInfo } = this.props;
 
-		if (userInfo.userName && userInfo.gameSettings.enableTimestamps) {
+		if (userInfo.userName && userInfo.gameSettings && userInfo.gameSettings.enableTimestamps) {
 			let minutes = (`0${new Date(timestamp).getMinutes()}`).slice(-2),
 				seconds = (`0${new Date(timestamp).getSeconds()}`).slice(-2);
 

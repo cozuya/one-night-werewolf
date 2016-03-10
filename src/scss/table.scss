@@ -9,6 +9,7 @@
 		.table-uid {
 			position: absolute;
 			top: 415px;
+			left: 200px;
 			color: #c2c2c2;
 		}
 
@@ -238,7 +239,18 @@
 		.card-proceed {
 			box-shadow: 0 0 4px 4px $proceed;
 		}
-	}	
+	}
+
+	.ui.fitted.toggle.checkbox.truncate-game {
+		position: absolute;
+		top: 413px;
+		left: 0px;
+		width: 170px;
+
+		label {
+			padding-left: 52px !important;
+		}
+	}
 }
 
 .nine.table-container .table .remove.icon {

@@ -54,7 +54,7 @@ export default class Table extends React.Component {
 	}
 
 	componentDidMount() {
-		if (!Object.keys(this.props.userInfo).length || !this.props.userInfo.gameSettings.disablePopups) {
+		if (!Object.keys(this.props.userInfo).length || this.props.userInfo.gameSettings && !this.props.userInfo.gameSettings.disablePopups) {
 			$('i.warning.sign.icon').popup({
 				inline: true,
 				hoverable: true,
@@ -386,6 +386,19 @@ export default class Table extends React.Component {
 	reportGame() {
 		// todo flag game for report in db on save so it can be reviewed later
 	}
+	
+	truncateClicked(e) {
+		let { gameInfo, userInfo } = this.props;
+
+		if (userInfo.seatNumber && !gameInfo.isNight && gameInfo.inProgress) {
+			let clicked = !!$(e.currentTarget).is(':checked');
+
+			socket.emit('updateTruncateGame', {
+				truncate: clicked,
+				uid: gameInfo.uid
+			});
+		}
+	}
 
 	render() {
 		let { gameInfo, userInfo } = this.props;
@@ -435,7 +448,7 @@ export default class Table extends React.Component {
 					})}
 					{this.createCards()}
 				<i onClick={this.leaveGame.bind(this)} className={(() => {
-					if ((!!userInfo.seatNumber && Object.keys(gameInfo.seated).length === 7) || !gameInfo.completedGame) {
+					if ((!!userInfo.seatNumber && Object.keys(gameInfo.seated).length === 7) || gameInfo.inProgress && !gameInfo.completedGame) {
 						return 'app-hidden';
 					} else {
 						return 'remove icon';
@@ -447,6 +460,10 @@ export default class Table extends React.Component {
 					<div className="ui small popup transition hidden">
 							Report this game to the moderators for review.
 					</div>
+				</div>
+				<div className="ui fitted toggle checkbox truncate-game">
+					<input type="checkbox" name="truncate-game" onClick={this.truncateClicked.bind(this)}></input>
+					<label>End the game early</label>
 				</div>
 				<div className="ui basic small modal">
 					<i className="close icon"></i>

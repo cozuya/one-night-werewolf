@@ -15,7 +15,7 @@ export default class Main extends React.Component {
 					let classes;
 
 					if (this.props.midsection === 'game') {
-						if (Object.keys(this.props.userInfo).length && this.props.userInfo.gameSettings.disableRightSidebarInGame) {
+						if (Object.keys(this.props.userInfo).length && this.props.userInfo.gameSettings && this.props.userInfo.gameSettings.disableRightSidebarInGame) {
 							classes = 'sixteen';
 						} else {
 							classes = 'thirteen';

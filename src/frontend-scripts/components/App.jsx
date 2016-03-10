@@ -1,8 +1,8 @@
 'use strict';
 
-import LeftSidebar from './section-left/LeftSidebar.jsx'
-import Main from './section-main/Main.jsx'
-import RightSidebar from './section-right/RightSidebar.jsx'
+import LeftSidebar from './section-left/LeftSidebar.jsx';
+import Main from './section-main/Main.jsx';
+import RightSidebar from './section-right/RightSidebar.jsx';
 import React from 'react';
 import { connect } from 'react-redux';
 import { updateUser, updateMidsection, updateGameList, updateGameInfo, updateUserList, updateGeneralChats } from '../actions/actions.js';
@@ -16,16 +16,11 @@ class App extends React.Component {
 			{ classList } = document.getElementById('game-container');
 
 		if (classList.length) {
-			dispatch(updateUser({
-				userName: classList[0].split('username-')[1]
-			}));
-			socket.emit('getUserGameSettings');
-		}
+			let username = classList[0].split('username-')[1];
 
-		setTimeout(() => {
-			// probably a better way to do this but oh well
-			socket.emit('checkNewlyConnectedUserStatus');
-		}, 500);
+			dispatch(updateUser({userName: username}));
+			socket.emit('getUserGameSettings', username);
+		}
 
 		socket.on('gameSettings', (settings) => {
 			let user = this.props.userInfo;
@@ -62,10 +57,6 @@ class App extends React.Component {
 		socket.on('generalChats', (chats) => {
 			dispatch(updateGeneralChats(chats));
 		});
-
-		socket.emit('getGeneralChats');
-		socket.emit('getGameList');
-		socket.emit('getUserList');
 	}
 
 	handleRoute(route) {

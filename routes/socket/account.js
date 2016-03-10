@@ -2,12 +2,12 @@
 
 import mongoose from 'mongoose';
 import Account from '../../models/account';
-import { games, deleteGame } from './game';
+import { games, deleteGame, sendGameList } from './game';
 import { secureGame, getInternalPlayerInGameByUserName } from './util';
 import { combineInprogressChats } from './gamechat';
-import _ from 'lodash';
 
 export let userList = [];
+
 let generalChats = [];
 
 export function handleSocketDisconnect(socket) {
@@ -51,26 +51,43 @@ export function handleSocketDisconnect(socket) {
 }
 
 export function checkUserStatus(socket) {
-	let { user } = socket.handshake.session.passport,
-		gameUserIsIn = games.find((game) => {
-			return Object.keys(game.seated).find((seat) => {
-				return game.seated[seat].userName === user;
+	if (socket.handshake.session.passport && Object.keys(socket.handshake.session.passport).length) {
+		let { user } = socket.handshake.session.passport,
+			sockets = io.sockets.sockets,
+			gameUserIsIn = games.find((game) => {
+				return Object.keys(game.seated).find((seat) => {
+					return game.seated[seat].userName === user;
+				});
+			}),
+			oldSocket = sockets.find((sock) => {
+				if (sock.handshake.session.passport && Object.keys(sock.handshake.session.passport).length) {
+					return sock.id !== socket.id && sock.handshake.session.passport.user === user;
+				}
 			});
-		}),
-		chats, cloneGame;
 
-	// console.log(user);
-	// console.log(gameUserIsIn);
+		if (oldSocket) {
+			sockets.splice(sockets.indexOf(oldSocket), 1);
+		}
 
-	if (user && gameUserIsIn && gameUserIsIn.inProgress) {
-		let internalPlayer = getInternalPlayerInGameByUserName(gameUserIsIn, user);
-		cloneGame = _.clone(gameUserIsIn);
-		cloneGame.chats = combineInprogressChats(cloneGame, user);
-		socket.join(gameUserIsIn.uid);
-		socket.emit('gameUpdate', secureGame(cloneGame));
-		socket.emit('updateSeatForUser', internalPlayer.seat);
+		if (gameUserIsIn && gameUserIsIn.inProgress) {
+			let internalPlayer = getInternalPlayerInGameByUserName(gameUserIsIn, user),
+				cloneGame = Object.assign({}, gameUserIsIn);
+
+			cloneGame.chats = combineInprogressChats(cloneGame, user);
+			socket.join(gameUserIsIn.uid);
+			socket.emit('gameUpdate', secureGame(cloneGame));
+			socket.emit('updateSeatForUser', internalPlayer.seat);
+		}
+	} else {
+		io.sockets.emit('userList', {
+			list: userList,
+			totalSockets: Object.keys(io.sockets.sockets).length
+		});
 	}
-};
+
+	sendGeneralChats(socket);
+	sendGameList(); // todo make this socket-able as opposed to broadcast
+}
 
 export function handleUpdatedGameSettings(socket, data) {
 	Account.findOne({username: socket.handshake.session.passport.user}, (err, account) => {
@@ -85,18 +102,10 @@ export function handleUpdatedGameSettings(socket, data) {
 		account.save();
 		socket.emit('gameSettings', account.gameSettings);
 	});
-};
+}
 
-export function sendUserGameSettings(socket) {
-	var username;
-
-	try {
-		username = socket.handshake.session.passport.user;  // todo: this errors out some times/is undefined - happend 3/7/2016
-	} catch (e) {
-		console.log('sendUserGameSettings errored out');
-	}
-
-	Account.findOne({username}, (err, account) => {
+export function sendUserGameSettings(socket, username) {
+	Account.findOne(username, (err, account) => {
 		if (err) {
 			console.log(err);
 		}
@@ -107,9 +116,12 @@ export function sendUserGameSettings(socket) {
 			wins: account.wins,
 			losses: account.losses
 		});
-		io.sockets.emit('userList', {list: userList, totalSockets: Object.keys(io.sockets.sockets).length});
+		io.sockets.emit('userList', {
+			list: userList,
+			totalSockets: Object.keys(io.sockets.sockets).length
+		});
 	});
-};
+}
 
 export function handleNewGeneralChat(data) {
 	if (generalChats.length === 100) {
@@ -121,8 +133,8 @@ export function handleNewGeneralChat(data) {
 	generalChats.push(data);
 
 	io.sockets.emit('generalChats', generalChats);
-};
+}
 
 export function sendGeneralChats(socket) {
 	socket.emit('generalChats', generalChats);
-};
+}

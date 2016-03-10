@@ -91,8 +91,6 @@ let beginNightPhases = (game) => {
 	// round 2 through x: robbercount + troublemaker count minus 1
 	// round x+1: all insomniacs
 
-	console.log(game.internals.centerRoles);
-
 	let phases = [[]],
 		roleChangerInPhase1 = false,
 		insomniacs = [],
@@ -158,8 +156,10 @@ let beginNightPhases = (game) => {
 					phases[0].push(player);
 				}
 				break;
-		};
+		}
 	});
+	
+	// todo insert dummy night phases
 
 	// game.internals.centerRoles.forEach((role) => {
 	// 	let count = 1;
@@ -238,7 +238,7 @@ let beginNightPhases = (game) => {
 
 				if (!werewolves.length) {
 					game.internals.soloMinion = true;
-					message = 'You wake up, and see that there are no WEREWOLVES in this game. Be careful - you lose if no villager is eliminated.'
+					message = 'You wake up, and see that there are no WEREWOLVES in this game. Be careful - you lose if no villager is eliminated.';
 				} else {
 					message = 'You wake up, and see that the WEREWOLVES in this game are: ';
 				}
@@ -273,7 +273,7 @@ let beginNightPhases = (game) => {
 					phase: 1
 				};
 
-				if (!otherMasons.length === 1) {
+				if (otherMasons.length === 1) {
 					message = 'You wake up, and see that you are the only MASON';
 				} else {
 					message = 'You wake up, and see that the MASONS in this game are: ';				
@@ -300,7 +300,7 @@ let beginNightPhases = (game) => {
 		game.tableState.phase = 1;
 		nightPhases(game, phases);
 	}, 3000);
-}
+};
 
 // todo need to put in dummy phases before the insomniac phase with no players waking up so as to not be able to divine which cards are in the middle
 
@@ -380,7 +380,7 @@ let nightPhases = (game, phases) => {
 		phasesIndex++;
 		phasesTimer = setInterval(phasesFn, 10000);
 	}
-}
+};
 
 export function updateSelectedElimination(data) {
 	let game = games.find((el) => {
@@ -389,7 +389,7 @@ export function updateSelectedElimination(data) {
 		player = game.internals.seatedPlayers[parseInt(data.seatNumber)];
 
 	player.selectedForElimination = data.selectedForElimination;
-};
+}
 
 let dayPhase = (game) => {
 	let seconds = (() => {
@@ -404,6 +404,11 @@ let dayPhase = (game) => {
 			eliminationPhase(game);
 		} else {
 			let status;
+			
+			if (game.internals.truncateGame) {
+				seconds = 16;
+				game.internals.truncateGame = false;
+			}
 
 			if (seconds < 60) {
 				status = `Day ends in ${seconds} second${seconds === 1 ? '' : 's'}`;
@@ -462,7 +467,7 @@ let eliminationPhase = (game) => {
 	countDown = setInterval(() => {
 		if (index === devStatus.playerCountToEndGame) {
 			clearInterval(countDown);
-			game.status = 'The game is completed.'
+			game.status = 'The game is completed.';
 			endGame(game);
 		} else {
 			let noSelection = index === 6 ? 0 : index + 1;
@@ -663,4 +668,4 @@ let endGame = (game) => {
 		});
 
 	}, devStatus.revealAllCardsPause);
-}
+};

@@ -29,7 +29,7 @@ class Game extends React.Component {
 							(() => {
 								let classes;
 
-								if (Object.keys(this.props.userInfo).length && this.props.userInfo.gameSettings.disableRightSidebarInGame) {
+								if (Object.keys(this.props.userInfo).length && this.props.userInfo.gameSettings && this.props.userInfo.gameSettings.disableRightSidebarInGame) {
 									classes = 'nine ';
 								} else {
 									classes = 'ten ';
@@ -48,7 +48,7 @@ class Game extends React.Component {
 							(() => {
 								let classes;
 
-								if (Object.keys(this.props.userInfo).length && this.props.userInfo.gameSettings.disableRightSidebarInGame) {
+								if (Object.keys(this.props.userInfo).length && this.props.userInfo.gameSettings && this.props.userInfo.gameSettings.disableRightSidebarInGame) {
 									classes = 'seven ';
 								} else {
 									classes = 'six ';
@@ -75,7 +75,7 @@ class Game extends React.Component {
 					(() => {
 						let classes = 'row gameroles-container';
 
-						if (Object.keys(this.props.userInfo).length && this.props.userInfo.gameSettings.disableRightSidebarInGame) {
+						if (Object.keys(this.props.userInfo).length && this.props.userInfo.gameSettings && this.props.userInfo.gameSettings.disableRightSidebarInGame) {
 							classes += ' disabledrightsidebar';
 						}
 

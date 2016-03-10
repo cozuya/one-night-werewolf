@@ -18,7 +18,7 @@ export default class RightSidebar extends React.Component {
 				(() => {
 					let classes = 'section-right three wide column';
 
-					if (this.props.midsection === 'game' && Object.keys(this.props.userInfo).length && this.props.userInfo.gameSettings.disableRightSidebarInGame) {
+					if (this.props.midsection === 'game' && Object.keys(this.props.userInfo).length && this.props.userInfo.gameSettings && this.props.userInfo.gameSettings.disableRightSidebarInGame) {
 						classes += ' app-hidden';
 					}
 

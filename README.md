@@ -9,7 +9,7 @@ Back end: Node with Express, Jade, Passport, Mongodb with Mongoose, SocketIO.
 
 Build: Gulp, Browserify, Babel.
 
-WIP and just getting started!  Estimated alpha deployment: May 2016.
+Work in progress. Estimated alpha deployment: May 2016.
 
 ## Installation ##
 
@@ -65,4 +65,4 @@ start development task runner:
 
 > gulp
 
-Tinkering with the "devStatus" object in util.js is probably the place to start.
+Changing the "devStatus" object to "prod" in util.js is probably the place to start.

@@ -134,10 +134,8 @@ export default class Creategame extends React.Component {
 				playerPerceivedRole: false
 			},
 			inProgress: false,
-			seatedCount: 1,
 			uid: Math.random().toString(36).substring(6)
-		});
-		
+		});	
 	}
 
 	render() {

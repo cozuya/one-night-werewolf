@@ -4,15 +4,42 @@
 
 import { startGame } from './game-internals.js';
 import { secureGame, getInternalPlayerInGameByUserName, devStatus } from './util.js';
-import { combineInprogressChats } from './gamechat.js';
+import { combineInprogressChats, sendInprogressChats } from './gamechat.js';
 import { userList } from './account.js';
 import _ from 'lodash';
+
+export let games = [];
 
 export let deleteGame = (game) => {
 	games.splice(games.indexOf(game), 1);
 };
 
-export let games = [];
+export function handleUpdatedTruncateGame(data) {
+	let game = games.find((el) => {
+			return el.uid === data.uid;
+		}),
+		chat = {
+			gameChat: true,
+			timestamp: new Date()
+		};
+
+	if (!data.truncate && game.internals.truncateGameCount !== 0) {
+		game.internals.truncateGameCount--;
+		chat.chat = `A player has removed their vote to end the game early. [${game.internals.truncateGameCount} / 4]`;
+	} else {
+		game.internals.truncateGameCount++;
+
+		if (game.internals.truncateGameCount === 4) {
+			chat.chat = 'The majority of players have voted to end the game early.';
+			game.internals.truncateGame = true;
+		} else {
+			chat.chat = `A player has voted to end the game early. [${game.internals.truncateGameCount} / 4]`;
+		}
+	}
+	
+	game.chats.push(chat);
+	sendInprogressChats(game);
+}
 
 export function sendGameList() {
 	io.sockets.emit('gameList', games.map((game) => {
@@ -31,13 +58,14 @@ export function sendGameList() {
 export function createGame(socket, game) {
 	game.internals = {
 		unSeatedGameChats: [],
-		seatedPlayers: []
+		seatedPlayers: [],
+		truncateGameCount: 0
 	};
 
 	games.push(game);
 	sendGameList();
 	socket.join(game.uid);
-};
+}
 
 export function sendGameInfo(socket, uid) {
 	let game = games.find((el) => {
@@ -59,11 +87,14 @@ export function sendGameInfo(socket, uid) {
 	}
 
 	socket.emit('gameUpdate', secureGame(cloneGame));
-};
+}
 
 export function sendUserList(socket) {
-	socket.emit('userList', {list: userList, totalSockets: Object.keys(io.sockets.sockets).length});
-};
+	socket.emit('userList', {
+		list: userList,
+		totalSockets: Object.keys(io.sockets.sockets).length
+	});
+}
 
 export function updateSeatedUsers(socket, data) {
 	let game = games.find((el) => {
