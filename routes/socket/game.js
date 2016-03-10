@@ -23,26 +23,28 @@ export function handleUpdatedTruncateGame(data) {
 			timestamp: new Date()
 		};
 
-	if (!data.truncate && game.internals.truncateGameCount !== 0) {
-		game.internals.truncateGameCount--;
-		chat.chat = `A player has removed their vote to end the game early. [${game.internals.truncateGameCount} / 4]`;
-	} else {
-		game.internals.truncateGameCount++;
-
-		if (game.internals.truncateGameCount === 4) {
-			chat.chat = 'The majority of players have voted to end the game early.';
-			game.internals.truncateGame = true;
+	if (!game.internals.truncated) {
+		if (!data.truncate && game.internals.truncateGameCount !== 0) {
+			game.internals.truncateGameCount--;
+			chat.chat = `${data.userName} has removed their vote to end the game early. [${game.internals.truncateGameCount} / 4]`;
 		} else {
-			chat.chat = `A player has voted to end the game early. [${game.internals.truncateGameCount} / 4]`;
+			game.internals.truncateGameCount++;
+
+			if (game.internals.truncateGameCount === 4) {
+				chat.chat = 'The majority of players have voted to end the game early.';
+				game.internals.truncateGame = true;
+				game.internals.truncated = true;
+			} else {
+				chat.chat = `${data.userName} has voted to end the game early. [${game.internals.truncateGameCount} / 4]`;
+			}
 		}
-	}
-	
 	game.chats.push(chat);
 	sendInprogressChats(game);
+	}
 }
 
-export function sendGameList() {
-	io.sockets.emit('gameList', games.map((game) => {
+export function sendGameList(socket) {
+	let formattedGames = games.map((game) => {
 		return {
 			kobk: game.kobk,
 			time: game.time,
@@ -52,7 +54,13 @@ export function sendGameList() {
 			inProgress: game.inProgress,
 			uid: game.uid
 		};
-	}));
+	});
+
+	if (socket) {
+		socket.emit('gameList', formattedGames);
+	} else {
+		io.sockets.emit('gameList', formattedGames);
+	}
 }
 
 export function createGame(socket, game) {

@@ -86,7 +86,7 @@ export function checkUserStatus(socket) {
 	}
 
 	sendGeneralChats(socket);
-	sendGameList(); // todo make this socket-able as opposed to broadcast
+	sendGameList(socket);
 }
 
 export function handleUpdatedGameSettings(socket, data) {

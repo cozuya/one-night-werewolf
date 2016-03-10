@@ -50,7 +50,7 @@ export default class Table extends React.Component {
 			});
 		}
 
-		console.log(gameInfo);
+		// console.log(gameInfo);
 	}
 
 	componentDidMount() {
@@ -395,6 +395,7 @@ export default class Table extends React.Component {
 
 			socket.emit('updateTruncateGame', {
 				truncate: clicked,
+				userName: userInfo.userName,
 				uid: gameInfo.uid
 			});
 		}
