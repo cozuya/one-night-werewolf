@@ -6,7 +6,6 @@ import { startGame } from './game-internals.js';
 import { secureGame, getInternalPlayerInGameByUserName, devStatus } from './util.js';
 import { combineInprogressChats, sendInprogressChats } from './gamechat.js';
 import { userList } from './account.js';
-import _ from 'lodash';
 
 export let games = [];
 
@@ -29,17 +28,16 @@ export function handleUpdatedTruncateGame(data) {
 			chat.chat = `${data.userName} has removed their vote to end the game early. [${game.internals.truncateGameCount} / 4]`;
 		} else {
 			game.internals.truncateGameCount++;
+			chat.chat = `${data.userName} has voted to end the game early. [${game.internals.truncateGameCount} / 4]`;
 
 			if (game.internals.truncateGameCount === 4) {
-				chat.chat = 'The majority of players have voted to end the game early.';
+				chat.chat = `${chat.chat} The majority of players have voted to end the game early.`;
 				game.internals.truncateGame = true;
 				game.internals.truncated = true;
-			} else {
-				chat.chat = `${data.userName} has voted to end the game early. [${game.internals.truncateGameCount} / 4]`;
 			}
 		}
-	game.chats.push(chat);
-	sendInprogressChats(game);
+		game.chats.push(chat);
+		sendInprogressChats(game);
 	}
 }
 
@@ -79,7 +77,7 @@ export function sendGameInfo(socket, uid) {
 	let game = games.find((el) => {
 			return el.uid === uid;
 		}),
-		cloneGame = _.clone(game);
+		cloneGame = Object.assign({}, game);
 
 	socket.join(uid);
 

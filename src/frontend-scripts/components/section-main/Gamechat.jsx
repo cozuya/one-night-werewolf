@@ -100,9 +100,7 @@ export default class Gamechat extends React.Component {
 		let input = $(e.currentTarget).find('input')[0],
 			$button = $(e.currentTarget).find('button'),
 			$clearIcon = $button.parent().next(),
-			seat = Object.keys(this.props.gameInfo.seated).find((seat) => { // todo: replace this with userinfo.seatnumber after that is implemented to work on reconnection event
-				return this.props.gameInfo.seated[seat].userName === this.props.userInfo.userName;
-			});
+			{ seatNumber } = this.props.userInfo;
 
 		e.preventDefault();
 
@@ -111,7 +109,7 @@ export default class Gamechat extends React.Component {
 				userName: this.props.userInfo.userName,
 				chat: input.value,
 				gameChat: false,
-				seat: seat ? parseInt(seat.split('seat')[1]) : '',
+				seat: seatNumber ? parseInt(seatNumber.split('seatNumber')[1]) : '',
 				inProgress: this.props.gameInfo.inProgress
 			};
 
@@ -166,8 +164,6 @@ export default class Gamechat extends React.Component {
 
 	processChats() {
 		let { gameInfo } = this.props;
-
-		// todo: make the logged in user's chats a different color than everyone else's chats
 
 		return gameInfo.chats.map((chat, i) => {
 			let chatContents = chat.chat,

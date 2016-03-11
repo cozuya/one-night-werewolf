@@ -302,8 +302,6 @@ let beginNightPhases = (game) => {
 	}, 3000);
 };
 
-// todo need to put in dummy phases before the insomniac phase with no players waking up so as to not be able to divine which cards are in the middle
-
 let nightPhases = (game, phases) => {
 	let phasesIndex = 0,
 		phasesCount = phases.length,
@@ -659,7 +657,7 @@ let endGame = (game) => {
 					if (winner) {
 						userEntry.wins++;
 					} else {
-						userEntry.losses++;
+						userEntry.losses++; // todo crashed (userEntry undefined) when a player reloaded browser during end game phase
 					}
 
 					io.sockets.emit('userList', {list: userList, totalSockets: Object.keys(io.sockets.sockets).length});

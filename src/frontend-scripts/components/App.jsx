@@ -68,7 +68,7 @@ class App extends React.Component {
 	handleCreateGameSubmit(game) {
 		let { dispatch, userInfo } = this.props;
 
-		userInfo.seatNumber = '0'; // todo: remove this when a player leaves a game they're seated at  - not sure if this todo is still valid
+		userInfo.seatNumber = '0';
 		dispatch(updateGameInfo(game));
 		dispatch(updateMidsection('game'));
 		dispatch(updateUser(userInfo));

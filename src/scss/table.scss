@@ -11,6 +11,14 @@
 			top: 415px;
 			left: 200px;
 			color: #c2c2c2;
+
+			i {
+				cursor: pointer;
+			}
+
+			.report-game-clicked {
+				color: red;
+			}
 		}
 
 		.nightblocker {

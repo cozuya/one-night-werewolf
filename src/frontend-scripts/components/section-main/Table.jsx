@@ -15,7 +15,7 @@ $.fn.modal = Modal;
 export default class Table extends React.Component {
 	constructor() {
 		this.state = {
-			firstClickedCard: ''
+			firstClickedCard: '',
 		};
 	}
 
@@ -23,6 +23,8 @@ export default class Table extends React.Component {
 		let { gameInfo, userInfo } = this.props,
 			{ tableState } = gameInfo,
 			prevTableState = prevProps.gameInfo.tableState;
+
+		console.log(gameInfo);
 
 		if (tableState.cardsDealt === 'in progress') {
 			setTimeout(() => {
@@ -382,16 +384,14 @@ export default class Table extends React.Component {
 			return position === 'top' ? 'nightblocker nightblocker-top': 'nightblocker nightblocker-bottom';
 		}
 	}
-
-	reportGame() {
-		// todo flag game for report in db on save so it can be reviewed later
-	}
 	
 	truncateClicked(e) {
 		let { gameInfo, userInfo } = this.props;
 
 		if (userInfo.seatNumber && !gameInfo.isNight && gameInfo.inProgress) {
 			let clicked = !!$(e.currentTarget).is(':checked');
+
+			console.log('Hello World!');
 
 			socket.emit('updateTruncateGame', {
 				truncate: clicked,
@@ -457,12 +457,33 @@ export default class Table extends React.Component {
 				})()}></i>
 				<div className="table-uid">
 					Game ID: {gameInfo.uid}
-					<i className="warning sign icon" onClick={this.reportGame.bind(this)}></i>
-					<div className="ui small popup transition hidden">
-							Report this game to the moderators for review.
+					<i onClick={this.clickedReportGame.bind(this)} className={
+						(() => {
+							let classes = 'warning sign icon';
+
+							// if (this.props.gameInfo.gameReported) {
+							// 	classes += ' report-game-clicked';
+							// }
+
+							return classes;
+						})()
+					}></i>
+					<div className="ui popup transition hidden">
+							Mark this game for reporting to the administrators for review.
 					</div>
 				</div>
-				<div className="ui fitted toggle checkbox truncate-game">
+				<div className={
+					(() => {
+						let classes = 'ui fitted toggle checkbox truncate-game',
+							{ gameInfo } = this.props;
+
+						if (!gameInfo.inProgress || gameInfo.isNight || gameInfo.completedGame || /VOTE/.test(gameInfo.status)) {
+							classes += ' app-hidden';
+						}
+
+						return classes;
+					})()
+				}>
 					<input type="checkbox" name="truncate-game" onClick={this.truncateClicked.bind(this)}></input>
 					<label>End the game early</label>
 				</div>
