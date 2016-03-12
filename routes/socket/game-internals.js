@@ -3,7 +3,6 @@
 let mongoose = require('mongoose'),
 	Game = require('../../models/game'),
 	Account = require('../../models/account'),
-	games = require('./game').games,
 	secureGame = require('./util').secureGame,
 	devStatus = require('./util').devStatus,
 	sendInprogressChats = require('./gamechat').sendInprogressChats,

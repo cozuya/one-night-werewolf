@@ -8,7 +8,7 @@ let mongoose = require('mongoose'),
 	deleteGame = require('./game').deleteGame,
 	sendGameList = require('./game').sendGameList,
 	combineInprogressChats = require('./gamechat').combineInprogressChats,
-	userList = [],
+	userList = require('./game').userList,
 	generalChats = [];
 
 console.log(require('./game'));

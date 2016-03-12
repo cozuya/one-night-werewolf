@@ -14,7 +14,8 @@ let handleUpdatedTruncateGame = require('./game').handleUpdatedTruncateGame,
 	handleSocketDisconnect = require('./account').handleSocketDisconnect,
 	addNewGameChat = require('./gamechat').addNewGameChat,
 	updateUserNightActionEvent = require('./game-nightactions').updateUserNightActionEvent,
-	updateSelectedElimination = require('./game-internals').updateSelectedForElimination;
+	updateSelectedElimination = require('./game-internals').updateSelectedForElimination,
+	games = require('./game').games;
 
 module.exports = () => {
 	io.on('connection', (socket) => {
@@ -35,7 +36,7 @@ module.exports = () => {
 		}).on('getUserGameSettings', (data) => {
 			sendUserGameSettings(socket, data);			
 		}).on('newGameChat', (chat, uid) => {
-			addNewGameChat(chat, uid);
+			addNewGameChat(games, chat, uid);
 		}).on('userNightActionEvent', (data) => {
 			updateUserNightActionEvent(socket, data);
 		}).on('getUserList', () => {

@@ -1,11 +1,9 @@
 'use strict';
 
-let games = require('./game').games,
-	secureGame = require('./util').secureGame,
-	getInternalPlayerInGameByUserName = require('./util').getInternalPlayerInGameByUserName,
-	getSocketsByUid = require('./util').getSocketsByUid;
+let secureGame = require('./util').secureGame,
+	getInternalPlayerInGameByUserName = require('./util').getInternalPlayerInGameByUserName;
 
-module.exports.addNewGameChat = (data, uid) => {
+module.exports.addNewGameChat = (games, data, uid) => {
 	let game = games.find((el) => {
 			return el.uid === uid;
 		}),
@@ -38,7 +36,21 @@ module.exports.combineInprogressChats = (game, userName) => {
 };
 
 module.exports.sendInprogressChats= (game) => {
-	let sockets = getSocketsByUid(game.uid);
+	let seatedPlayerNames = Object.keys(game.seated).map((seat) => {
+			return game.seated[seat].userName;
+		}),
+		sockets = {},
+		roomSockets = Object.keys(io.sockets.adapter.rooms[game.uid]).map((sockedId) => {
+			return io.sockets.connected[sockedId];
+		});
+
+		sockets.playerSockets = roomSockets.filter((socket) => {
+			return seatedPlayerNames.indexOf(socket.handshake.session.passport.user) >= 0;  // todo this errored some how at beginning of game once
+		});
+
+		sockets.observerSockets = roomSockets.filter((socket) => {
+			return seatedPlayerNames.indexOf(socket.handshake.session.passport.user) === -1;
+		});
 
 	sockets.playerSockets.forEach((sock, index) => {
 		let cloneGame = Object.assign({}, game),
