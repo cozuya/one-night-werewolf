@@ -1,11 +1,11 @@
 {
 	"ignore": [
-		"gulpfile.babel.js",
 		"gulpfile.js",
 		"public/*",
 		"src/*",
 		"data/*",
 		"logs/*",
 		"node_modules/*"
-	]
+	],
+	"verbose": true
 }

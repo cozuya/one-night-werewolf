@@ -80,8 +80,5 @@
     "through2": "^0.6.3",
     "vinyl-transform": "^1.0.0",
     "yamljs": "^0.2.3"
-  },
-  "scripts": {
-    "babel-node": "babel-node --stage 0"
   }
 }

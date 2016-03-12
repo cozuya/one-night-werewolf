@@ -19,7 +19,7 @@ module.exports.addNewGameChat = (games, data, uid) => {
 	}
 };
 
-module.exports.combineInprogressChats = (game, userName) => {
+let combineInprogressChats = (game, userName) => {
 	let player, gameChats, _chats;
 
 	if (userName) {
@@ -84,3 +84,5 @@ module.exports.sendInprogressChats= (game) => {
 		});
 	}
 };
+
+module.exports.combineInprogressChats = combineInprogressChats;

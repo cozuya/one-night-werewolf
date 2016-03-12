@@ -11,9 +11,6 @@ let mongoose = require('mongoose'),
 	userList = require('./game').userList,
 	generalChats = [];
 
-console.log(require('./game'));
-// console.log(require('./gamechat'));
-
 module.exports.handleSocketDisconnect = (socket) => {
 	let passport = socket.handshake.session.passport;
 

@@ -59,7 +59,7 @@ start mongo:
 
 start server:
 
-> nodemon --exec npm run babel-node -- ./bin/dev
+> nodemon ./bin/dev
 
 start development task runner:
 

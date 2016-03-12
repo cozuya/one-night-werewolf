@@ -9,8 +9,6 @@ let startGame = require('./game-internals').startGame,
 	games = [],
 	userList = [];
 
-// console.log(require('./util.js'));
-
 module.exports.deleteGame = (game) => {
 	games.splice(games.indexOf(game), 1);
 };
@@ -43,7 +41,7 @@ module.exports.handleUpdatedTruncateGame = (data) => {
 	}
 };
 
-module.exports.sendGameList = (socket) => {
+let sendGameList = (socket) => {
 	let formattedGames = games.map((game) => {
 		return {
 			kobk: game.kobk,
@@ -168,3 +166,4 @@ let startGameCountdown = (game) => {
 
 module.exports.games = games;
 module.exports.userList = userList;
+module.exports.sendGameList = sendGameList;

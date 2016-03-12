@@ -6,13 +6,12 @@ let mongoose = require('mongoose'),
 	secureGame = require('./util').secureGame,
 	devStatus = require('./util').devStatus,
 	sendInprogressChats = require('./gamechat').sendInprogressChats,
-	updatedTrueRoles = require('./game-nightactions').updatedTrueRoles,
-	userList = require('./account').userList;
+	updatedTrueRoles = require('./game-nightactions').updatedTrueRoles;
 
 module.exports.startGame = (game) => {
 	let allWerewolvesNotInCenter = false,
 		assignRoles = () => {
-			let _roles = Object.assign({}, game.roles);
+			let _roles = [...game.roles];
 
 			game.internals.seatedPlayers.map((player, index) => {
 				let roleIndex = Math.floor((Math.random() * _roles.length)),
@@ -649,7 +648,8 @@ let endGame = (game) => {
 
 				player.games.push(game.uid);
 				player.save(() => {
-					let userEntry = userList.find((user) => {
+					let userList = require('./game').userList, // circle dependancy
+						userEntry = userList.find((user) => {
 						return user.userName === player.username;
 					});
 
@@ -659,7 +659,10 @@ let endGame = (game) => {
 						userEntry.losses++; // todo crashed (userEntry undefined) when a player reloaded browser during end game phase
 					}
 
-					io.sockets.emit('userList', {list: userList, totalSockets: Object.keys(io.sockets.sockets).length});
+					io.sockets.emit('userList', {
+						list: userList,
+						totalSockets: Object.keys(io.sockets.sockets).length
+					});
 				});
 			});
 		});
