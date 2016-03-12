@@ -1,12 +1,22 @@
 'use strict';
 
-import { handleUpdatedTruncateGame, sendGameList, sendUserList, createGame, sendGameInfo, updateSeatedUsers } from './game';
-import { sendGeneralChats, handleNewGeneralChat, checkUserStatus, handleUpdatedGameSettings, sendUserGameSettings, handleSocketDisconnect } from './account';
-import { addNewGameChat } from './gamechat';
-import { updateUserNightActionEvent } from './game-nightactions';
-import { updateSelectedElimination } from './game-internals';
+let handleUpdatedTruncateGame = require('./game').handleUpdatedTruncateGame,
+	sendGameList = require('./game').sendGameList,
+	sendUserList = require('./game').sendUserList,
+	createGame = require('./game').createGame,
+	sendGameInfo = require('./game').sendGameInfo,
+	updateSeatedUsers = require('./game').updateSeatedUsers,
+	sendGeneralChats = require('./account').sendGeneralChats,
+	handleNewGeneralChat = require('./account').handleNewGeneralChat,
+	checkUserStatus = require('./account').checkUserStatus,
+	handleUpdatedGameSettings = require('./account').handleUpdatedGameSettings,
+	sendUserGameSettings = require('./account').sendUserGameSettings,
+	handleSocketDisconnect = require('./account').handleSocketDisconnect,
+	addNewGameChat = require('./gamechat').addNewGameChat,
+	updateUserNightActionEvent = require('./game-nightactions').updateUserNightActionEvent,
+	updateSelectedElimination = require('./game-internals').updateSelectedForElimination;
 
-export default () => {
+module.exports = () => {
 	io.on('connection', (socket) => {
 		checkUserStatus(socket);
 

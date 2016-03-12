@@ -1,9 +1,11 @@
 'use strict';
 
-import { games } from './game.js';
-import { secureGame, getInternalPlayerInGameByUserName, getSocketsByUid } from './util.js';
+let games = require('./game').games,
+	secureGame = require('./util').secureGame,
+	getInternalPlayerInGameByUserName = require('./util').getInternalPlayerInGameByUserName,
+	getSocketsByUid = require('./util').getSocketsByUid;
 
-export function addNewGameChat(data, uid) {
+module.exports.addNewGameChat = (data, uid) => {
 	let game = games.find((el) => {
 			return el.uid === uid;
 		}),
@@ -17,9 +19,9 @@ export function addNewGameChat(data, uid) {
 	} else {
 		io.in(uid).emit('gameUpdate', secureGame(game));
 	}
-}
+};
 
-export function combineInprogressChats(game, userName) {
+module.exports.combineInprogressChats = (game, userName) => {
 	let player, gameChats, _chats;
 
 	if (userName) {
@@ -33,9 +35,9 @@ export function combineInprogressChats(game, userName) {
 	});
 
 	return _chats;
-}
+};
 
-export function sendInprogressChats(game) {
+module.exports.sendInprogressChats= (game) => {
 	let sockets = getSocketsByUid(game.uid);
 
 	sockets.playerSockets.forEach((sock, index) => {
@@ -69,4 +71,4 @@ export function sendInprogressChats(game) {
 			sock.emit('gameUpdate', secureGame(cloneGame));
 		});
 	}
-}
+};

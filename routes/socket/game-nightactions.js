@@ -1,8 +1,7 @@
 'use strict';
 
-import { sendInprogressChats } from './gamechat.js';
-import { games } from './game.js';
-import _ from 'lodash';
+let sendInprogressChats = require('./gamechat.js').sendInprogressChats,
+	games = require('./game.js').games;
 
 let getTrueRoleBySeatNumber = (game, num) => {
 	num = parseInt(num);
@@ -10,9 +9,9 @@ let getTrueRoleBySeatNumber = (game, num) => {
 	return num < 7 ? game.internals.seatedPlayers[num].trueRole : game.internals.centerRoles[num - 7];
 };
 
-export let updatedTrueRoles = [];
+module.exports.updatedTrueRoles = [];
 
-export function updateUserNightActionEvent(socket, data) {
+module.exports.updateUserNightActionEvent = (socket, data) => {
 	let game = games.find((el) => {
 			return el.uid === data.uid;
 		}),
@@ -89,11 +88,9 @@ export function updateUserNightActionEvent(socket, data) {
 
 					return player.trueRole;
 				});
-				console.log(updatedTrueRoles);
 				player.nightAction.seatClicked = data.action;
 				player.nightAction.newRole = swappedPlayerOriginalRole;
 				player.nightAction.completed = true;
-				console.log(player.nightAction);
 				chat.chat = `You exchange cards between yourself and ${swappedPlayer.userName.toUpperCase()} and view your new role, which is a ${swappedPlayer.trueRole.toUpperCase()}.`;
 			},
 			seer() {
@@ -126,4 +123,4 @@ export function updateUserNightActionEvent(socket, data) {
 
 	player.gameChats.push(chat);
 	sendInprogressChats(game);
-}
+};

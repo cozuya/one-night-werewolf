@@ -1,8 +1,7 @@
 'use strict';
 
-import mongoose from 'mongoose';
-
-let { Schema } = mongoose,
+let mongoose = require('mongoose'),
+	Schema = mongoose.Schema,
 	Game = new Schema({
 		uid: String,
 		time: String,
@@ -13,4 +12,4 @@ let { Schema } = mongoose,
 		kobk: Boolean
 	});
 
-export default mongoose.model('Game', Game);
+module.exports = mongoose.model('Game', Game);

@@ -1,9 +1,9 @@
 'use strict';
 
-import mongoose from 'mongoose';
-import passport from 'passport';
-import Account from '../models/account';
-import socketRoutes from './socket/routes.js';
+let mongoose = require('mongoose'),
+	passport = require('passport'),
+	Account = require('../models/account'),
+	socketRoutes = require('./socket/routes.js');
 
 let ensureAuthenticated = (req, res, next)  => {
 	if (req.isAuthenticated()) {
@@ -13,7 +13,7 @@ let ensureAuthenticated = (req, res, next)  => {
 	}
 };
 
-export default () => {
+module.exports = () => {
 	socketRoutes();
 	require('./accounts')();
 
@@ -49,12 +49,3 @@ process.once('SIGUSR2', () => {
 	
 	return process.kill(process.pid, 'SIGUSR2');
 });
-
-
-
-
-
-
-
-
-

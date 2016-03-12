@@ -1,8 +1,12 @@
 'use strict';
 
-import mongoose from 'mongoose';
-import passport from 'passport';
-import Account from '../models/account';
+let mongoose = require('mongoose'),
+	passport = require('passport'),
+	Account = require('../models/account');
+
+// import mongoose from 'mongoose';
+// import passport from 'passport';
+// import Account from '../models/account';
 
 let ensureAuthenticated = (req, res, next)  => {
 	if (req.isAuthenticated()) {
@@ -12,14 +16,15 @@ let ensureAuthenticated = (req, res, next)  => {
 	}
 };
 
-export default () => {
+module.exports = () => {
 	app.get('/account', ensureAuthenticated, (req, res) => {
 		res.render('my-account');
 	});
 
 	app.post('/account/change-password', ensureAuthenticated, (req, res) => {
-		let { newPassword, newPasswordConfirm } = req.body,
-			{ user } = req;
+		let newPassword = req.body.newPassword,
+			newPasswordConfirm = req.body.newPasswordConfirm,
+			user = req.user;
 
 		if (newPassword !== newPasswordConfirm) {
 			res.status(401).json({message: 'not equal'});
@@ -33,7 +38,8 @@ export default () => {
 	});
 
 	app.post('/account/signup', (req, res) => {
-		let { username, password } = req.body,
+		let username = req.body.username,
+			password = req.body.password,
 			save = {
 				username,
 				gameSettings: {

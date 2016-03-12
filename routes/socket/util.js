@@ -1,9 +1,9 @@
 'use strict';
 
-import { games } from './game.js';
+let games = require('./game').games;
 
 // prod
-// export let devStatus = { // can't think of a better name.  This object assists in development.
+// module.exports.devStatus = { // can't think of a better name.  This object assists in development.
 // 	nightPhasePause: 5,
 // 	phaseTime: 10,
 // 	endingGame: 15,
@@ -15,7 +15,7 @@ import { games } from './game.js';
 // }
 
 // dev 2p
-// export let devStatus = {
+// module.exports.devStatus = {
 // 	nightPhasePause: 1,
 // 	phaseTime: 1,
 // 	endingGame: 3,
@@ -28,7 +28,7 @@ import { games } from './game.js';
 
 // dev 7p
 
-export let devStatus = {
+module.exports.devStatus = {
 	nightPhasePause: 1,
 	phaseTime: 1,
 	endingGame: 3,
@@ -39,7 +39,7 @@ export let devStatus = {
 	revealAllCardsPause: 1500
 };
 
-export function getSocketsByUid(uid) {
+module.exports.getSocketsByUid = (uid) => {
 	let game = games.find((el) => {
 			return el.uid === uid;
 		}),
@@ -62,14 +62,14 @@ export function getSocketsByUid(uid) {
 	return sockets;
 }
 
-export function secureGame(game) {
+module.exports.secureGame = (game) => {
 	let _game = Object.assign({}, game);
 
 	delete _game.internals;
 	return _game;
 }
 
-export function getInternalPlayerInGameByUserName(game, userName) {
+module.exports.getInternalPlayerInGameByUserName = (game, userName) => {
 	return game.internals.seatedPlayers.find((player) => {
 		return player.userName === userName;
 	});

@@ -1,17 +1,17 @@
 'use strict';
 
-import fs from 'fs';
-import express from 'express';
-import logger from 'morgan';
-import cookieParser from 'cookie-parser';
-import bodyParser from 'body-parser';
-import favicon from 'serve-favicon';
-import socketSession from 'express-socket.io-session'
-import passport from 'passport';
-import mongoose from 'mongoose';
-import { Strategy } from 'passport-local';
-import Account from './models/account';
-import routesIndex from './routes/index';
+let fs = require('fs'),
+	express = require('express'),
+	logger = require('morgan'),
+	cookieParser = require('cookie-parser'),
+	bodyParser = require('body-parser'),
+	favicon = require('serve-favicon'),
+	socketSession = require('express-socket.io-session'),
+	passport = require('passport'),
+	mongoose = require('mongoose'),
+	Strategy = require('passport-local').Strategy,
+	Account = require('./models/account'),
+	routesIndex = require('./routes/index');
 
 let session = require('express-session')({
 		secret: 'hunter2',

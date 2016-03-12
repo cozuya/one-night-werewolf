@@ -1,19 +1,19 @@
 'use strict';
 
-import mongoose from 'mongoose';
-import Game from '../../models/game';
-import Account from '../../models/account';
-import { games } from './game.js';
-import { secureGame, devStatus } from './util.js';
-import { sendInprogressChats } from './gamechat.js';
-import { updatedTrueRoles } from './game-nightactions.js';
-import { userList } from './account.js';
-import _ from 'lodash';
+let mongoose = require('mongoose'),
+	Game = require('../../models/game'),
+	Account = require('../../models/account'),
+	games = require('./game').games,
+	secureGame = require('./util').secureGame,
+	devStatus = require('./util').devStatus,
+	sendInprogressChats = require('./gamechat').sendInprogressChats,
+	updatedTrueRoles = require('./game-nightactions').updatedTrueRoles,
+	userList = require('./account').userList;
 
-export function startGame(game) {
+module.exports.startGame = (game) => {
 	let allWerewolvesNotInCenter = false,
 		assignRoles = () => {
-			let _roles = _.clone(game.roles);
+			let _roles = Object.assign({}, game.roles);
 
 			game.internals.seatedPlayers.map((player, index) => {
 				let roleIndex = Math.floor((Math.random() * _roles.length)),
@@ -52,7 +52,7 @@ export function startGame(game) {
 	io.in(game.uid).emit('gameUpdate', secureGame(game));
 
 	setTimeout(() => {
-		let { nightPhasePause } = devStatus,
+		let nightPhasePause = devStatus.nightPhasePause,
 			countDown;
 
 		game.internals.seatedPlayers.forEach((player, i) => {
@@ -325,7 +325,7 @@ let nightPhases = (game, phases) => {
 			if (phasesIndex === phasesCount && phasesCount > 1) {
 				endPhases();
 			} else {
-				let { phaseTime } = devStatus,
+				let phaseTime = devStatus.phaseTime,
 					countDown,
 					phasesPlayers = phases[phasesIndex];
 
@@ -380,7 +380,7 @@ let nightPhases = (game, phases) => {
 	}
 };
 
-export function updateSelectedElimination(data) {
+module.exports.updateSelectedElimination = (data) => {
 	let game = games.find((el) => {
 			return el.uid === data.uid;
 		}),
@@ -487,7 +487,7 @@ let endGame = (game) => {
 		modeMap = {},
 		maxCount = 1,
 		eliminatedPlayersIndex = [],
-		{ seatedPlayers } = game.internals,
+		seatedPlayers = game.internals.seatedPlayers,
 		werewolfTeamInGame = false,
 		werewolfEliminated = false,
 		tannerEliminations = [];

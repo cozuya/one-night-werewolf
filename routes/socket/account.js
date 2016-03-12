@@ -1,17 +1,21 @@
 'use strict';
 
-import mongoose from 'mongoose';
-import Account from '../../models/account';
-import { games, deleteGame, sendGameList } from './game';
-import { secureGame, getInternalPlayerInGameByUserName } from './util';
-import { combineInprogressChats } from './gamechat';
+let mongoose = require('mongoose'),
+	Account = require('../../models/account'),
+	secureGame = require('./util').secureGame,
+	getInternalPlayerInGameByUserName = require('./util').getInternalPlayerInGameByUserName,
+	games = require('./game').games,
+	deleteGame = require('./game').deleteGame,
+	sendGameList = require('./game').sendGameList,
+	combineInprogressChats = require('./gamechat').combineInprogressChats,
+	userList = [],
+	generalChats = [];
 
-export let userList = [];
+console.log(require('./game'));
+// console.log(require('./gamechat'));
 
-let generalChats = [];
-
-export function handleSocketDisconnect(socket) {
-	let { passport } = socket.handshake.session;
+module.exports.handleSocketDisconnect = (socket) => {
+	let passport = socket.handshake.session.passport;
 
 	if (passport && Object.keys(passport).length) {
 		let userIndex = userList.findIndex((user) => {
@@ -50,9 +54,9 @@ export function handleSocketDisconnect(socket) {
 	});
 }
 
-export function checkUserStatus(socket) {
+module.exports.checkUserStatus = (socket) => {
 	if (socket.handshake.session.passport && Object.keys(socket.handshake.session.passport).length) {
-		let { user } = socket.handshake.session.passport,
+		let user = socket.handshake.session.passport.user,
 			sockets = io.sockets.sockets,
 			gameUserIsIn = games.find((game) => {
 				return Object.keys(game.seated).find((seat) => {
@@ -87,9 +91,9 @@ export function checkUserStatus(socket) {
 
 	sendGeneralChats(socket);
 	sendGameList(socket);
-}
+};
 
-export function handleUpdatedGameSettings(socket, data) {
+module.exports.handleUpdatedGameSettings = (socket, data) => {
 	Account.findOne({username: socket.handshake.session.passport.user}, (err, account) => {
 		if (err) {
 			console.log(err);
@@ -104,7 +108,7 @@ export function handleUpdatedGameSettings(socket, data) {
 	});
 }
 
-export function sendUserGameSettings(socket, username) {
+module.exports.sendUserGameSettings = (socket, username) => {
 	Account.findOne(username, (err, account) => {
 		if (err) {
 			console.log(err);
@@ -123,7 +127,7 @@ export function sendUserGameSettings(socket, username) {
 	});
 }
 
-export function handleNewGeneralChat(data) {
+module.exports.handleNewGeneralChat = (data) => {
 	if (generalChats.length === 100) {
 		generalChats.pop();
 		// todo push/save to db
@@ -135,6 +139,10 @@ export function handleNewGeneralChat(data) {
 	io.sockets.emit('generalChats', generalChats);
 }
 
-export function sendGeneralChats(socket) {
+let sendGeneralChats = (socket) => {
 	socket.emit('generalChats', generalChats);
 }
+
+module.exports.sendGeneralChats = sendGeneralChats;
+module.exports.userList = userList;
+module.exports.generalChats = generalChats;

@@ -66,3 +66,9 @@ start development task runner:
 > gulp
 
 Changing the "devStatus" object to "prod" in util.js is probably the place to start.
+
+## Deployment ##
+
+start mongo:
+
+> mongod --dbpath ./data --fork --logpath .data/mongodb.log
