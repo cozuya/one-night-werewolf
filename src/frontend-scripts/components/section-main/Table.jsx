@@ -402,7 +402,8 @@ export default class Table extends React.Component {
 	clickedReportGame() {
 		socket.emit('updateReportGame', {
 			seatNumber: this.props.userInfo.seatNumber,
-			userName: this.props.userInfo.userName
+			userName: this.props.userInfo.userName,
+			uid: this.props.gameInfo.uid
 		});
 	}
 
@@ -460,21 +461,35 @@ export default class Table extends React.Component {
 						return 'remove icon';
 					}
 				})()}></i>
-				<div className="table-uid">
+				<div className={
+					(() => {
+						let classes = 'table-uid';
+
+						if (!this.props.gameInfo.inProgress) {
+							classes += ' app-hidden';
+						}
+
+						return classes;
+					})()
+				}>
 					Game ID: {gameInfo.uid}
 					<i onClick={this.clickedReportGame.bind(this)} className={
 						(() => {
 							let classes = 'warning sign icon'; // todo should only show for seated players
 
-							// if (this.props.gameInfo.gameReported) {
-							// 	classes += ' report-game-clicked';
-							// }
+							if (!Object.keys(this.props.userInfo).length) {
+								classes += ' app-hidden';
+							}
+
+							if (this.props.userInfo.seatNumber && this.props.gameInfo.tableState.reportedGame && this.props.gameInfo.tableState.reportedGame[this.props.userInfo.seatNumber]) {
+								classes += ' report-game-clicked';
+							}
 
 							return classes;
 						})()
 					}></i>
 					<div className="ui popup transition hidden">
-							Player abuse: mark this game for reporting to the administrators for review.  Found a bug?  Send us an email.
+							Player abuse? Mark this game for reporting to the administrators for review.  Found a bug?  Send us an email.
 					</div>
 				</div>
 				<div className={
@@ -482,7 +497,7 @@ export default class Table extends React.Component {
 						let classes = 'ui fitted toggle checkbox truncate-game',
 							{ gameInfo } = this.props;
 
-						if (!gameInfo.inProgress || gameInfo.isNight || gameInfo.tableState.cardRoles.length || /VOTE/.test(gameInfo.status)) {
+						if (!gameInfo.inProgress || gameInfo.tableState.isNight || (gameInfo.tableState.cardRoles && gameInfo.tableState.cardRoles.length) || /VOTE/.test(gameInfo.status)) {
 							classes += ' app-hidden';
 						}
 

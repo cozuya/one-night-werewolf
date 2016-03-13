@@ -45,16 +45,16 @@ module.exports.handleUpdatedReportGame = (socket, data) => {
 	let game = games.find((el) => {
 			return el.uid === data.uid;
 		}),
-		player = game.seatedPlayers.find((player) => {
+		player = game.internals.seatedPlayers.find((player) => {
 			return player.userName === data.userName;
 		});
 
 	if (player.reportedGame) {
 		player.reportedGame = false;
-		game.seated[`seat${data.seatNumber}`].tableState.reportedGame = false;
+		game.tableState.reportedGame[data.seatNumber] = false;
 	} else {
 		player.reportedGame = true;
-		game.seated[`seat${data.seatNumber}`].tableState.reportedGame = true;
+		game.tableState.reportedGame[data.seatNumber] = true;
 	}
 
 	sendInprogressChats(game);

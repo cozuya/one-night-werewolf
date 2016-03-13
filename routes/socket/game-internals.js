@@ -47,6 +47,15 @@ module.exports.startGame = (game) => {
 
 	game.status = 'Dealing..';
 	game.tableState.cardsDealt = 'in progress';
+	game.tableState.reportedGame = {
+		0: false,
+		1: false,
+		2: false,
+		3: false,
+		4: false,
+		5: false,
+		6: false,
+	};
 	io.in(game.uid).emit('gameUpdate', secureGame(game));
 
 	setTimeout(() => {
@@ -454,11 +463,9 @@ let eliminationPhase = (game) => {
 		timestamp: new Date()
 	});
 
-	game.tableState = {
-		isNight: false,
-		phase: 'elimination',
-		eliminations: [{}, {}, {}, {}, {}, {}, {}] // dev: remove
-	};
+	game.tableState.isNight = false;
+	game.tableState.phase = 'elimination';
+	game.tableState.eliminations = [{}, {}, {}, {}, {}, {}, {}]; // dev: remove
 
 	countDown = setInterval(() => {
 		if (index === devStatus.playerCountToEndGame) {
@@ -607,6 +614,9 @@ let endGame = (game) => {
 						role: player.trueRole
 					};
 				}),
+				reports: seatedPlayers.filter((player) => {
+					return player.reportedGame;
+				}).length,
 				kobk: game.kobk
 			});  // todo save status of reported game bool
 
