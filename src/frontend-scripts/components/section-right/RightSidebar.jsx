@@ -3,7 +3,7 @@
 import React from 'react';
 import Playerlist from './Playerlist.jsx';
 import Generalchat from './Generalchat.jsx';
-import $ from 'jQuery';
+import $ from 'jquery';
 
 export default class RightSidebar extends React.Component {
 	clickSettingsButton(e) {
