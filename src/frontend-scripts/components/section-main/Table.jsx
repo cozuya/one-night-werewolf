@@ -50,7 +50,7 @@ export default class Table extends React.Component {
 			});
 		}
 
-		// console.log(gameInfo);
+		console.log(gameInfo);
 	}
 
 	componentDidMount() {
@@ -400,7 +400,10 @@ export default class Table extends React.Component {
 	}
 
 	clickedReportGame() {
-		// todo
+		socket.emit('updateReportGame', {
+			seatNumber: this.props.userInfo.seatNumber,
+			userName: this.props.userInfo.userName
+		});
 	}
 
 	render() {
@@ -461,7 +464,7 @@ export default class Table extends React.Component {
 					Game ID: {gameInfo.uid}
 					<i onClick={this.clickedReportGame.bind(this)} className={
 						(() => {
-							let classes = 'warning sign icon';
+							let classes = 'warning sign icon'; // todo should only show for seated players
 
 							// if (this.props.gameInfo.gameReported) {
 							// 	classes += ' report-game-clicked';
@@ -471,7 +474,7 @@ export default class Table extends React.Component {
 						})()
 					}></i>
 					<div className="ui popup transition hidden">
-							Mark this game for reporting to the administrators for review.
+							Player abuse: mark this game for reporting to the administrators for review.  Found a bug?  Send us an email.
 					</div>
 				</div>
 				<div className={
@@ -479,7 +482,7 @@ export default class Table extends React.Component {
 						let classes = 'ui fitted toggle checkbox truncate-game',
 							{ gameInfo } = this.props;
 
-						if (!gameInfo.inProgress || gameInfo.isNight || gameInfo.completedGame || /VOTE/.test(gameInfo.status)) {
+						if (!gameInfo.inProgress || gameInfo.isNight || gameInfo.tableState.cardRoles.length || /VOTE/.test(gameInfo.status)) {
 							classes += ' app-hidden';
 						}
 

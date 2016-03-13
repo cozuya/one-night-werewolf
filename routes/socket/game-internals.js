@@ -608,7 +608,7 @@ let endGame = (game) => {
 					};
 				}),
 				kobk: game.kobk
-			});
+			});  // todo save status of reported game bool
 
 		game.chats.push({
 			gameChat: true,

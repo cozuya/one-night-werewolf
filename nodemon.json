@@ -6,6 +6,5 @@
 		"data/*",
 		"logs/*",
 		"node_modules/*"
-	],
-	"verbose": true
+	]
 }

@@ -1,6 +1,7 @@
 'use strict';
 
 let handleUpdatedTruncateGame = require('./game').handleUpdatedTruncateGame,
+	handleUpdatedReportGame = require('./game').handleUpdatedReportGame,
 	sendGameList = require('./game').sendGameList,
 	sendUserList = require('./game').sendUserList,
 	createGame = require('./game').createGame,
@@ -25,6 +26,8 @@ module.exports = () => {
 			sendGameInfo(socket, uid);
 		}).on('updateTruncateGame', (data) => {
 			handleUpdatedTruncateGame(data);
+		}).on('updateReportGame', (data) => {
+			handleUpdatedReportGame(socket, data);			
 		}).on('createGame', (game) => {
 			createGame(socket, game);
 		}).on('getGameList', () => {
