@@ -9,7 +9,7 @@ let startGame = require('./game-internals').startGame,
 	games = [],
 	userList = [];
 
-module.exports.deleteGame = (game) => {
+let deleteGame = (game) => {
 	games.splice(games.indexOf(game), 1);
 };
 
@@ -186,3 +186,4 @@ let startGameCountdown = (game) => {
 module.exports.games = games;
 module.exports.userList = userList;
 module.exports.sendGameList = sendGameList;
+module.exports.deleteGame = deleteGame;
