@@ -11,9 +11,8 @@ let fs = require('fs'),
 	mongoose = require('mongoose'),
 	Strategy = require('passport-local').Strategy,
 	Account = require('./models/account'),
-	routesIndex = require('./routes/index');
-
-let session = require('express-session')({
+	routesIndex = require('./routes/index'),
+	session = require('express-session')({
 		secret: 'hunter2',
 		resave: false,
 		saveUninitialized: false

@@ -7,7 +7,7 @@ Front end: React, Redux, Sass, SocketIO, SemanticUI.
 
 Back end: Node with Express, Jade, Passport, Mongodb with Mongoose, SocketIO.
 
-Build: Gulp, Browserify, Babel.
+Build: Gulp, Browserify, Babel (front end).
 
 Work in progress. Estimated alpha deployment: May 2016.
 
@@ -59,16 +59,10 @@ start mongo:
 
 start server:
 
-> nodemon ./bin/dev
+> nodemon bin/dev
 
 start development task runner:
 
 > gulp
 
 Changing the "devStatus" object to "prod" in util.js is probably the place to start.
-
-## Deployment ##
-
-start mongo:
-
-> mongod --dbpath ./data --fork --logpath .data/mongodb.log

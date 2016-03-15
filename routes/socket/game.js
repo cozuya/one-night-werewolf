@@ -7,11 +7,10 @@ let startGame = require('./game-internals').startGame,
 	combineInprogressChats = require('./gamechat').combineInprogressChats,
 	sendInprogressChats = require('./gamechat').sendInprogressChats,
 	games = [],
-	userList = [];
-
-let deleteGame = (game) => {
-	games.splice(games.indexOf(game), 1);
-};
+	userList = [],
+	deleteGame = (game) => {
+		games.splice(games.indexOf(game), 1);
+	};
 
 module.exports.handleUpdatedTruncateGame = (data) => {
 	let game = games.find((el) => {
