@@ -14,7 +14,6 @@ export default class Gamechat extends React.Component {
 
 	componentDidMount() {
 		this.scrollChats();
-		// console.log(this.props);
 	}
 
 	componentDidUpdate(prevProps) {
@@ -62,23 +61,23 @@ export default class Gamechat extends React.Component {
 	}
 
 	scrollChats() {
-		// let chatsContainer = document.querySelector('section.segment.chats'),
-		// 	$chatPusher = $('div.chatpusher'),
-		// 	chatHeight = 290,
-		// 	chatCount = this.props.gameInfo.chats.length,
-		// 	$lockIcon = $('section.gamechat > .ui.menu > i');
+		let chatsContainer = document.querySelector('section.segment.chats'),
+			$chatPusher = $('section.generalchat div.chatpusher'),
+			chatHeight = 290,
+			chatCount = this.props.generalChats.length,
+			$lockIcon = $('section.gamechat > .ui.menu > i');
 
-		// if (chatCount < 20) {
-		// 	$chatPusher.css({
-		// 		height: 290 - chatCount * 16,
-		// 	});
-		// } else {
-		// 	$chatPusher.remove();
-		// }
+		if (chatCount < 20) {
+			$chatPusher.css({
+				height: 195 - chatCount * 21.6,
+			});
+		} else {
+			$chatPusher.remove();
+		}
 
-		// if (!this.state.lock) {
-		// 	chatsContainer.scrollTop = chatsContainer.scrollHeight;
-		// }
+		if (!this.state.lock) {
+			chatsContainer.scrollTop = chatsContainer.scrollHeight;
+		}
 	}
 
 	processChats() {
@@ -104,9 +103,12 @@ export default class Gamechat extends React.Component {
 	render() {
 		return (
 			<section className="generalchat">
-				<section className="ui pointing menu">
-					<h3 className="ui header">Chat</h3>
-					<i className={this.state.lock ? 'large lock icon' : 'large unlock alternate icon'} onClick={this.handleChatLockClick.bind(this)}></i>
+				<section className="generalchat-header">
+					<div className="clearfix">
+						<h3 className="ui header">Chat</h3>
+						<i className={this.state.lock ? 'large lock icon' : 'large unlock alternate icon'} onClick={this.handleChatLockClick.bind(this)}></i>
+					</div>
+					<div className="ui divider right-sidebar-divider"></div>
 				</section>
 				<section className="segment chats">
 					<div className="chatpusher"></div>

@@ -1,6 +1,7 @@
 .section-right {
 	padding-left: 0 !important;
 	padding-right: 0 !important;
+	padding-bottom: 0 !important;
 
 	.right-header {
 		padding: 5px 5px 30px 5px;
@@ -33,14 +34,6 @@
 	.playerlist {
 		background: #F8F8F8;
 		padding: 5px 0 10px 5px;
-
-		> div > div {
-			&:after {
-				content: '';
-				display: table;
-				clear: both;
-			}
-		}
 
 		.userlist-stats-container {
 			float: right;
@@ -77,6 +70,22 @@
 	}
 
 	.generalchat {
+
+		.generalchat-header {
+			h3 {
+				float: left;
+				margin: 0;
+			}
+
+			i {
+				float: right;
+			}
+
+			> div {
+				padding: 3px 5px;
+			}
+		}
+
 		.ui.input {
 			width: 186px;
 
@@ -88,6 +97,17 @@
 			button {
 				padding: 2px;
 			}
-		}	
+		}
+
+		.chats {
+			overflow-y: scroll;
+			height: 226px;
+			padding-left: 5px;
+
+
+			> .ui.list .item {
+				line-height: .75;
+			}
+		}
 	}
 }

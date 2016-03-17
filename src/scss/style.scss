@@ -26,6 +26,12 @@ body {
 	visibility: hidden !important;
 }
 
+.clearfix:after {
+	display: table;
+	content: '';
+	clear: both;
+}
+
 .ui.menu {
 	border-radius: 0;
 }

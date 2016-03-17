@@ -3,14 +3,11 @@
 import React from 'react';
 
 export default class Playerlist extends React.Component {
-	componentDidUpdate() {
-	}
-
 	render() {
 		return (
 			<section className="playerlist">
 				<div className="playerlist-header">
-					<div>
+					<div className="clearfix">
 						<h3 className="ui header">Lobby</h3>
 						{(() => {
 							if (Object.keys(this.props.userList).length) {
