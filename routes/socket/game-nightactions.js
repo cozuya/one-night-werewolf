@@ -1,6 +1,6 @@
 'use strict';
 
-let sendInprogressChats = require('./gamechat.js').sendInprogressChats,
+let { sendInprogressChats } = require('./gamechat.js'),
 	games = require('./game.js').games;
 
 let getTrueRoleBySeatNumber = (game, num) => {

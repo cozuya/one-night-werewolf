@@ -4,10 +4,6 @@ let mongoose = require('mongoose'),
 	passport = require('passport'),
 	Account = require('../models/account');
 
-// import mongoose from 'mongoose';
-// import passport from 'passport';
-// import Account from '../models/account';
-
 let ensureAuthenticated = (req, res, next)  => {
 	if (req.isAuthenticated()) {
 		return next();

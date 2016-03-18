@@ -1,22 +1,10 @@
 'use strict';
 
-let handleUpdatedTruncateGame = require('./game').handleUpdatedTruncateGame,
-	handleUpdatedReportGame = require('./game').handleUpdatedReportGame,
-	sendGameList = require('./game').sendGameList,
-	sendUserList = require('./game').sendUserList,
-	createGame = require('./game').createGame,
-	sendGameInfo = require('./game').sendGameInfo,
-	updateSeatedUsers = require('./game').updateSeatedUsers,
-	sendGeneralChats = require('./account').sendGeneralChats,
-	handleNewGeneralChat = require('./account').handleNewGeneralChat,
-	checkUserStatus = require('./account').checkUserStatus,
-	handleUpdatedGameSettings = require('./account').handleUpdatedGameSettings,
-	sendUserGameSettings = require('./account').sendUserGameSettings,
-	handleSocketDisconnect = require('./account').handleSocketDisconnect,
-	addNewGameChat = require('./gamechat').addNewGameChat,
-	updateUserNightActionEvent = require('./game-nightactions').updateUserNightActionEvent,
-	updateSelectedElimination = require('./game-internals').updateSelectedForElimination,
-	games = require('./game').games;
+let { updateSeatedUsers, handleUpdatedTruncateGame, handleUpdatedReportGame, sendGameList, sendUserList, createGame, sendGameInfo, games } = require('./game'),
+	{ sendGeneralChats, handleNewGeneralChat, checkUserStatus, handleUpdatedGameSettings, sendUserGameSettings, handleSocketDisconnect } = require('./account'),
+	{ addNewGameChat } = require('./gamechat'),
+	{ updateUserNightActionEvent } = require('./game-nightactions'),
+	{ updateSelectedElimination } = require('./game-internals');
 
 module.exports = () => {
 	io.on('connection', (socket) => {

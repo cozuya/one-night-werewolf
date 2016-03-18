@@ -1,11 +1,8 @@
 'use strict';
 
-let startGame = require('./game-internals').startGame,
-	secureGame = require('./util').secureGame,
-	getInternalPlayerInGameByUserName = require('./util').getInternalPlayerInGameByUserName,
-	devStatus = require('./util').devStatus,
-	combineInprogressChats = require('./gamechat').combineInprogressChats,
-	sendInprogressChats = require('./gamechat').sendInprogressChats,
+let { startGame } = require('./game-internals'),
+	{ secureGame, getInternalPlayerInGameByUserName, devStatus } = require('./util'),
+	{ combineInprogressChats, sendInprogressChats } = require('./gamechat'),
 	games = [],
 	userList = [],
 	deleteGame = (game) => {
@@ -165,7 +162,7 @@ module.exports.updateSeatedUsers = (socket, data) => {
 };
 
 let startGameCountdown = (game) => {
-	let startGamePause = devStatus.startGamePause,
+	let { startGamePause } = devStatus,
 	countDown;
 
 	game.inProgress = true;

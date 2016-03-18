@@ -2,17 +2,14 @@
 
 let mongoose = require('mongoose'),
 	Account = require('../../models/account'),
-	secureGame = require('./util').secureGame,
-	getInternalPlayerInGameByUserName = require('./util').getInternalPlayerInGameByUserName,
-	games = require('./game').games,
-	deleteGame = require('./game').deleteGame,
-	sendGameList = require('./game').sendGameList,
-	combineInprogressChats = require('./gamechat').combineInprogressChats,
-	userList = require('./game').userList,
+	Generalchats = require('../../models/generalchats'),
+	{ secureGame, getInternalPlayerInGameByUserName } = require('./util'),
+	{ games, deleteGame, sendGameList, userList } = require('./game'),
+	{ combineInprogressChats } = require('./gamechat'),
 	generalChats = [];
 
 module.exports.handleSocketDisconnect = (socket) => {
-	let passport = socket.handshake.session.passport;
+	let { passport } = socket.handshake.session;
 
 	if (passport && Object.keys(passport).length) {
 		let userIndex = userList.findIndex((user) => {
@@ -52,9 +49,11 @@ module.exports.handleSocketDisconnect = (socket) => {
 }
 
 module.exports.checkUserStatus = (socket) => {
-	if (socket.handshake.session.passport && Object.keys(socket.handshake.session.passport).length) {
-		let user = socket.handshake.session.passport.user,
-			sockets = io.sockets.sockets,
+	let { passport } = socket.handshake.session;
+
+	if (passport && Object.keys(passport).length) {
+		let { user } = passport,
+			{ sockets } = io.sockets,
 			gameUserIsIn = games.find((game) => {
 				return Object.keys(game.seated).find((seat) => {
 					return game.seated[seat].userName === user;
@@ -126,12 +125,15 @@ module.exports.sendUserGameSettings = (socket, username) => {
 
 module.exports.handleNewGeneralChat = (data) => {
 	if (generalChats.length === 100) {
-		generalChats.pop();
 		// todo push/save to db
+		
+		generalChats.splice(50, 50);
 	}
 
 	data.time = new Date();
 	generalChats.push(data);
+
+	console.log(generalChats);
 
 	io.sockets.emit('generalChats', generalChats);
 }

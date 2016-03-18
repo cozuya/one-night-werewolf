@@ -1,7 +1,7 @@
 'use strict';
 
-let secureGame = require('./util').secureGame,
-	getInternalPlayerInGameByUserName = require('./util').getInternalPlayerInGameByUserName;
+let { secureGame } = require('./util'),
+	{ getInternalPlayerInGameByUserName } = require('./util');
 
 module.exports.addNewGameChat = (games, data, uid) => {
 	let game = games.find((el) => {
@@ -59,7 +59,7 @@ module.exports.sendInprogressChats= (game) => {
 				return user.userName === userName;
 			});
 
-		cloneGame.tableState.playerPerceivedRole = cloneGame.internals.seatedPlayers[index].perceivedRole;  //something tells me I don't need this at all
+		cloneGame.tableState.playerPerceivedRole = cloneGame.internals.seatedPlayers[index].perceivedRole;  // todo should probably be double checked for efficaciousness
 
 		if (cloneGame.tableState.phase === player.nightAction.phase && !player.nightPhaseComplete) {
 			cloneGame.tableState.nightAction = cloneGame.internals.seatedPlayers[index].nightAction;

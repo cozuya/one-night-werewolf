@@ -3,10 +3,9 @@
 let mongoose = require('mongoose'),
 	Game = require('../../models/game'),
 	Account = require('../../models/account'),
-	secureGame = require('./util').secureGame,
-	devStatus = require('./util').devStatus,
-	sendInprogressChats = require('./gamechat').sendInprogressChats,
-	updatedTrueRoles = require('./game-nightactions').updatedTrueRoles;
+	{ secureGame, devStatus } = require('./util'),
+	{ sendInprogressChats } = require('./gamechat'),
+	{ updatedTrueRoles } = require('./game-nightactions');
 
 module.exports.startGame = (game) => {
 	let allWerewolvesNotInCenter = false,
@@ -616,9 +615,9 @@ let endGame = (game) => {
 				}),
 				reports: seatedPlayers.filter((player) => {
 					return player.reportedGame;
-				}).length,
+				}),
 				kobk: game.kobk
-			});  // todo save status of reported game bool
+			});
 
 		game.chats.push({
 			gameChat: true,
@@ -658,7 +657,7 @@ let endGame = (game) => {
 
 				player.games.push(game.uid);
 				player.save(() => {
-					let userList = require('./game').userList, // circle dependancy
+					let { userList } = require('./game'), // circle dependancy
 						userEntry = userList.find((user) => {
 						return user.userName === player.username;
 					});
