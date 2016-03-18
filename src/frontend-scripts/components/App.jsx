@@ -110,7 +110,8 @@ class App extends React.Component {
 				// roles: ['werewolf', 'werewolf', 'robber', 'troublemaker', 'mason', 'minion', 'troublemaker', 'mason', 'robber', 'troublemaker'],
 				seated: {
 					seat0: {
-						userName: userInfo.userName
+						userName: userInfo.userName,
+						connected: true
 					}
 				},
 				status: 'Waiting for more players..',

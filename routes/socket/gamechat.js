@@ -45,7 +45,7 @@ module.exports.sendInprogressChats= (game) => {
 		});
 
 		sockets.playerSockets = roomSockets.filter((socket) => {
-			return seatedPlayerNames.indexOf(socket.handshake.session.passport.user) >= 0;  // todo this errored some how at beginning of game once
+			return seatedPlayerNames.indexOf(socket.handshake.session.passport.user) >= 0;  // todo this errored some how at beginning of game once (passport not defined)
 		});
 
 		sockets.observerSockets = roomSockets.filter((socket) => {

@@ -5,48 +5,54 @@ let mongoose = require('mongoose'),
 	Generalchats = require('../../models/generalchats'),
 	{ secureGame, getInternalPlayerInGameByUserName } = require('./util'),
 	{ games, deleteGame, sendGameList, userList } = require('./game'),
-	{ combineInprogressChats } = require('./gamechat'),
-	generalChats = [];
+	{ combineInprogressChats, sendInprogressChats } = require('./gamechat'),
+	generalChats = [],
+	generalChatCount = 0,
+	sendGeneralChats = (socket) => {
+		socket.emit('generalChats', generalChats);
+	},
+	handleSocketDisconnect = (socket) => {
+		let { passport } = socket.handshake.session;
 
-module.exports.handleSocketDisconnect = (socket) => {
-	let { passport } = socket.handshake.session;
-
-	if (passport && Object.keys(passport).length) {
-		let userIndex = userList.findIndex((user) => {
-				return user.userName === passport.user;
-			}),
-			game = games.find((game) => {
-				return Object.keys(game.seated).find((seatName) => {
-					return game.seated[seatName].userName === passport.user;
+		if (passport && Object.keys(passport).length) {
+			let userIndex = userList.findIndex((user) => {
+					return user.userName === passport.user;
+				}),
+				game = games.find((game) => {
+					return Object.keys(game.seated).find((seatName) => {
+						return game.seated[seatName].userName === passport.user;
+					});
 				});
-			});
 
-		userList.splice(userIndex, 1);
+			userList.splice(userIndex, 1);
 
-		if (game) {
-			if (!game.inProgress) {
+			if (game) {
 				let seatedKeys = Object.keys(game.seated),
 					userSeatName = seatedKeys.find((seatName) => {
 						return game.seated[seatName].userName === passport.user;
 					});
 
-				if (seatedKeys.length === 1) {
-					deleteGame(game);
+				if (!game.inProgress) {
+					if (seatedKeys.length === 1) {
+						deleteGame(game);
+					} else {
+						delete game.seated[userSeatName];
+						io.sockets.in(game.uid).emit('gameUpdate', game);
+					}
 				} else {
-					delete game.seated[userSeatName];
-					io.sockets.in(game.uid).emit('gameUpdate', game);
+					game.seated[userSeatName].connected = false;
+					sendInprogressChats(game);
 				}
+
+				io.sockets.emit('gameList', games);					
 			}
-
-			io.sockets.emit('gameList', games);					
 		}
-	}
 
-	io.sockets.emit('userList', {
-		list: userList,
-		totalSockets: Object.keys(io.sockets.sockets).length
-	});
-}
+		io.sockets.emit('userList', {
+			list: userList,
+			totalSockets: Object.keys(io.sockets.sockets).length
+		});
+	};
 
 module.exports.checkUserStatus = (socket) => {
 	let { passport } = socket.handshake.session;
@@ -67,12 +73,18 @@ module.exports.checkUserStatus = (socket) => {
 
 		if (oldSocket) {
 			sockets.splice(sockets.indexOf(oldSocket), 1);
+			handleSocketDisconnect(oldSocket);
 		}
 
 		if (gameUserIsIn && gameUserIsIn.inProgress) {
 			let internalPlayer = getInternalPlayerInGameByUserName(gameUserIsIn, user),
-				cloneGame = Object.assign({}, gameUserIsIn);
+				userSeatName = Object.keys(gameUserIsIn.seated).find((seatName) => {
+					return gameUserIsIn.seated[seatName].userName === passport.user;
+				}),
+				cloneGame;
 
+			gameUserIsIn.seated[userSeatName].connected = true;
+			cloneGame = Object.assign({}, gameUserIsIn),
 			cloneGame.chats = combineInprogressChats(cloneGame, user);
 			socket.join(gameUserIsIn.uid);
 			socket.emit('gameUpdate', secureGame(cloneGame));
@@ -124,24 +136,25 @@ module.exports.sendUserGameSettings = (socket, username) => {
 }
 
 module.exports.handleNewGeneralChat = (data) => {
-	if (generalChats.length === 100) {
-		// todo push/save to db
+	if (generalChatCount === 100) {
+		let chats = new Generalchats({chats: generalChats});
 		
-		generalChats.splice(50, 50);
+		chats.save();
+		generalChatCount = 0;
 	}
 
+	generalChatCount++;
 	data.time = new Date();
 	generalChats.push(data);
 
-	console.log(generalChats);
+	if (generalChats.length > 99) {
+		generalChats.shift();
+	}
 
 	io.sockets.emit('generalChats', generalChats);
-}
-
-let sendGeneralChats = (socket) => {
-	socket.emit('generalChats', generalChats);
 }
 
 module.exports.sendGeneralChats = sendGeneralChats;
 module.exports.userList = userList;
 module.exports.generalChats = generalChats;
+module.exports.handleSocketDisconnect = handleSocketDisconnect;

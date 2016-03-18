@@ -1,6 +1,6 @@
 .table-container {
 	background: #fafafa;
-	padding: 0;
+	padding: 0 !important;
 	overflow: hidden;
 
 	.table {
@@ -77,10 +77,15 @@
 			.username {
 				position: absolute;
 				top: -20px;
+				font-weight: 700;
 				left: 50%;
 				margin-left: -30px;
 				width: 100%;
 				text-align: center;
+			}
+
+			.socket-not-present {
+				color: #ccc;
 			}
 		}
 
@@ -230,7 +235,7 @@
 		.remove.icon {
 			position: absolute;
 			top: 10px;
-			left: 535px;
+			left: 545px;
 			opacity: 0.3;
 			cursor: pointer;
 			font-size: 30px;
@@ -261,6 +266,7 @@
 	}
 }
 
-.nine.table-container .table .remove.icon {
-	left: 595px;
+
+.eight.table-container .table .remove.icon {
+	left: 540px;
 }

@@ -1,7 +1,7 @@
 'use strict';
 
 let { sendInprogressChats } = require('./gamechat.js'),
-	games = require('./game.js').games;
+	{ games } = require('./game.js');
 
 let getTrueRoleBySeatNumber = (game, num) => {
 	num = parseInt(num);

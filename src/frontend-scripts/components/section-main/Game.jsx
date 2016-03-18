@@ -30,7 +30,7 @@ class Game extends React.Component {
 								let classes;
 
 								if (Object.keys(this.props.userInfo).length && this.props.userInfo.gameSettings && this.props.userInfo.gameSettings.disableRightSidebarInGame) {
-									classes = 'nine ';
+									classes = 'eight ';
 								} else {
 									classes = 'ten ';
 								}
@@ -49,7 +49,7 @@ class Game extends React.Component {
 								let classes;
 
 								if (Object.keys(this.props.userInfo).length && this.props.userInfo.gameSettings && this.props.userInfo.gameSettings.disableRightSidebarInGame) {
-									classes = 'seven ';
+									classes = 'eight ';
 								} else {
 									classes = 'six ';
 								}

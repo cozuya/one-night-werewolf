@@ -7,6 +7,42 @@ let { startGame } = require('./game-internals'),
 	userList = [],
 	deleteGame = (game) => {
 		games.splice(games.indexOf(game), 1);
+	},
+	sendGameList = (socket) => {
+		let formattedGames = games.map((game) => {
+			return {
+				kobk: game.kobk,
+				time: game.time,
+				name: game.name,
+				roles: game.roles,
+				seatedCount: Object.keys(game.seated).length,
+				inProgress: game.inProgress,
+				uid: game.uid
+			};
+		});
+
+		if (socket) {
+			socket.emit('gameList', formattedGames);
+		} else {
+			io.sockets.emit('gameList', formattedGames);
+		}
+	},
+	startGameCountdown = (game) => {
+		let { startGamePause } = devStatus,
+			countDown;
+
+		game.inProgress = true;
+
+		countDown = setInterval(() => {
+			if (startGamePause === 0) {
+				clearInterval(countDown);
+				startGame(game);
+			} else {
+				game.status = `Game starts in ${startGamePause} second${startGamePause === 1 ? '' : 's'}.`;
+				io.sockets.in(game.uid).emit('gameUpdate', secureGame(game));
+			}
+			startGamePause--;
+		}, 1000);
 	};
 
 module.exports.handleUpdatedTruncateGame = (data) => {
@@ -54,26 +90,6 @@ module.exports.handleUpdatedReportGame = (socket, data) => {
 	}
 
 	sendInprogressChats(game);
-};
-
-let sendGameList = (socket) => {
-	let formattedGames = games.map((game) => {
-		return {
-			kobk: game.kobk,
-			time: game.time,
-			name: game.name,
-			roles: game.roles,
-			seatedCount: Object.keys(game.seated).length,
-			inProgress: game.inProgress,
-			uid: game.uid
-		};
-	});
-
-	if (socket) {
-		socket.emit('gameList', formattedGames);
-	} else {
-		io.sockets.emit('gameList', formattedGames);
-	}
 };
 
 module.exports.createGame = (socket, game) => {
@@ -132,7 +148,10 @@ module.exports.updateSeatedUsers = (socket, data) => {
 
 	if (socket.handshake.session.passport && data.seatNumber && socket.handshake.session.passport.user === data.userInfo.userName) {
 		try {
-			game.seated[`seat${data.seatNumber}`] = data.userInfo;
+			game.seated[`seat${data.seatNumber}`] = {
+				userName: data.userInfo.userName
+			};
+			game.seated[`seat${data.seatNumber}`].connected = true;
 
 			if (Object.keys(game.seated).length === devStatus.seatedCountToStartGame) {
 				startGameCountdown(game);
@@ -159,24 +178,6 @@ module.exports.updateSeatedUsers = (socket, data) => {
 		socket.emit('gameUpdate', {});
 	}
 	// sendGameList(socket);  // todo: this double-updates the game causing mayhem.  commenting out for now but critical this gets addressed at some point.
-};
-
-let startGameCountdown = (game) => {
-	let { startGamePause } = devStatus,
-	countDown;
-
-	game.inProgress = true;
-
-	countDown = setInterval(() => {
-		if (startGamePause === 0) {
-			clearInterval(countDown);
-			startGame(game);
-		} else {
-			game.status = `Game starts in ${startGamePause} second${startGamePause === 1 ? '' : 's'}.`;
-			io.sockets.in(game.uid).emit('gameUpdate', secureGame(game));
-		}
-		startGamePause--;
-	}, 1000);
 };
 
 module.exports.games = games;

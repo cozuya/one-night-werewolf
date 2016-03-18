@@ -432,7 +432,17 @@ export default class Table extends React.Component {
 									})()
 								}>
 									<div className={classes()} data-seatnumber={seatNumber()} onClick={this.clickedSeat.bind(this)}>
-										<span className="username">{user}</span>
+										<span className={
+											(() => {
+												let classes = 'username';
+
+												if (seated && !gameInfo.seated[`seat${el}`].connected) {
+													classes += ' socket-not-present';
+												}
+
+												return classes;												
+											})()
+										}>{user}</span>
 									</div>
 									<div className={
 										(() => {
