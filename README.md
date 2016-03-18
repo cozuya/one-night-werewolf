@@ -3,9 +3,9 @@ one-night-werewolf
 
 A multiuser web game of deception and deduction.
 
-Front end: React, Redux, Sass, SocketIO, SemanticUI.
+Front end: React, Redux, Sass, SemanticUI, SocketIO.
 
-Back end: Node with Express, Jade, Passport, Mongodb with Mongoose, SocketIO.
+Back end: Node, Express, Jade, Passport, Mongodb with Mongoose, SocketIO.
 
 Build: Gulp, Browserify, Babel (front end).
 
@@ -13,7 +13,7 @@ Work in progress. Estimated alpha deployment: May 2016.
 
 ## Installation ##
 
-Install node - currently works with v5.x and below.
+Install node - currently works with v5.x and higher.
 
 Install mongodb, have it in your path.
 
@@ -23,9 +23,9 @@ Install mongodb, have it in your path.
 
 > mkdir data logs
 
-> npm install -g gulp nodemon
+> npm i -g gulp nodemon
 
-> npm install
+> npm i
 
 First 3 prompts from semantic use the default, then point semantic to be installed at public/semantic (instead of /semantic as default).
 
@@ -37,13 +37,13 @@ For installation on windows, you may need to do a few extra steps if you are get
 
 > set GYP_MSVS_VERSION=2013
 
-> npm install --msvs_version=2013
+> npm i --msvs_version=2013
 
 instead of the npm install found above.
 
 Also, if you receive an error with semantic on install despite the above, you can probably fix it by:
 
-> npm install semantic-ui
+> npm i semantic-ui
 
 go through the prompts, then
 
@@ -65,4 +65,4 @@ start development task runner:
 
 > gulp
 
-Changing the "devStatus" object to "prod" in util.js is probably the place to start.
+Changing the "devStatus" object to "prod" in /routes/socket/util.js is probably the place to start.
