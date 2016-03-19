@@ -387,7 +387,8 @@ let nightPhases = (game, phases) => {
 };
 
 module.exports.updateSelectedElimination = (data) => {
-	let game = games.find((el) => {
+	let { games } = require('./game'), // circle
+		game = games.find((el) => {
 			return el.uid === data.uid;
 		}),
 		player = game.internals.seatedPlayers[parseInt(data.seatNumber)];

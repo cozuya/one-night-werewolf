@@ -102,6 +102,8 @@ module.exports.createGame = (socket, game) => {
 	games.push(game);
 	sendGameList();
 	socket.join(game.uid);
+
+	console.log(games, 'games');
 };
 
 module.exports.sendGameInfo = (socket, uid) => {
@@ -138,6 +140,8 @@ module.exports.updateSeatedUsers = (socket, data) => {
 		return el.uid === data.uid;
 	});
 
+	console.log('usu');
+
 	// console.log(data);
 	// console.log(game);
 	// console.log(socket.handshake.session.passport);
@@ -156,6 +160,7 @@ module.exports.updateSeatedUsers = (socket, data) => {
 			if (Object.keys(game.seated).length === devStatus.seatedCountToStartGame) {
 				startGameCountdown(game);
 			} else {
+				console.log('emit');
 				io.sockets.in(data.uid).emit('gameUpdate', secureGame(game));
 			}
 		} catch (e) {

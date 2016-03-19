@@ -1,18 +1,16 @@
 'use strict';
 
-let { sendInprogressChats } = require('./gamechat.js'),
-	{ games } = require('./game.js');
+let { sendInprogressChats } = require('./gamechat'),
+	getTrueRoleBySeatNumber = (game, num) => {
+		num = parseInt(num);
 
-let getTrueRoleBySeatNumber = (game, num) => {
-	num = parseInt(num);
-
-	return num < 7 ? game.internals.seatedPlayers[num].trueRole : game.internals.centerRoles[num - 7];
-};
-
-module.exports.updatedTrueRoles = [];
+		return num < 7 ? game.internals.seatedPlayers[num].trueRole : game.internals.centerRoles[num - 7];
+	},
+	updatedTrueRoles = [];
 
 module.exports.updateUserNightActionEvent = (socket, data) => {
-	let game = games.find((el) => {
+	let { games } = require('./game'),
+		game = games.find((el) => {
 			return el.uid === data.uid;
 		}),
 		player = game.internals.seatedPlayers.find((player) => {
@@ -124,3 +122,5 @@ module.exports.updateUserNightActionEvent = (socket, data) => {
 	player.gameChats.push(chat);
 	sendInprogressChats(game);
 };
+
+module.exports.updatedTrueRoles = updatedTrueRoles;

@@ -465,7 +465,7 @@ export default class Table extends React.Component {
 					})}
 					{this.createCards()}
 				<i onClick={this.leaveGame.bind(this)} className={(() => {
-					if ((!!userInfo.seatNumber && Object.keys(gameInfo.seated).length === 7) || gameInfo.inProgress && !gameInfo.completedGame) {
+					if ((!!userInfo.seatNumber && Object.keys(gameInfo.seated).length === 7 && !gameInfo.completedGame) || (gameInfo.inProgress && !gameInfo.completedGame)) {
 						return 'app-hidden';
 					} else {
 						return 'remove icon';
@@ -507,7 +507,7 @@ export default class Table extends React.Component {
 						let classes = 'ui fitted toggle checkbox truncate-game',
 							{ gameInfo } = this.props;
 
-						if (!gameInfo.inProgress || gameInfo.tableState.isNight || (gameInfo.tableState.cardRoles && gameInfo.tableState.cardRoles.length) || /VOTE/.test(gameInfo.status)) {
+						if (!gameInfo.inProgress || gameInfo.tableState.isNight || (gameInfo.tableState.cardRoles && gameInfo.tableState.cardRoles.length) || /VOTE/.test(gameInfo.status) || /Game starts/.test(gameInfo.status)) {
 							classes += ' app-hidden';
 						}
 

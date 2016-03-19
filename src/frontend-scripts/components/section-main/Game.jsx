@@ -20,6 +20,10 @@ class Game extends React.Component {
 		dispatch(updateClickedGamerole(state));
 	}
 
+	componentDidUpdate() {
+		// console.log(this.props);
+	}
+
 	render() {
 		return (
 			<section className="game">
