@@ -102,8 +102,6 @@ module.exports.createGame = (socket, game) => {
 	games.push(game);
 	sendGameList();
 	socket.join(game.uid);
-
-	console.log(games, 'games');
 };
 
 module.exports.sendGameInfo = (socket, uid) => {
@@ -137,10 +135,10 @@ module.exports.sendUserList = (socket) => {
 
 module.exports.updateSeatedUsers = (socket, data) => {
 	let game = games.find((el) => {
-		return el.uid === data.uid;
-	});
+			return el.uid === data.uid;
+		}),
+		socketSession = socket.handshake.session;
 
-	console.log('usu');
 
 	// console.log(data);
 	// console.log(game);
@@ -150,7 +148,7 @@ module.exports.updateSeatedUsers = (socket, data) => {
 		socket.join(data.uid);
 	}
 
-	if (socket.handshake.session.passport && data.seatNumber && socket.handshake.session.passport.user === data.userInfo.userName) {
+	if (socketSession.passport && data.seatNumber && socketSession.passport.user === data.userInfo.userName) {
 		try {
 			game.seated[`seat${data.seatNumber}`] = {
 				userName: data.userInfo.userName
@@ -160,29 +158,46 @@ module.exports.updateSeatedUsers = (socket, data) => {
 			if (Object.keys(game.seated).length === devStatus.seatedCountToStartGame) {
 				startGameCountdown(game);
 			} else {
-				console.log('emit');
 				io.sockets.in(data.uid).emit('gameUpdate', secureGame(game));
+				sendGameList();
 			}
 		} catch (e) {
 			console.log('updateSeatedUsers blew up as usual');
 		}
 	} else if (game) {
-		for (let key in game.seated) {
-			if (game.seated[key].userName === socket.handshake.session.passport.user) {
-				delete game.seated[key];
+		let completedDisconnectionCount = 0;
+
+		if (data.gameCompleted) {
+			let playerSeat = Object.keys(game.seated).find((seatName) => {
+				return game.seated[seatName].userName === data.userName;
+			});
+
+			game.seated[playerSeat].connected = false;
+			Object.keys(game.seated).forEach((seatName) => {
+				if (!game.seated[seatName].connected) {
+					completedDisconnectionCount++;
+				}
+			});
+			sendGameList(socket);
+		} else {
+			for (let key in game.seated) {
+				if (game.seated[key].userName === socketSession.passport.user) {
+					delete game.seated[key];
+				}
 			}
+
+			sendGameList();
 		}
 
-		if (Object.keys(game.seated).length === 0) {
+		if (Object.keys(game.seated).length === 0 || completedDisconnectionCount === 7) {
 			deleteGame(game);
+			sendGameList();
 		}
 
-		sendGameList();
 		socket.leave(game.uid);
 		io.sockets.in(data.uid).emit('gameUpdate', secureGame(game));
 		socket.emit('gameUpdate', {});
 	}
-	// sendGameList(socket);  // todo: this double-updates the game causing mayhem.  commenting out for now but critical this gets addressed at some point.
 };
 
 module.exports.games = games;

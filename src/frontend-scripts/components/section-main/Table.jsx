@@ -229,7 +229,11 @@ export default class Table extends React.Component {
 	}
 
 	leaveGame() {
-		this.props.updateSeatedUsers(null);
+		if (this.props.gameInfo.completedGame) {
+			this.props.updateSeatedUsers(null, true);			
+		} else {
+			this.props.updateSeatedUsers(null);
+		}
 	}
 
 	clickedSeat(e) {
@@ -507,7 +511,7 @@ export default class Table extends React.Component {
 						let classes = 'ui fitted toggle checkbox truncate-game',
 							{ gameInfo } = this.props;
 
-						if (!gameInfo.inProgress || gameInfo.tableState.isNight || (gameInfo.tableState.cardRoles && gameInfo.tableState.cardRoles.length) || /VOTE/.test(gameInfo.status) || /Game starts/.test(gameInfo.status)) {
+						if (!gameInfo.inProgress || gameInfo.tableState.isNight || (gameInfo.tableState.cardRoles && gameInfo.tableState.cardRoles.length) || /VOTE/.test(gameInfo.status) || /Game.starts/.test(gameInfo.status)) {  // pretty much total crap right here
 							classes += ' app-hidden';
 						}
 

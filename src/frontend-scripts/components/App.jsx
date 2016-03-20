@@ -133,18 +133,25 @@ class App extends React.Component {
 
 	// ***** end dev helpers *****
 
-	updateSeatedUsersInGame(seatNumber) {
+	updateSeatedUsersInGame(seatNumber, gameCompleted) {
 		let { uid } = this.props.gameInfo,
 			{ dispatch, userInfo } = this.props,
 			data = {
 				uid,
 				seatNumber,
-				userInfo
+				userInfo,
+				gameCompleted,
+				userName: userInfo.userName
 			};
 
-		userInfo.seatNumber = seatNumber;
-		dispatch(updateUser(userInfo));
+		if (gameCompleted) {
+			delete userInfo.seatNumber;
+		} else {
+			userInfo.seatNumber = seatNumber;
+		}
+
 		socket.emit('updateSeatedUsers', data);
+		dispatch(updateUser(userInfo));
 	}
 
 	render() {

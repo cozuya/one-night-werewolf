@@ -24,8 +24,6 @@ let mongoose = require('mongoose'),
 					});
 				});
 
-			console.log('hsd');
-
 			userList.splice(userIndex, 1);
 
 			if (game) {
@@ -74,7 +72,6 @@ module.exports.checkUserStatus = (socket) => {
 			});
 
 		if (oldSocket) {
-			console.log('os');
 			sockets.splice(sockets.indexOf(oldSocket), 1);
 			handleSocketDisconnect(oldSocket);
 		}
