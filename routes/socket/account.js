@@ -57,9 +57,6 @@ let mongoose = require('mongoose'),
 module.exports.checkUserStatus = (socket) => {
 	let { passport } = socket.handshake.session;
 
-	console.log(Object.keys(io.sockets.sockets));
-	// console.log(socket.id);
-
 	if (passport && Object.keys(passport).length) {
 		let { user } = passport,
 			{ sockets } = io.sockets,
@@ -69,14 +66,14 @@ module.exports.checkUserStatus = (socket) => {
 				});
 			}),
 			oldSocketID = Object.keys(sockets).find((socketID) => {
-				if (Object.keys(sockets[socketID].handshake.session.passport).length) {
+				if (sockets[socketID].handshake.session.passport && Object.keys(sockets[socketID].handshake.session.passport).length) {
 					return sockets[socketID].handshake.session.passport.user === user && socketID !== socket.id;
 				}
 			});
 
-		if (oldSocketID) {
-			handleSocketDisconnect(sockets[oldSocketID]);
-			delete sockets[oldSocketID];
+		if (oldSocketID && sockets[oldSocketID]) {
+			sockets.splice(sockets.indexOf(oldSocket), 1);
+			handleSocketDisconnect(oldSocket);
 		}
 
 		if (gameUserIsIn && gameUserIsIn.inProgress) {
@@ -99,8 +96,6 @@ module.exports.checkUserStatus = (socket) => {
 			totalSockets: Object.keys(io.sockets.sockets).length
 		});
 	}
-
-	// console.log('cus');
 
 	sendGeneralChats(socket);
 	sendGameList(socket);
