@@ -42,4 +42,13 @@ module.exports = () => {
 			handleSocketDisconnect(socket);
 		});
 	});
+
+	process.once('SIGUSR2', () => { // todo make this work or something, not code covered right now.  probably not needed.
+		console.log('Hello World!');
+		io.sockets.sockets.forEach((socket) => {
+			socket.disconnect();
+		});
+		
+		return process.kill(process.pid, 'SIGUSR2');
+	});
 };
