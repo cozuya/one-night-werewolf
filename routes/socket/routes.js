@@ -43,12 +43,12 @@ module.exports = () => {
 		});
 	});
 
-	process.once('SIGUSR2', () => { // todo make this work or something, not code covered right now.  probably not needed.
-		console.log('Hello World!');
-		io.sockets.sockets.forEach((socket) => {
-			socket.disconnect();
-		});
+	// process.once('SIGUSR2', () => { // todo-release make this work or something, not code covered right now.  probably not needed.
+	// 	console.log('Hello World!');
+	// 	Object.keys(io.sockets.sockets).forEach((socketID) => {
+	// 		io.sockets.sockets[socketID].disconnect();
+	// 	});
 		
-		return process.kill(process.pid, 'SIGUSR2');
-	});
+	// 	return process.kill(process.pid, 'SIGUSR2');
+	// });
 };

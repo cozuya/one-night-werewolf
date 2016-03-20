@@ -91,7 +91,7 @@ module.exports.updateUserNightActionEvent = (socket, data) => {
 				player.nightAction.completed = true;
 				chat.chat = `You exchange cards between yourself and ${swappedPlayer.userName.toUpperCase()} and view your new role, which is a ${swappedPlayer.trueRole.toUpperCase()}.`;
 			},
-			seer() {  // todo players should not have the ability to see their own card
+			seer() {  // todo-alpha players should not have the ability to see their own card
 				let selectedCard = {
 					7: 'CENTER LEFT',
 					8: 'CENTER MIDDLE',

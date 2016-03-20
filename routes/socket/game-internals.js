@@ -165,7 +165,7 @@ let beginNightPhases = (game) => {
 		}
 	});
 	
-	// todo insert dummy night phases
+	// todo-alpha insert dummy night phases
 
 	// game.internals.centerRoles.forEach((role) => {
 	// 	let count = 1;
@@ -547,7 +547,7 @@ let endGame = (game) => {
 
 	seatedPlayers.forEach((player, index) => {
 
-		// todo this doesn't quite match the rules re: tanner
+		// todo-alpha this doesn't quite match the rules re: tanner
 
 		if (!werewolfEliminated && (player.trueRole === 'werewolf' || player.trueRole === 'minion') || 
 			
@@ -666,7 +666,7 @@ let endGame = (game) => {
 					if (winner) {
 						userEntry.wins++;
 					} else {
-						userEntry.losses++; // todo crashed (userEntry undefined) when a player reloaded browser during end game phase
+						userEntry.losses++; // todo-alpha crashed (userEntry undefined) when a player reloaded browser during end game phase
 					}
 
 					io.sockets.emit('userList', {

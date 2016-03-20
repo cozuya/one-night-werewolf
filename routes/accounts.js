@@ -88,6 +88,6 @@ module.exports = () => {
 	});
 
 	// app.post('/account/delete-account', passport.authenticate('local'), (req, res) => {
-				// todo
+				// todo-release
 	// });
 };

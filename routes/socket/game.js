@@ -102,6 +102,7 @@ module.exports.createGame = (socket, game) => {
 	games.push(game);
 	sendGameList();
 	socket.join(game.uid);
+	console.log(Object.keys(io.sockets.sockets));
 };
 
 module.exports.sendGameInfo = (socket, uid) => {

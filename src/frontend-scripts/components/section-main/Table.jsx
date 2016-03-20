@@ -216,7 +216,7 @@ export default class Table extends React.Component {
 		}, 3000);
 	}
 
-	revealCard(seatNumber) { // string  // todo: this should be removed and put into card logic as of now it won't work until an update, not a mount such as someone reloading the page after the game is complete.  plus jquery is dumb here.  will have to add back end logic to remove the flip class.
+	revealCard(seatNumber) { // string  // todo-release: this should be removed and put into card logic as of now it won't work until an update, not a mount such as someone reloading the page after the game is complete.  plus jquery is dumb here.  will have to add back end logic to remove the flip class.
 		let $cardFlipper = $(`section.table div.card${seatNumber} div.card-flipper`);
 
 		$cardFlipper.addClass('flip');
@@ -272,7 +272,7 @@ export default class Table extends React.Component {
 								let classes = `card-front seat-${num}`,
 									{ tableState } = this.props.gameInfo,
 									{ playerPerceivedRole } = tableState,
-									playerSeat = Object.keys(this.props.gameInfo.seated).find((seat) => { // todo check userinfo
+									playerSeat = Object.keys(this.props.gameInfo.seated).find((seat) => { // todo-alpha check userinfo
 										return this.props.gameInfo.seated[seat].userName === this.props.userInfo.userName;
 									});
 
@@ -368,13 +368,13 @@ export default class Table extends React.Component {
 			}
 		}
 
-		if (gameInfo.tableState.isVotable && !gameInfo.tableState.isVotable.completed) {  // todo: players can vote to eliminate themselves...
+		if (gameInfo.tableState.isVotable && !gameInfo.tableState.isVotable.completed) {  // todo-alpha: players can vote to eliminate themselves...
 			$card.parent().find('.card').removeClass('card-select');
 			$card.addClass('card-select');
 			socket.emit('updateSelectedForElimination', {
 				uid: gameInfo.uid,
 				seatNumber: userInfo.seatNumber,
-				selectedForElimination: cardNumber // todo: very possible that this could be wrong PLAYER i.e. current user is TM and swaps cards 1 and 2 then selects player 2 (actually now card 1) and this variable will be card 1.  probably add "data-originalseatnumber" attribute.
+				selectedForElimination: cardNumber // todo-alpha: very possible that this could be wrong PLAYER i.e. current user is TM and swaps cards 1 and 2 then selects player 2 (actually now card 1) and this variable will be card 1.  probably add "data-originalseatnumber" attribute.
 			});
 		}
 	}
@@ -489,7 +489,7 @@ export default class Table extends React.Component {
 					Game ID: {gameInfo.uid}
 					<i onClick={this.clickedReportGame.bind(this)} className={
 						(() => {
-							let classes = 'warning sign icon'; // todo should only show for seated players
+							let classes = 'warning sign icon'; // todo-alpha should only show for seated players
 
 							if (!Object.keys(this.props.userInfo).length) {
 								classes += ' app-hidden';

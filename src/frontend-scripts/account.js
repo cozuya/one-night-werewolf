@@ -165,7 +165,7 @@ export default () => {
 	});
 
 	$('button#deleteaccount-submit').on('click', function (event) {
-		return; // todo
+		return; // todo-release
 		event.preventDefault();
 		
 		let password = $('#deleteaccount-password').val(),
@@ -203,7 +203,7 @@ export default () => {
 		});
 	});	
 
-	// todo: autologin crap remove later
+	// dev: autologin crap remove later
 
 		$('body').on('click', '.loginquick', function(event) {
 			event.preventDefault();
@@ -221,10 +221,6 @@ export default () => {
 						} else {
 							window.location.reload();
 						}
-					},
-					400() {
-					},
-					401() {
 					}
 				}
 			});

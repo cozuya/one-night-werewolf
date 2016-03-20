@@ -35,7 +35,7 @@ export default class Gameroles extends React.Component {
 
 	render() {
 
-		// todo popups don't have team names colors working
+		// todo-alpha popups don't have team names colors working
 		return (
 			<section className="gameroles">
 				<div className="ui right pointing label">

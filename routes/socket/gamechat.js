@@ -45,7 +45,7 @@ module.exports.sendInprogressChats= (game) => {
 		});
 
 		sockets.playerSockets = roomSockets.filter((socket) => {
-			return seatedPlayerNames.indexOf(socket.handshake.session.passport.user) >= 0;  // todo this errored some how at beginning of game once (passport not defined)
+			return seatedPlayerNames.indexOf(socket.handshake.session.passport.user) >= 0;  // todo-alpha this errored some how at beginning of game once (passport not defined), maybe find way to not check the socket for player
 		});
 
 		sockets.observerSockets = roomSockets.filter((socket) => {
@@ -59,7 +59,7 @@ module.exports.sendInprogressChats= (game) => {
 				return user.userName === userName;
 			});
 
-		cloneGame.tableState.playerPerceivedRole = cloneGame.internals.seatedPlayers[index].perceivedRole;  // todo should probably be double checked for efficaciousness
+		cloneGame.tableState.playerPerceivedRole = cloneGame.internals.seatedPlayers[index].perceivedRole;  // todo-release should probably be double checked for efficaciousness
 
 		if (cloneGame.tableState.phase === player.nightAction.phase && !player.nightPhaseComplete) {
 			cloneGame.tableState.nightAction = cloneGame.internals.seatedPlayers[index].nightAction;

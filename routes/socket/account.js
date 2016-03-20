@@ -57,7 +57,7 @@ let mongoose = require('mongoose'),
 module.exports.checkUserStatus = (socket) => {
 	let { passport } = socket.handshake.session;
 
-	// console.log(Object.keys(io.sockets.sockets));
+	console.log(Object.keys(io.sockets.sockets));
 	// console.log(socket.id);
 
 	if (passport && Object.keys(passport).length) {
@@ -69,7 +69,9 @@ module.exports.checkUserStatus = (socket) => {
 				});
 			}),
 			oldSocketID = Object.keys(sockets).find((socketID) => {
-				return sockets[socketID].handshake.session.passport.user === user && socketID !== socket.id;
+				if (Object.keys(sockets[socketID].handshake.session.passport).length) {
+					return sockets[socketID].handshake.session.passport.user === user && socketID !== socket.id;
+				}
 			});
 
 		if (oldSocketID) {
