@@ -27,13 +27,13 @@ let mongoose = require('mongoose'),
 			userList.splice(userIndex, 1);
 
 			if (game) {
-				let seatedKeys = Object.keys(game.seated),
-					userSeatName = seatedKeys.find((seatName) => {
+				let seatNames = Object.keys(game.seated),
+					userSeatName = seatNames.find((seatName) => {
 						return game.seated[seatName].userName === passport.user;
 					});
 
 				if (!game.inProgress) {
-					if (seatedKeys.length === 1) {
+					if (seatNames.length === 1) {
 						deleteGame(game);
 					} else {
 						delete game.seated[userSeatName];
@@ -72,8 +72,9 @@ module.exports.checkUserStatus = (socket) => {
 			});
 
 		if (oldSocketID && sockets[oldSocketID]) {
-			sockets.splice(sockets.indexOf(oldSocket), 1);
-			handleSocketDisconnect(oldSocket);
+			// todo-alpha think I need delete here again..
+			handleSocketDisconnect(sockets[oldSocketID]);
+			delete sockets[oldSocketID];
 		}
 
 		if (gameUserIsIn && gameUserIsIn.inProgress) {
@@ -111,8 +112,9 @@ module.exports.handleUpdatedGameSettings = (socket, data) => {
 			account.gameSettings[setting] = data[setting];
 		}
 
-		account.save();
-		socket.emit('gameSettings', account.gameSettings);
+		account.save(() => {
+			socket.emit('gameSettings', account.gameSettings);
+		});
 	});
 }
 

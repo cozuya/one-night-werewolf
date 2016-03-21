@@ -646,6 +646,10 @@ let endGame = (game) => {
 		Account.find({username: {$in: seatedPlayers.map((player) => {
 			return player.userName;
 		})}}, (err, results) => {
+			if (err) {
+				console.log(err);
+			}
+			
 			results.forEach((player) => {
 				let winner = false;
 

@@ -6,6 +6,8 @@ let { startGame } = require('./game-internals'),
 	games = [],
 	userList = [],
 	deleteGame = (game) => {
+		// todo-alpha push/replace after game ends chats into db on completed games
+
 		games.splice(games.indexOf(game), 1);
 	},
 	sendGameList = (socket) => {
