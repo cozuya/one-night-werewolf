@@ -57,8 +57,6 @@ let mongoose = require('mongoose'),
 module.exports.checkUserStatus = (socket) => {
 	let { passport } = socket.handshake.session;
 
-	console.log(passport);
-
 	if (passport && Object.keys(passport).length) {
 		let { user } = passport,
 			{ sockets } = io.sockets,
@@ -67,7 +65,7 @@ module.exports.checkUserStatus = (socket) => {
 					return game.seated[seat].userName === user;
 				});
 			}),
-			oldSocketID = Object.keys(sockets).find((socketID) => {
+			oldSocketID = Object.keys(sockets).find((socketID) => { // todo-alpha this broke, double log in is still possible.
 				if (sockets[socketID].handshake.session.passport && Object.keys(sockets[socketID].handshake.session.passport).length) {
 					return sockets[socketID].handshake.session.passport.user === user && socketID !== socket.id;
 				}

@@ -40,12 +40,14 @@ module.exports.sendInprogressChats= (game) => {
 			return game.seated[seat].userName;
 		}),
 		sockets = {},
-		roomSockets = Object.keys(io.sockets.adapter.rooms[game.uid]).map((sockedId) => {
+		roomSockets = Object.keys(io.sockets.adapter.rooms[game.uid].sockets).map((sockedId) => {
 			return io.sockets.connected[sockedId];
 		});
 
 		sockets.playerSockets = roomSockets.filter((socket) => {
-			return seatedPlayerNames.indexOf(socket.handshake.session.passport.user) >= 0;  // todo-alpha this errored some how at beginning of game once (passport not defined), maybe find way to not check the socket for player
+			if (socket.handshake.session.passport && Object.keys(socket.handshake.session.passport).length) {
+				return seatedPlayerNames.indexOf(socket.handshake.session.passport.user) >= 0;
+			}
 		});
 
 		sockets.observerSockets = roomSockets.filter((socket) => {

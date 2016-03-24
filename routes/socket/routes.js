@@ -42,7 +42,7 @@ module.exports = () => {
 			handleSocketDisconnect(socket);
 		});
 	});
-
+	
 	// process.once('SIGUSR2', () => { // todo-release make this work or something, not code covered right now.  probably not needed.
 	// 	console.log('Hello World!');
 	// 	Object.keys(io.sockets.sockets).forEach((socketID) => {
