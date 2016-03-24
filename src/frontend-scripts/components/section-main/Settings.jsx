@@ -6,7 +6,6 @@ import Popup from 'semantic-ui-popup';
 import Dropdown from 'semantic-ui-dropdown';
 import Progress from 'semantic-ui-progress';
 import Checkbox from 'semantic-ui-checkbox';
-import socket from 'socket.io-client';
 import { defaultRolesArray } from '../../../../iso/util.js';
 
 $.fn.dropdown = Dropdown;
@@ -14,10 +13,10 @@ $.fn.popup = Popup;
 $.fn.progress = Progress;
 $.fn.checkbox = Checkbox;
 
-socket = socket();
-
 export default class Settings extends React.Component {
 	componentDidMount() {
+		let self = this;
+
 		$(this.refs.popups).popup({
 			inline: true,
 			hoverable: true,
@@ -28,12 +27,12 @@ export default class Settings extends React.Component {
 			}
 		}).checkbox({
 			onChecked() {
-				socket.emit('updateGameSettings', {
+				self.props.onUpdatedGameSettings({
 					disablePopups: true
 				});
 			},
 			onUnchecked() {
-				socket.emit('updateGameSettings', {
+				self.props.onUpdatedGameSettings({
 					disablePopups: false
 				});
 			},
@@ -41,12 +40,12 @@ export default class Settings extends React.Component {
 
 		$(this.refs.timestamps).checkbox({
 			onChecked() {
-				socket.emit('updateGameSettings', {
+				self.props.onUpdatedGameSettings({
 					enableTimestamps: true
 				});
 			},
 			onUnchecked() {
-				socket.emit('updateGameSettings', {
+				self.props.onUpdatedGameSettings({
 					enableTimestamps: false
 				});
 			}
@@ -54,12 +53,12 @@ export default class Settings extends React.Component {
 
 		$(this.refs.sidebar).checkbox({
 			onChecked() {
-				socket.emit('updateGameSettings', {
+				self.props.onUpdatedGameSettings({
 					disableRightSidebarInGame: true
 				});
 			},
 			onUnchecked() {
-				socket.emit('updateGameSettings', {
+				self.props.onUpdatedGameSettings({
 					disableRightSidebarInGame: false
 				});
 			}

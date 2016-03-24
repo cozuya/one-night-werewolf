@@ -5,13 +5,11 @@ import $ from 'jquery';
 import Popup from 'semantic-ui-popup';
 import Dropdown from 'semantic-ui-dropdown';
 import Progress from 'semantic-ui-progress';
-import socket from 'socket.io-client';
 import { defaultRolesArray } from '../../../../iso/util.js';
 
 $.fn.dropdown = Dropdown;
 $.fn.popup = Popup;
 $.fn.progress = Progress;
-socket = socket();
 
 export default class Creategame extends React.Component {
 	constructor() {

@@ -45,6 +45,7 @@ export default class RightSidebar extends React.Component {
 				/>
 				<div className="ui divider right-sidebar-divider"></div>
 				<Generalchat
+					onGeneralChatSubmit={this.props.onGeneralChatSubmit}
 					generalChats={this.props.generalChats}
 					userInfo={this.props.userInfo}
 				/>

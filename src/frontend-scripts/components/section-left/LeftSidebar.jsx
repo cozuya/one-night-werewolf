@@ -37,7 +37,11 @@ export default class LeftSidebar extends React.Component {
 				})()}
 				<div className="games-container">
 					{this.props.gameList.map((game, i) => {
-						return <SidebarGame key={i} game={game} />
+						return <SidebarGame
+									key={i}
+									game={game}
+									sidebarGameClicked={this.props.sidebarGameClicked}
+								/>
 					})}
 				</div>
 			</section>

@@ -8,7 +8,6 @@ import Modal from 'semantic-ui-modal';
 import socket from 'socket.io-client';
 import _ from 'lodash';
 
-socket = socket();
 $.fn.popup = Popup;
 $.fn.modal = Modal;
 
@@ -50,7 +49,7 @@ export default class Table extends React.Component {
 			});
 		}
 
-		console.log(gameInfo);
+		// console.log(gameInfo);
 	}
 
 	componentDidMount() {
@@ -307,7 +306,7 @@ export default class Table extends React.Component {
 		if (!gameInfo.tableState.nightAction.completed && gameInfo.tableState.nightAction.action === 'werewolf' && $card.attr('data-cardnumber') > 6) {
 			data.role = 'singleWerewolf';
 			data.action = cardNumber;
-			socket.emit('userNightActionEvent', data);
+			this.props.onUserNightActionEventSubmit(data);
 		}
 
 		if (!gameInfo.tableState.nightAction.completed && gameInfo.tableState.nightAction.action === 'insomniac') {
@@ -318,7 +317,7 @@ export default class Table extends React.Component {
 			if (cardNumber === playerSeat) {
 				data.role = 'insomniac';
 				data.action = cardNumber;
-				socket.emit('userNightActionEvent', data);
+				this.props.onUserNightActionEventSubmit(data);
 			}
 		}
 
@@ -327,7 +326,7 @@ export default class Table extends React.Component {
 				if (cardNumber !== this.state.firstClickedCard) {
 					data.role = 'troublemaker';
 					data.action = [this.state.firstClickedCard, cardNumber];
-					socket.emit('userNightActionEvent', data);
+					this.props.onUserNightActionEventSubmit(data);
 				}
 			} else if (cardNumber !== this.props.userInfo.seatNumber) {
 				this.setState({
@@ -346,7 +345,7 @@ export default class Table extends React.Component {
 
 				data.role = 'seer';
 				data.action = action;				
-				socket.emit('userNightActionEvent', data);
+				this.props.onUserNightActionEventSubmit(data);
 			} else {
 				if (parseInt(cardNumber) > 6) {
 					this.setState({
@@ -364,14 +363,14 @@ export default class Table extends React.Component {
 			if (cardNumber !== playerSeat) {
 				data.role = 'robber';
 				data.action = cardNumber;
-				socket.emit('userNightActionEvent', data);
+				this.props.onUserNightActionEventSubmit(data);
 			}
 		}
 
 		if (gameInfo.tableState.isVotable && !gameInfo.tableState.isVotable.completed) {  // todo-alpha: players can vote to eliminate themselves...
 			$card.parent().find('.card').removeClass('card-select');
 			$card.addClass('card-select');
-			socket.emit('updateSelectedForElimination', {
+			this.props.onUpdateSelectedForElimination({
 				uid: gameInfo.uid,
 				seatNumber: userInfo.seatNumber,
 				selectedForElimination: cardNumber // todo-alpha: very possible that this could be wrong PLAYER i.e. current user is TM and swaps cards 1 and 2 then selects player 2 (actually now card 1) and this variable will be card 1.  probably add "data-originalseatnumber" attribute.
@@ -393,9 +392,7 @@ export default class Table extends React.Component {
 		if (userInfo.seatNumber && !gameInfo.isNight && gameInfo.inProgress) {
 			let clicked = !!$(e.currentTarget).is(':checked');
 
-			console.log('Hello World!');
-
-			socket.emit('updateTruncateGame', {
+			this.props.onUpdateTruncateGameSubmit({
 				truncate: clicked,
 				userName: userInfo.userName,
 				uid: gameInfo.uid
@@ -404,7 +401,7 @@ export default class Table extends React.Component {
 	}
 
 	clickedReportGame() {
-		socket.emit('updateReportGame', {
+		this.props.onUpdateReportGame({
 			seatNumber: this.props.userInfo.seatNumber,
 			userName: this.props.userInfo.userName,
 			uid: this.props.gameInfo.uid

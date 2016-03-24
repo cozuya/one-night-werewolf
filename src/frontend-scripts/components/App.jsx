@@ -23,10 +23,10 @@ class App extends React.Component {
 		}
 
 		socket.on('gameSettings', (settings) => {
-			let user = this.props.userInfo;
+			let { userInfo } = this.props;
 
-			user.gameSettings = settings;
-			dispatch(updateUser(user));
+			userInfo.gameSettings = settings;
+			dispatch(updateUser(userInfo));
 		});
 
 		socket.on('gameList', (list) => {
@@ -48,10 +48,10 @@ class App extends React.Component {
 		});
 
 		socket.on('updateSeatForUser', (seatNumber) => {
-			let user = this.props.userInfo;
+			let { userInfo } = this.props;
 
-			user.seatNumber = seatNumber;
-			dispatch(updateUser(user));
+			userInfo.seatNumber = seatNumber;
+			dispatch(updateUser(userInfo));
 		});
 
 		socket.on('generalChats', (chats) => {
@@ -73,6 +73,38 @@ class App extends React.Component {
 		dispatch(updateMidsection('game'));
 		dispatch(updateUser(userInfo));
 		socket.emit('createGame', game);
+	}
+
+	handleGeneralChatSubmit(chat) {
+		socket.emit('newGeneralChat', chat);
+	}
+
+	handleUserNightActionEventSubmit(event) {
+		socket.emit('userNightActionEvent', event);
+	}
+
+	handleUpdateTruncateGameSubmit(event) {
+		socket.emit('updateTruncateGame', event);
+	}
+
+	handleUpdateSelectedForEliminationSubmit(event) {
+		socket.emit('updateSelectedForElimination', event);
+	}
+
+	handleUpdateReportGameSubmit(event) {
+		socket.emit('updateReportGame', event);
+	}
+
+	handleUpdateGameSettingsSubmit(event) {
+		socket.emit('updateGameSettings', event);
+	}
+
+	handleNewGameChatSubmit(chat, uid) {
+		socket.emit('newGameChat', chat, uid);
+	}
+
+	handleSidebarGameClicked(uid) {
+		socket.emit('getGameInfo', uid);
 	}
 
 	// ***** dev helpers only *****
@@ -162,12 +194,19 @@ class App extends React.Component {
 					midsection={this.props.midSection}
 					gameList={this.props.gameList}
 					onCreateGameButtonClick={this.handleRoute.bind(this)}
+					sidebarGameClicked={this.handleSidebarGameClicked.bind(this)}
 				/>
 				<Main
 					userInfo={this.props.userInfo}
 					midsection={this.props.midSection}
 					onCreateGameSubmit={this.handleCreateGameSubmit.bind(this)}
+					onUserNightActionEventSubmit={this.handleUserNightActionEventSubmit.bind(this)}
+					onUpdateTruncateGameSubmit={this.handleUpdateTruncateGameSubmit.bind(this)}
+					onUpdateSelectedForElimination={this.handleUpdateSelectedForEliminationSubmit.bind(this)}
+					onUpdateReportGame={this.handleUpdateReportGameSubmit.bind(this)}
+					onUpdatedGameSettings={this.handleUpdateGameSettingsSubmit.bind(this)}
 					onLeaveCreateGame={this.handleRoute.bind(this)}
+					onNewGameChat={this.handleNewGameChatSubmit.bind(this)}
 					gameInfo={this.props.gameInfo}
 					onLeaveSettings={this.handleRoute.bind(this)}
 					updateSeatedUsers={this.updateSeatedUsersInGame.bind(this)}
@@ -179,6 +218,7 @@ class App extends React.Component {
 					midsection={this.props.midSection}
 					onSettingsButtonClick={this.handleRoute.bind(this)}
 					generalChats={this.props.generalChats}
+					onGeneralChatSubmit={this.handleGeneralChatSubmit.bind(this)}
 				/>
 			</section>
 		);

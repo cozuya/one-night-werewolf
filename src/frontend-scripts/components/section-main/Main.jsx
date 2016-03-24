@@ -39,12 +39,18 @@ export default class Main extends React.Component {
 									/>
 						case 'game':
 							return <Game
+										onUserNightActionEventSubmit={this.onUserNightActionEventSubmit}
+										onUpdateTruncateGameSubmit={this.onUpdateTruncateGameSubmit}
+										onUpdateSelectedForElimination={this.onUpdateSelectedForElimination}
+										onUpdateReportGame={this.onUpdateReportGame}
+										onNewGameChat={this.onNewGameChat}
 										updateSeatedUsers={this.props.updateSeatedUsers}
 										userInfo={this.props.userInfo}
 										gameInfo={this.props.gameInfo}
 									/>
 						case 'settings':
 							return <Settings
+										onUpdatedGameSettings={this.onUpdatedGameSettings}
 										onLeaveSettings={this.props.onLeaveSettings}
 										userInfo={this.props.userInfo}
 									/>

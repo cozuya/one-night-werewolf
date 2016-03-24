@@ -2,9 +2,7 @@
 
 import React from 'react';
 import $ from 'jquery';
-import socket from 'socket.io-client';
 import { roleList, roleMap } from '../../../../iso/util';
-socket = socket();
 
 export default class Gamechat extends React.Component {
 	constructor() {
@@ -113,7 +111,7 @@ export default class Gamechat extends React.Component {
 				inProgress: this.props.gameInfo.inProgress
 			};
 
-			socket.emit('newGameChat', chat, this.props.gameInfo.uid);
+			this.props.onNewGameChat('newGameChat', chat, this.props.gameInfo.uid);
 			input.value = '';
 			input.focus();
 			$button.addClass('disabled');

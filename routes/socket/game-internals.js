@@ -44,7 +44,7 @@ module.exports.startGame = (game) => {
 		}
 	}
 
-	game.status = 'Dealing..';s
+	game.status = 'Dealing..';
 	game.tableState.cardsDealt = 'in progress';
 	game.tableState.reportedGame = {
 		0: false,

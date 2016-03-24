@@ -57,6 +57,8 @@ let mongoose = require('mongoose'),
 module.exports.checkUserStatus = (socket) => {
 	let { passport } = socket.handshake.session;
 
+	console.log(passport);
+
 	if (passport && Object.keys(passport).length) {
 		let { user } = passport,
 			{ sockets } = io.sockets,
@@ -72,7 +74,6 @@ module.exports.checkUserStatus = (socket) => {
 			});
 
 		if (oldSocketID && sockets[oldSocketID]) {
-			// todo-alpha think I need delete here again..
 			handleSocketDisconnect(sockets[oldSocketID]);
 			delete sockets[oldSocketID];
 		}
@@ -112,7 +113,7 @@ module.exports.handleUpdatedGameSettings = (socket, data) => {
 			account.gameSettings[setting] = data[setting];
 		}
 
-		account.save(() => {
+		account.save(() => {  // todo-alpha the client isn't receiving this emit.  everything else works including db save.
 			socket.emit('gameSettings', account.gameSettings);
 		});
 	});

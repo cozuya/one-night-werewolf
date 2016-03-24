@@ -2,8 +2,6 @@
 
 import React from 'react';
 import $ from 'jquery';
-import socket from 'socket.io-client';
-socket = socket();
 
 export default class Gamechat extends React.Component {
 	constructor() {
@@ -47,12 +45,10 @@ export default class Gamechat extends React.Component {
 		e.preventDefault();
 
 		if (input.value) {
-			let chat = {
+			this.props.onGeneralChatSubmit({
 				userName: this.props.userInfo.userName,
 				chat: input.value
-			};
-
-			socket.emit('newGeneralChat', chat);
+			});
 			input.value = '';
 			input.focus();
 			$button.addClass('disabled');

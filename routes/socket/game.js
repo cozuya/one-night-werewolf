@@ -104,7 +104,6 @@ module.exports.createGame = (socket, game) => {
 	games.push(game);
 	sendGameList();
 	socket.join(game.uid);
-	console.log(Object.keys(io.sockets.sockets));
 };
 
 module.exports.sendGameInfo = (socket, uid) => {
@@ -142,30 +141,21 @@ module.exports.updateSeatedUsers = (socket, data) => {
 		}),
 		socketSession = socket.handshake.session;
 
-
-	// console.log(data);
-	// console.log(game);
-	// console.log(socket.handshake.session.passport);
-	// console.log(socket.handshake.session);
 	if (game) {
 		socket.join(data.uid);
 	}
 
 	if (socketSession.passport && data.seatNumber && socketSession.passport.user === data.userInfo.userName) {
-		try {
-			game.seated[`seat${data.seatNumber}`] = {
-				userName: data.userInfo.userName
-			};
-			game.seated[`seat${data.seatNumber}`].connected = true;
+		game.seated[`seat${data.seatNumber}`] = {
+			userName: data.userInfo.userName
+		};
+		game.seated[`seat${data.seatNumber}`].connected = true;
 
-			if (Object.keys(game.seated).length === devStatus.seatedCountToStartGame) {
-				startGameCountdown(game);
-			} else {
-				io.sockets.in(data.uid).emit('gameUpdate', secureGame(game));
-				sendGameList();
-			}
-		} catch (e) {
-			console.log('updateSeatedUsers blew up as usual');
+		if (Object.keys(game.seated).length === devStatus.seatedCountToStartGame) {
+			startGameCountdown(game);
+		} else {
+			io.sockets.in(data.uid).emit('gameUpdate', secureGame(game));
+			sendGameList();
 		}
 	} else if (game) {
 		let completedDisconnectionCount = 0;
