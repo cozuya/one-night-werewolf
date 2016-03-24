@@ -35,7 +35,7 @@ let combineInprogressChats = (game, userName) => {
 	return _chats;
 };
 
-module.exports.sendInprogressChats= (game) => {
+let sendInprogressChats = (game) => {
 	let seatedPlayerNames = Object.keys(game.seated).map((seat) => {
 			return game.seated[seat].userName;
 		}),
@@ -88,3 +88,4 @@ module.exports.sendInprogressChats= (game) => {
 };
 
 module.exports.combineInprogressChats = combineInprogressChats;
+module.exports.sendInprogressChats = sendInprogressChats;

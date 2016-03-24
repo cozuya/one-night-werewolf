@@ -111,7 +111,7 @@ export default class Gamechat extends React.Component {
 				inProgress: this.props.gameInfo.inProgress
 			};
 
-			this.props.onNewGameChat('newGameChat', chat, this.props.gameInfo.uid);
+			this.props.onNewGameChat(chat, this.props.gameInfo.uid);
 			input.value = '';
 			input.focus();
 			$button.addClass('disabled');

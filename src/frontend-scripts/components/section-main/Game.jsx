@@ -43,10 +43,10 @@ class Game extends React.Component {
 							})()
 						}>
 							<Table
-								onUserNightActionEventSubmit={this.onUserNightActionEventSubmit}
-								onUpdateTruncateGameSubmit={this.onUpdateTruncateGameSubmit}
-								onUpdateSelectedForElimination={this.onUpdateSelectedForEliminationSubmit}
-								onUpdateReportGame={this.onUpdateReportGame}
+								onUserNightActionEventSubmit={this.props.onUserNightActionEventSubmit}
+								onUpdateTruncateGameSubmit={this.props.onUpdateTruncateGameSubmit}
+								onUpdateSelectedForEliminationSubmit={this.props.onUpdateSelectedForEliminationSubmit}
+								onUpdateReportGame={this.props.onUpdateReportGame}
 								updateSeatedUsers={this.props.updateSeatedUsers}
 								gameInfo={this.props.gameInfo}
 								userInfo={this.props.userInfo}
@@ -72,7 +72,7 @@ class Game extends React.Component {
 								isGeneralChat={false}
 								gameInfo={this.props.gameInfo}
 								userInfo={this.props.userInfo}
-								onNewGameChat={this.onNewGameChat}
+								onNewGameChat={this.props.onNewGameChat}
 								clickedGameRole={this.props.gameRoleInfo}
 								roleState={this.roleState.bind(this)}
 								selectedGamerole={this.props.clickedGamerole}

@@ -24,6 +24,7 @@ let mongoose = require('mongoose'),
 					});
 				});
 
+			socket.emit('manualDisconnection');
 			userList.splice(userIndex, 1);
 
 			if (game) {
@@ -54,18 +55,18 @@ let mongoose = require('mongoose'),
 		});
 	};
 
-module.exports.checkUserStatus = (socket) => {
+module.exports.checkUserStatus = (socket) => {  // todo-alpha players who reconnect (may be completed game only) do not un-grey their names on a table
 	let { passport } = socket.handshake.session;
 
 	if (passport && Object.keys(passport).length) {
 		let { user } = passport,
 			{ sockets } = io.sockets,
-			gameUserIsIn = games.find((game) => {
+			game = games.find((game) => {
 				return Object.keys(game.seated).find((seat) => {
 					return game.seated[seat].userName === user;
 				});
 			}),
-			oldSocketID = Object.keys(sockets).find((socketID) => { // todo-alpha this broke, double log in is still possible.
+			oldSocketID = Object.keys(sockets).find((socketID) => {
 				if (sockets[socketID].handshake.session.passport && Object.keys(sockets[socketID].handshake.session.passport).length) {
 					return sockets[socketID].handshake.session.passport.user === user && socketID !== socket.id;
 				}
@@ -76,18 +77,19 @@ module.exports.checkUserStatus = (socket) => {
 			delete sockets[oldSocketID];
 		}
 
-		if (gameUserIsIn && gameUserIsIn.inProgress) {
-			let internalPlayer = getInternalPlayerInGameByUserName(gameUserIsIn, user),
-				userSeatName = Object.keys(gameUserIsIn.seated).find((seatName) => {
-					return gameUserIsIn.seated[seatName].userName === passport.user;
+		if (game && game.inProgress) {
+			let internalPlayer = getInternalPlayerInGameByUserName(game, user),
+				userSeatName = Object.keys(game.seated).find((seatName) => {
+					return game.seated[seatName].userName === passport.user;
 				}),
 				cloneGame;
 
-			gameUserIsIn.seated[userSeatName].connected = true;
-			cloneGame = Object.assign({}, gameUserIsIn),
-			cloneGame.chats = combineInprogressChats(cloneGame, user);
-			socket.join(gameUserIsIn.uid);
-			socket.emit('gameUpdate', secureGame(cloneGame));
+			game.seated[userSeatName].connected = true;
+			// cloneGame = Object.assign({}, game),
+			// cloneGame.chats = combineInprogressChats(cloneGame, user);
+			socket.join(game.uid);
+			// socket.emit('gameUpdate', secureGame(cloneGame));
+			io.sockets.in(game.uid).emit('gameUpdate', secureGame(game));
 			socket.emit('updateSeatForUser', internalPlayer.seat);
 		}
 	} else {

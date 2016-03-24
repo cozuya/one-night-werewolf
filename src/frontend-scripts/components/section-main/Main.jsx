@@ -39,11 +39,11 @@ export default class Main extends React.Component {
 									/>
 						case 'game':
 							return <Game
-										onUserNightActionEventSubmit={this.onUserNightActionEventSubmit}
-										onUpdateTruncateGameSubmit={this.onUpdateTruncateGameSubmit}
-										onUpdateSelectedForElimination={this.onUpdateSelectedForElimination}
-										onUpdateReportGame={this.onUpdateReportGame}
-										onNewGameChat={this.onNewGameChat}
+										onUserNightActionEventSubmit={this.props.onUserNightActionEventSubmit}
+										onUpdateTruncateGameSubmit={this.props.onUpdateTruncateGameSubmit}
+										onUpdateSelectedForEliminationSubmit={this.props.onUpdateSelectedForEliminationSubmit}
+										onUpdateReportGame={this.props.onUpdateReportGame}
+										onNewGameChat={this.props.onNewGameChat}
 										updateSeatedUsers={this.props.updateSeatedUsers}
 										userInfo={this.props.userInfo}
 										gameInfo={this.props.gameInfo}

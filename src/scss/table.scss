@@ -84,6 +84,10 @@
 				text-align: center;
 			}
 
+			.username.currentuser {
+				color: #16AB39;
+			}
+
 			.socket-not-present {
 				color: #ccc;
 			}
@@ -183,53 +187,53 @@
 
 
 		.seat0 {
-			top: 20px;
-			left: 260px;
+			top: 20px !important;
+			left: 260px !important;
 		}
 
 		.seat1 {
-			top: 70px;
-			left: 430px;
+			top: 70px !important;
+			left: 430px !important;
 		}
 
 		.seat2 {
-			top: 210px;
-			left: 500px;
+			top: 210px !important;
+			left: 500px !important;
 		}
 
 		.seat3 {
-			top: 320px;
-			left: 360px;
+			top: 320px !important;
+			left: 360px !important;
 		}
 
 		.seat4 {
-			top: 320px;
-			left: 160px;
+			top: 320px !important;
+			left: 160px !important;
 		}
 
 		.seat5 {
-			top: 210px;
-			left: 20px;
+			top: 210px !important;
+			left: 20px !important;
 		}
 
 		.seat6 {
-			top: 70px;
-			left: 90px;
+			top: 70px !important;
+			left: 90px !important;
 		}
 
 		.seat7 {
-			top: 190px;
-			left: 180px;
+			top: 190px !important;
+			left: 180px !important;
 		}
 
 		.seat8 {
-			top: 190px;
-			left: 260px;
+			top: 190px !important;
+			left: 260px !important;
 		}
 
 		.seat9 {
-			top: 190px;
-			left: 340px;
+			top: 190px !important;
+			left: 340px !important;
 		}
 
 		.remove.icon {

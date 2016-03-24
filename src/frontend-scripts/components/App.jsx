@@ -22,6 +22,10 @@ class App extends React.Component {
 			socket.emit('getUserGameSettings', username);
 		}
 
+		socket.on('manualDisconnection', () => {
+			window.location.pathname = '/observe'
+		});
+
 		socket.on('gameSettings', (settings) => {
 			let { userInfo } = this.props;
 
@@ -202,7 +206,7 @@ class App extends React.Component {
 					onCreateGameSubmit={this.handleCreateGameSubmit.bind(this)}
 					onUserNightActionEventSubmit={this.handleUserNightActionEventSubmit.bind(this)}
 					onUpdateTruncateGameSubmit={this.handleUpdateTruncateGameSubmit.bind(this)}
-					onUpdateSelectedForElimination={this.handleUpdateSelectedForEliminationSubmit.bind(this)}
+					onUpdateSelectedForEliminationSubmit={this.handleUpdateSelectedForEliminationSubmit.bind(this)}
 					onUpdateReportGame={this.handleUpdateReportGameSubmit.bind(this)}
 					onUpdatedGameSettings={this.handleUpdateGameSettingsSubmit.bind(this)}
 					onLeaveCreateGame={this.handleRoute.bind(this)}

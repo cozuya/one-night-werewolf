@@ -49,7 +49,25 @@ export default class Table extends React.Component {
 			});
 		}
 
-		// console.log(gameInfo);
+		if (gameInfo.inProgress && !prevProps.gameInfo.inProgress) {
+			let $cards = $('div.card'),
+				centerTop = 190,
+				centerLeft = 260,
+				shuffleInterval = setInterval(() => {
+					$cards.each(function () {
+						$(this).css({
+							top: `${(190 + (Math.floor(Math.random() * 30) - 15)).toString()}px`,
+							left: `${(260 + (Math.floor(Math.random() * 30) - 15)).toString()}px`
+						});
+					});
+				}, 300);
+
+			setTimeout(() => { // quality stuff here
+				clearInterval(shuffleInterval);
+			}, 5000);
+		}
+
+		console.log(gameInfo);
 	}
 
 	componentDidMount() {
@@ -370,7 +388,7 @@ export default class Table extends React.Component {
 		if (gameInfo.tableState.isVotable && !gameInfo.tableState.isVotable.completed) {  // todo-alpha: players can vote to eliminate themselves...
 			$card.parent().find('.card').removeClass('card-select');
 			$card.addClass('card-select');
-			this.props.onUpdateSelectedForElimination({
+			this.props.onUpdateSelectedForEliminationSubmit({
 				uid: gameInfo.uid,
 				seatNumber: userInfo.seatNumber,
 				selectedForElimination: cardNumber // todo-alpha: very possible that this could be wrong PLAYER i.e. current user is TM and swaps cards 1 and 2 then selects player 2 (actually now card 1) and this variable will be card 1.  probably add "data-originalseatnumber" attribute.
@@ -439,6 +457,10 @@ export default class Table extends React.Component {
 
 												if (seated && !gameInfo.seated[`seat${el}`].connected) {
 													classes += ' socket-not-present';
+												}
+
+												if (userInfo.seatNumber === el.toString()) {
+													classes += ' currentuser';
 												}
 
 												return classes;												
