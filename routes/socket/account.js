@@ -55,7 +55,7 @@ let mongoose = require('mongoose'),
 		});
 	};
 
-module.exports.checkUserStatus = (socket) => {  // todo-alpha players who reconnect (may be completed game only) do not un-grey their names on a table
+module.exports.checkUserStatus = (socket) => {
 	let { passport } = socket.handshake.session;
 
 	if (passport && Object.keys(passport).length) {
@@ -85,10 +85,7 @@ module.exports.checkUserStatus = (socket) => {  // todo-alpha players who reconn
 				cloneGame;
 
 			game.seated[userSeatName].connected = true;
-			// cloneGame = Object.assign({}, game),
-			// cloneGame.chats = combineInprogressChats(cloneGame, user);
 			socket.join(game.uid);
-			// socket.emit('gameUpdate', secureGame(cloneGame));
 			io.sockets.in(game.uid).emit('gameUpdate', secureGame(game));
 			socket.emit('updateSeatForUser', internalPlayer.seat);
 		}
@@ -120,7 +117,7 @@ module.exports.handleUpdatedGameSettings = (socket, data) => {
 }
 
 module.exports.sendUserGameSettings = (socket, username) => {
-	Account.findOne(username, (err, account) => {
+	Account.findOne({username}, (err, account) => {
 		if (err) {
 			console.log(err);
 		}
@@ -158,6 +155,5 @@ module.exports.handleNewGeneralChat = (data) => {
 }
 
 module.exports.sendGeneralChats = sendGeneralChats;
-module.exports.userList = userList;
 module.exports.generalChats = generalChats;
 module.exports.handleSocketDisconnect = handleSocketDisconnect;

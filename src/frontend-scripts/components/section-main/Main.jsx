@@ -50,7 +50,7 @@ export default class Main extends React.Component {
 									/>
 						case 'settings':
 							return <Settings
-										onUpdatedGameSettings={this.onUpdatedGameSettings}
+										onUpdatedGameSettings={this.props.onUpdatedGameSettings}
 										onLeaveSettings={this.props.onLeaveSettings}
 										userInfo={this.props.userInfo}
 									/>
