@@ -33,19 +33,19 @@ let mongoose = require('mongoose'),
 						return game.seated[seatName].userName === passport.user;
 					});
 
-				if (!game.inProgress) {
+				if (game.inProgress) {
+					game.seated[userSeatName].connected = false;
+					sendInprogressChats(game);
+					console.log(game.internals);
+				} else {
 					if (seatNames.length === 1) {
 						deleteGame(game);
 					} else {
 						delete game.seated[userSeatName];
 						io.sockets.in(game.uid).emit('gameUpdate', game);
 					}
-				} else {
-					game.seated[userSeatName].connected = false;
-					sendInprogressChats(game);
+					io.sockets.emit('gameList', games);					
 				}
-
-				io.sockets.emit('gameList', games);					
 			}
 		}
 
@@ -86,7 +86,7 @@ module.exports.checkUserStatus = (socket) => {
 
 			game.seated[userSeatName].connected = true;
 			socket.join(game.uid);
-			io.sockets.in(game.uid).emit('gameUpdate', secureGame(game));
+			sendInprogressChats(game);
 			socket.emit('updateSeatForUser', internalPlayer.seat);
 		}
 	} else {

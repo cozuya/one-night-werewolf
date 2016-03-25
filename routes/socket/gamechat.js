@@ -61,7 +61,7 @@ let sendInprogressChats = (game) => {
 				return user.userName === userName;
 			});
 
-		cloneGame.tableState.playerPerceivedRole = cloneGame.internals.seatedPlayers[index].perceivedRole;  // todo-release should probably be double checked for efficaciousness
+		cloneGame.tableState.playerPerceivedRole = cloneGame.internals.seatedPlayers[index].perceivedRole;  // todo-alpha crashes game if seated player reloads during game start countdown
 
 		if (cloneGame.tableState.phase === player.nightAction.phase && !player.nightPhaseComplete) {
 			cloneGame.tableState.nightAction = cloneGame.internals.seatedPlayers[index].nightAction;

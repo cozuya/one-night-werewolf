@@ -273,6 +273,9 @@ let beginNightPhases = (game) => {
 					otherMasonsSeatNumbers = otherMasons.map((mason) => {
 						return mason.seat;
 					});
+
+				console.log(masons, 'masons');
+
 				
 				nightAction = {
 					action: 'mason',
@@ -280,9 +283,9 @@ let beginNightPhases = (game) => {
 				};
 
 				if (otherMasons.length === 1) {
-					message = 'You wake up, and see that you are the only MASON';
+					message = 'You wake up, and see that you are the only MASON'; // todo-alpha this doesn't work and appends the single mason's name to this string
 				} else {
-					message = 'You wake up, and see that the MASONS in this game are: ';				
+					message = 'You wake up, and see that the MASONS in this game are: ';			
 				}
 
 				otherMasonsNames.forEach((userName) => {
@@ -353,6 +356,8 @@ let nightPhases = (game, phases) => {
 							player.nightPhaseComplete = true;
 							player.nightAction = {};
 						});
+
+						console.log(updatedTrueRoles, 'updatedTrueRoles');
 
 						if (updatedTrueRoles.length) {
 							game.internals.seatedPlayers.map((player, index) => {
@@ -536,7 +541,8 @@ let endGame = (game) => {
 	sendInprogressChats(game);
 
 	eliminatedPlayersIndex.forEach((eliminatedPlayer) => {
-		if (seatedPlayers[eliminatedPlayer].trueRole === 'werewolf' || seatedPlayers[eliminatedPlayer].trueRole === 'minion' && game.internals.soloMinion) {
+		console.log(seatedPlayers[eliminatedPlayer], 'eliminated player');
+		if (seatedPlayers[eliminatedPlayer].trueRole === 'werewolf' || seatedPlayers[eliminatedPlayer].trueRole === 'minion' && game.internals.soloMinion) { // todo-alpha crashed game seatedPlayers[eliminatedPlayer] undefined
 			werewolfEliminated = true;
 		}
 

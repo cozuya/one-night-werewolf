@@ -183,6 +183,10 @@ export default class Gamechat extends React.Component {
 					role: 'werewolves',
 					team: 'werewolf',
 					regex: /werewolves/gi
+				}, {
+					role: 'masons',
+					team: 'village',
+					regex: /masons/gi
 				});
 
 			roleRegexes.forEach((roleRegex) => {
