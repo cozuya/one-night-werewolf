@@ -36,7 +36,6 @@ let mongoose = require('mongoose'),
 				if (game.inProgress) {
 					game.seated[userSeatName].connected = false;
 					sendInprogressChats(game);
-					console.log(game.internals);
 				} else {
 					if (seatNames.length === 1) {
 						deleteGame(game);
@@ -110,7 +109,7 @@ module.exports.handleUpdatedGameSettings = (socket, data) => {
 			account.gameSettings[setting] = data[setting];
 		}
 
-		account.save(() => {  // todo-alpha the client isn't receiving this emit.  everything else works including db save.
+		account.save(() => {
 			socket.emit('gameSettings', account.gameSettings);
 		});
 	});
