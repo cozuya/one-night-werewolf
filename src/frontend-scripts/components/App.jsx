@@ -76,11 +76,11 @@ class App extends React.Component {
 		dispatch(updateGameInfo(game));
 		dispatch(updateMidsection('game'));
 		dispatch(updateUser(userInfo));
-		socket.emit('createGame', game);
+		socket.emit('addNewGame', game);
 	}
 
 	handleGeneralChatSubmit(chat) {
-		socket.emit('newGeneralChat', chat);
+		socket.emit('addNewGeneralChat', chat);
 	}
 
 	handleUserNightActionEventSubmit(event) {
@@ -104,7 +104,7 @@ class App extends React.Component {
 	}
 
 	handleNewGameChatSubmit(chat, uid) {
-		socket.emit('newGameChat', chat, uid);
+		socket.emit('addNewGameChat', chat, uid);
 	}
 
 	handleSidebarGameClicked(uid) {
@@ -164,7 +164,7 @@ class App extends React.Component {
 		dispatch(updateGameInfo(game));
 		dispatch(updateMidsection('game'));
 		dispatch(updateUser(userInfo));
-		socket.emit('createGame', game);
+		socket.emit('addNewGame', game);
 	}
 
 	// ***** end dev helpers *****

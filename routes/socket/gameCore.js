@@ -1,13 +1,89 @@
 'use strict';
 
-let mongoose = require('mongoose'),
-	Game = require('../../models/game'),
+let Game = require('../../models/game'),
+// let mongoose = require('mongoose'),
+	{ games, userList } = require('./models'),
 	Account = require('../../models/account'),
 	{ secureGame, devStatus } = require('./util'),
-	{ sendInprogressChats } = require('./gamechat'),
-	{ updatedTrueRoles } = require('./game-nightactions');
+	{ sendInProgressGameUpdate } = require('./userEvents'),
+	{ sendGameList } = require('./userAppRequests'),
+	startGameCountdown = (game) => {
+		let { startGamePause } = devStatus,
+			countDown;
 
-module.exports.startGame = (game) => {
+		game.inProgress = true;
+
+		countDown = setInterval(() => {
+			if (startGamePause === 0) {
+				clearInterval(countDown);
+				startGame(game);
+			} else {
+				game.status = `Game starts in ${startGamePause} second${startGamePause === 1 ? '' : 's'}.`;
+				io.sockets.in(game.uid).emit('gameUpdate', secureGame(game));
+			}
+			startGamePause--;
+		}, 1000);
+	};
+
+module.exports.updateSeatedUsers = (socket, data) => {
+	let game = games.find((el) => {
+			return el.uid === data.uid;
+		}),
+		socketSession = socket.handshake.session;
+
+	if (game) {
+		socket.join(data.uid);
+	}
+
+	if (socketSession.passport && data.seatNumber && socketSession.passport.user === data.userInfo.userName) {
+		game.seated[`seat${data.seatNumber}`] = {
+			userName: data.userInfo.userName
+		};
+		game.seated[`seat${data.seatNumber}`].connected = true;
+
+		if (Object.keys(game.seated).length === devStatus.seatedCountToStartGame) {
+			startGameCountdown(game);
+		} else {
+			io.sockets.in(data.uid).emit('gameUpdate', secureGame(game));
+			sendGameList();
+		}
+	} else if (game) {
+		let completedDisconnectionCount = 0;
+
+		if (data.gameCompleted) {
+			let playerSeat = Object.keys(game.seated).find((seatName) => {
+				return game.seated[seatName].userName === data.userName;
+			});
+
+			game.seated[playerSeat].connected = false;
+			Object.keys(game.seated).forEach((seatName) => {
+				if (!game.seated[seatName].connected) {
+					completedDisconnectionCount++;
+				}
+			});
+			sendGameList(socket);
+		} else {
+			for (let key in game.seated) {
+				if (game.seated[key].userName === socketSession.passport.user) {
+					delete game.seated[key];
+				}
+			}
+
+			sendGameList();
+		}
+
+		if (Object.keys(game.seated).length === 0 || completedDisconnectionCount === 7) {
+			games.splice(games.indexOf(game), 1);
+			sendGameList();
+		}
+
+		socket.leave(game.uid);
+		io.sockets.in(data.uid).emit('gameUpdate', secureGame(game));
+		socket.emit('gameUpdate', {});
+	}
+};
+
+let startGame = (game) => {
 	let allWerewolvesNotInCenter = false,
 		assignRoles = () => {
 			let _roles = [...game.roles];
@@ -78,14 +154,14 @@ module.exports.startGame = (game) => {
 		});
 
 		game.tableState.cardsDealt = true;
-		sendInprogressChats(game);
+		sendInProgressGameUpdate(game);
 		countDown = setInterval(() => {
 			if (nightPhasePause === 0) {
 				clearInterval(countDown);
 				beginNightPhases(game);
 			} else {
 				game.status = `Night begins in ${nightPhasePause} second${nightPhasePause === 1 ? '' : 's'}.`;
-				sendInprogressChats(game);
+				sendInProgressGameUpdate(game);
 			}
 			nightPhasePause--;
 		}, 1000);
@@ -164,7 +240,7 @@ let beginNightPhases = (game) => {
 		}
 	});
 	
-	// todo-alpha insert dummy night phases
+	// todo-alpha insert dummy night phases also need to make sure that in cases where there's more than one role-changing role that person isn't ALWAYS in the first available night phase i.e. center cards can have dummy roles in earlier phases
 
 	// game.internals.centerRoles.forEach((role) => {
 	// 	let count = 1;
@@ -300,7 +376,7 @@ let beginNightPhases = (game) => {
 
 	game.tableState.isNight = true;
 	game.status = 'Night begins..';
-	sendInprogressChats(game);
+	sendInProgressGameUpdate(game);
 	setTimeout(() => {
 		game.tableState.phase = 1;
 		nightPhases(game, phases);
@@ -321,7 +397,7 @@ let nightPhases = (game, phases) => {
 				timestamp: new Date()
 			});
 
-			sendInprogressChats(game);
+			sendInProgressGameUpdate(game);
 			setTimeout(() => {
 				dayPhase(game);
 			}, 50);
@@ -352,25 +428,17 @@ let nightPhases = (game, phases) => {
 							player.nightPhaseComplete = true;
 							player.nightAction = {};
 						});
-
-						if (updatedTrueRoles.length) {
-							game.internals.seatedPlayers.map((player, index) => {
-								player.trueRole = updatedTrueRoles[index];
-
-								return player;
-							});
-						}
-						
+					
 						phasesIndex++;
 						game.tableState.phase++;
-						sendInprogressChats(game);
+						sendInProgressGameUpdate(game);
 						if (phasesCount === 1) {
 							endPhases();
 						}
 						clearInterval(countDown);
 					} else {
 						game.status = `Night phase ${phases.length === 1 ? 1 : (phasesIndex).toString()} of ${phasesCount} ends in ${phaseTime} second${phaseTime === 1 ? '' : 's'}.`;
-						sendInprogressChats(game);
+						sendInProgressGameUpdate(game);
 					}
 					phaseTime--;
 				}, 1000);
@@ -385,14 +453,142 @@ let nightPhases = (game, phases) => {
 	}
 };
 
+module.exports.updateUserNightActionEvent = (socket, data) => {
+	let game = games.find((el) => {
+			return el.uid === data.uid;
+		}),
+		player = game.internals.seatedPlayers.find((player) => {
+			return player.userName === data.userName;
+		}),
+		chat = {
+			gameChat: true,
+			userName: player.userName,
+			seat: player.seat,
+			timestamp: new Date()
+		},
+		getTrueRoleBySeatNumber = (game, num) => {
+			num = parseInt(num);
+
+			return num < 7 ? game.internals.seatedPlayers[num].trueRole : game.internals.centerRoles[num - 7];
+		},
+		updatedTrueRoles = [],
+		eventMap = {
+			singleWerewolf() {
+				let selectedCard = {
+					7: 'CENTER LEFT',
+					8: 'CENTER MIDDLE',
+					9: 'CENTER RIGHT'
+				},
+				roleClicked = getTrueRoleBySeatNumber(game, data.action);
+
+				player.nightAction.roleClicked = roleClicked;
+				player.nightAction.seatClicked = data.action;
+				player.nightAction.completed = true;
+				chat.chat = `You select the ${selectedCard[data.action]} card and it is revealed to be a ${roleClicked.toUpperCase()}.`;
+			},
+			insomniac() {
+				let roleClicked = getTrueRoleBySeatNumber(game, data.action);
+
+				player.nightAction.roleClicked = roleClicked;
+				player.nightAction.seatClicked = data.action;
+				player.nightAction.completed = true;
+				chat.chat = `You look at your own card and it is revealed to be a ${roleClicked.toUpperCase()}.`;
+			},
+			troublemaker() {
+				let seat1player = game.internals.seatedPlayers.find((player) => {
+						return player.seat === parseInt(data.action[0]);
+					}),
+					seat2player = game.internals.seatedPlayers.find((player) => {
+						return player.seat === parseInt(data.action[1]);
+					});
+
+				updatedTrueRoles = game.internals.seatedPlayers.map((player, index) => {
+					if (player.userName === seat1player.userName) {
+						return seat2player.trueRole;
+					} else if (player.userName === seat2player.userName) {
+						return seat1player.trueRole;
+					} else {
+						return player.trueRole;
+					}
+				});
+
+				player.nightAction.seatsClicked = data.action;
+				player.nightAction.completed = true;
+				chat.chat = `You swap the two cards between ${seat1player.userName.toUpperCase()} and ${seat2player.userName.toUpperCase()}.`;
+			},
+			robber() {
+				let robberPlayer = game.internals.seatedPlayers.find((player) => {
+						return player.userName === data.userName;
+					}),
+					swappedPlayer = game.internals.seatedPlayers.find((player) => {
+						return player.seat === parseInt(data.action);
+					}),
+					swappedPlayerOriginalRole = swappedPlayer.trueRole;
+
+				updatedTrueRoles = game.internals.seatedPlayers.map((player, index) => {
+					if (player.userName === robberPlayer.userName) {
+						return swappedPlayer.trueRole;
+					}
+
+					if (player.userName === swappedPlayer.userName) {
+						return robberPlayer.trueRole;
+					}
+
+					return player.trueRole;
+				});
+				player.nightAction.seatClicked = data.action;
+				player.nightAction.newRole = swappedPlayerOriginalRole;
+				player.nightAction.completed = true;
+				chat.chat = `You exchange cards between yourself and ${swappedPlayer.userName.toUpperCase()} and view your new role, which is a ${swappedPlayer.trueRole.toUpperCase()}.`;
+			},
+			seer() {  // todo-alpha players should not have the ability to see their own card
+				let selectedCard = {
+					7: 'CENTER LEFT',
+					8: 'CENTER MIDDLE',
+					9: 'CENTER RIGHT'
+				},
+				rolesClicked = data.action.map((role) => {
+					return getTrueRoleBySeatNumber(game, role);
+				});
+
+				player.nightAction.rolesClicked = rolesClicked;
+				player.nightAction.seatsClicked = data.action;
+				player.nightAction.completed = true;
+
+				if (data.action.length === 1) {
+					let playerClicked = game.internals.seatedPlayers[parseInt(data.action)].userName;
+
+					chat.chat = `You select to see the card of ${playerClicked.toUpperCase()} and it is a ${rolesClicked[0].toUpperCase()}.`;
+				} else {
+					chat.chat = `You select to see the ${selectedCard[data.action[1]].toUpperCase()} and ${selectedCard[data.action[0]].toUpperCase()} cards and they are a ${rolesClicked[1].toUpperCase()} and a ${rolesClicked[0].toUpperCase()}.`;
+				}
+			}
+		};
+
+	if (!player.nightAction.completed) {
+		eventMap[data.role]();
+	}
+
+	if (updatedTrueRoles.length) { // todo-release refactor this whole idea
+		game.internals.seatedPlayers.map((player, index) => {
+			player.trueRole = updatedTrueRoles[index];
+
+			return player;
+		});
+	}
+
+	player.gameChats.push(chat);
+	sendInProgressGameUpdate(game);
+};
+
 module.exports.updateSelectedElimination = (data) => {
-	let { games } = require('./game'), // circle
-		game = games.find((el) => {
+	let game = games.find((el) => {
 			return el.uid === data.uid;
 		}),
 		player = game.internals.seatedPlayers[parseInt(data.seatNumber)];
 
 	player.selectedForElimination = data.selectedForElimination;
+	// todo-alpha game update?
 }
 
 let dayPhase = (game) => {
@@ -446,7 +642,7 @@ let dayPhase = (game) => {
 			}
 
 			game.status = status;
-			sendInprogressChats(game);
+			sendInProgressGameUpdate(game);
 			seconds--;
 		}
 	}, 1000);
@@ -478,7 +674,7 @@ let eliminationPhase = (game) => {
 				seatNumber: game.internals.seatedPlayers[index].selectedForElimination ? parseInt(game.internals.seatedPlayers[index].selectedForElimination) : noSelection
 			};
 
-			sendInprogressChats(game);
+			sendInProgressGameUpdate(game);
 			index++;
 		}
 	}, 1000);
@@ -532,10 +728,10 @@ let endGame = (game) => {
 		elimination.transparent = transparent;
 	});
 
-	sendInprogressChats(game);
+	sendInProgressGameUpdate(game);
 
 	eliminatedPlayersIndex.forEach((eliminatedPlayer) => {
-		if (seatedPlayers[eliminatedPlayer].trueRole === 'werewolf' || seatedPlayers[eliminatedPlayer].trueRole === 'minion' && game.internals.soloMinion) { // todo-alpha crashed game seatedPlayers[eliminatedPlayer] undefined
+		if (seatedPlayers[eliminatedPlayer].trueRole === 'werewolf' || seatedPlayers[eliminatedPlayer].trueRole === 'minion' && game.internals.soloMinion) {
 			werewolfEliminated = true;
 		}
 
@@ -576,7 +772,7 @@ let endGame = (game) => {
 				return player.trueRole;
 			});
 
-			sendInprogressChats(game);
+			sendInProgressGameUpdate(game);
 		}, devStatus.revealLosersPause);
 	}
 
@@ -639,7 +835,7 @@ let endGame = (game) => {
 
 		game.tableState.winningPlayersIndex = winningPlayersIndex;
 		game.completedGame = true;
-		sendInprogressChats(game);
+		sendInProgressGameUpdate(game);
 		saveGame.save();
 
 		Account.find({username: {$in: seatedPlayers.map((player) => {
@@ -661,8 +857,7 @@ let endGame = (game) => {
 
 				player.games.push(game.uid);
 				player.save(() => {
-					let { userList } = require('./game'), // circle dependancy
-						userEntry = userList.find((user) => {
+					let userEntry = userList.find((user) => {
 						return user.userName === player.username;
 					});
 

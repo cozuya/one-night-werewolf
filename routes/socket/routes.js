@@ -1,45 +1,54 @@
 'use strict';
 
-let { updateSeatedUsers, handleUpdatedTruncateGame, handleUpdatedReportGame, sendGameList, sendUserList, createGame, sendGameInfo, games } = require('./game'),
-	{ sendGeneralChats, handleNewGeneralChat, checkUserStatus, handleUpdatedGameSettings, sendUserGameSettings, handleSocketDisconnect } = require('./account'),
-	{ addNewGameChat } = require('./gamechat'),
-	{ updateUserNightActionEvent } = require('./game-nightactions'),
-	{ updateSelectedElimination } = require('./game-internals');
+let { handleUpdatedTruncateGame, handleUpdatedReportGame, handleAddNewGame, handleAddNewGameChat, sendGameInfo, handleNewGeneralChat, 	handleUpdatedGameSettings, handleSocketDisconnect, checkUserStatus } = require('./userEvents'),
+	{ sendUserGameSettings, sendGameList, sendGeneralChats, sendUserList } = require('./userAppRequests'),
+	{ updateSeatedUsers, updateSelectedElimination, updateUserNightActionEvent } = require('./gameCore');
 
 module.exports = () => {
 	io.on('connection', (socket) => {
 		checkUserStatus(socket);
+	
+		socket
 
-		socket.on('getGameInfo', (uid) => {
-			sendGameInfo(socket, uid);
-		}).on('updateTruncateGame', (data) => {
+		// userEvents
+		.on('updateTruncateGame', (data) => {
 			handleUpdatedTruncateGame(data);
+		}).on('addNewGameChat', (chat, uid) => {
+			handleAddNewGameChat(games, chat, uid);
 		}).on('updateReportGame', (data) => {
 			handleUpdatedReportGame(socket, data);			
-		}).on('createGame', (game) => {
-			createGame(socket, game);
-		}).on('getGameList', () => {
-			sendGameList(socket);			
-		}).on('updateSeatedUsers', (data) => {
-			updateSeatedUsers(socket, data);
+		}).on('addNewGame', (data) => {
+			handleAddNewGame(socket, data);
+		}).on('getGameInfo', (uid) => {
+			sendGameInfo(socket, uid);
 		}).on('updateGameSettings', (data) => {
 			handleUpdatedGameSettings(socket, data);
-		}).on('getUserGameSettings', (data) => {
-			sendUserGameSettings(socket, data);			
-		}).on('newGameChat', (chat, uid) => {
-			addNewGameChat(games, chat, uid);
-		}).on('userNightActionEvent', (data) => {
-			updateUserNightActionEvent(socket, data);
-		}).on('getUserList', () => {
-			sendUserList(socket);
-		}).on('updateSelectedForElimination', (data) => {
-			updateSelectedElimination(data);
-		}).on('newGeneralChat', (data) => {
+		}).on('addNewGeneralChat', (data) => {
 			handleNewGeneralChat(data);
-		}).on('getGeneralChats', () => {
-			sendGeneralChats(socket);
 		}).on('disconnect', () => {
 			handleSocketDisconnect(socket);
+		})
+
+		// userAppRequests
+
+		.on('getGameList', () => {
+			sendGameList(socket);
+		}).on('getUserList', () => {
+			sendUserList(socket);
+		}).on('getGeneralChats', () => {
+			sendGeneralChats(socket);
+		}).on('getUserGameSettings', (data) => {
+			sendUserGameSettings(socket, data);
+		})
+
+		// gameCore
+
+		.on('updateSeatedUsers', (data) => {
+			updateSeatedUsers(socket, data);
+		}).on('updateSelectedForElimination', (data) => {
+			updateSelectedElimination(data);
+		}).on('userNightActionEvent', (data) => {
+			updateUserNightActionEvent(socket, data);
 		});
 	});
 	
