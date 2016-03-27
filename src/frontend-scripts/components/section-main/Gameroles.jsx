@@ -29,10 +29,6 @@ export default class Gameroles extends React.Component {
 		});
 	}
 
-	componentDidUpdate () {
-		// console.log(this.props);
-	}
-
 	render() {
 
 		// todo-alpha popups don't have team names colors working
@@ -45,15 +41,13 @@ export default class Gameroles extends React.Component {
 						return this.props.roles.map((role, i) => {
 							return (
 								<div key={i}>
-									<div onClick={this.handleRoleClick.bind(this)} className={
+									<div data-role={role} onClick={this.handleRoleClick.bind(this)} className={
 										(() => {
 											let notifyClass = this.props.roleState === 'notify' ? 'notify' : '';
 											
 											return `roles role-${role} ${this.props.roleState} ${notifyClass}`;
 										})()
 									}
-
-									data-role={role}
 									></div>
 									<div className="ui small popup transition hidden top left" dangerouslySetInnerHTML={{__html: roleMap[role].description}}></div>
 								</div>

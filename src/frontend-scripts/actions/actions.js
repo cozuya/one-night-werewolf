@@ -63,6 +63,15 @@ export function updateClickedGamerole(info) {
 	}
 }
 
+export const UPDATE_CLICKEDPLAYER = 'UPDATE_CLICKEDPLAYER';
+
+export function updateClickedPlayer(info) {
+	return {
+		type: UPDATE_CLICKEDPLAYER,
+		info
+	}
+}
+
 export const UPDATE_GENERALCHATS = 'UPDATE_GENERALCHATS';
 
 export function updateGeneralChats(info) {

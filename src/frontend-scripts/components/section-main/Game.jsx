@@ -5,7 +5,7 @@ import Table from './Table.jsx';
 import Gamechat from './Gamechat.jsx';
 import Gameroles from './Gameroles.jsx';
 import { connect } from 'react-redux';
-import { updateExpandoInfo, updateClickedGamerole } from '../../actions/actions.js';
+import { updateExpandoInfo, updateClickedGamerole, updateClickedPlayer } from '../../actions/actions.js';
 
 class Game extends React.Component {
 	roleState(state) {
@@ -18,6 +18,11 @@ class Game extends React.Component {
 		let { dispatch } = this.props;
 
 		dispatch(updateClickedGamerole(state));
+	}
+
+	selectedPlayer(state) {
+		let { dispatch } = this.props;
+		dispatch(updateClickedPlayer(state));
 	}
 
 	componentDidUpdate() {
@@ -33,7 +38,7 @@ class Game extends React.Component {
 							(() => {
 								let classes;
 
-								if (Object.keys(this.props.userInfo).length && this.props.userInfo.gameSettings && this.props.userInfo.gameSettings.disableRightSidebarInGame) {
+								if (this.props.userInfo.gameSettings && this.props.userInfo.gameSettings.disableRightSidebarInGame) {
 									classes = 'eight ';
 								} else {
 									classes = 'ten ';
@@ -48,6 +53,7 @@ class Game extends React.Component {
 								onUpdateSelectedForEliminationSubmit={this.props.onUpdateSelectedForEliminationSubmit}
 								onUpdateReportGame={this.props.onUpdateReportGame}
 								updateSeatedUsers={this.props.updateSeatedUsers}
+								selectedPlayer={this.selectedPlayer.bind(this)}
 								gameInfo={this.props.gameInfo}
 								userInfo={this.props.userInfo}
 							/>
@@ -56,7 +62,7 @@ class Game extends React.Component {
 							(() => {
 								let classes;
 
-								if (Object.keys(this.props.userInfo).length && this.props.userInfo.gameSettings && this.props.userInfo.gameSettings.disableRightSidebarInGame) {
+								if (this.props.userInfo.gameSettings && this.props.userInfo.gameSettings.disableRightSidebarInGame) {
 									classes = 'eight ';
 								} else {
 									classes = 'six ';
@@ -69,13 +75,14 @@ class Game extends React.Component {
 								{this.props.gameInfo.status}
 							</section>
 							<Gamechat
-								isGeneralChat={false}
 								gameInfo={this.props.gameInfo}
 								userInfo={this.props.userInfo}
 								onNewGameChat={this.props.onNewGameChat}
 								clickedGameRole={this.props.gameRoleInfo}
+								clickedPlayer={this.props.clickedPlayerInfo}
 								roleState={this.roleState.bind(this)}
 								selectedGamerole={this.props.clickedGamerole}
+								selectedPlayer={this.props.clickedPlayer}
 							/>
 						</div>
 					</div>

@@ -256,12 +256,18 @@ export default class Table extends React.Component {
 	clickedSeat(e) {
 		let { seated } = this.props.gameInfo,
 			{ userInfo } = this.props,
-			$seat = $(e.currentTarget),
-			isUserAlreadySeated = !!userInfo.seatNumber;
+			$seat = $(e.currentTarget);
 
 		if (userInfo.userName) {
-			if ($seat.hasClass('empty') && !isUserAlreadySeated && !this.props.gameInfo.completedGame) {
+			if ($seat.hasClass('empty') && !userInfo.seatNumber && !this.props.gameInfo.completedGame) {
 				this.props.updateSeatedUsers($seat.attr('data-seatnumber'));
+			// } else if (game.inProgress) {
+			} else if (true) {
+
+				this.props.selectedPlayer({
+					role: $(e.currentTarget).attr('data-role'),
+					random: Math.random().toString(36).substring(2)
+				});
 			}
 		} else {
 			$('section.table div.small.modal').modal('show');

@@ -9,6 +9,7 @@ import { UPDATE_USERLIST, updateUserList } from '../actions/actions.js';
 import { UPDATE_EXPANDOINFO, updateExpandoInfo } from '../actions/actions.js';
 import { UPDATE_CLICKEDGAMEROLE, updateClickedGamerole } from '../actions/actions.js';
 import { UPDATE_GENERALCHATS, updateGeneralChats } from '../actions/actions.js';
+import { UPDATE_CLICKEDPLAYER, updateClickedPlayer } from '../actions/actions.js';
 
 let userInfo = (state = {}, action) => {
 	switch (action.type) {
@@ -73,6 +74,15 @@ let clickedGamerole = (state = {}, action) => {
 	}
 };
 
+let clickedPlayer = (state = {}, action) => {
+	switch (action.type) {
+		case UPDATE_CLICKEDPLAYER:
+			return state = action.info;
+		default:
+			return state;
+	}
+};
+
 let generalChats = (state = [], action) => {
 	switch (action.type) {
 		case UPDATE_GENERALCHATS:
@@ -90,5 +100,6 @@ export default combineReducers({
 	userList,
 	expandoInfo,
 	clickedGamerole,
+	clickedPlayer,
 	generalChats
 });

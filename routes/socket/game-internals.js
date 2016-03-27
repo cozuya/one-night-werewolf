@@ -161,7 +161,6 @@ let beginNightPhases = (game) => {
 				if (player.trueRole === 'werewolf' || player.trueRole === 'minion' || player.trueRole === 'mason') {
 					phases[0].push(player);
 				}
-				break;
 		}
 	});
 	
@@ -276,24 +275,23 @@ let beginNightPhases = (game) => {
 
 				console.log(masons, 'masons');
 
-				
 				nightAction = {
 					action: 'mason',
 					phase: 1
 				};
 
-				if (otherMasons.length === 1) {
-					message = 'You wake up, and see that you are the only MASON'; // todo-alpha this doesn't work and appends the single mason's name to this string
+				if (otherMasons.length === 0) {
+					message = 'You wake up, and see that you are the only MASON';
 				} else {
 					message = 'You wake up, and see that the MASONS in this game are: ';			
 				}
 
-				otherMasonsNames.forEach((userName) => {
+				otherMasonsNames.forEach((userName) => { // todo-alpha this doesn't work and appends the single mason's name to this string
 					message += ' ';
 					message += userName;
 				});
 
-				message += '.';		
+				message += '.';
 
 				nightAction.others = otherMasonsSeatNumbers;
 				nightAction.gameChat = message;
