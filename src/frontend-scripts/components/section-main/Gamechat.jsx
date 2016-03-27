@@ -26,10 +26,10 @@ export default class Gamechat extends React.Component {
 			$input.val($input.val() + this.props.selectedGamerole.role).next().removeClass('disabled');
 		}
 
-		if (prevProps && prevProps.selectedPlayer.random !== this.props.selectedPlayer.random && this.props.selectedPlayer.role) {
+		if (prevProps && prevProps.selectedPlayer.random !== this.props.selectedPlayer.random && this.props.selectedPlayer.playerName.length) {
 			let $input = $('form.inputbar input');
 
-			$input.val($input.val() + this.props.selectedPlayer.role).next().removeClass('disabled');
+			$input.val($input.val() + this.props.selectedPlayer.playerName).next().removeClass('disabled');
 		}
 	}	
 
@@ -55,7 +55,7 @@ export default class Gamechat extends React.Component {
 		);
 	}
 
-	handleLeftHotkeyClick(e) {
+	handleLeftHotkeyClick(e) {  // todo-release expand this functionality to include nightaction events
 		let keyText = $(e.currentTarget).text(),
 			$input = $(e.currentTarget).parent().parent().next().find('input');
 
@@ -71,7 +71,14 @@ export default class Gamechat extends React.Component {
 	}
 
 	handleRightHotkeyClick(e) {
-		console.log(e.currentTarget);
+		let keyText = $(e.currentTarget).text(),
+			$input = $(e.currentTarget).parent().parent().next().find('input');
+
+		switch (keyText) {
+			case 'I think..':
+				$input.val('I think that ');
+				break;
+		}
 	}
 
 	handleChatClearClick(e) {
@@ -250,7 +257,7 @@ export default class Gamechat extends React.Component {
 							userInfo = this.props.userInfo,
 							classes = 'expando-container';
 
-						if (!gameInfo.inProgress || !userInfo.seatNumber || !gameInfo.tableState.isNight) {
+						if (!gameInfo.inProgress || !userInfo.seatNumber) {
 							classes += ' app-visibility-hidden';
 						}
 						

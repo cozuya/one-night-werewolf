@@ -273,8 +273,6 @@ let beginNightPhases = (game) => {
 						return mason.seat;
 					});
 
-				console.log(masons, 'masons');
-
 				nightAction = {
 					action: 'mason',
 					phase: 1
@@ -354,8 +352,6 @@ let nightPhases = (game, phases) => {
 							player.nightPhaseComplete = true;
 							player.nightAction = {};
 						});
-
-						console.log(updatedTrueRoles, 'updatedTrueRoles');
 
 						if (updatedTrueRoles.length) {
 							game.internals.seatedPlayers.map((player, index) => {
@@ -539,7 +535,6 @@ let endGame = (game) => {
 	sendInprogressChats(game);
 
 	eliminatedPlayersIndex.forEach((eliminatedPlayer) => {
-		console.log(seatedPlayers[eliminatedPlayer], 'eliminated player');
 		if (seatedPlayers[eliminatedPlayer].trueRole === 'werewolf' || seatedPlayers[eliminatedPlayer].trueRole === 'minion' && game.internals.soloMinion) { // todo-alpha crashed game seatedPlayers[eliminatedPlayer] undefined
 			werewolfEliminated = true;
 		}
