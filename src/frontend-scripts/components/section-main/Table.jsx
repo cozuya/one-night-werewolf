@@ -261,7 +261,7 @@ export default class Table extends React.Component {
 		if (userInfo.userName) {
 			if ($seat.hasClass('empty') && !userInfo.seatNumber && !this.props.gameInfo.completedGame) {
 				this.props.updateSeatedUsers($seat.attr('data-seatnumber'));
-			} else if (gameInfo.inProgress) {
+			} else {
 				this.props.selectedPlayer({
 					playerName: $(e.currentTarget).find('span.username').text(),
 					random: Math.random().toString(36).substring(2)

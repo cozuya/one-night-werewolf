@@ -1,8 +1,8 @@
 'use strict';
 
-let { handleUpdatedTruncateGame, handleUpdatedReportGame, handleAddNewGame, handleAddNewGameChat, sendGameInfo, handleNewGeneralChat, 	handleUpdatedGameSettings, handleSocketDisconnect, checkUserStatus } = require('./userEvents'),
-	{ sendUserGameSettings, sendGameList, sendGeneralChats, sendUserList } = require('./userAppRequests'),
-	{ updateSeatedUsers, updateSelectedElimination, updateUserNightActionEvent } = require('./gameCore');
+let { handleUpdatedTruncateGame, handleUpdatedReportGame, handleAddNewGame, handleAddNewGameChat, handleNewGeneralChat, 	handleUpdatedGameSettings, handleSocketDisconnect, checkUserStatus } = require('./user-events'),
+	{ sendGameInfo, sendUserGameSettings, sendGameList, sendGeneralChats, sendUserList } = require('./user-requests'),
+	{ updateSeatedUsers, updateSelectedElimination, updateUserNightActionEvent } = require('./game-core');
 
 module.exports = () => {
 	io.on('connection', (socket) => {
@@ -10,17 +10,16 @@ module.exports = () => {
 	
 		socket
 
-		// userEvents
+		// user-events
+
 		.on('updateTruncateGame', (data) => {
 			handleUpdatedTruncateGame(data);
 		}).on('addNewGameChat', (chat, uid) => {
-			handleAddNewGameChat(games, chat, uid);
+			handleAddNewGameChat(chat, uid);
 		}).on('updateReportGame', (data) => {
 			handleUpdatedReportGame(socket, data);			
 		}).on('addNewGame', (data) => {
 			handleAddNewGame(socket, data);
-		}).on('getGameInfo', (uid) => {
-			sendGameInfo(socket, uid);
 		}).on('updateGameSettings', (data) => {
 			handleUpdatedGameSettings(socket, data);
 		}).on('addNewGeneralChat', (data) => {
@@ -29,10 +28,12 @@ module.exports = () => {
 			handleSocketDisconnect(socket);
 		})
 
-		// userAppRequests
+		// user-requests
 
 		.on('getGameList', () => {
 			sendGameList(socket);
+		}).on('getGameInfo', (uid) => {
+			sendGameInfo(socket, uid);
 		}).on('getUserList', () => {
 			sendUserList(socket);
 		}).on('getGeneralChats', () => {
@@ -41,7 +42,7 @@ module.exports = () => {
 			sendUserGameSettings(socket, data);
 		})
 
-		// gameCore
+		// game-core
 
 		.on('updateSeatedUsers', (data) => {
 			updateSeatedUsers(socket, data);
@@ -51,13 +52,4 @@ module.exports = () => {
 			updateUserNightActionEvent(socket, data);
 		});
 	});
-	
-	// process.once('SIGUSR2', () => { // todo-release make this work or something, not code covered right now.  probably not needed.
-	// 	console.log('Hello World!');
-	// 	Object.keys(io.sockets.sockets).forEach((socketID) => {
-	// 		io.sockets.sockets[socketID].disconnect();
-	// 	});
-		
-	// 	return process.kill(process.pid, 'SIGUSR2');
-	// });
 };

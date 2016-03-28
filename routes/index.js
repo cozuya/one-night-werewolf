@@ -1,7 +1,6 @@
 'use strict';
 
-let mongoose = require('mongoose'),
-	passport = require('passport'),
+let passport = require('passport'),
 	Account = require('../models/account'),
 	socketRoutes = require('./socket/routes.js');
 

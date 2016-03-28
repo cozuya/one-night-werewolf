@@ -43,9 +43,3 @@ module.exports.secureGame = (game) => {
 	delete _game.internals;
 	return _game;
 }
-
-module.exports.getInternalPlayerInGameByUserName = (game, userName) => {
-	return game.internals.seatedPlayers.find((player) => {
-		return player.userName === userName;
-	});
-}

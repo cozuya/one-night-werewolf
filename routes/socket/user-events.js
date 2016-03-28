@@ -1,8 +1,58 @@
 'use strict';
 
-let { games } = require('./models'),
-	{ getInternalPlayerInGameByUserName, secureGame } = require('./util'),
-	{ sendGameList } = require('./userAppRequests'),
+let { games, userList, generalChats } = require('./models'),
+	{ secureGame } = require('./util'),
+	{ sendGameList, sendGeneralChats } = require('./user-requests'),
+	Account = require('../../models/account'),
+	Generalchats = require('../../models/generalchats'),
+	generalChatCount = 0,
+	getInternalPlayerInGameByUserName = (game, userName) => {
+		return game.internals.seatedPlayers.find((player) => {
+			return player.userName === userName;
+		});
+	},
+	handleSocketDisconnect = (socket) => {
+		let { passport } = socket.handshake.session;
+
+		if (passport && Object.keys(passport).length) {
+			let userIndex = userList.findIndex((user) => {
+					return user.userName === passport.user;
+				}),
+				game = games.find((game) => {
+					return Object.keys(game.seated).find((seatName) => {
+						return game.seated[seatName].userName === passport.user;
+					});
+				});
+
+			socket.emit('manualDisconnection');
+			userList.splice(userIndex, 1);
+
+			if (game) {
+				let seatNames = Object.keys(game.seated),
+					userSeatName = seatNames.find((seatName) => {
+						return game.seated[seatName].userName === passport.user;
+					});
+
+				if (game.inProgress) {
+					game.seated[userSeatName].connected = false;
+					sendInProgressGameUpdate(game);
+				} else {
+					if (seatNames.length === 1) {
+						games.splice(games.indexOf(game), 1);
+					} else {
+						delete game.seated[userSeatName];
+						io.sockets.in(game.uid).emit('gameUpdate', game);
+					}
+					io.sockets.emit('gameList', games);					
+				}
+			}
+		}
+
+		io.sockets.emit('userList', {
+			list: userList,
+			totalSockets: Object.keys(io.sockets.sockets).length
+		});
+	},
 	combineInProgressChats = (game, userName) => {
 		let player, gameChats, _chats;
 
@@ -94,7 +144,7 @@ module.exports.handleUpdatedTruncateGame = (data) => {
 			}
 		}
 		game.chats.push(chat);
-		sendInprogressChats(game);
+		sendInProgressGameUpdate(game);
 	}
 };
 
@@ -114,7 +164,7 @@ module.exports.handleUpdatedReportGame = (socket, data) => {
 		game.tableState.reportedGame[data.seatNumber] = true;
 	}
 
-	sendInprogressChats(game);
+	sendInProgressGameUpdate(game);
 };
 
 module.exports.handleAddNewGame = (socket, data) => {
@@ -125,7 +175,7 @@ module.exports.handleAddNewGame = (socket, data) => {
 	};
 
 	games.push(data);
-	sendGameList(); // todo-r get this
+	sendGameList();
 	socket.join(data.uid);
 };
 
@@ -139,20 +189,91 @@ module.exports.handleAddNewGameChat = (data, uid) => {
 	game.chats.push(data);
 
 	if (game.inProgress) {
-		sendInprogressChats(game);
+		sendInProgressGameUpdate(game);
 	} else {
 		io.in(uid).emit('gameUpdate', secureGame(game));
 	}
 };
 
-module.exports.sendGameInfo = (socket, uid) => {
-	let game = games.find((el) => {
-			return el.uid === uid;
-		}),
-		cloneGame = Object.assign({}, game);
+module.exports.handleNewGeneralChat = (data) => {
+	if (generalChatCount === 100) {
+		let chats = new Generalchats({chats: generalChats});
+		
+		chats.save();
+		generalChatCount = 0;
+	}
 
-	socket.join(uid);
-	socket.emit('gameUpdate', secureGame(cloneGame));
+	generalChatCount++;
+	data.time = new Date();
+	generalChats.push(data);
+
+	if (generalChats.length > 99) {
+		generalChats.shift();
+	}
+
+	io.sockets.emit('generalChats', generalChats);
 };
 
+module.exports.handleUpdatedGameSettings = (socket, data) => {
+	Account.findOne({username: socket.handshake.session.passport.user}, (err, account) => {
+		if (err) {
+			console.log(err);
+		}
+
+		for (let setting in data) {
+			account.gameSettings[setting] = data[setting];
+		}
+
+		account.save(() => {
+			socket.emit('gameSettings', account.gameSettings);
+		});
+	});
+};
+
+module.exports.checkUserStatus = (socket) => {
+	let { passport } = socket.handshake.session;
+
+	if (passport && Object.keys(passport).length) {
+		let { user } = passport,
+			{ sockets } = io.sockets,
+			game = games.find((game) => {
+				return Object.keys(game.seated).find((seat) => {
+					return game.seated[seat].userName === user;
+				});
+			}),
+			oldSocketID = Object.keys(sockets).find((socketID) => {
+				if (sockets[socketID].handshake.session.passport && Object.keys(sockets[socketID].handshake.session.passport).length) {
+					return sockets[socketID].handshake.session.passport.user === user && socketID !== socket.id;
+				}
+			});
+
+		if (oldSocketID && sockets[oldSocketID]) {
+			handleSocketDisconnect(sockets[oldSocketID]);
+			delete sockets[oldSocketID];
+		}
+
+		if (game && game.inProgress) {
+			let internalPlayer = getInternalPlayerInGameByUserName(game, user),
+				userSeatName = Object.keys(game.seated).find((seatName) => {
+					return game.seated[seatName].userName === passport.user;
+				}),
+				cloneGame;
+
+			game.seated[userSeatName].connected = true;
+			socket.join(game.uid);
+			sendInProgressGameUpdate(game);
+			socket.emit('updateSeatForUser', internalPlayer.seat);
+		}
+	} else {
+		io.sockets.emit('userList', {
+			list: userList,
+			totalSockets: Object.keys(io.sockets.sockets).length
+		});
+	}
+
+	sendGeneralChats(socket);
+	sendGameList(socket);
+};
+
+module.exports.handleSocketDisconnect = handleSocketDisconnect;
 module.exports.sendInProgressGameUpdate = sendInProgressGameUpdate;

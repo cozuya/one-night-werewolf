@@ -1,12 +1,11 @@
 'use strict';
 
 let Game = require('../../models/game'),
-// let mongoose = require('mongoose'),
-	{ games, userList } = require('./models'),
 	Account = require('../../models/account'),
+	{ games, userList } = require('./models'),
 	{ secureGame, devStatus } = require('./util'),
-	{ sendInProgressGameUpdate } = require('./userEvents'),
-	{ sendGameList } = require('./userAppRequests'),
+	{ sendInProgressGameUpdate } = require('./user-events'),
+	{ sendGameList } = require('./user-requests'),
 	startGameCountdown = (game) => {
 		let { startGamePause } = devStatus,
 			countDown;
@@ -570,6 +569,7 @@ module.exports.updateUserNightActionEvent = (socket, data) => {
 	}
 
 	if (updatedTrueRoles.length) { // todo-release refactor this whole idea
+
 		game.internals.seatedPlayers.map((player, index) => {
 			player.trueRole = updatedTrueRoles[index];
 

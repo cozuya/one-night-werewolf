@@ -1,7 +1,8 @@
 'use strict';
 
-let { games, userList, generalChats } = require('./models'),
-	Account = require('../../models/account');
+let Account = require('../../models/account'),
+	{ games, userList, generalChats } = require('./models'),
+	{ secureGame } = require('./util');
 
 module.exports.sendUserGameSettings = (socket, username) => {
 	Account.findOne({username}, (err, account) => {
@@ -51,4 +52,14 @@ module.exports.sendUserList = (socket) => {
 		list: userList,
 		totalSockets: Object.keys(io.sockets.sockets).length
 	});
+};
+
+module.exports.sendGameInfo = (socket, uid) => {
+	let game = games.find((el) => {
+			return el.uid === uid;
+		}),
+		cloneGame = Object.assign({}, game);
+
+	socket.join(uid);
+	socket.emit('gameUpdate', secureGame(cloneGame));
 };
