@@ -94,7 +94,7 @@ let { games, userList, generalChats } = require('./models'),
 					return user.userName === userName;
 				});
 
-			cloneGame.tableState.playerPerceivedRole = cloneGame.internals.seatedPlayers[index].perceivedRole;  // todo-alpha crashes game if seated player reloads during game start countdown
+			// cloneGame.tableState.playerPerceivedRole = cloneGame.internals.seatedPlayers[index].perceivedRole;  // todo-alpha remove this
 
 			if (cloneGame.tableState.phase === player.nightAction.phase && !player.nightPhaseComplete) {
 				cloneGame.tableState.nightAction = cloneGame.internals.seatedPlayers[index].nightAction;

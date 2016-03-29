@@ -23,7 +23,7 @@ class App extends React.Component {
 		}
 
 		socket.on('manualDisconnection', () => {
-			window.location.pathname = '/observe'
+			window.location.pathname = '/observe';
 		});
 
 		socket.on('gameSettings', (settings) => {
@@ -111,7 +111,7 @@ class App extends React.Component {
 		socket.emit('getGameInfo', uid);
 	}
 
-	// ***** dev helpers only *****
+	// ***** begin dev helpers *****
 
 	componentDidUpdate(prevProps) {
 		// let autoPlayers = ['Jaina', 'Rexxar', 'Malfurian', 'Thrall', 'Valeera'],
@@ -138,7 +138,6 @@ class App extends React.Component {
 	makeQuickDefault() {
 		let { dispatch, userInfo } = this.props,
 			game = {
-				inProgress: false,
 				kobk: false,
 				name: 'New Game',
 				// roles: ['werewolf', 'werewolf', 'villager', 'villager', 'villager', 'villager', 'villager', 'villager', 'villager', 'villager'],
@@ -152,9 +151,9 @@ class App extends React.Component {
 				},
 				status: 'Waiting for more players..',
 				chats: [],
-				tableState: {
-					cardsDealt: false
-				},
+				gameState: {},
+				nightAction: {},
+				tableState: {},
 				time: ':16',
 				// uid: Math.random().toString(36).substring(2)
 				uid: 'devgame'

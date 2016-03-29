@@ -96,8 +96,7 @@ let startGame = (game) => {
 				}
 
 				player.trueRole = role;
-				player.perceivedRole = role;
-				player.nightAction = {};
+				// player.perceivedRole = role; todo-alpha delete
 				player.seat = index;
 				_roles.splice(roleIndex, 1);
 			});
