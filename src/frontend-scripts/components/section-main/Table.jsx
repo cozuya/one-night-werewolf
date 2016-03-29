@@ -20,16 +20,16 @@ export default class Table extends React.Component {
 
 	componentDidUpdate(prevProps) {
 		let { gameInfo, userInfo } = this.props,
-			{ tableState } = gameInfo,
+			{ tableState, gameState } = gameInfo,
 			prevTableState = prevProps.gameInfo.tableState;
 
-		if (tableState.cardsDealt === 'in progress') {
-			setTimeout(() => {
-				this.revealCard(userInfo.seatNumber);
-			}, 1500);
-		}
+		// if (tableState.cardsDealt === 'in progress') {
+		// 	setTimeout(() => {
+		// 		this.revealCard(userInfo.seatNumber);
+		// 	}, 1500);
+		// }
 
-		if (tableState.isNight && userInfo.seatNumber) {
+		if (gameState.isNight && userInfo.seatNumber) {
 			this.processNightActions(prevTableState);
 		}
 

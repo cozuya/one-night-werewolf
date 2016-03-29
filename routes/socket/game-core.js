@@ -10,7 +10,7 @@ let Game = require('../../models/game'),
 		let { startGamePause } = devStatus,
 			countDown;
 
-		game.inProgress = true;
+		game.gameState.startedGame = true;
 
 		countDown = setInterval(() => {
 			if (startGamePause === 0) {
@@ -49,7 +49,7 @@ module.exports.updateSeatedUsers = (socket, data) => {
 	} else if (game) {
 		let completedDisconnectionCount = 0;
 
-		if (data.gameCompleted) {
+		if (data.gameState.isCompleted) {
 			let playerSeat = Object.keys(game.seated).find((seatName) => {
 				return game.seated[seatName].userName === data.userName;
 			});
@@ -96,8 +96,7 @@ let startGame = (game) => {
 				}
 
 				player.trueRole = role;
-				// player.perceivedRole = role; todo-alpha delete
-				player.seat = index;
+				player.seatNumber = index;
 				_roles.splice(roleIndex, 1);
 			});
 
@@ -119,8 +118,8 @@ let startGame = (game) => {
 	}
 
 	game.status = 'Dealing..';
-	game.tableState.cardsDealt = 'in progress';
-	game.tableState.reportedGame = {
+	game.gameState.cardsDealt = true;
+	game.gameState.reportedGame = {
 		0: false,
 		1: false,
 		2: false,
@@ -151,7 +150,6 @@ let startGame = (game) => {
 			timestamp: new Date()
 		});
 
-		game.tableState.cardsDealt = true;
 		sendInProgressGameUpdate(game);
 		countDown = setInterval(() => {
 			if (nightPhasePause === 0) {
@@ -376,7 +374,7 @@ let beginNightPhases = (game) => {
 	game.status = 'Night begins..';
 	sendInProgressGameUpdate(game);
 	setTimeout(() => {
-		game.tableState.phase = 1;
+		game.gameState.phase = 1;
 		nightPhases(game, phases);
 	}, 3000);
 };
@@ -428,7 +426,7 @@ let nightPhases = (game, phases) => {
 						});
 					
 						phasesIndex++;
-						game.tableState.phase++;
+						game.gameState.phase++;
 						sendInProgressGameUpdate(game);
 						if (phasesCount === 1) {
 							endPhases();
@@ -549,16 +547,18 @@ module.exports.updateUserNightActionEvent = (socket, data) => {
 					return getTrueRoleBySeatNumber(game, role);
 				});
 
-				player.nightAction.rolesClicked = rolesClicked;
-				player.nightAction.seatsClicked = data.action;
-				player.nightAction.completed = true;
+				if (data.action !== player.seatNumber) {
+					player.nightAction.rolesClicked = rolesClicked;
+					player.nightAction.seatsClicked = data.action;
+					player.nightAction.completed = true;
 
-				if (data.action.length === 1) {
-					let playerClicked = game.internals.seatedPlayers[parseInt(data.action)].userName;
+					if (data.action.length === 1) {
+						let playerClicked = game.internals.seatedPlayers[parseInt(data.action)].userName;
 
-					chat.chat = `You select to see the card of ${playerClicked.toUpperCase()} and it is a ${rolesClicked[0].toUpperCase()}.`;
-				} else {
-					chat.chat = `You select to see the ${selectedCard[data.action[1]].toUpperCase()} and ${selectedCard[data.action[0]].toUpperCase()} cards and they are a ${rolesClicked[1].toUpperCase()} and a ${rolesClicked[0].toUpperCase()}.`;
+						chat.chat = `You select to see the card of ${playerClicked} and it is a ${rolesClicked[0]}.`;
+					} else {
+						chat.chat = `You select to see the ${selectedCard[data.action[1]].toUpperCase()} and ${selectedCard[data.action[0]].toUpperCase()} cards and they are a ${rolesClicked[1].toUpperCase()} and a ${rolesClicked[0].toUpperCase()}.`;
+					}
 				}
 			}
 		};
@@ -657,7 +657,6 @@ let eliminationPhase = (game) => {
 		timestamp: new Date()
 	});
 
-	game.tableState.isNight = false;
 	game.tableState.phase = 'elimination';
 	game.tableState.eliminations = [{}, {}, {}, {}, {}, {}, {}]; // dev: remove
 

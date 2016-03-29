@@ -33,7 +33,7 @@ let { games, userList, generalChats } = require('./models'),
 						return game.seated[seatName].userName === passport.user;
 					});
 
-				if (game.inProgress) {
+				if (game.gameState.inProgress) {
 					game.seated[userSeatName].connected = false;
 					sendInProgressGameUpdate(game);
 				} else {
@@ -62,7 +62,7 @@ let { games, userList, generalChats } = require('./models'),
 
 		gameChats = player ? player.gameChats : game.internals.unSeatedGameChats;
 		_chats = gameChats.concat(game.chats);
-		_chats.sort((chat1, chat2) => {
+		_chats.sort((chat1, chat2) => { // todo-release move to front end?
 			return chat1.timestamp - chat2.timestamp;
 		});
 
@@ -93,8 +93,6 @@ let { games, userList, generalChats } = require('./models'),
 				player = cloneGame.internals.seatedPlayers.find((user) => {
 					return user.userName === userName;
 				});
-
-			// cloneGame.tableState.playerPerceivedRole = cloneGame.internals.seatedPlayers[index].perceivedRole;  // todo-alpha remove this
 
 			if (cloneGame.tableState.phase === player.nightAction.phase && !player.nightPhaseComplete) {
 				cloneGame.tableState.nightAction = cloneGame.internals.seatedPlayers[index].nightAction;
