@@ -82,7 +82,7 @@ let { games, userList, generalChats } = require('./models'),
 				}
 			}),
 			observerSockets = roomSockets.filter((socket) => {
-				return seatedPlayerNames.indexOf(socket.handshake.session.passport.user) === -1;
+				return !socket.handshake.session.passport || seatedPlayerNames.indexOf(socket.handshake.session.passport.user) === -1;
 			});
 
 		playerSockets.forEach((sock, index) => {

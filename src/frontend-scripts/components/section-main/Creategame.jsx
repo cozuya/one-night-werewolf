@@ -130,7 +130,9 @@ export default class Creategame extends React.Component {
 			},
 			status: 'Waiting for more players..',
 			chats: [],
-			tableState: {},
+			tableState: {
+				seatedPlayers: [{}, {}, {}, {}, {}, {}, {}]
+			},
 			nightAction: {},
 			gameState: {},
 			inProgress: false,

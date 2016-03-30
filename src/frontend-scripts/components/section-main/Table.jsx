@@ -233,18 +233,6 @@ export default class Table extends React.Component {
 		}, 3000);
 	}
 
-	revealCard(seatNumber) { // string  // todo-release: this should be removed and put into card logic as of now it won't work until an update, not a mount such as someone reloading the page after the game is complete.  plus jquery is dumb here.  will have to add back end logic to remove the flip class.
-		let $cardFlipper = $(`section.table div.card${seatNumber} div.card-flipper`);
-
-		$cardFlipper.addClass('flip');
-
-		if (!this.props.gameInfo.tableState.cardRoles) {
-			setTimeout(() => {
-				$cardFlipper.removeClass('flip');			
-			}, 4000);
-		}
-	}
-
 	leaveGame() {
 		if (this.props.gameInfo.completedGame) {
 			this.props.updateSeatedUsers(null, true);			
@@ -291,24 +279,44 @@ export default class Table extends React.Component {
 							return classes;
 						})()
 					}>
-					<div className="card-flipper">
-						<div className="card-back"></div>
+					<div className={
+						(() => {
+							let classes = 'card-flipper';
+
+							if (num < 7 && tableState.seatedPlayers[num].role) {
+								classes += ' flip';
+							}
+
+							return classes;
+						})()
+					}><div className="card-back"></div>
 						<div className={
 							(() => {
 								let classes = `card-front seat-${num}`,
-									playerSeat = Object.keys(gameInfo.seated).find((seat) => { // todo-alpha check userinfo
-										return gameInfo.seated[seat].userName === userInfo.userName;
-									});
+									seat = tableState.seatedPlayers[num];
 
-								if (tableState.winningPlayersIndex && tableState.winningPlayersIndex.indexOf(num) !== -1) {
-									classes = `${classes} card-proceed`;
+								if (num < 7) {
+									if (seat.highlighted) {
+										classes += ` card-${seat.highlighted}`;
+									}
+
+									if (seat.role) {
+										classes += ` ${seat.role}`;
+									}
 								}
 
-								if (playerPerceivedRole && playerSeat && num === parseInt(playerSeat.split('seat')[1])) {
-									classes = `${classes} ${playerPerceivedRole}`;
-								} else if (tableState.cardRoles && !!tableState.cardRoles[num]) {
-									classes = `${classes} ${tableState.cardRoles[num]}`;
-								}
+								// if (tableState.winningPlayersIndex && tableState.winningPlayersIndex.indexOf(num) !== -1) {
+								// 	classes = `${classes} card-proceed`;
+								// }
+
+
+
+								// if (playerPerceivedRole && playerSeat && num === parseInt(playerSeat.split('seat')[1])) {
+								// 	classes = `${classes} ${playerPerceivedRole}`;
+								// } else
+								//  if (tableState.cardRoles && !!tableState.cardRoles[num]) {
+								// 	classes = `${classes} ${tableState.cardRoles[num]}`;
+								// }
 
 								return classes;
 							})()
@@ -404,7 +412,7 @@ export default class Table extends React.Component {
 	}
 
 	nightBlockerStatus(position) {
-		if (this.props.gameInfo.tableState.isNight && !Object.keys(this.props.gameInfo.tableState.nightAction).length) {
+		if (this.props.gameInfo.gameState.isNight && !this.props.userInfo.seatNumber || this.props.gameInfo.gameState.isNight && this.props.userInfo.seatNumber && !this.props.gameInfo.tableState.seatedPlayers[this.props.userInfo.seatNumber].nightAction) { // errs here
 			return position === 'top' ? 'nightblocker nightblocker-top-blocked' : 'nightblocker nightblocker-bottom-blocked';
 		} else {
 			return position === 'top' ? 'nightblocker nightblocker-top': 'nightblocker nightblocker-bottom';

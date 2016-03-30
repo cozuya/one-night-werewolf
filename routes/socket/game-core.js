@@ -123,7 +123,7 @@ let startGame = (game) => {
 
 	game.status = 'Dealing..';
 	game.gameState.cardsDealt = true;
-	game.gameState.reportedGame = {
+	game.gameState.reportedGame = {  // todo-alpha move this to internals and redo
 		0: false,
 		1: false,
 		2: false,
@@ -138,15 +138,14 @@ let startGame = (game) => {
 		let nightPhasePause = devStatus.nightPhasePause,
 			countDown;
 
-		game.internals.seatedPlayers.forEach((player, i) => {
+		game.internals.seatedPlayers.forEach((player, index) => {
 			player.gameChats = [{
 				gameChat: true,
 				userName: player.userName,
 				chat: `The game begins and you receive the ${player.trueRole} role.`,
-				seat: i + 1,
+				seat: index + 1, // todo-release look into why we need this if at all
 				timestamp: new Date()
 			}];
-			player.tableState.seatedPlayers[i].role = player.trueRole;
 		});
 
 		game.internals.unSeatedGameChats.push({
@@ -163,6 +162,11 @@ let startGame = (game) => {
 			} else if (nightPhasePause === 1) {
 				game.internals.seatedPlayers.forEach((player, index) => {
 					delete player.tableState.seatedPlayers[index].role;
+				});
+				sendInProgressGameUpdate(game);
+			} else if (nightPhasePause === 4) {
+				game.internals.seatedPlayers.forEach((player, index) => {
+					player.tableState.seatedPlayers[index].role = game.internals.seatedPlayers[index].trueRole;
 				});
 				sendInProgressGameUpdate(game);
 			} else {
@@ -184,10 +188,10 @@ let beginNightPhases = (game) => {
 		insomniacs = [],
 		werewolves, masons;
 
-	game.internals.seatedPlayers.forEach((player) => {
+	game.internals.seatedPlayers.forEach((player, index) => {
 		switch (player.trueRole) {
 			case 'seer':
-				player.nightAction = {
+				player.tableState.seatedPlayers[index].nightAction = {
 					action: 'seer',
 					phase: 1,
 					gameChat: 'You wake up, and may look at one player\'s card, or two of the center cards.'
@@ -196,7 +200,7 @@ let beginNightPhases = (game) => {
 				break;
 
 			case 'robber':
-				player.nightAction = {
+				player.tableState.seatedPlayers[index].nightAction = {
 					action: 'robber',
 					gameChat: 'You wake up, and may exchange your card with another player\'s, and view your new role.'
 				};
@@ -212,7 +216,7 @@ let beginNightPhases = (game) => {
 				break;
 			
 			case 'troublemaker':
-				player.nightAction = {
+				player.tableState.seatedPlayers[index].nightAction = {
 					action: 'troublemaker',
 					gameChat: 'You wake up, and may switch cards between two other players without viewing them.'
 				};
@@ -229,7 +233,7 @@ let beginNightPhases = (game) => {
 				break;
 
 			case 'insomniac':
-				player.nightAction = {
+				player.tableState.seatedPlayers[index].nightAction = {
 					action: 'insomniac',
 					gameChat: 'You wake up, and may view your card again.',
 					completed: false
@@ -261,8 +265,8 @@ let beginNightPhases = (game) => {
 	// });
 
 	if (insomniacs.length) {
-		insomniacs.forEach((player) => {
-			player.nightAction.phase = phases.length + 1;
+		insomniacs.forEach((player, index) => {
+			player.tableState.seatedPlayers[index].nightAction.phase = phases.length + 1;
 		});
 
 		phases.push([...insomniacs]);
@@ -276,7 +280,7 @@ let beginNightPhases = (game) => {
 		return player.trueRole === 'mason';
 	});
 
-	phases[0].forEach((player) => {
+	phases[0].forEach((player, index) => {
 		let others, nightAction, message;
 
 		switch (player.trueRole) {
@@ -310,7 +314,7 @@ let beginNightPhases = (game) => {
 				nightAction.otherSeats = werewolves.map((player) => {
 					return player.seat;
 				});
-				player.nightAction = nightAction;
+				player.tableState.seatedPlayers[index].nightAction = nightAction;
 				break;
 
 			case 'minion':
@@ -341,7 +345,7 @@ let beginNightPhases = (game) => {
 					return werewolf.seat;
 				});
 				nightAction.gameChat = message;
-				player.nightAction = nightAction;
+				player.tableState.seatedPlayers[index].nightAction = nightAction;
 				break;
 			
 			case 'mason': {
@@ -375,16 +379,18 @@ let beginNightPhases = (game) => {
 
 				nightAction.others = otherMasonsSeatNumbers;
 				nightAction.gameChat = message;
-				player.nightAction = nightAction;
+				player.tableState.seatedPlayers[index].nightAction = nightAction;
 			}
 		}
 	});
 
-	game.internals.seatedPlayers.forEach((player) => {
-		player.tableState.isNight = true;
-	});
+	// game.internals.seatedPlayers.forEach((player) => {  // dont need?
+	// 	player.tableState.isNight = true;
+	// });
+
 	game.tableState.isNight = true;
 	game.status = 'Night begins..';
+	console.log(game.chats);
 	sendInProgressGameUpdate(game);
 	setTimeout(() => {
 		game.gameState.phase = 1;
@@ -428,7 +434,10 @@ let nightPhases = (game, phases) => {
 					};
 					
 					player.gameChats.push(chat);
+					console.log(player);
 				});
+
+				console.log(game.chats);
 
 				countDown = setInterval(() => {
 					if (phaseTime === 0) {

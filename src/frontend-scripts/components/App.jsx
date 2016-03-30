@@ -152,7 +152,9 @@ class App extends React.Component {
 				status: 'Waiting for more players..',
 				chats: [],
 				gameState: {},
-				tableState: {},
+				tableState: {
+					seatedPlayers: [{}, {}, {}, {}, {}, {}, {}]
+				},
 				time: ':16',
 				// uid: Math.random().toString(36).substring(2)
 				uid: 'devgame'

@@ -185,21 +185,23 @@ export default class Gamechat extends React.Component {
 						regex: new RegExp(playerName, 'gi')
 					};
 				}),
-				roleRegexes = _.uniq(gameInfo.roles).map((role) => {
+				roleRegexes = [{
+					role: 'masons',
+					team: 'village',
+					regex: /masons/gi
+				}, {
+					role: 'werewolves',
+					team: 'werewolf',
+					regex: /werewolves/gi
+				},..._.uniq(gameInfo.roles).map((role) => { // javascript!
 					return {
 						role,
 						team: roleMap[role].team,
 						regex: new RegExp(role, 'gi')
 					};
-				}).concat({
-					role: 'werewolves',
-					team: 'werewolf',
-					regex: /werewolves/gi
-				}, {
-					role: 'masons',
-					team: 'village',
-					regex: /masons/gi
-				});
+				})];
+
+			console.log(chatContents);
 
 			roleRegexes.forEach((roleRegex) => {
 				chatContents = chatContents.replace(roleRegex.regex, `<span class="chat-role--${roleRegex.team}">${roleRegex.role}</span>`);
