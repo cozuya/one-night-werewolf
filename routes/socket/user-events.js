@@ -33,11 +33,12 @@ let { games, userList, generalChats } = require('./models'),
 						return game.seated[seatName].userName === passport.user;
 					});
 
-				if (game.gameState.inProgress) {
+				if (game.gameState.isStarted) {
 					game.seated[userSeatName].connected = false;
 					sendInProgressGameUpdate(game);
 				} else {
 					if (seatNames.length === 1) {
+						// todo-release kick out observer sockets/route to default?
 						games.splice(games.indexOf(game), 1);
 					} else {
 						delete game.seated[userSeatName];
@@ -62,7 +63,7 @@ let { games, userList, generalChats } = require('./models'),
 
 		gameChats = player ? player.gameChats : game.internals.unSeatedGameChats;
 		_chats = gameChats.concat(game.chats);
-		_chats.sort((chat1, chat2) => { // todo-release move to front end?
+		_chats.sort((chat1, chat2) => { // todo-release move to front end?  everything else is
 			return chat1.timestamp - chat2.timestamp;
 		});
 
@@ -72,39 +73,24 @@ let { games, userList, generalChats } = require('./models'),
 		let seatedPlayerNames = Object.keys(game.seated).map((seat) => {
 				return game.seated[seat].userName;
 			}),
-			sockets = {},
 			roomSockets = Object.keys(io.sockets.adapter.rooms[game.uid].sockets).map((sockedId) => {
 				return io.sockets.connected[sockedId];
-			});
-
-			sockets.playerSockets = roomSockets.filter((socket) => {
+			}),
+			playerSockets = roomSockets.filter((socket) => {
 				if (socket.handshake.session.passport && Object.keys(socket.handshake.session.passport).length) {
 					return seatedPlayerNames.indexOf(socket.handshake.session.passport.user) >= 0;
 				}
-			});
-
-			sockets.observerSockets = roomSockets.filter((socket) => {
+			}),
+			observerSockets = roomSockets.filter((socket) => {
 				return seatedPlayerNames.indexOf(socket.handshake.session.passport.user) === -1;
 			});
 
-		sockets.playerSockets.forEach((sock, index) => {
+		playerSockets.forEach((sock, index) => {
 			let cloneGame = Object.assign({}, game),
-				userName = sock.handshake.session.passport.user,
-				player = cloneGame.internals.seatedPlayers.find((user) => {
-					return user.userName === userName;
-				});
+				userName = sock.handshake.session.passport.user;
 
-			if (cloneGame.tableState.phase === player.nightAction.phase && !player.nightPhaseComplete) {
-				cloneGame.tableState.nightAction = cloneGame.internals.seatedPlayers[index].nightAction;
-			} else {
-				cloneGame.tableState.nightAction = {};
-			}
-
-			if (cloneGame.tableState.phase === 'elimination') {
-				cloneGame.tableState.elimination = cloneGame.internals.seatedPlayers[index].selectedForElimination;
-			}
-
-			cloneGame.chats = combineInProgressChats(cloneGame, player.userName);
+			cloneGame.tableState = cloneGame.internals.seatedPlayers[index].tableState;
+			cloneGame.chats = combineInProgressChats(cloneGame, userName);
 			sock.emit('gameUpdate', secureGame(cloneGame));
 		});
 
@@ -154,13 +140,13 @@ module.exports.handleUpdatedReportGame = (socket, data) => {
 			return player.userName === data.userName;
 		});
 
-	if (player.reportedGame) {
-		player.reportedGame = false;
-		game.tableState.reportedGame[data.seatNumber] = false;
-	} else {
-		player.reportedGame = true;
-		game.tableState.reportedGame[data.seatNumber] = true;
-	}
+	// if (player.reportedGame) {
+	// 	player.reportedGame = false;
+	// 	game.tableState.reportedGame[data.seatNumber] = false; // todo-alpha fix this so it doesn't use tablestate in this way
+	// } else {
+	// 	player.reportedGame = true;
+	// 	game.tableState.reportedGame[data.seatNumber] = true;
+	// }
 
 	sendInProgressGameUpdate(game);
 };
@@ -168,7 +154,7 @@ module.exports.handleUpdatedReportGame = (socket, data) => {
 module.exports.handleAddNewGame = (socket, data) => {
 	data.internals = {
 		unSeatedGameChats: [],
-		seatedPlayers: [],
+		seatedPlayers: [{}, {}, {}, {}, {}, {}, {}],
 		truncateGameCount: 0
 	};
 

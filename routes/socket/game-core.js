@@ -10,7 +10,7 @@ let Game = require('../../models/game'),
 		let { startGamePause } = devStatus,
 			countDown;
 
-		game.gameState.startedGame = true;
+		game.gameState.isStarted = true;
 
 		countDown = setInterval(() => {
 			if (startGamePause === 0) {
@@ -138,10 +138,11 @@ let startGame = (game) => {
 			player.gameChats = [{
 				gameChat: true,
 				userName: player.userName,
-				chat: `The game begins and you receive the ${player.trueRole.toUpperCase()} role.`,
+				chat: `The game begins and you receive the ${player.trueRole} role.`,
 				seat: i + 1,
 				timestamp: new Date()
 			}];
+			player.tableState.seatedPlayers[i].role = player.trueRole;
 		});
 
 		game.internals.unSeatedGameChats.push({
@@ -155,6 +156,11 @@ let startGame = (game) => {
 			if (nightPhasePause === 0) {
 				clearInterval(countDown);
 				beginNightPhases(game);
+			} else if (nightPhasePause === 1) {
+				game.internals.seatedPlayers.forEach((player, index) => {
+					delete player.tableState.seatedPlayers[index].role;
+				});
+				sendInProgressGameUpdate(game);
 			} else {
 				game.status = `Night begins in ${nightPhasePause} second${nightPhasePause === 1 ? '' : 's'}.`;
 				sendInProgressGameUpdate(game);
@@ -370,6 +376,9 @@ let beginNightPhases = (game) => {
 		}
 	});
 
+	game.internals.seatedPlayers.forEach((player) => {
+		player.tableState.isNight = true;
+	});
 	game.tableState.isNight = true;
 	game.status = 'Night begins..';
 	sendInProgressGameUpdate(game);
@@ -385,7 +394,6 @@ let nightPhases = (game, phases) => {
 		phasesTimer,
 		endPhases = () => {
 			clearInterval(phasesTimer);
-			game.tableState.isNight = false;
 			game.status = 'Day begins..';
 			game.internals.unSeatedGameChats.push({
 				gameChat: true,

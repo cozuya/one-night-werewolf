@@ -29,9 +29,10 @@ module.exports.sendGameList = (socket) => {
 			kobk: game.kobk,
 			time: game.time,
 			name: game.name,
+			gameState: game.gameState,
 			roles: game.roles,
 			seatedCount: Object.keys(game.seated).length,
-			inProgress: game.inProgress,
+			inProgress: game.gameState.isStarted,
 			uid: game.uid
 		};
 	});

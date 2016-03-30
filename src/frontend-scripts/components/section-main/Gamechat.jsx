@@ -135,7 +135,6 @@ export default class Gamechat extends React.Component {
 	scrollChats() {
 		let chatsContainer = document.querySelector('section.segment.chats'),
 			$chatPusher = $('section.gamechat div.chatpusher'),
-			chatHeight = 290,
 			chatCount = this.props.gameInfo.chats.length,
 			$lockIcon = $('section.gamechat > .ui.menu > i');
 
@@ -257,7 +256,7 @@ export default class Gamechat extends React.Component {
 							userInfo = this.props.userInfo,
 							classes = 'expando-container';
 
-						if (!gameInfo.inProgress || !userInfo.seatNumber) {
+						if (!gameInfo.gameState.isStarted || !userInfo.seatNumber) {
 							classes += ' app-visibility-hidden';
 						}
 						

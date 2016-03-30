@@ -29,43 +29,43 @@ export default class Table extends React.Component {
 		// 	}, 1500);
 		// }
 
-		if (gameState.isNight && userInfo.seatNumber) {
-			this.processNightActions(prevTableState);
-		}
+		// if (gameState.isNight && userInfo.seatNumber) {
+		// 	this.processNightActions(prevTableState);
+		// }
 
-		if (userInfo.seatNumber && tableState.isVotable && tableState.isVotable.enabled && !prevTableState.isVotable) {
-			let nonPlayersCards = _.range(0, 7).filter((seatNumber) => {
-				return seatNumber !== parseInt(userInfo.seatNumber);
-			});
+		// if (userInfo.seatNumber && tableState.isVotable && tableState.isVotable.enabled && !prevTableState.isVotable) {
+		// 	let nonPlayersCards = _.range(0, 7).filter((seatNumber) => {
+		// 		return seatNumber !== parseInt(userInfo.seatNumber);
+		// 	});
 
-			this.highlightCards(nonPlayersCards);
-		}
+		// 	this.highlightCards(nonPlayersCards);
+		// }
 
-		if (tableState.cardRoles) {
-			tableState.cardRoles.forEach((role, index) => {
-				if (role) {
-					this.revealCard(index);
-				}
-			});
-		}
+		// if (tableState.cardRoles) {
+		// 	tableState.cardRoles.forEach((role, index) => {
+		// 		if (role) {
+		// 			this.revealCard(index);
+		// 		}
+		// 	});
+		// }
 
-		if (gameInfo.inProgress && !prevProps.gameInfo.inProgress) {
-			let $cards = $('div.card'),
-				centerTop = 190,
-				centerLeft = 260,
-				shuffleInterval = setInterval(() => {
-					$cards.each(function () {
-						$(this).css({
-							top: `${(190 + (Math.floor(Math.random() * 30) - 15)).toString()}px`,
-							left: `${(260 + (Math.floor(Math.random() * 30) - 15)).toString()}px`
-						});
-					});
-				}, 300);
+		// if (gameInfo.inProgress && !prevProps.gameInfo.inProgress) {
+		// 	let $cards = $('div.card'),
+		// 		centerTop = 190,
+		// 		centerLeft = 260,
+		// 		shuffleInterval = setInterval(() => {
+		// 			$cards.each(function () {
+		// 				$(this).css({
+		// 					top: `${(190 + (Math.floor(Math.random() * 30) - 15)).toString()}px`,
+		// 					left: `${(260 + (Math.floor(Math.random() * 30) - 15)).toString()}px`
+		// 				});
+		// 			});
+		// 		}, 300);
 
-			setTimeout(() => { // quality stuff here
-				clearInterval(shuffleInterval);
-			}, 5000);
-		}
+		// 	setTimeout(() => { // quality stuff here
+		// 		clearInterval(shuffleInterval);
+		// 	}, 5000);
+		// }
 
 		console.log(gameInfo);
 	}

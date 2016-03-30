@@ -23,7 +23,7 @@ export default class SidebarGame extends React.Component {
 		{ game } = this.props;
 
 		return (
-			<div className={game.inProgress ? "ui vertical segment inprogress" : "ui vertical segment"} key={this.props.key} data-uid={game.uid} onClick={this.routeToGame.bind(this)}>
+			<div className={game.gameState.isStarted ? "ui vertical segment inprogress" : "ui vertical segment"} key={this.props.key} data-uid={game.uid} onClick={this.routeToGame.bind(this)}>
 				<div>
 					<span className={game.kobk ? "gamename kobk" : "gamename"}>{game.name}</span>
 					<span className="gamelength">{game.time}</span> 

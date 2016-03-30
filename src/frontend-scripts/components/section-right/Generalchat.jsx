@@ -59,7 +59,6 @@ export default class Gamechat extends React.Component {
 	scrollChats() {
 		let chatsContainer = document.querySelector('section.segment.chats'),
 			$chatPusher = $('section.generalchat div.chatpusher'),
-			chatHeight = 290,
 			chatCount = this.props.generalChats.length,
 			$lockIcon = $('section.gamechat > .ui.menu > i');
 
