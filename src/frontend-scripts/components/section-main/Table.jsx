@@ -273,13 +273,18 @@ export default class Table extends React.Component {
 	}
 
 	createCards() {
+		let { gameInfo, userInfo } = this.props,
+			{ gameState, tableState } = gameInfo;
+
 		return _.range(0, 10).map((num) => { 
 			return (
 				<div key={num} data-cardnumber={num} onClick={this.handleCardClick.bind(this)} className={
 						(() => {
 							let classes = `card card${num}`;
 
-							if (this.props.gameInfo.tableState.cardsDealt || this.props.gameInfo.tableState.phase === 'elimination') {
+							if (gameState.cardsDealt
+							 	// todo-alpha replace this || this.props.gameInfo.tableState.phase === 'elimination'
+							 	) {
 								classes += ` seat${num}`;
 							}
 
@@ -291,10 +296,8 @@ export default class Table extends React.Component {
 						<div className={
 							(() => {
 								let classes = `card-front seat-${num}`,
-									{ tableState } = this.props.gameInfo,
-									{ playerPerceivedRole } = tableState,
-									playerSeat = Object.keys(this.props.gameInfo.seated).find((seat) => { // todo-alpha check userinfo
-										return this.props.gameInfo.seated[seat].userName === this.props.userInfo.userName;
+									playerSeat = Object.keys(gameInfo.seated).find((seat) => { // todo-alpha check userinfo
+										return gameInfo.seated[seat].userName === userInfo.userName;
 									});
 
 								if (tableState.winningPlayersIndex && tableState.winningPlayersIndex.indexOf(num) !== -1) {

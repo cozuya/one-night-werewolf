@@ -97,6 +97,10 @@ let startGame = (game) => {
 
 				player.trueRole = role;
 				player.seatNumber = index;
+				player.tableState = {
+					seatedPlayers: [{}, {}, {}, {}, {}, {}, {}],
+				};
+				player.nightAction = {};
 				_roles.splice(roleIndex, 1);
 			});
 
@@ -430,7 +434,6 @@ let nightPhases = (game, phases) => {
 					if (phaseTime === 0) {
 						phasesPlayers.forEach((player) => {
 							player.nightPhaseComplete = true;
-							player.nightAction = {};
 						});
 					
 						phasesIndex++;

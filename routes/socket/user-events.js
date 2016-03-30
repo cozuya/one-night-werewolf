@@ -94,8 +94,8 @@ let { games, userList, generalChats } = require('./models'),
 			sock.emit('gameUpdate', secureGame(cloneGame));
 		});
 
-		if (sockets.observerSockets.length) {
-			sockets.observerSockets.forEach((sock) => {
+		if (observerSockets.length) {
+			observerSockets.forEach((sock) => {
 				let cloneGame = Object.assign({}, game);
 
 				cloneGame.chats = combineInProgressChats(cloneGame);
