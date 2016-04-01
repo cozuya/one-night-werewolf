@@ -190,10 +190,10 @@ export default class Gamechat extends React.Component {
 					team: 'village',
 					regex: /masons/gi
 				}, {
-					role: 'werewolves',
+					role: 'werewolves',  // todo-alpha not working for single werewolf right
 					team: 'werewolf',
 					regex: /werewolves/gi
-				},..._.uniq(gameInfo.roles).map((role) => { // javascript!
+				}, ..._.uniq(gameInfo.roles).map((role) => { // javascript!
 					return {
 						role,
 						team: roleMap[role].team,

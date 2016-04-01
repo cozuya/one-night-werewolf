@@ -283,7 +283,7 @@ export default class Table extends React.Component {
 						(() => {
 							let classes = 'card-flipper';
 
-							if (num < 7 && tableState.seatedPlayers[num].role) {
+							if (num < 7 && tableState.seatedPlayers[num].flipped) {
 								classes += ' flip';
 							}
 
@@ -412,7 +412,9 @@ export default class Table extends React.Component {
 	}
 
 	nightBlockerStatus(position) {
-		if (this.props.gameInfo.gameState.isNight && !this.props.userInfo.seatNumber || this.props.gameInfo.gameState.isNight && this.props.userInfo.seatNumber && !this.props.gameInfo.tableState.seatedPlayers[this.props.userInfo.seatNumber].nightAction) { // errs here
+		let { gameInfo } = this.props;
+
+		if (gameInfo.tableState.isNight || gameInfo.tableState.nightAction && gameInfo.tableState.nightAction.phase !== gameInfo.gameState.phase) { // errs here
 			return position === 'top' ? 'nightblocker nightblocker-top-blocked' : 'nightblocker nightblocker-bottom-blocked';
 		} else {
 			return position === 'top' ? 'nightblocker nightblocker-top': 'nightblocker nightblocker-bottom';
