@@ -20,4 +20,3 @@ data/mongod.lock
 public/semantic/*
 misc/*
 public/scripts/*
-docs.txt

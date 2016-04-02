@@ -1,0 +1,28 @@
+Model info
+
+internals
+	seatedPlayers array 0-6
+		seat0
+			seatNumber number 0-6
+			trueRole bool
+			tableState
+				isNight - beginNightPhases
+				nightaction
+					stuff
+				seats array 0-9
+					seat0
+						highlight string (notify select proceed)
+						eliminator string (0-6 of what seat this seat is pointing at)
+						isFlipped bool (shows card, can't have it on role)
+						role string (assigns role class to card)
+						claim string of roles
+					...
+		...
+gameState:
+	isStarted bool - startGameCountdown
+	cardsDealt bool  - startGame
+	isCompleted bool - ?
+	reportedGame 0-6
+		0 bool
+		1 bool
+		...

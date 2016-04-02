@@ -153,7 +153,7 @@ class App extends React.Component {
 				chats: [],
 				gameState: {},
 				tableState: {
-					seatedPlayers: [{}, {}, {}, {}, {}, {}, {}]
+					seats: [{}, {}, {}, {}, {}, {}, {}, {}, {}, {}]
 				},
 				time: ':16',
 				// uid: Math.random().toString(36).substring(2)

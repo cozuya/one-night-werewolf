@@ -190,7 +190,7 @@ export default class Gamechat extends React.Component {
 					team: 'village',
 					regex: /masons/gi
 				}, {
-					role: 'werewolves',  // todo-alpha not working for single werewolf right
+					role: 'werewolves',  // todo-alpha not working for this word correctly not sure why
 					team: 'werewolf',
 					regex: /werewolves/gi
 				}, ..._.uniq(gameInfo.roles).map((role) => { // javascript!
@@ -200,8 +200,6 @@ export default class Gamechat extends React.Component {
 						regex: new RegExp(role, 'gi')
 					};
 				})];
-
-			console.log(chatContents);
 
 			roleRegexes.forEach((roleRegex) => {
 				chatContents = chatContents.replace(roleRegex.regex, `<span class="chat-role--${roleRegex.team}">${roleRegex.role}</span>`);
@@ -227,7 +225,7 @@ export default class Gamechat extends React.Component {
 				);
 			};
 		});	
-	}
+	} // todo-alpha - 'observer' logic is not right, logged in players who are not seated see seated player chats as observers
 
 	handleChatLockClick(e) {
 		if (this.state.lock) {

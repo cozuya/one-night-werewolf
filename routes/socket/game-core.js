@@ -6,6 +6,7 @@ let Game = require('../../models/game'),
 	{ secureGame, devStatus } = require('./util'),
 	{ sendInProgressGameUpdate } = require('./user-events'),
 	{ sendGameList } = require('./user-requests'),
+	_ = require('lodash'),
 	startGameCountdown = (game) => {
 		let { startGamePause } = devStatus,
 			countDown;
@@ -22,6 +23,51 @@ let Game = require('../../models/game'),
 			}
 			startGamePause--;
 		}, 1000);
+	},
+	highlightSeats = (player, seats, type) => {
+		if (typeof seats === 'string') {
+			switch (seats) {
+				case 'nonplayer':
+					player.tableState.seats.forEach((seat, index) => {
+						if (index !== player.seatNumber) {
+							seat.highlight = type;
+						}
+					});
+					break;
+
+				case 'otherplayers':
+					player.tableState.seats.forEach((seat, index) => {
+						if (index < 7 && index !== player.seatNumber) {
+							seat.highlight = type;
+						}
+					});
+					break;
+
+				case 'centercards':
+					player.tableState.seats.forEach((seat, index) => {
+						if (index > 6) {
+							seat.highlight = type;
+						}
+					});
+					break;
+
+				case 'player':
+					player.tableState.seats[player.seatNumber].highlight = type;
+					break;
+
+				case 'clear':
+					player.tableState.seats.forEach((seat) => {
+						if (seat.highlight) {
+							delete seat.highlight;
+						}
+					});
+					break;
+			}
+		} else {
+			seats.forEach((seatNumber) => {
+				player.tableState.seats[seatNumber].highlight = type;
+			});
+		}
 	};
 
 module.exports.updateSeatedUsers = (socket, data) => {
@@ -49,7 +95,7 @@ module.exports.updateSeatedUsers = (socket, data) => {
 	} else if (game) {
 		let completedDisconnectionCount = 0;
 
-		if (data.gameState.isCompleted) {
+		if (game.gameState.isCompleted) {
 			let playerSeat = Object.keys(game.seated).find((seatName) => {
 				return game.seated[seatName].userName === data.userName;
 			});
@@ -98,9 +144,8 @@ let startGame = (game) => {
 				player.trueRole = role;
 				player.seatNumber = index;
 				player.tableState = {
-					seatedPlayers: [{}, {}, {}, {}, {}, {}, {}],
+					seats: [{}, {}, {}, {}, {}, {}, {}, {}, {}, {}],
 				};
-				player.nightAction = {};
 				_roles.splice(roleIndex, 1);
 			});
 
@@ -145,7 +190,7 @@ let startGame = (game) => {
 				chat: `The game begins and you receive the ${player.trueRole} role.`,
 				timestamp: new Date()
 			}];
-			player.tableState.seatedPlayers[index].role = game.internals.seatedPlayers[index].trueRole;
+			player.tableState.seats[index].role = game.internals.seatedPlayers[index].trueRole;
 		});
 
 		game.internals.unSeatedGameChats.push({
@@ -156,20 +201,22 @@ let startGame = (game) => {
 
 		sendInProgressGameUpdate(game);
 		countDown = setInterval(() => {
+			game.status = `Night begins in ${nightPhasePause} second${nightPhasePause === 1 ? '' : 's'}.`;
+
 			if (nightPhasePause === 0) {
 				clearInterval(countDown);
+				game.status = 'Night begins..';
 				beginNightPhases(game);
 			} else if (nightPhasePause === 1) {
 				game.internals.seatedPlayers.forEach((player, index) => {
-					player.tableState.seatedPlayers[index].flipped = false;
+					player.tableState.seats[index].flipped = false;
 				});
 			} else if (nightPhasePause === 4) {
 				game.internals.seatedPlayers.forEach((player, index) => {
-					player.tableState.seatedPlayers[index].flipped = true;
+					player.tableState.seats[index].flipped = true;
 				});
 			}
 
-			game.status = `Night begins in ${nightPhasePause} second${nightPhasePause === 1 ? '' : 's'}.`;
 			sendInProgressGameUpdate(game);
 			nightPhasePause--;
 		}, 1000);
@@ -192,15 +239,18 @@ let beginNightPhases = (game) => {
 				player.tableState.nightAction = {
 					action: 'seer',
 					phase: 1,
-					gameChat: 'You wake up, and may look at one player\'s card, or two of the center cards.'
+					gameChat: 'You wake up, and may look at one player\'s card, or two of the center cards.',
+					highlight: 'nonplayer'
 				};
+
 				phases[0].push(player);
 				break;
 
 			case 'robber':
 				player.tableState.nightAction = {
 					action: 'robber',
-					gameChat: 'You wake up, and may exchange your card with another player\'s, and view your new role (but do not take an additional night action).'
+					gameChat: 'You wake up, and may exchange your card with another player\'s, and view your new role (but do not take an additional night action).',
+					highlight: 'otherplayers'
 				};
 
 				if (roleChangerInPhase1) {
@@ -216,7 +266,8 @@ let beginNightPhases = (game) => {
 			case 'troublemaker':
 				player.tableState.nightAction = {
 					action: 'troublemaker',
-					gameChat: 'You wake up, and may switch cards between two other players without viewing them.'
+					gameChat: 'You wake up, and may switch cards between two other players without viewing them.',
+					highlight: 'otherplayers'
 				};
 
 				if (roleChangerInPhase1) {
@@ -232,7 +283,8 @@ let beginNightPhases = (game) => {
 			case 'insomniac':
 				player.tableState.nightAction = {
 					action: 'insomniac',
-					gameChat: 'You wake up, and may view your card again.'
+					gameChat: 'You wake up, and may view your card again.',
+					highlight: 'player'
 				};
 
 				insomniacs.push(player);
@@ -261,7 +313,7 @@ let beginNightPhases = (game) => {
 
 	if (insomniacs.length) {
 		insomniacs.forEach((player, index) => {
-			player.tableState.seatedPlayers[index].nightAction.phase = phases.length + 1;
+			player.tableState.nightAction.phase = phases.length + 1;
 		});
 
 		phases.push([...insomniacs]);
@@ -285,27 +337,27 @@ let beginNightPhases = (game) => {
 					phase: 1
 				},
 			
-				others = werewolves.map((werewolf) => {
-					return werewolf.userName;
-				}).filter((userName) => {
-					return userName !== player.userName;
+				others = werewolves.filter((werewolf) => {
+					return werewolf.userName !== player.userName;
 				});
 
 				if (werewolves.length === 1) {
-					nightAction.singleWerewolf = true;
-					message = 'You wake up, and see no other werewolves. You may look at a center card';				
+					message = 'You wake up, and see no other werewolves. You may look at a center card';
+					nightAction.highlight = 'centercards';
 				} else {
 					message = 'You wake up, and see that the other werewolves in this game are:';
+					nightAction.highlight = others.map((other) => {
+						return other.seatNumber;
+					});
 				}
 
-				others.forEach((userName) => {
-					message = `${message} ${userName}`;
+				others.forEach((other) => {
+					message = `${message} ${other.userName}`;
 				});
-
 				message += '.';
 				nightAction.gameChat = message;
-				nightAction.otherSeats = werewolves.map((player) => {
-					return player.seat;
+				nightAction.highlight = others.map((other) => {
+					return other.seatNumber;
 				});
 				player.tableState.nightAction = nightAction;
 				break;
@@ -316,39 +368,26 @@ let beginNightPhases = (game) => {
 					phase: 1
 				};
 
-				others = werewolves.map((werewolf) => {
-					return werewolf.userName;
-				});
-
 				if (!werewolves.length) {
-					game.internals.soloMinion = true;
-					message = 'You wake up, and see that there are no WEREWOLVES in this game. Be careful - you lose if no villager is eliminated.';
+					message = 'You wake up, and see that there are no werewolves in this game. Be careful - you lose if no villager is eliminated.';
 				} else {
-					message = 'You wake up, and see that the WEREWOLVES in this game are: ';
+					message = `You wake up, and see that the ${werewolves.length === 1 ? 'werewolf' : 'werewolves'} in this game ${werewolves.length === 1 ? 'is' : 'are'}:`;
+					nightAction.highlight = werewolves.map((werewolf) => {
+						return werewolf.seatNumber;
+					});
 				}
 
-				others.forEach((userName) => {
-					message = `${message} ${userName}`;
+				werewolves.forEach((werewolf) => {
+					message = `${message} ${werewolf.userName}`;
 				});
-
 				message += '.';
-
-				nightAction.others = werewolves.map((werewolf) => {
-					return werewolf.seat;
-				});
 				nightAction.gameChat = message;
 				player.tableState.nightAction = nightAction;
 				break;
 			
 			case 'mason': {
-				let otherMasons = masons.filter((mason) => {
+				let others = masons.filter((mason) => {
 						return mason.userName !== player.userName;
-					}),
-					otherMasonsNames = otherMasons.map((mason) => {
-						return mason.userName;
-					}),
-					otherMasonsSeatNumbers = otherMasons.map((mason) => {
-						return mason.seat;
 					});
 
 				nightAction = {
@@ -356,27 +395,27 @@ let beginNightPhases = (game) => {
 					phase: 1
 				};
 
-				if (otherMasons.length === 0) {
-					message = 'You wake up, and see that you are the only MASON';
+				if (!others.length) {
+					message = 'You wake up, and see that you are the only mason';
 				} else {
-					message = 'You wake up, and see that the MASONS in this game are: ';			
+					message = `You wake up, and see that the ${others.length == 1 ? 'mason' : 'masons'} in this game ${others.length == 1 ? 'is' : 'are'}: `;
+					nightAction.highlight = others.map((other) => {
+						return other.seatNumber;
+					});
 				}
 
-				otherMasonsNames.forEach((userName) => { // todo-alpha this doesn't work and appends the single mason's name to this string
-					message = `${message} ${userName}`;
+				others.forEach((other) => {
+					message = `${message} ${other.userName}`;
 				});
 
 				message += '.';
-
-				nightAction.others = otherMasonsSeatNumbers;
 				nightAction.gameChat = message;
 				player.tableState.nightAction = nightAction;
 			}
 		}
 	});
-
-	game.tableState.isNight = true;
-	game.status = 'Night begins..';
+	
+	game.gameState.isNight = true;
 	sendInProgressGameUpdate(game);
 	setTimeout(() => {
 		game.gameState.phase = 1;
@@ -407,6 +446,7 @@ let nightPhases = (game, phases) => {
 				endPhases();
 			} else {
 				let phaseTime = devStatus.phaseTime,
+					startPhaseTime = phaseTime,
 					countDown,
 					phasesPlayers = phases[phasesIndex];
 
@@ -439,6 +479,32 @@ let nightPhases = (game, phases) => {
 						clearInterval(countDown);
 					} else {
 						game.status = `Night phase ${phases.length === 1 ? 1 : (phasesIndex).toString()} of ${phasesCount} ends in ${phaseTime} second${phaseTime === 1 ? '' : 's'}.`;
+						if (phaseTime === startPhaseTime - 2) {
+							phasesPlayers.forEach((player) => {
+								console.log(player);
+								if (player.tableState.nightAction.highlight) {
+									highlightSeats(player, player.tableState.nightAction.highlight, 'notify');
+								}
+							});
+						} else if (phaseTime === startPhaseTime - 3) {
+							phasesPlayers.forEach((player) => {
+								if (player.tableState.nightAction.highlight) {
+									highlightSeats(player, 'clear');
+								}
+							});
+						} else if (phaseTime === startPhaseTime - 4) {
+							phasesPlayers.forEach((player) => {
+								if (player.tableState.nightAction.highlight) {
+									highlightSeats(player, player.tableState.nightAction.highlight, 'notify');
+								}
+							});
+						} else if (phaseTime === startPhaseTime - 5) {
+							phasesPlayers.forEach((player) => {
+								if (player.tableState.nightAction.highlight) {
+									highlightSeats(player, 'clear');
+								}
+							});
+						}
 						sendInProgressGameUpdate(game);
 					}
 					phaseTime--;

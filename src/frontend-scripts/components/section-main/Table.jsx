@@ -49,25 +49,29 @@ export default class Table extends React.Component {
 		// 	});
 		// }
 
-		// if (gameInfo.inProgress && !prevProps.gameInfo.inProgress) {
-		// 	let $cards = $('div.card'),
-		// 		centerTop = 190,
-		// 		centerLeft = 260,
-		// 		shuffleInterval = setInterval(() => {
-		// 			$cards.each(function () {
-		// 				$(this).css({
-		// 					top: `${(190 + (Math.floor(Math.random() * 30) - 15)).toString()}px`,
-		// 					left: `${(260 + (Math.floor(Math.random() * 30) - 15)).toString()}px`
-		// 				});
-		// 			});
-		// 		}, 300);
+		if (gameInfo.inProgress && !prevProps.gameInfo.inProgress) {
+			let $cards = $('div.card'),
+				centerTop = 190,
+				centerLeft = 260,
+				shuffleInterval = setInterval(() => {
+					$cards.each(function () {
+						$(this).css({
+							top: `${(190 + (Math.floor(Math.random() * 30) - 15)).toString()}px`,
+							left: `${(260 + (Math.floor(Math.random() * 30) - 15)).toString()}px`
+						});
+					});
+				}, 300);
 
-		// 	setTimeout(() => { // quality stuff here
-		// 		clearInterval(shuffleInterval);
-		// 	}, 5000);
-		// }
+			setTimeout(() => { // quality stuff here
+				clearInterval(shuffleInterval);
+			}, 5000);
+		}
 
 		console.log(gameInfo);
+	}
+
+	shouldComponentUpdate(nextProps) {
+		return !_.isEqual(nextProps.gameInfo, this.props.gameInfo);
 	}
 
 	componentDidMount() {
@@ -283,8 +287,12 @@ export default class Table extends React.Component {
 						(() => {
 							let classes = 'card-flipper';
 
-							if (num < 7 && tableState.seatedPlayers[num].flipped) {
+							if (tableState.seats[num].flipped) {
 								classes += ' flip';
+							}
+
+							if (tableState.seats[num].highlight) {
+								classes += ` card-${seat.highlight}`;
 							}
 
 							return classes;
@@ -293,30 +301,12 @@ export default class Table extends React.Component {
 						<div className={
 							(() => {
 								let classes = `card-front seat-${num}`,
-									seat = tableState.seatedPlayers[num];
+									seat = tableState.seats[num];
 
-								if (num < 7) {
-									if (seat.highlighted) {
-										classes += ` card-${seat.highlighted}`;
-									}
 
-									if (seat.role) {
-										classes += ` ${seat.role}`;
-									}
+								if (seat.role) {
+									classes += ` ${seat.role}`;
 								}
-
-								// if (tableState.winningPlayersIndex && tableState.winningPlayersIndex.indexOf(num) !== -1) {
-								// 	classes = `${classes} card-proceed`;
-								// }
-
-
-
-								// if (playerPerceivedRole && playerSeat && num === parseInt(playerSeat.split('seat')[1])) {
-								// 	classes = `${classes} ${playerPerceivedRole}`;
-								// } else
-								//  if (tableState.cardRoles && !!tableState.cardRoles[num]) {
-								// 	classes = `${classes} ${tableState.cardRoles[num]}`;
-								// }
 
 								return classes;
 							})()
@@ -414,7 +404,7 @@ export default class Table extends React.Component {
 	nightBlockerStatus(position) {
 		let { gameInfo } = this.props;
 
-		if (gameInfo.tableState.isNight || gameInfo.tableState.nightAction && gameInfo.tableState.nightAction.phase !== gameInfo.gameState.phase) { // errs here
+		if (gameInfo.tableState.isNight || gameInfo.gameState.isNight && !gameInfo.tableState.nightAction || gameInfo.tableState.nightAction && gameInfo.gameState.isNight && gameInfo.tableState.nightAction.phase !== gameInfo.gameState.phase) {
 			return position === 'top' ? 'nightblocker nightblocker-top-blocked' : 'nightblocker nightblocker-bottom-blocked';
 		} else {
 			return position === 'top' ? 'nightblocker nightblocker-top': 'nightblocker nightblocker-bottom';
