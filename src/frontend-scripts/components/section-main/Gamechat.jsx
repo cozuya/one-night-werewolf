@@ -186,20 +186,22 @@ export default class Gamechat extends React.Component {
 					};
 				}),
 				roleRegexes = [{
-					role: 'masons',
-					team: 'village',
-					regex: /masons/gi
-				}, {
-					role: 'werewolves',  // todo-alpha not working for this word correctly not sure why
-					team: 'werewolf',
-					regex: /werewolves/gi
-				}, ..._.uniq(gameInfo.roles).map((role) => { // javascript!
-					return {
-						role,
-						team: roleMap[role].team,
-						regex: new RegExp(role, 'gi')
-					};
-				})];
+						role: 'masons',
+						team: 'village',
+						regex: /masons/gi
+					}, ..._.uniq(gameInfo.roles).map((role) => { // javascript!
+						return {
+							role,
+							team: roleMap[role].team,
+							regex: new RegExp(role, 'gi')
+						};
+					}),
+					{
+						role: 'werewolves', // YES IT HAS TO BE DONE IN THIS ORDER I have no idea why but if you want a good laugh put this one first.  Babel issue?  Lodash?  Aliens?
+						team: 'werewolf',
+						regex: /werewolves/gi
+					}
+				];
 
 			roleRegexes.forEach((roleRegex) => {
 				chatContents = chatContents.replace(roleRegex.regex, `<span class="chat-role--${roleRegex.team}">${roleRegex.role}</span>`);
