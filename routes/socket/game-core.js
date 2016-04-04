@@ -113,7 +113,6 @@ module.exports.updateSeatedUsers = (socket, data) => {
 					delete game.seated[key];
 				}
 			}
-
 			sendGameList();
 		}
 
@@ -142,6 +141,7 @@ let startGame = (game) => {
 				}
 
 				player.trueRole = role;
+				player.originalRole = role;
 				player.seatNumber = index;
 				player.tableState = {
 					seats: [{}, {}, {}, {}, {}, {}, {}, {}, {}, {}],
@@ -232,6 +232,7 @@ let beginNightPhases = (game) => {
 		roleChangerInPhase1 = false,
 		insomniacs = [],
 		werewolves, masons;
+	// todo-alpha players phases should be randomized - right now it goes in order of seatnumber and its possible to predict what cards are in the center by which player was last in phases.
 
 	game.internals.seatedPlayers.forEach((player, index) => {
 		switch (player.trueRole) {
@@ -368,6 +369,7 @@ let beginNightPhases = (game) => {
 
 				if (!werewolves.length) {
 					message = 'You wake up, and see that there are no werewolves in this game. Be careful - you lose if no villager is eliminated.';
+					game.internals.soloMinion = true;
 				} else {
 					message = `You wake up, and see that the ${werewolves.length === 1 ? 'werewolf' : 'werewolves'} in this game ${werewolves.length === 1 ? 'is' : 'are'}:`;
 					nightAction.highlight = werewolves.map((werewolf) => {
@@ -631,26 +633,26 @@ module.exports.updateUserNightActionEvent = (socket, data) => {
 					7: 'center left',
 					8: 'center middle',
 					9: 'center right'
-				},
-				rolesClicked = data.action.map((role) => {
-					return getTrueRoleBySeatNumber(role);
-				});
+				};
 
 				player.tableState.nightAction.completed = true;
 
 				if (data.action.length === 1) {
-					let playerClicked = game.internals.seatedPlayers[parseInt(data.action)].userName,
-						seat = player.tableState.seats[parseInt(data.action)];
+					let playerClicked = game.internals.seatedPlayers[parseInt(data.action[0])],
+						seat = player.tableState.seats[parseInt(data.action[0])];
 
-					seat.isFlipped = true;
-					seat.role = rolesClicked[0]; // todo-alpha need to make sure that the seer looking at a card that was tmed or robbed shows the card as it previously was, not after the event.
+					seat.isFlipped = true; // todo-alpha need to make sure that the seer looking at a card that was tmed or robbed shows the card as it previously was, not after the event.
+					seat.role = playerClicked.originalRole;
 					setTimeout(() => {
 						seat.isFlipped = false;
 						sendInProgressGameUpdate(game);
 					}, 3000);
-					chat.chat = `You select to see the card of ${playerClicked} and it is a ${rolesClicked[0]}.`;
+					chat.chat = `You select to see the card of ${playerClicked.userName} and it is a ${playerClicked.originalRole}.`;
 				} else {
-					let seats = [player.tableState.seats[parseInt(data.action[0])], player.tableState.seats[parseInt(data.action[1])]];
+					let seats = [player.tableState.seats[parseInt(data.action[0])], player.tableState.seats[parseInt(data.action[1])]],
+						rolesClicked = data.action.map((role) => {
+							return getTrueRoleBySeatNumber(role);
+						});
 
 					seats[0].isFlipped = true;
 					seats[1].isFlipped = true;
@@ -838,7 +840,7 @@ let endGame = (game) => {
 
 	seatedPlayers.forEach((player, index) => {
 		if (player.trueRole === 'hunter' && eliminatedPlayersIndex.indexOf(index) !== -1 && eliminatedPlayersIndex.length !== 7) {
-			eliminatedPlayersIndex.push(game.tableState.eliminations[index]);
+			eliminatedPlayersIndex.push(player.selectedForElimination);
 		}
 
 		if (player.trueRole === 'werewolf' || player.trueRole === 'minion') {
@@ -858,13 +860,13 @@ let endGame = (game) => {
 
 	sendInProgressGameUpdate(game);
 
-	eliminatedPlayersIndex.forEach((eliminatedPlayer) => {
-		if (seatedPlayers[eliminatedPlayer].trueRole === 'werewolf' || seatedPlayers[eliminatedPlayer].trueRole === 'minion' && game.internals.soloMinion) {
+	eliminatedPlayersIndex.forEach((eliminatedPlayerIndex) => {
+		if (seatedPlayers[eliminatedPlayerIndex].trueRole === 'werewolf' || seatedPlayers[eliminatedPlayerIndex].trueRole === 'minion' && game.internals.soloMinion) {
 			werewolfEliminated = true;
 		}
 
-		if (seatedPlayers[eliminatedPlayer].trueRole === 'tanner') {
-			tannerEliminations.push(eliminatedPlayer);
+		if (seatedPlayers[eliminatedPlayerIndex].trueRole === 'tanner') {
+			tannerEliminations.push(eliminatedPlayerIndex);
 		}
 	});
 
@@ -885,19 +887,15 @@ let endGame = (game) => {
 		}
 	});
 
+	game.gameState.isCompleted = true;
 
 	if (eliminatedPlayersIndex.length !== 7) {
 		setTimeout(() => {
-			let cardRoles = [];
-
-			eliminatedPlayersIndex.forEach((index) => {
-				cardRoles[index] = seatedPlayers[index].trueRole;
-			});
-
-			game.tableState.cardRoles = cardRoles;
-
-			seatedPlayers.map((player) => {
-				return player.trueRole;
+			eliminatedPlayersIndex.forEach((eliminatedPlayerIndex) => {
+				game.tableState.seats[eliminatedPlayerIndex] = {
+					role: seatedPlayers[eliminatedPlayersIndex].trueRole,
+					isFlipped: true
+				};
 			});
 
 			sendInProgressGameUpdate(game);
@@ -912,13 +910,13 @@ let endGame = (game) => {
 				return !player.wonGame;
 			}),
 			winningPlayersIndex = winningPlayers.map((player) => {
-				return player.seat;
+				return player.seatNumber;
 			}),
 			winningPlayerNames = winningPlayers.map((player) => {
 				return player.userName;
 			}),
 			winningPlayersList = winningPlayers.map((player) => {
-				return player.userName.toUpperCase();
+				return player.userName;
 			}).join(' '),
 			saveGame = new Game({
 				uid: game.uid,
@@ -953,16 +951,20 @@ let endGame = (game) => {
 			return !chat.gameChat;
 		});
 
-		// game.tableState.cardRoles = seatedPlayers.map((player) => {
-		// 	return player.trueRole;
-		// });
+		game.tableState.seats.forEach((seat, index) => {
+			if (index < 7) {
+				seat.role = seatedPlayers[index].trueRole;
+			} else {
+				seat.role = game.internals.centerRoles[index - 7];
+			}
 
-		// game.internals.centerRoles.forEach((role) => {
-		// 	game.tableState.cardRoles.push(role);
-		// });
+			if (winningPlayersIndex.indexOf(index) !== -1) {
+				seat.highlight = 'proceed';
+			}
 
-		game.tableState.winningPlayersIndex = winningPlayersIndex;
-		game.completedGame = true;
+			seat.isFlipped = true;
+		});
+
 		sendInProgressGameUpdate(game);
 		saveGame.save();
 

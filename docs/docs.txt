@@ -1,9 +1,10 @@
 Model info
 
 internals
+	soloMinion bool
 	seatedPlayers array 0-6
 		seatNumber number 0-6
-		trueRole bool
+		trueRole string
 		selectedForElimination string
 		tableState
 			isNight - beginNightPhases
@@ -25,7 +26,7 @@ gameState:
 	isStarted bool - startGameCountdown
 	cardsDealt bool  - startGame
 	isCompleted bool - ?
-	eliminator array
+	eliminations array
 		seatNumber string (0-6 of what seat this seat is pointing at)
 		transparent bool
 	reportedGame 0-6

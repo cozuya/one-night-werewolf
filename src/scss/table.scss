@@ -182,6 +182,10 @@
 			}
 		}
 
+		.card.notransition {
+			transition: none;
+		}
+
 		.card.flipped {
 			transform: rotateY(180deg);
 		}

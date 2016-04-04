@@ -69,7 +69,7 @@ let { games, userList, generalChats } = require('./models'),
 
 		return _chats;
 	},
-	sendInProgressGameUpdate = (game) => {
+	sendInProgressGameUpdate = (game) => { // todo-alpha make this accept a socket argument and emit only to it if it exists
 		let seatedPlayerNames = Object.keys(game.seated).map((seat) => {
 				return game.seated[seat].userName;
 			}),
@@ -89,7 +89,10 @@ let { games, userList, generalChats } = require('./models'),
 			let cloneGame = Object.assign({}, game),
 				userName = sock.handshake.session.passport.user;
 
-			cloneGame.tableState = cloneGame.internals.seatedPlayers[index].tableState;
+			if (!game.gameState.isCompleted) {
+				cloneGame.tableState = cloneGame.internals.seatedPlayers[index].tableState;
+			}
+			
 			cloneGame.chats = combineInProgressChats(cloneGame, userName);
 			sock.emit('gameUpdate', secureGame(cloneGame));
 		});

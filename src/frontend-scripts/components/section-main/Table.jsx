@@ -21,7 +21,7 @@ export default class Table extends React.Component {
 	componentDidUpdate(prevProps) {
 		let { gameInfo, userInfo } = this.props;
 
-		if (gameInfo.isStarted && !prevProps.gameInfo.isStarted) {
+		if (gameInfo.gameState.isStarted && !prevProps.gameInfo.gameState.isStarted) {
 			let $cards = $('div.card'),
 				centerTop = 190,
 				centerLeft = 260,
@@ -38,8 +38,6 @@ export default class Table extends React.Component {
 				clearInterval(shuffleInterval);
 			}, 5000);
 		}
-
-		console.log(gameInfo);
 	}
 
 	shouldComponentUpdate(nextProps) {
@@ -61,7 +59,7 @@ export default class Table extends React.Component {
 	}
 
 	leaveGame() {
-		if (this.props.gameInfo.completedGame) {
+		if (this.props.gameInfo.gameState.isCompleted) {
 			this.props.updateSeatedUsers(null, true);			
 		} else {
 			this.props.updateSeatedUsers(null);
@@ -74,7 +72,7 @@ export default class Table extends React.Component {
 			$seat = $(e.currentTarget);
 
 		if (userInfo.userName) {
-			if ($seat.hasClass('empty') && !userInfo.seatNumber && !this.props.gameInfo.completedGame) {
+			if ($seat.hasClass('empty') && !userInfo.seatNumber && !gameInfo.gameState.isCompleted) {
 				this.props.updateSeatedUsers($seat.attr('data-seatnumber'));
 			} else {
 				this.props.selectedPlayer({
@@ -103,6 +101,10 @@ export default class Table extends React.Component {
 								classes += ` seat${num}`;
 							}
 
+							if (gameState.isCompleted) {
+								classes += ` notransition`;
+							}
+
 							return classes;
 						})()
 					}>
@@ -125,7 +127,6 @@ export default class Table extends React.Component {
 							(() => {
 								let classes = `card-front seat-${num}`,
 									seat = tableState.seats[num];
-
 
 								if (seat.role) {
 									classes += ` ${seat.role}`;
@@ -317,7 +318,7 @@ export default class Table extends React.Component {
 					})}
 					{this.createCards()}
 				<i onClick={this.leaveGame.bind(this)} className={(() => {
-					if ((!!userInfo.seatNumber && Object.keys(gameInfo.seated).length === 7 && !gameInfo.completedGame) || (gameInfo.inProgress && !gameInfo.completedGame)) {
+					if ((!!userInfo.seatNumber && Object.keys(gameInfo.seated).length === 7 && !gameInfo.gameState.isCompleted) || (gameInfo.inProgress && !gameInfo.completedGame)) {
 						return 'app-hidden';
 					} else {
 						return 'remove icon';
