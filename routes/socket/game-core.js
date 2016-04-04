@@ -687,6 +687,7 @@ module.exports.updateSelectedElimination = (data) => {
 		{ selectedForElimination } = data;
 
 	player.selectedForElimination = selectedForElimination;
+	highlightSeats(player, 'clear');
 	highlightSeats(player, [parseInt(selectedForElimination)], 'selection');
 	sendInProgressGameUpdate(game);
 }
@@ -722,27 +723,33 @@ let dayPhase = (game) => {
 							chat: 'The game is coming to an end and you must select a player for elimination.',
 							timestamp: new Date()
 						});
+						player.tableState.isVotable = {
+							enabled: true
+						};
 					});
-					game.tableState.isVotable = {
-						enabled: true
-					};
 				}
 
 				if (seconds === devStatus.endingGame - 1) {
 					game.internals.seatedPlayers.forEach((player) => {
-						highlightSeats(player, 'clear');
+						if (!player.tableState.isVotable.selectedForElimination) {
+							highlightSeats(player, 'clear');
+						}
 					});
 				}
 
 				if (seconds === devStatus.endingGame - 2) {
 					game.internals.seatedPlayers.forEach((player) => {
-						highlightSeats(player, 'otherplayers', 'notify');
+						if (!player.tableState.isVotable.selectedForElimination) {
+							highlightSeats(player, 'otherplayers', 'notify');
+						}
 					});
 				}
 
 				if (seconds === devStatus.endingGame - 3) {
 					game.internals.seatedPlayers.forEach((player) => {
-						highlightSeats(player, 'clear');
+						if (!player.tableState.isVotable.selectedForElimination) {
+							highlightSeats(player, 'clear');
+						}
 					});
 				}
 
@@ -767,6 +774,7 @@ let dayPhase = (game) => {
 
 let eliminationPhase = (game) => {
 	let index = 0,
+		{ seatedPlayers } = game.internals,
 		countDown;
 
 	game.chats.push({
@@ -777,9 +785,11 @@ let eliminationPhase = (game) => {
 
 	game.status = 'The game ends.';
 
-	game.internals.seatedPlayers.forEach((player) => {
+	seatedPlayers.forEach((player) => {
 		highlightSeats(player, 'clear');
 	});
+	
+	game.gameState.eliminations = [];
 
 	countDown = setInterval(() => {
 		if (index === 7) {
@@ -788,8 +798,8 @@ let eliminationPhase = (game) => {
 		} else {
 			let noSelection = index === 6 ? 0 : index + 1;
 
-			game.tableState.eliminations[index] = {
-				seatNumber: game.internals.seatedPlayers[index].selectedForElimination ? parseInt(game.internals.seatedPlayers[index].selectedForElimination) : noSelection
+			game.gameState.eliminations[index] = {
+				seatNumber: seatedPlayers[index].selectedForElimination ? parseInt(seatedPlayers[index].selectedForElimination) : noSelection
 			};
 
 			sendInProgressGameUpdate(game);
@@ -799,13 +809,13 @@ let eliminationPhase = (game) => {
 };
 
 let endGame = (game) => {
-	let playersSelectedForElimination = game.tableState.eliminations.map((elimination) => {
+	let playersSelectedForElimination = game.gameState.eliminations.map((elimination) => {
 			return elimination.seatNumber;
 		}),
 		modeMap = {},
 		maxCount = 1,
 		eliminatedPlayersIndex = [],
-		seatedPlayers = game.internals.seatedPlayers,
+		{ seatedPlayers } = game.internals,
 		werewolfTeamInGame = false,
 		werewolfEliminated = false,
 		tannerEliminations = [];
@@ -836,7 +846,7 @@ let endGame = (game) => {
 		}
 	});
 
-	game.tableState.eliminations.forEach((elimination) => {
+	game.gameState.eliminations.forEach((elimination) => {
 		let transparent = false;
 
 		if (eliminatedPlayersIndex.length === 7 || eliminatedPlayersIndex.indexOf(elimination.seatNumber) === -1) {
@@ -943,13 +953,13 @@ let endGame = (game) => {
 			return !chat.gameChat;
 		});
 
-		game.tableState.cardRoles = seatedPlayers.map((player) => {
-			return player.trueRole;
-		});
+		// game.tableState.cardRoles = seatedPlayers.map((player) => {
+		// 	return player.trueRole;
+		// });
 
-		game.internals.centerRoles.forEach((role) => {
-			game.tableState.cardRoles.push(role);
-		});
+		// game.internals.centerRoles.forEach((role) => {
+		// 	game.tableState.cardRoles.push(role);
+		// });
 
 		game.tableState.winningPlayersIndex = winningPlayersIndex;
 		game.completedGame = true;

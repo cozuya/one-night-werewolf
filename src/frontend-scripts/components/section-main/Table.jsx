@@ -58,14 +58,6 @@ export default class Table extends React.Component {
 				}
 			});
 		}
-
-		if (this.props.gameInfo.tableState.cardRoles) {
-			this.props.gameInfo.tableState.cardRoles.forEach((role, index) => {
-				if (role) {
-					this.revealCard(index);
-				}
-			});
-		}
 	}
 
 	leaveGame() {
@@ -305,13 +297,14 @@ export default class Table extends React.Component {
 									</div>
 									<div className={
 										(() => {
-											let classes = 'eliminator';
+											let classes = 'eliminator',
+												{ eliminations } = gameInfo.gameState;
 
-											if (el < 7 && gameInfo.tableState.eliminations && Object.keys(gameInfo.tableState.eliminations[el]).length) {
-												classes += ` target-seat${gameInfo.tableState.eliminations[el].seatNumber}`;
+											if (el < 7 && eliminations && eliminations[el]) {
+												classes += ` target-seat${gameInfo.gameState.eliminations[el].seatNumber}`;
 											}
 
-											if (gameInfo.tableState.eliminations && gameInfo.tableState.eliminations[el] && gameInfo.tableState.eliminations[el].transparent) {
+											if (eliminations && eliminations[el] && eliminations[el].transparent) {
 												classes += ' transparent';
 											}
 
