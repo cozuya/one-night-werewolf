@@ -116,7 +116,6 @@ export default class Creategame extends React.Component {
 	}
 
 	createNewGame() {
-		// doing this with jquery isn't really the 'react way' but it cuts down on loc and complexity as I would need 3 more functions just to retrieve state for the server in a component that is already pretty complex.
 		this.props.onCreateGameSubmit({
 			kobk: $('section.creategame div.killorbekilled input').is(':checked'),
 			time: $('section.creategame div.timeofgame > div.dropdown span').text(),
@@ -133,9 +132,7 @@ export default class Creategame extends React.Component {
 			tableState: {
 				seats: [{}, {}, {}, {}, {}, {}, {}, {}, {}, {}]
 			},
-			nightAction: {},
 			gameState: {},
-			inProgress: false,
 			uid: Math.random().toString(36).substring(6)
 		});	
 	}
@@ -193,7 +190,7 @@ export default class Creategame extends React.Component {
 					<div className="four wide column killorbekilled">
 						<h4 className="ui header">Kill or be killed mode</h4>
 						<div className="ui fitted toggle checkbox">
-							<input type="checkbox" name="kobk" className="info-popup" defaultChecked></input>
+							<input type="checkbox" name="kobk" className="info-popup"></input>
 							<label></label>
 						</div>
 						<div className="ui small popup top left transition hidden">

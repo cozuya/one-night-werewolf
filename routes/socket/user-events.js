@@ -159,7 +159,12 @@ module.exports.handleUpdatedReportGame = (socket, data) => {
 module.exports.handleAddNewGame = (socket, data) => {
 	data.internals = {
 		unSeatedGameChats: [],
-		seatedPlayers: [{}, {}, {}, {}, {}, {}, {}],
+		seatedPlayers: [
+			{
+			tableState: {
+				seats: [{}, {}, {}, {}, {}, {}, {}, {}, {}, {}]
+			}
+		}, {tableState: {seats: [{}, {}, {}, {}, {}, {}, {}, {}, {}, {}]}}, {tableState: {seats: [{}, {}, {}, {}, {}, {}, {}, {}, {}, {}]}}, {tableState: {seats: [{}, {}, {}, {}, {}, {}, {}, {}, {}, {}]}}, {tableState: {seats: [{}, {}, {}, {}, {}, {}, {}, {}, {}, {}]}}, {tableState: {seats: [{}, {}, {}, {}, {}, {}, {}, {}, {}, {}]}}, {tableState: {seats: [{}, {}, {}, {}, {}, {}, {}, {}, {}, {}]}}],
 		truncateGameCount: 0
 	};
 
@@ -182,11 +187,17 @@ module.exports.handleAddNewGameChat = (data, uid) => {
 		});
 
 		game.internals.seatedPlayers.forEach((seatedPlayer) => {
-			seatedPlayer.tableState.seats[player.seatNumber].claim = data.claim;
+			let claimSeat = seatedPlayer.tableState.seats[player.seatNumber];
+
+			if (claimSeat.swappedWithSeat === 0 || claimSeat.swappedWithSeat) {
+				seatedPlayer.tableState.seats[claimSeat.swappedWithSeat].claim = data.claim;
+			} else {
+				seatedPlayer.tableState.seats[player.seatNumber].claim = data.claim;
+			}
 		});
 	}
 
-	if (game.inProgress) {
+	if (game.isStarted) {
 		sendInProgressGameUpdate(game);
 	} else {
 		io.in(uid).emit('gameUpdate', secureGame(game));
@@ -250,7 +261,7 @@ module.exports.checkUserStatus = (socket) => {
 			delete sockets[oldSocketID];
 		}
 
-		if (game && game.inProgress) {
+		if (game && game.gameState.isStarted) {
 			let internalPlayer = getInternalPlayerInGameByUserName(game, user),
 				userSeatName = Object.keys(game.seated).find((seatName) => {
 					return game.seated[seatName].userName === passport.user;
@@ -260,7 +271,7 @@ module.exports.checkUserStatus = (socket) => {
 			game.seated[userSeatName].connected = true;
 			socket.join(game.uid);
 			sendInProgressGameUpdate(game);
-			socket.emit('updateSeatForUser', internalPlayer.seat);
+			socket.emit('updateSeatForUser', internalPlayer.seatNumber.toString());
 		}
 	} else {
 		io.sockets.emit('userList', {

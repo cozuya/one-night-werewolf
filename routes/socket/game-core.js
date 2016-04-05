@@ -6,7 +6,6 @@ let Game = require('../../models/game'),
 	{ secureGame, devStatus } = require('./util'),
 	{ sendInProgressGameUpdate } = require('./user-events'),
 	{ sendGameList } = require('./user-requests'),
-	_ = require('lodash'),
 	startGameCountdown = (game) => {
 		let { startGamePause } = devStatus,
 			countDown;
@@ -131,8 +130,7 @@ let startGame = (game) => {
 	let allWerewolvesNotInCenter = false,
 		assignRoles = () => {
 			let _roles = [...game.roles];
-
-			game.internals.seatedPlayers.map((player, index) => {
+			game.internals.seatedPlayers.forEach((player, index) => {
 				let roleIndex = Math.floor((Math.random() * _roles.length)),
 					role = _roles[roleIndex];
 
@@ -143,19 +141,14 @@ let startGame = (game) => {
 				player.trueRole = role;
 				player.originalRole = role;
 				player.seatNumber = index;
-				player.tableState = {
-					seats: [{}, {}, {}, {}, {}, {}, {}, {}, {}, {}],
-				};
 				_roles.splice(roleIndex, 1);
 			});
 
 			game.internals.centerRoles = [..._roles];
 		};
 
-	Object.keys(game.seated).map((seat, i) => {
-		return game.internals.seatedPlayers[i] = {
-			userName: game.seated[seat].userName
-		};
+	Object.keys(game.seated).forEach((seat, index) => {
+		game.internals.seatedPlayers[index].userName = game.seated[seat].userName;
 	});
 
 	assignRoles();
@@ -182,7 +175,6 @@ let startGame = (game) => {
 	setTimeout(() => {
 		let nightPhasePause = devStatus.nightPhasePause,
 			countDown;
-
 		game.internals.seatedPlayers.forEach((player, index) => {
 			player.gameChats = [{
 				gameChat: true,
@@ -588,8 +580,8 @@ module.exports.updateUserNightActionEvent = (socket, data) => {
 				});
 
 				player.tableState.nightAction.completed = true;
-				seat1.swappedWithSeat = action2.toString();
-				seat2.swappedWithSeat = action1.toString();
+				seat1.swappedWithSeat = action2;
+				seat2.swappedWithSeat = action1;
 				chat.chat = `You swap the two cards between ${seat1player.userName} and ${seat2player.userName}.`;
 			},
 			robber() {
@@ -615,8 +607,8 @@ module.exports.updateUserNightActionEvent = (socket, data) => {
 				});
 
 				player.tableState.nightAction.completed = true;
-				player.tableState.seats[player.seatNumber].swappedWithSeat = action.toString();
-				playerSeat.swappedWithSeat = player.seatNumber.toString();
+				player.tableState.seats[player.seatNumber].swappedWithSeat = action;
+				playerSeat.swappedWithSeat = player.seatNumber;
 				setTimeout(() => {
 					playerSeat.isFlipped = true;
 					playerSeat.role = swappedPlayer.trueRole; // todo-alpha in phase 2 a robber robbed a player who was the robber in phase 1 and while the gamechat was correct the UI flipped the wrong card.
@@ -764,7 +756,7 @@ let dayPhase = (game) => {
 				let minutes = Math.floor(seconds / 60),
 					remainder = seconds - minutes * 60;
 
-				status = `Day ends in ${minutes}: ${remainder < 10 ? `0${remainder}` : remainder}.`;  // yo dawg, I heard you like template strings.
+				status = `Day ends in ${minutes}:${remainder < 10 ? `0${remainder}` : remainder}.`;  // yo dawg, I heard you like template strings.
 			}
 
 			game.status = status;
@@ -772,6 +764,8 @@ let dayPhase = (game) => {
 			seconds--;
 		}
 	}, 1000);
+
+	game.gameState.isDay = true;
 };
 
 let eliminationPhase = (game) => {
@@ -857,7 +851,7 @@ let endGame = (game) => {
 
 		elimination.transparent = transparent;
 	});
-
+	game.gameState.isCompleted = true;
 	sendInProgressGameUpdate(game);
 
 	eliminatedPlayersIndex.forEach((eliminatedPlayerIndex) => {
@@ -886,8 +880,6 @@ let endGame = (game) => {
 			player.wonGame = true;
 		}
 	});
-
-	game.gameState.isCompleted = true;
 
 	if (eliminatedPlayersIndex.length !== 7) {
 		setTimeout(() => {

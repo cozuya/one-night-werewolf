@@ -64,7 +64,7 @@
 			position: relative;
 		}
 
-		.seat, .claim {
+		.seat {
 			width: 59px;
 			height: 80px;
 			background: #e5e5e5;
@@ -119,7 +119,7 @@
 				transform: rotateY(180deg);
 			}
 
-			.card-front, .card-back {
+			.card-front, .card-back, .claim {
 				border-radius: 4px;
 				backface-visibility: hidden;
 				border: 1px solid #eee;
@@ -192,40 +192,40 @@
 
 		.claim {
 			background-size: cover;
-			opacity: .8;
+			opacity: .6;
 		}
 
-		.seat0, .claim0 {
+		.seat0 {
 			top: 20px !important;
 			left: 260px !important;
 		}
 
-		.seat1, .claim1 {
+		.seat1 {
 			top: 70px !important;
 			left: 430px !important;
 		}
 
-		.seat2, .claim2 {
+		.seat2 {
 			top: 210px !important;
 			left: 500px !important;
 		}
 
-		.seat3, .claim3 {
+		.seat3 {
 			top: 320px !important;
 			left: 360px !important;
 		}
 
-		.seat4, .claim4 {
+		.seat4 {
 			top: 320px !important;
 			left: 160px !important;
 		}
 
-		.seat5, .claim5 {
+		.seat5 {
 			top: 210px !important;
 			left: 20px !important;
 		}
 
-		.seat6, .claim6 {
+		.seat6 {
 			top: 70px !important;
 			left: 90px !important;
 		}
@@ -270,6 +270,18 @@
 	.ui.fitted.toggle.checkbox.truncate-game {
 		position: absolute;
 		top: 413px;
+		left: 0px;
+		width: 170px;
+
+		label {
+			padding-left: 52px !important;
+		}
+	}
+	
+	
+	.ui.fitted.toggle.checkbox.showclaims {
+		position: absolute;
+		top: 388px;
 		left: 0px;
 		width: 170px;
 

@@ -15,6 +15,7 @@ export default class Table extends React.Component {
 	constructor() {
 		this.state = {
 			firstClickedCard: '',
+			showClaims: true
 		};
 	}
 
@@ -38,6 +39,8 @@ export default class Table extends React.Component {
 				clearInterval(shuffleInterval);
 			}, 5000);
 		}
+
+		// console.log(this.props.gameInfo);
 	}
 
 	shouldComponentUpdate(nextProps) {
@@ -66,7 +69,7 @@ export default class Table extends React.Component {
 		}
 	}
 
-	clickedSeat(e) {
+	handleSeatClicked(e) {
 		let { seated } = this.props.gameInfo,
 			{ userInfo, gameInfo } = this.props,
 			$seat = $(e.currentTarget);
@@ -91,11 +94,11 @@ export default class Table extends React.Component {
 
 		return _.range(0, 10).map((num) => { 
 			return (
-				<div key={num} data-cardnumber={num} onClick={this.handleCardClick.bind(this)} className={
+				<div key={num} data-cardnumber={num} onClick={this.handleCardClicked.bind(this)} className={
 						(() => {
 							let classes = `card card${num}`;
 
-							if (tableState.seats[num].swappedWithSeat) {
+							if (tableState.seats[num].swappedWithSeat || tableState.seats[num].swappedWithSeat === 0) {
 								classes += ` seat${tableState.seats[num].swappedWithSeat}`;
 							} else if (gameState.cardsDealt) {
 								classes += ` seat${num}`;
@@ -122,7 +125,19 @@ export default class Table extends React.Component {
 
 							return classes;
 						})()
-					}><div className="card-back"></div>
+					}><div className={
+						(() => {
+							let classes;
+
+							if (!gameInfo.isCompleted && gameState.isStarted && tableState.seats[num].claim && this.state.showClaims) {
+								classes = `claim claim-${tableState.seats[num].claim}`;
+							} else {
+								classes = 'card-back';
+							}
+
+							return classes;
+						})()
+					}></div>
 						<div className={
 							(() => {
 								let classes = `card-front seat-${num}`,
@@ -154,7 +169,7 @@ export default class Table extends React.Component {
 							return `seat-container seat-container${el}`;								
 						})()
 					}>
-						<div className={seated ? `seat seat${el}` : `seat seat${el} empty`} data-seatnumber={el} onClick={this.clickedSeat.bind(this)}>
+						<div className={seated ? `seat seat${el}` : `seat seat${el} empty`} data-seatnumber={el} onClick={this.handleSeatClicked.bind(this)}>
 							<span className={
 								(() => {
 									let classes = 'username';
@@ -192,31 +207,7 @@ export default class Table extends React.Component {
 			});
 	}
 
-	createClaims() {
-		let { tableState, gameState } = this.props.gameInfo;
-
-		if (!gameState.isCompleted && gameState.isStarted) {
-			return _.range(0, 7).map((el) => {
-				return (
-					<div key={el} className="claim-container">
-						<div className={
-							(() => {
-								let classes = `claim claim${el}`;
-
-								if (tableState.seats[el].claim) {
-									classes += ` claim-${tableState.seats[el].claim}`;
-								}
-
-								return classes;
-							})()
-						}></div>
-					</div>
-				)
-			});
-		}
-	}
-
-	handleCardClick(e) {
+	handleCardClicked(e) {
 		let $card = $(e.currentTarget),
 			cardNumber = $card.attr('data-cardnumber'),
 			{ gameInfo, userInfo } = this.props,
@@ -286,7 +277,7 @@ export default class Table extends React.Component {
 		if (gameInfo.tableState.isVotable && gameInfo.tableState.isVotable.enabled && userInfo.seatNumber) {
 			let swappedWithSeat = tableState.seats[parseInt(cardNumber)].swappedWithSeat;
 
-			if (swappedWithSeat && userInfo.seatNumber !== swappedWithSeat || !swappedWithSeat && userInfo.seatNumber !== cardNumber) {
+			if ((swappedWithSeat === 0 || swappedWithSeat) && userInfo.seatNumber !== swappedWithSeat || !swappedWithSeat && userInfo.seatNumber !== cardNumber) {
 				$card.parent().find('.card').removeClass('card-select');
 				$card.addClass('card-select');
 				this.props.onUpdateSelectedForEliminationSubmit({
@@ -308,10 +299,10 @@ export default class Table extends React.Component {
 		}
 	}
 	
-	truncateClicked(e) {
+	handleTruncateClicked(e) {
 		let { gameInfo, userInfo } = this.props;
 
-		if (userInfo.seatNumber && !gameInfo.isNight && gameInfo.inProgress) {
+		if (userInfo.seatNumber && !gameInfo.isNight && gameInfo.isStarted) {
 			let clicked = !!$(e.currentTarget).is(':checked');
 
 			this.props.onUpdateTruncateGameSubmit({
@@ -322,12 +313,64 @@ export default class Table extends React.Component {
 		}
 	}
 
-	clickedReportGame() {
+	handleClickedReportGame() {
 		this.props.onUpdateReportGame({
 			seatNumber: this.props.userInfo.seatNumber,
 			userName: this.props.userInfo.userName,
 			uid: this.props.gameInfo.uid
 		});
+	}
+
+	createReportGame() {
+		let { gameInfo, userInfo } = this.props,
+			{ gameState} = gameInfo;
+
+		if (userInfo.seatNumber && gameState.isStarted) {
+			let iconClasses = () => {
+				let classes = 'warning sign icon';
+
+				// if (gameState.reportedGame[userInfo.seatNumber]) {
+				// 	classes += ' report-game-clicked';
+				// }
+
+				return classes;
+			}
+
+			return (
+				<div className="table-uid">
+					Game ID: {gameInfo.uid}
+					<i onClick={this.handleClickedReportGame.bind(this)} className={iconClasses()}></i>
+					<div className="ui popup transition hidden">
+							Player abuse? Mark this game for reporting to the administrators for review.  Found a bug?  Send us an email.
+					</div>
+				</div>
+			);
+		}
+	}
+
+	createUserGameOptions() {
+		let { gameInfo, userInfo } = this.props,
+			{ gameState} = gameInfo,
+			toggleClaims = () => {
+				this.setState({
+					showClaims: $('input', this.refs.showclaims).is(':checked')
+				});
+			}
+
+		if (userInfo.seatNumber && gameState.isStarted && gameState.isDay) {
+			return (
+				<div className="game-options-container">
+					<div className="ui fitted toggle checkbox truncate-game">
+						<input type="checkbox" name="truncate-game" onClick={this.handleTruncateClicked.bind(this)}></input>
+						<label>End the game early</label>
+					</div>
+					<div className="ui fitted toggle checkbox checked showclaims" ref="showclaims">
+						<input type="checkbox" name="show-claims" defaultChecked onClick={toggleClaims}></input>
+						<label>Show claims</label>
+					</div>
+				</div>
+			);
+		}
 	}
 
 	render() {
@@ -338,62 +381,15 @@ export default class Table extends React.Component {
 				<div className={this.nightBlockerStatus('top')}></div>
 				<div className={this.nightBlockerStatus('bottom')}></div>
 				<div className="tableimage"></div>
-					{this.createSeats()}
-					{this.createCards()}
-					{this.createClaims()}
-				<i onClick={this.leaveGame.bind(this)} className={(() => {
-					if ((!!userInfo.seatNumber && Object.keys(gameInfo.seated).length === 7 && !gameInfo.gameState.isCompleted) || (gameInfo.inProgress && !gameInfo.completedGame)) {
-						return 'app-hidden';
-					} else {
-						return 'remove icon';
+				{this.createSeats()}
+				{this.createCards()}
+				{(() => {
+					if (!userInfo.seatNumber || !gameInfo.gameState.isStarted || gameInfo.gameState.isCompleted) {
+						return <i onClick={this.leaveGame.bind(this)} className='remove icon'></i>
 					}
-				})()}></i>
-				<div className={
-					(() => {
-						let classes = 'table-uid';
-
-						if (!this.props.gameInfo.inProgress) {
-							classes += ' app-hidden';
-						}
-
-						return classes;
-					})()
-				}>
-					Game ID: {gameInfo.uid}
-					<i onClick={this.clickedReportGame.bind(this)} className={
-						(() => {
-							let classes = 'warning sign icon'; // todo-alpha should only show for seated players
-
-							if (!Object.keys(this.props.userInfo).length) {
-								classes += ' app-hidden';
-							}
-
-							if (this.props.userInfo.seatNumber && this.props.gameInfo.tableState.reportedGame && this.props.gameInfo.tableState.reportedGame[this.props.userInfo.seatNumber]) {
-								classes += ' report-game-clicked';
-							}
-
-							return classes;
-						})()
-					}></i>
-					<div className="ui popup transition hidden">
-							Player abuse? Mark this game for reporting to the administrators for review.  Found a bug?  Send us an email.
-					</div>
-				</div>
-				<div className={
-					(() => {
-						let classes = 'ui fitted toggle checkbox truncate-game',
-							{ gameInfo } = this.props;
-
-						if (!gameInfo.inProgress || gameInfo.tableState.isNight || (gameInfo.tableState.cardRoles && gameInfo.tableState.cardRoles.length) || /VOTE/.test(gameInfo.status) || /Game.starts/.test(gameInfo.status)) {  // pretty much total crap right here
-							classes += ' app-hidden';
-						}
-
-						return classes;
-					})()
-				}>
-					<input type="checkbox" name="truncate-game" onClick={this.truncateClicked.bind(this)}></input>
-					<label>End the game early</label>
-				</div>
+				})()}
+				{this.createReportGame()}
+				{this.createUserGameOptions()}
 				<div className="ui basic small modal">
 					<i className="close icon"></i>
 					<div className="ui header">You will need to sign in or sign up for an account to play.</div>

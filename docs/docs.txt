@@ -26,7 +26,7 @@ gameState:
 	isStarted bool - startGameCountdown
 	cardsDealt bool  - startGame
 	isCompleted bool - ?
-	isDayPhase bool - ?
+	isDay bool - ?
 	eliminations array
 		seatNumber string (0-6 of what seat this seat is pointing at)
 		transparent bool
