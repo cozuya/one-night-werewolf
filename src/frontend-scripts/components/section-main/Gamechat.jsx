@@ -2,6 +2,7 @@
 
 import React from 'react';
 import $ from 'jquery';
+import _ from 'lodash';
 import { roleList, roleMap } from '../../../../iso/util';
 
 export default class Gamechat extends React.Component {
@@ -23,13 +24,13 @@ export default class Gamechat extends React.Component {
 		if (prevProps && prevProps.selectedGamerole.random !== this.props.selectedGamerole.random && this.props.selectedGamerole.role) {
 			let $input = $('form.inputbar input');
 
-			$input.val($input.val() + this.props.selectedGamerole.role).next().removeClass('disabled');
+			$input.val(`${$input.val()}${this.props.selectedGamerole.role}`).next().removeClass('disabled');
 		}
 
 		if (prevProps && prevProps.selectedPlayer.random !== this.props.selectedPlayer.random && this.props.selectedPlayer.playerName.length) {
 			let $input = $('form.inputbar input');
 
-			$input.val($input.val() + this.props.selectedPlayer.playerName).next().removeClass('disabled');
+			$input.val(`${$input.val()}${this.props.selectedPlayer.playerName} is a `).next().removeClass('disabled');
 		}
 	}	
 
@@ -111,7 +112,8 @@ export default class Gamechat extends React.Component {
 		let input = $(e.currentTarget).find('input')[0],
 			$button = $(e.currentTarget).find('button'),
 			$clearIcon = $button.parent().next(),
-			{ seatNumber } = this.props.userInfo;
+			{ seatNumber } = this.props.userInfo,
+			{ gameInfo, userInfo } = this.props;
 
 		e.preventDefault();
 
@@ -120,9 +122,26 @@ export default class Gamechat extends React.Component {
 				userName: this.props.userInfo.userName,
 				chat: input.value,
 				gameChat: false,
-				seat: seatNumber ? parseInt(seatNumber.split('seatNumber')[1]) : '',
-				inProgress: this.props.gameInfo.inProgress
-			};
+				uid: gameInfo.uid,
+				inProgress: gameInfo.inProgress
+			}
+
+			if (gameInfo.gameState.isStarted && !gameInfo.gameState.isCompleted) {
+				let roles = _.uniq(gameInfo.roles),
+					roleRegexes = roles.map((role) => {
+						return new RegExp(`^i claim to be the ${role}`, 'gi');
+					});
+				
+				roleRegexes.forEach((regex) => {
+					if (regex.test(input.value)) {
+						let claim = roles.filter((role) => {
+							return input.value.match(new RegExp(`${role}$`, 'gi'));
+						});
+
+						chat.claim = claim;
+					}
+				});
+			}
 
 			this.props.onNewGameChat(chat, this.props.gameInfo.uid);
 			input.value = '';

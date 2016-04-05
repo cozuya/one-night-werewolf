@@ -641,7 +641,7 @@ module.exports.updateUserNightActionEvent = (socket, data) => {
 					let playerClicked = game.internals.seatedPlayers[parseInt(data.action[0])],
 						seat = player.tableState.seats[parseInt(data.action[0])];
 
-					seat.isFlipped = true; // todo-alpha need to make sure that the seer looking at a card that was tmed or robbed shows the card as it previously was, not after the event.
+					seat.isFlipped = true;
 					seat.role = playerClicked.originalRole;
 					setTimeout(() => {
 						seat.isFlipped = false;
@@ -943,7 +943,7 @@ let endGame = (game) => {
 
 		game.chats.push({
 			gameChat: true,
-			chat: winningPlayers.length ? `The winning players are ${winningPlayersList}.` : `There are no winning players in this game.`,
+			chat: winningPlayers.length ? `The winning player${winningPlayersList.length === 1 ? '' : 's'} ${winningPlayersList.length === 1 ? 'is' : 'are'} ${winningPlayersList}.` : `There are no winning players in this game.`,
 			timestamp: new Date()
 		});
 

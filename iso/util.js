@@ -1,10 +1,10 @@
 'use strict';
 
-export const defaultRolesArray = ['werewolf', 'werewolf', 'seer', 'robber', 'troublemaker', 'insomniac', 'hunter', 'villager', 'villager', 'villager'];
+module.exports.defaultRolesArray = ['werewolf', 'werewolf', 'seer', 'robber', 'troublemaker', 'insomniac', 'hunter', 'villager', 'villager', 'villager'];
 
-export const roleList = ['werewolf', 'minion', 'mason', 'seer', 'robber', 'troublemaker', 'insomniac', 'hunter'];
+module.exports.roleList = ['werewolf', 'minion', 'mason', 'seer', 'robber', 'troublemaker', 'insomniac', 'hunter'];
 
-export const roleMap = {
+module.exports.roleMap = {
 	werewolf: {
 		initial: 'WW',
 		team: 'werewolf',

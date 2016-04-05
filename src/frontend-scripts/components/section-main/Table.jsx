@@ -141,6 +141,81 @@ export default class Table extends React.Component {
 		});
 	}
 
+	createSeats() {
+		let { gameInfo, userInfo } = this.props;
+
+		return _.range(0, 10).map((el) => {
+			let seated = this.props.gameInfo.seated[`seat${el}`],
+				user = seated ? gameInfo.seated[`seat${el}`].userName : '';
+
+			return (
+					<div key={el} className={
+						(() => {
+							return `seat-container seat-container${el}`;								
+						})()
+					}>
+						<div className={seated ? `seat seat${el}` : `seat seat${el} empty`} data-seatnumber={el} onClick={this.clickedSeat.bind(this)}>
+							<span className={
+								(() => {
+									let classes = 'username';
+
+									if (seated && !gameInfo.seated[`seat${el}`].connected) {
+										classes += ' socket-not-present';
+									}
+
+									if (userInfo.seatNumber === el.toString()) {
+										classes += ' currentuser';
+									}
+
+									return classes;												
+								})()
+							}>{user}</span>
+						</div>
+						<div className={
+							(() => {
+								let classes = 'eliminator',
+									{ eliminations } = gameInfo.gameState;
+
+								if (el < 7 && eliminations && eliminations[el]) {
+									classes += ` target-seat${gameInfo.gameState.eliminations[el].seatNumber}`;
+								}
+
+								if (eliminations && eliminations[el] && eliminations[el].transparent) {
+									classes += ' transparent';
+								}
+
+								return classes;
+							})()
+						}></div>
+					</div>
+				);
+			});
+	}
+
+	createClaims() {
+		let { tableState, gameState } = this.props.gameInfo;
+
+		if (!gameState.isCompleted && gameState.isStarted) {
+			return _.range(0, 7).map((el) => {
+				return (
+					<div key={el} className="claim-container">
+						<div className={
+							(() => {
+								let classes = `claim claim${el}`;
+
+								if (tableState.seats[el].claim) {
+									classes += ` claim-${tableState.seats[el].claim}`;
+								}
+
+								return classes;
+							})()
+						}></div>
+					</div>
+				)
+			});
+		}
+	}
+
 	handleCardClick(e) {
 		let $card = $(e.currentTarget),
 			cardNumber = $card.attr('data-cardnumber'),
@@ -263,60 +338,9 @@ export default class Table extends React.Component {
 				<div className={this.nightBlockerStatus('top')}></div>
 				<div className={this.nightBlockerStatus('bottom')}></div>
 				<div className="tableimage"></div>
-					{_.range(0, 10).map((el) => {
-						let seated = gameInfo.seated[`seat${el}`],
-							classes = () => {
-								return seated ? `seat seat${el}` : `seat seat${el} empty`;
-							},
-							seatNumber = () => {
-								return el;
-							},
-							user = seated ? gameInfo.seated[`seat${el}`].userName : '';
-
-						return (
-								<div key={el} className={
-									(() => {
-										return `seat-container seat-container${el}`;								
-									})()
-								}>
-									<div className={classes()} data-seatnumber={seatNumber()} onClick={this.clickedSeat.bind(this)}>
-										<span className={
-											(() => {
-												let classes = 'username';
-
-												if (seated && !gameInfo.seated[`seat${el}`].connected) {
-													classes += ' socket-not-present';
-												}
-
-												if (userInfo.seatNumber === el.toString()) {
-													classes += ' currentuser';
-												}
-
-												return classes;												
-											})()
-										}>{user}</span>
-									</div>
-									<div className={
-										(() => {
-											let classes = 'eliminator',
-												{ eliminations } = gameInfo.gameState;
-
-											if (el < 7 && eliminations && eliminations[el]) {
-												classes += ` target-seat${gameInfo.gameState.eliminations[el].seatNumber}`;
-											}
-
-											if (eliminations && eliminations[el] && eliminations[el].transparent) {
-												classes += ' transparent';
-											}
-
-											return classes;
-										})()
-									}></div>
-								</div>
-							);
-
-					})}
+					{this.createSeats()}
 					{this.createCards()}
+					{this.createClaims()}
 				<i onClick={this.leaveGame.bind(this)} className={(() => {
 					if ((!!userInfo.seatNumber && Object.keys(gameInfo.seated).length === 7 && !gameInfo.gameState.isCompleted) || (gameInfo.inProgress && !gameInfo.completedGame)) {
 						return 'app-hidden';

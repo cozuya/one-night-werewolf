@@ -2,7 +2,9 @@
 
 let { games, userList, generalChats } = require('./models'),
 	{ secureGame } = require('./util'),
+	{ roleMap } = require('../../iso/util'),
 	{ sendGameList, sendGeneralChats } = require('./user-requests'),
+	_ = require('lodash'),
 	Account = require('../../models/account'),
 	Generalchats = require('../../models/generalchats'),
 	generalChatCount = 0,
@@ -169,11 +171,20 @@ module.exports.handleAddNewGame = (socket, data) => {
 module.exports.handleAddNewGameChat = (data, uid) => {
 	let game = games.find((el) => {
 			return el.uid === uid;
-		}),
-		cloneGame = Object.assign({},game);
+		});
 
 	data.timestamp = new Date();
-	game.chats.push(data);
+	game.chats.push(data); // todo-alpha errors out in chat after game complete?  game deleted early?
+
+	if (data.claim) {
+		let player = game.internals.seatedPlayers.find((player) => {
+			return player.userName === data.userName;
+		});
+
+		game.internals.seatedPlayers.forEach((seatedPlayer) => {
+			seatedPlayer.tableState.seats[player.seatNumber].claim = data.claim;
+		});
+	}
 
 	if (game.inProgress) {
 		sendInProgressGameUpdate(game);

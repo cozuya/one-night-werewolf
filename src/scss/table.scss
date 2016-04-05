@@ -64,7 +64,7 @@
 			position: relative;
 		}
 
-		.seat {
+		.seat, .claim {
 			width: 59px;
 			height: 80px;
 			background: #e5e5e5;
@@ -93,7 +93,7 @@
 			}
 		}
 
-		.seat.seat7, .seat.seat8, .seat.seat9 {
+		.seat.seat7, .seat.seat8, .seat.seat9, .claim {
 			background: none;
 		}
 
@@ -140,46 +140,46 @@
 				transform: rotateY(0deg);
 				background-image: url('../images/vertical_cloth.png');
 			}
+		}
 
-			.card-front.werewolf {
-				background-image: url('../images/cards/card-werewolf.png');
-			}
+		.card-front.werewolf, .claim.claim-werewolf {
+			background-image: url('../images/cards/card-werewolf.png');
+		}
 
-			.card-front.minion {
-				background-image: url('../images/cards/card-minion.png');
-			}
+		.card-front.minion, .claim.claim-minion {
+			background-image: url('../images/cards/card-minion.png');
+		}
 
-			.card-front.mason {
-				background-image: url('../images/cards/card-mason.png');
-			}
+		.card-front.mason, .claim.claim-mason {
+			background-image: url('../images/cards/card-mason.png');
+		}
 
-			.card-front.seer {
-				background-image: url('../images/cards/card-seer.png');
-			}
+		.card-front.seer, .claim.claim-seer {
+			background-image: url('../images/cards/card-seer.png');
+		}
 
-			.card-front.robber {
-				background-image: url('../images/cards/card-robber.png');
-			}
+		.card-front.robber, .claim.claim-robber {
+			background-image: url('../images/cards/card-robber.png');
+		}
 
-			.card-front.troublemaker {
-				background-image: url('../images/cards/card-troublemaker.png');
-			}
+		.card-front.troublemaker, .claim.claim-troublemaker {
+			background-image: url('../images/cards/card-troublemaker.png');
+		}
 
-			.card-front.insomniac {
-				background-image: url('../images/cards/card-insomniac.png');
-			}
+		.card-front.insomniac, .claim.claim-insomniac {
+			background-image: url('../images/cards/card-insomniac.png');
+		}
 
-			.card-front.hunter {
-				background-image: url('../images/cards/card-hunter.png');
-			}
+		.card-front.hunter, .claim.claim-hunter {
+			background-image: url('../images/cards/card-hunter.png');
+		}
 
-			.card-front.tanner {
-				background-image: url('../images/cards/card-tanner.png');
-			}
+		.card-front.tanner, .claim.claim-tanner {
+			background-image: url('../images/cards/card-tanner.png');
+		}
 
-			.card-front.villager {
-				background-image: url('../images/cards/card-villager.png');
-			}
+		.card-front.villager, .claim.claim-villager {
+			background-image: url('../images/cards/card-villager.png');
 		}
 
 		.card.notransition {
@@ -190,38 +190,42 @@
 			transform: rotateY(180deg);
 		}
 
+		.claim {
+			background-size: cover;
+			opacity: .8;
+		}
 
-		.seat0 {
+		.seat0, .claim0 {
 			top: 20px !important;
 			left: 260px !important;
 		}
 
-		.seat1 {
+		.seat1, .claim1 {
 			top: 70px !important;
 			left: 430px !important;
 		}
 
-		.seat2 {
+		.seat2, .claim2 {
 			top: 210px !important;
 			left: 500px !important;
 		}
 
-		.seat3 {
+		.seat3, .claim3 {
 			top: 320px !important;
 			left: 360px !important;
 		}
 
-		.seat4 {
+		.seat4, .claim4 {
 			top: 320px !important;
 			left: 160px !important;
 		}
 
-		.seat5 {
+		.seat5, .claim5 {
 			top: 210px !important;
 			left: 20px !important;
 		}
 
-		.seat6 {
+		.seat6, .claim6 {
 			top: 70px !important;
 			left: 90px !important;
 		}
