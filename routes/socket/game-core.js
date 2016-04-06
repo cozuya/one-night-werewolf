@@ -91,7 +91,7 @@ module.exports.updateSeatedUsers = (socket, data) => {
 			io.sockets.in(data.uid).emit('gameUpdate', secureGame(game));
 			sendGameList();
 		}
-	} else if (game) {
+	} else if (game) { // todo-alpha need to catch non players trying to leave game..
 		let completedDisconnectionCount = 0;
 
 		if (game.gameState.isCompleted) {
@@ -213,7 +213,7 @@ let startGame = (game) => {
 			nightPhasePause--;
 		}, 1000);
 	}, 50);
-}
+};
 
 let beginNightPhases = (game) => {
 	// round 1: all werewolves minions masons seers and (one robber or troublemaker)
@@ -684,7 +684,7 @@ module.exports.updateSelectedElimination = (data) => {
 	highlightSeats(player, 'clear');
 	highlightSeats(player, [parseInt(selectedForElimination)], 'selection');
 	sendInProgressGameUpdate(game);
-}
+};
 
 let dayPhase = (game) => {
 	let seconds = (() => {
@@ -918,13 +918,15 @@ let endGame = (game) => {
 				winningPlayers: winningPlayers.map((player) => {
 					return {
 						userName: player.userName,
-						role: player.trueRole
+						originalRole: player.originalRole,
+						trueRole: player.trueRole
 					};
 				}),
 				losingPlayers: losingPlayers.map((player) => {
 					return {
 						userName: player.userName,
-						role: player.trueRole
+						originalRole: player.originalRole,
+						trueRole: player.trueRole
 					};
 				}),
 				reports: seatedPlayers.filter((player) => {

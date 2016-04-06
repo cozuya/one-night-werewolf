@@ -197,7 +197,7 @@ module.exports.handleAddNewGameChat = (data, uid) => {
 		});
 	}
 
-	if (game.isStarted) {
+	if (game.gameState.isStarted) {
 		sendInProgressGameUpdate(game);
 	} else {
 		io.in(uid).emit('gameUpdate', secureGame(game));

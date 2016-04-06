@@ -3,13 +3,9 @@
 import React from 'react';
 import $ from 'jquery';
 import Popup from 'semantic-ui-popup';
-import Dropdown from 'semantic-ui-dropdown';
-import Modal from 'semantic-ui-modal';
-import socket from 'socket.io-client';
 import _ from 'lodash';
 
 $.fn.popup = Popup;
-$.fn.modal = Modal;
 
 export default class Table extends React.Component {
 	constructor() {
@@ -20,7 +16,7 @@ export default class Table extends React.Component {
 	}
 
 	componentDidUpdate(prevProps) {
-		let { gameInfo, userInfo } = this.props;
+		let { gameInfo } = this.props;
 
 		if (gameInfo.gameState.isStarted && !prevProps.gameInfo.gameState.isStarted) {
 			let $cards = $('div.card'),
@@ -48,7 +44,7 @@ export default class Table extends React.Component {
 	}
 
 	componentDidMount() {
-		if (!Object.keys(this.props.userInfo).length || this.props.userInfo.gameSettings && !this.props.userInfo.gameSettings.disablePopups) {
+		if (this.props.userInfo.userName || this.props.userInfo.gameSettings && !this.props.userInfo.gameSettings.disablePopups) {
 			$('i.warning.sign.icon').popup({
 				inline: true,
 				hoverable: true,
@@ -129,7 +125,7 @@ export default class Table extends React.Component {
 						(() => {
 							let classes;
 
-							if (!gameInfo.isCompleted && gameState.isStarted && tableState.seats[num].claim && this.state.showClaims) {
+							if (!gameState.isCompleted && gameState.isStarted && tableState.seats[num].claim && this.state.showClaims) {
 								classes = `claim claim-${tableState.seats[num].claim}`;
 							} else {
 								classes = 'card-back';
