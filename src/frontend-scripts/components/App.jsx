@@ -38,7 +38,7 @@ class App extends React.Component {
 		});
 
 		socket.on('gameUpdate', (game) => {
-			if (this.props.midsection !== 'game' && Object.keys(game).length) {
+			if (this.props.midSection !== 'game' && Object.keys(game).length) {
 				dispatch(updateGameInfo(game));
 				dispatch(updateMidsection('game'));
 			} else {
@@ -193,16 +193,24 @@ class App extends React.Component {
 	render() {
 		return (
 			<section className="ui grid">
-				<LeftSidebar
-					userInfo={this.props.userInfo}
-					midsection={this.props.midSection}
-					gameList={this.props.gameList}
-					onCreateGameButtonClick={this.handleRoute.bind(this)}
-					sidebarGameClicked={this.handleSidebarGameClicked.bind(this)}
-				/>
+				{
+					(() => {
+						if (this.props.midSection !== 'game') {
+							return (
+								<LeftSidebar
+									userInfo={this.props.userInfo}
+									midSection={this.props.midSection}
+									gameList={this.props.gameList}
+									onCreateGameButtonClick={this.handleRoute.bind(this)}
+									sidebarGameClicked={this.handleSidebarGameClicked.bind(this)}
+								/>
+							);
+						}
+					})()
+				}
 				<Main
 					userInfo={this.props.userInfo}
-					midsection={this.props.midSection}
+					midSection={this.props.midSection}
 					onCreateGameSubmit={this.handleCreateGameSubmit.bind(this)}
 					onUserNightActionEventSubmit={this.handleUserNightActionEventSubmit.bind(this)}
 					onUpdateTruncateGameSubmit={this.handleUpdateTruncateGameSubmit.bind(this)}
@@ -216,14 +224,23 @@ class App extends React.Component {
 					updateSeatedUsers={this.updateSeatedUsersInGame.bind(this)}
 					quickDefault={this.makeQuickDefault.bind(this)}
 				/>
-				<RightSidebar
-					userInfo={this.props.userInfo}
-					userList={this.props.userList}
-					midsection={this.props.midSection}
-					onSettingsButtonClick={this.handleRoute.bind(this)}
-					generalChats={this.props.generalChats}
-					onGeneralChatSubmit={this.handleGeneralChatSubmit.bind(this)}
-				/>
+
+				{
+					(() => {
+						if (this.props.midSection === 'game' && this.props.userInfo.gameSettings && !this.props.userInfo.gameSettings.disableRightSidebarInGame || !this.props.userInfo.userName || this.props.midSection !== 'game') {
+							return (
+								<RightSidebar
+									userInfo={this.props.userInfo}
+									userList={this.props.userList}
+									midSection={this.props.midSection}
+									onSettingsButtonClick={this.handleRoute.bind(this)}
+									generalChats={this.props.generalChats}
+									onGeneralChatSubmit={this.handleGeneralChatSubmit.bind(this)}
+								/>
+							);
+						}
+					})()
+				}
 			</section>
 		);
 	}

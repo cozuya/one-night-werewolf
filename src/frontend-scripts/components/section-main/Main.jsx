@@ -14,7 +14,7 @@ export default class Main extends React.Component {
 				(() => {
 					let classes;
 
-					if (this.props.midsection === 'game') {
+					if (this.props.midSection === 'game') {
 						if (this.props.userInfo.gameSettings && this.props.userInfo.gameSettings.disableRightSidebarInGame) {
 							classes = 'sixteen';
 						} else {
@@ -30,7 +30,7 @@ export default class Main extends React.Component {
 			}>
 				<Menu userInfo={this.props.userInfo} />
 				{(() => {
-					switch (this.props.midsection) {
+					switch (this.props.midSection) {
 						case 'createGame':
 							return <Creategame
 										userInfo={this.props.userInfo}

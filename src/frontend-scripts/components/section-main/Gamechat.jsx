@@ -19,18 +19,20 @@ export default class Gamechat extends React.Component {
 	}
 
 	componentDidUpdate(prevProps) {
+		let $input = $(this.refs.gameChatInput);
+
 		this.scrollChats();
 
 		if (prevProps && prevProps.selectedGamerole.random !== this.props.selectedGamerole.random && this.props.selectedGamerole.role) {
-			let $input = $('form.inputbar input');
-
 			$input.val(`${$input.val()}${this.props.selectedGamerole.role}`).next().removeClass('disabled');
 		}
 
 		if (prevProps && prevProps.selectedPlayer.random !== this.props.selectedPlayer.random && this.props.selectedPlayer.playerName.length) {
-			let $input = $('form.inputbar input');
-
-			$input.val(`${$input.val()}${this.props.selectedPlayer.playerName} is a `).next().removeClass('disabled');
+			if ($input.val() === 'I think that ') {
+				$input.val(`${$input.val()}${this.props.selectedPlayer.playerName} is a `).next().removeClass('disabled');				
+			} else {
+				$input.val(`${$input.val()}${this.props.selectedPlayer.playerName}`).next().removeClass('disabled');
+			}
 		}
 	}	
 
@@ -251,7 +253,7 @@ export default class Gamechat extends React.Component {
 				);
 			};
 		});	
-	} // todo-alpha - 'observer' logic is not right, logged in players who are not seated see seated player chats as observers
+	}
 
 	handleChatLockClick(e) {
 		if (this.state.lock) {
@@ -295,7 +297,7 @@ export default class Gamechat extends React.Component {
 						
 					})()}
 					<div className={this.props.userInfo.userName ? "ui action input" : "ui action input disabled"}>
-						<input placeholder="Chat.." onKeyUp={this.handleKeyup.bind(this)} maxLength="300"></input>
+						<input placeholder="Chat.." ref="gameChatInput" onKeyUp={this.handleKeyup.bind(this)} maxLength="300"></input>
 						<button className="ui primary button disabled">Chat</button>
 					</div>
 					<i className="large delete icon app-hidden" onClick={this.handleChatClearClick.bind(this)}></i>

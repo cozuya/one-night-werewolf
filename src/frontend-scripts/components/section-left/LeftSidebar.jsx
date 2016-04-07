@@ -11,18 +11,10 @@ export default class LeftSidebar extends React.Component {
 
 	render() {
 		return (
-			<section className={(() => {
-				let classes = 'section-left three wide column leftsidebar';
-
-				if (this.props.midsection === 'game') {
-					classes += ' app-hidden';
-				}
-
-				return classes;
-			})()}>
+			<section className="section-left three wide column leftsidebar">
 				{(() => {
 					let { userName } = this.props.userInfo,
-						gameBeingCreated = this.props.midsection === 'createGame',
+						gameBeingCreated = this.props.midSection === 'createGame',
 						disabledText;
 
 					if (userName && !gameBeingCreated) {

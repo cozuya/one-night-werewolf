@@ -141,17 +141,13 @@ module.exports.handleUpdatedReportGame = (socket, data) => {
 	let game = games.find((el) => {
 			return el.uid === data.uid;
 		}),
-		player = game.internals.seatedPlayers.find((player) => {
-			return player.userName === data.userName;
-		});
+		player = game.internals.seatedPlayers[parseInt(data.seatNumber)];
 
-	// if (player.reportedGame) {
-	// 	player.reportedGame = false;
-	// 	game.tableState.reportedGame[data.seatNumber] = false; // todo-alpha fix this so it doesn't use tablestate in this way
-	// } else {
-	// 	player.reportedGame = true;
-	// 	game.tableState.reportedGame[data.seatNumber] = true;
-	// }
+	if (player.tableState.reported) {
+		player.tableState.reported = false;
+	} else {
+		player.tableState.reported = true;
+	}
 
 	sendInProgressGameUpdate(game);
 };
@@ -159,12 +155,7 @@ module.exports.handleUpdatedReportGame = (socket, data) => {
 module.exports.handleAddNewGame = (socket, data) => {
 	data.internals = {
 		unSeatedGameChats: [],
-		seatedPlayers: [
-			{
-			tableState: {
-				seats: [{}, {}, {}, {}, {}, {}, {}, {}, {}, {}]
-			}
-		}, {tableState: {seats: [{}, {}, {}, {}, {}, {}, {}, {}, {}, {}]}}, {tableState: {seats: [{}, {}, {}, {}, {}, {}, {}, {}, {}, {}]}}, {tableState: {seats: [{}, {}, {}, {}, {}, {}, {}, {}, {}, {}]}}, {tableState: {seats: [{}, {}, {}, {}, {}, {}, {}, {}, {}, {}]}}, {tableState: {seats: [{}, {}, {}, {}, {}, {}, {}, {}, {}, {}]}}, {tableState: {seats: [{}, {}, {}, {}, {}, {}, {}, {}, {}, {}]}}],
+		seatedPlayers: [{gameChats: [], tableState: {seats: [{}, {}, {}, {}, {}, {}, {}, {}, {}, {}]}}, {gameChats: [], tableState: {seats: [{}, {}, {}, {}, {}, {}, {}, {}, {}, {}]}}, {gameChats: [], tableState: {seats: [{}, {}, {}, {}, {}, {}, {}, {}, {}, {}]}}, {gameChats: [], tableState: {seats: [{}, {}, {}, {}, {}, {}, {}, {}, {}, {}]}}, {gameChats: [], tableState: {seats: [{}, {}, {}, {}, {}, {}, {}, {}, {}, {}]}}, {gameChats: [], tableState: {seats: [{}, {}, {}, {}, {}, {}, {}, {}, {}, {}]}}, {gameChats: [], tableState: {seats: [{}, {}, {}, {}, {}, {}, {}, {}, {}, {}]}}],
 		truncateGameCount: 0
 	};
 
@@ -270,8 +261,8 @@ module.exports.checkUserStatus = (socket) => {
 
 			game.seated[userSeatName].connected = true;
 			socket.join(game.uid);
-			sendInProgressGameUpdate(game);
 			socket.emit('updateSeatForUser', internalPlayer.seatNumber.toString());
+			sendInProgressGameUpdate(game);
 		}
 	} else {
 		io.sockets.emit('userList', {

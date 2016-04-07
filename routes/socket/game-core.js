@@ -18,7 +18,7 @@ let Game = require('../../models/game'),
 				startGame(game);
 			} else {
 				game.status = `Game starts in ${startGamePause} second${startGamePause === 1 ? '' : 's'}.`;
-				io.sockets.in(game.uid).emit('gameUpdate', secureGame(game));
+				sendInProgressGameUpdate(game);
 			}
 			startGamePause--;
 		}, 1000);
@@ -161,27 +161,18 @@ let startGame = (game) => {
 
 	game.status = 'Dealing..';
 	game.gameState.cardsDealt = true;
-	game.gameState.reportedGame = {  // todo-alpha move this to internals and redo
-		0: false,
-		1: false,
-		2: false,
-		3: false,
-		4: false,
-		5: false,
-		6: false,
-	};
-	io.in(game.uid).emit('gameUpdate', secureGame(game));
+	sendInProgressGameUpdate(game);	
 
 	setTimeout(() => {
 		let nightPhasePause = devStatus.nightPhasePause,
 			countDown;
 		game.internals.seatedPlayers.forEach((player, index) => {
-			player.gameChats = [{
+			player.gameChats.push({
 				gameChat: true,
 				userName: player.userName,
 				chat: `The game begins and you receive the ${player.trueRole} role.`,
 				timestamp: new Date()
-			}];
+			});
 			player.tableState.seats[index].role = game.internals.seatedPlayers[index].trueRole;
 		});
 
@@ -930,8 +921,10 @@ let endGame = (game) => {
 					};
 				}),
 				reports: seatedPlayers.filter((player) => {
-					return player.reportedGame;
-				}),
+					return player.tableState.reported;
+				}).map((player) => {
+					return player.userName;
+				})        ,
 				kobk: game.kobk
 			});
 

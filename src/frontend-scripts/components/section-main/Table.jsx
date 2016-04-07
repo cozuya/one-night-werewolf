@@ -11,7 +11,7 @@ export default class Table extends React.Component {
 	constructor() {
 		this.state = {
 			firstClickedCard: '',
-			showClaims: true
+			showClaims: false
 		};
 	}
 
@@ -312,22 +312,21 @@ export default class Table extends React.Component {
 	handleClickedReportGame() {
 		this.props.onUpdateReportGame({
 			seatNumber: this.props.userInfo.seatNumber,
-			userName: this.props.userInfo.userName,
 			uid: this.props.gameInfo.uid
 		});
 	}
 
 	createReportGame() {
 		let { gameInfo, userInfo } = this.props,
-			{ gameState} = gameInfo;
+			{ gameState, tableState } = gameInfo;
 
 		if (userInfo.seatNumber && gameState.isStarted) {
 			let iconClasses = () => {
 				let classes = 'warning sign icon';
 
-				// if (gameState.reportedGame[userInfo.seatNumber]) {
-				// 	classes += ' report-game-clicked';
-				// }
+				if (gameInfo.tableState.reported) {
+					classes += ' report-game-clicked';
+				}
 
 				return classes;
 			}
@@ -361,8 +360,8 @@ export default class Table extends React.Component {
 						<label>End the game early</label>
 					</div>
 					<div className="ui fitted toggle checkbox checked showclaims" ref="showclaims">
-						<input type="checkbox" name="show-claims" defaultChecked onClick={toggleClaims}></input>
-						<label>Show claims</label>
+						<input type="checkbox" name="show-claims" onClick={toggleClaims}></input>
+						<label>Hide claims</label>
 					</div>
 				</div>
 			);
