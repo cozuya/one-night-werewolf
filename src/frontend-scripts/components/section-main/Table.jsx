@@ -36,7 +36,7 @@ export default class Table extends React.Component {
 			}, 5000);
 		}
 
-		// console.log(this.props.gameInfo);
+		console.log(this.props.gameInfo);
 	}
 
 	shouldComponentUpdate(nextProps) {
@@ -45,7 +45,7 @@ export default class Table extends React.Component {
 
 	componentDidMount() {
 		if (this.props.userInfo.userName || this.props.userInfo.gameSettings && !this.props.userInfo.gameSettings.disablePopups) {
-			$('i.warning.sign.icon').popup({
+			$(this.refs.reportIcon).popup({
 				inline: true,
 				hoverable: true,
 				lastResort: true,
@@ -80,7 +80,7 @@ export default class Table extends React.Component {
 				});
 			}
 		} else {
-			$('section.table div.small.modal').modal('show');
+			$(this.refs.signinModal).modal('show');
 		}
 	}
 
@@ -335,7 +335,7 @@ export default class Table extends React.Component {
 			return (
 				<div className="table-uid">
 					Game ID: {gameInfo.uid}
-					<i onClick={this.handleClickedReportGame.bind(this)} className={iconClasses()}></i>
+					<i onClick={this.handleClickedReportGame.bind(this)} ref="reportIcon" className={iconClasses()}></i>
 					<div className="ui popup transition hidden">
 							Player abuse? Mark this game for reporting to the administrators for review.  Found a bug?  Send us an email.
 					</div>
@@ -386,7 +386,7 @@ export default class Table extends React.Component {
 				})()}
 				{this.createReportGame()}
 				{this.createUserGameOptions()}
-				<div className="ui basic small modal">
+				<div className="ui basic small modal" ref="signinModal">
 					<i className="close icon"></i>
 					<div className="ui header">You will need to sign in or sign up for an account to play.</div>
 				</div>

@@ -65,4 +65,4 @@ start development task runner:
 
 > gulp
 
-Changing the "devStatus" object to "prod" in /routes/socket/util.js is probably the place to start.
+Changing the "devStatus" object to "prod" (if its not already) in /routes/socket/util.js is probably the place to start.

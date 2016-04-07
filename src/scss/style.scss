@@ -32,6 +32,18 @@ body {
 	clear: both;
 }
 
+.team-werewolf {
+	color: $werewolfteam;
+}
+
+.team-village {
+	color: $villageteam;
+}
+
+.team-tanner {
+	color: $tannerteam;
+}
+
 .ui.menu {
 	border-radius: 0;
 }
