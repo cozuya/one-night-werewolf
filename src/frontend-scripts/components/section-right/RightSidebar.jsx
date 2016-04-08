@@ -10,6 +10,13 @@ export default class RightSidebar extends React.Component {
 		let { gameState } = this.props.gameInfo;
 
 		if (!gameState || gameState && gameState.isCompleted || gameState && !gameState.isStarted) {
+			if (this.props.midSection === 'game') {
+				if (this.props.gameInfo.gameState.isCompleted) {
+					this.props.updateSeatedUsers(null, true, true);
+				} else {
+					this.props.updateSeatedUsers(null, null, true);
+				}
+			}
 			this.props.onSettingsButtonClick('settings');
 		}
 	}

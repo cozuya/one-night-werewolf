@@ -12,7 +12,7 @@ $.fn.dropdown = Dropdown;
 $.fn.popup = Popup;
 $.fn.progress = Progress;
 $.fn.checkbox = Checkbox;
-// todo-alpha leaving game to go to settings doesn't delete game as it should
+
 export default class Settings extends React.Component {
 	componentDidMount() {
 		let self = this;

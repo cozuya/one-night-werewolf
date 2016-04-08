@@ -253,9 +253,12 @@ module.exports.checkUserStatus = (socket) => {
 		}
 
 		if (game && game.gameState.isStarted) {
+			console.log(game.internals.seatedPlayers[0]);
+			console.log(user);
+			console.log(game);
 			let internalPlayer = getInternalPlayerInGameByUserName(game, user),
 				userSeatName = Object.keys(game.seated).find((seatName) => {
-					return game.seated[seatName].userName === passport.user;
+					return game.seated[seatName].userName === user;
 				}),
 				cloneGame;
 

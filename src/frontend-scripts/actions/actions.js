@@ -11,10 +11,10 @@ export function updateUser(user) {
 
 export const UPDATE_MIDSECTION = 'UPDATE_MIDSECTION';
 
-export function updateMidsection(midsection) {
+export function updateMidsection(midSection) {
 	return {
 		type: UPDATE_MIDSECTION,
-		midsection
+		midSection
 	}
 }
 

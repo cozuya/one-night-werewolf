@@ -74,12 +74,10 @@ export default class Creategame extends React.Component {
 				this.setState({roles});
 				$progress.progress('increment');
 			}
-		} else {
-			if (roles.length >= 0 && currentRoleCount > 0 && ((role === 'werewolf' && currentRoleCount !== 2) || role !== 'werewolf')) {
-				roles.splice(roles.indexOf(role), 1);
-				this.setState({roles});
-				$progress.progress('decrement');
-			}
+		} else if (roles.length >= 0 && currentRoleCount > 0 && ((role === 'werewolf' && currentRoleCount !== 2) || role !== 'werewolf')) {
+			roles.splice(roles.indexOf(role), 1);
+			this.setState({roles});
+			$progress.progress('decrement');
 		}
 	}
 

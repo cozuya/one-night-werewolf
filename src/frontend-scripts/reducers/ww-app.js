@@ -23,7 +23,7 @@ let userInfo = (state = {}, action) => {
 let midSection = (state = 'default', action) => {
 	switch (action.type) {
 		case UPDATE_MIDSECTION:
-			return state = action.midsection;
+			return state = action.midSection;
 		default:
 			return state;
 	}

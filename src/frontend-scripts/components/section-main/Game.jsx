@@ -25,10 +25,6 @@ class Game extends React.Component {
 		dispatch(updateClickedPlayer(state));
 	}
 
-	componentDidUpdate() {
-		// console.log(this.props);
-	}
-
 	render() {
 		return (
 			<section className="game">
@@ -91,7 +87,7 @@ class Game extends React.Component {
 					(() => {
 						let classes = 'row gameroles-container';
 
-						if (Object.keys(this.props.userInfo).length && this.props.userInfo.gameSettings && this.props.userInfo.gameSettings.disableRightSidebarInGame) {
+						if (this.props.userInfo.gameSettings && this.props.userInfo.gameSettings.disableRightSidebarInGame) {
 							classes += ' disabledrightsidebar';
 						}
 

@@ -14,7 +14,7 @@ export default class Table extends React.Component {
 			showClaims: false
 		};
 	}
-
+// todo-alpha make a new component in u/l corner with game name and length
 	componentDidUpdate(prevProps) {
 		let { gameInfo } = this.props;
 
@@ -36,7 +36,7 @@ export default class Table extends React.Component {
 			}, 5000);
 		}
 
-		console.log(this.props.gameInfo);
+		// console.log(this.props.gameInfo);
 	}
 
 	shouldComponentUpdate(nextProps) {
@@ -44,7 +44,7 @@ export default class Table extends React.Component {
 	}
 
 	componentDidMount() {
-		if (this.props.userInfo.userName || this.props.userInfo.gameSettings && !this.props.userInfo.gameSettings.disablePopups) {
+		if (this.props.userInfo.gameSettings && !this.props.userInfo.gameSettings.disablePopups) {
 			$(this.refs.reportIcon).popup({
 				inline: true,
 				hoverable: true,
@@ -352,7 +352,7 @@ export default class Table extends React.Component {
 				});
 			}
 
-		if (userInfo.seatNumber && gameState.isStarted && gameState.isDay) {
+		if (userInfo.seatNumber && gameState.isStarted && gameState.isDay) { // todo alpha end game early should be hidden when below 15 seconds
 			return (
 				<div className="game-options-container">
 					<div className="ui fitted toggle checkbox truncate-game">

@@ -11,6 +11,10 @@ let Game = require('../../models/game'),
 			countDown;
 
 		game.gameState.isStarted = true;
+		Object.keys(game.seated).forEach((seat, index) => {
+			game.internals.seatedPlayers[index].userName = game.seated[seat].userName;
+			game.internals.seatedPlayers[index].seatNumber = index;
+		});
 
 		countDown = setInterval(() => {
 			if (startGamePause === 0) {
@@ -91,7 +95,7 @@ module.exports.updateSeatedUsers = (socket, data) => {
 			io.sockets.in(data.uid).emit('gameUpdate', secureGame(game));
 			sendGameList();
 		}
-	} else if (game) { // todo-alpha need to catch non players trying to leave game..
+	} else if (game) {
 		let completedDisconnectionCount = 0;
 
 		if (game.gameState.isCompleted) {
@@ -122,7 +126,7 @@ module.exports.updateSeatedUsers = (socket, data) => {
 
 		socket.leave(game.uid);
 		io.sockets.in(data.uid).emit('gameUpdate', secureGame(game));
-		socket.emit('gameUpdate', {});
+		socket.emit('gameUpdate', {}, data.isSettings);
 	}
 };
 
@@ -140,16 +144,11 @@ let startGame = (game) => {
 
 				player.trueRole = role;
 				player.originalRole = role;
-				player.seatNumber = index;
 				_roles.splice(roleIndex, 1);
 			});
 
 			game.internals.centerRoles = [..._roles];
 		};
-
-	Object.keys(game.seated).forEach((seat, index) => {
-		game.internals.seatedPlayers[index].userName = game.seated[seat].userName;
-	});
 
 	assignRoles();
 
@@ -857,7 +856,7 @@ let endGame = (game) => {
 
 	seatedPlayers.forEach((player, index) => {
 
-		// todo-alpha this doesn't quite match the rules re: tanner
+		// todo-alpha this doesn't quite match the rules re: tanner.  tanner won but both werewolves also won.
 
 		if (!werewolfEliminated && (player.trueRole === 'werewolf' || player.trueRole === 'minion') || 
 			

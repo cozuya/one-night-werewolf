@@ -37,12 +37,18 @@ class App extends React.Component {
 			dispatch(updateGameList(list));
 		});
 
-		socket.on('gameUpdate', (game) => {
+		socket.on('gameUpdate', (game, isSettings) => {
 			if (this.props.midSection !== 'game' && Object.keys(game).length) {
 				dispatch(updateGameInfo(game));
 				dispatch(updateMidsection('game'));
+			} else if (!Object.keys(game).length) {
+				if (isSettings) {
+					dispatch(updateMidsection('settings'));
+				} else {
+					dispatch(updateMidsection('default'));
+				}
+				dispatch(updateGameInfo(game));
 			} else {
-				dispatch(updateMidsection('default'));
 				dispatch(updateGameInfo(game));
 			}
 		});
@@ -169,7 +175,7 @@ class App extends React.Component {
 
 	// ***** end dev helpers *****
 
-	updateSeatedUsersInGame(seatNumber, gameCompleted) {
+	handleUpdateSeatedUsers(seatNumber, gameCompleted, isSettings) {
 		let { uid } = this.props.gameInfo,
 			{ dispatch, userInfo } = this.props,
 			data = {
@@ -177,6 +183,7 @@ class App extends React.Component {
 				seatNumber,
 				userInfo,
 				gameCompleted,
+				isSettings,
 				userName: userInfo.userName
 			};
 
@@ -219,7 +226,7 @@ class App extends React.Component {
 					onNewGameChat={this.handleNewGameChatSubmit.bind(this)}
 					gameInfo={this.props.gameInfo}
 					onLeaveSettings={this.handleRoute.bind(this)}
-					updateSeatedUsers={this.updateSeatedUsersInGame.bind(this)}
+					updateSeatedUsers={this.handleUpdateSeatedUsers.bind(this)}
 					quickDefault={this.makeQuickDefault.bind(this)}
 				/>
 				{(() => {
@@ -231,6 +238,7 @@ class App extends React.Component {
 								gameInfo={this.props.gameInfo}
 								midSection={this.props.midSection}
 								onSettingsButtonClick={this.handleRoute.bind(this)}
+								updateSeatedUsers={this.handleUpdateSeatedUsers.bind(this)}
 								generalChats={this.props.generalChats}
 								onGeneralChatSubmit={this.handleGeneralChatSubmit.bind(this)}
 							/>
