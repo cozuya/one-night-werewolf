@@ -107,6 +107,14 @@
 
 			> .ui.list .item {
 				padding: 0;
+
+				.admin {
+					color: red;
+				}
+
+				span {
+					word-wrap: break-word;
+				}
 			}
 		}
 	}

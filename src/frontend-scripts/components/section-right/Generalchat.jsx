@@ -19,7 +19,7 @@ export default class Gamechat extends React.Component {
 	}	
 
 	handleChatClearClick(e) {
-		$(e.currentTarget).addClass('app-hidden').prev().find('input').val('');
+		$(e.currentTarget).addClass('app-hidden').prev().find('input').val(''); // todo-release redo all this jquery junk
 	}
 
 	handleKeyup(e) {
@@ -76,11 +76,10 @@ export default class Gamechat extends React.Component {
 	}
 
 	processChats() {
-		return this.props.generalChats.map((chat, i) => {
-			
+		return this.props.generalChats.map((chat, i) => {		
 			return (
 				<div className="item" key={i}>
-					<span className="chat-user">{chat.userName}: </span>
+					<span className={chat.userName === 'coz' ? 'chat-user admin' : 'chat-user'}>{chat.userName}: </span>
 					<span>{chat.chat}</span>
 				</div>
 			);
@@ -112,7 +111,7 @@ export default class Gamechat extends React.Component {
 					</div>
 				</section>
 				<form className="segment inputbar" onSubmit={this.handleSubmit.bind(this)}>
-					<div className={this.props.userInfo.userName ? "ui action input" : "ui action input disabled"}>
+					<div className={this.props.userInfo.userName ? 'ui action input' : 'ui action input disabled'}>
 						<input placeholder="Chat.." onKeyUp={this.handleKeyup.bind(this)} maxLength="300"></input>
 						<button className="ui primary button disabled">Chat</button>
 					</div>

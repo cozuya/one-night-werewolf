@@ -102,7 +102,7 @@ export default class Gamechat extends React.Component {
 			$clearIcon = $input.parent().next();
 
 		if (inputValue.length) {
-			$button.removeClass('disabled');
+			$button.removeClass('disabled');  // todo-release get this jquery nonsense out of here but I'm too lazy and there's other stuff to do
 			$clearIcon.removeClass('app-hidden');
 		} else {
 			$button.addClass('disabled');
@@ -291,7 +291,11 @@ export default class Gamechat extends React.Component {
 						return (
 							<div className={classes}>
 								<i className="large expand icon" onClick={this.clickExpand.bind(this)}></i>
-								{this.displayHotkeys()}
+								{(() => {
+									if (gameInfo.gameState.isStarted && userInfo.seatNumber) {
+										{this.displayHotkeys()}
+									}
+								})()}
 							</div>
 						);
 						

@@ -37,26 +37,30 @@ export default class Playerlist extends React.Component {
 								return -1;
 							}
 
+							if (b.userName === 'coz' || b.userName === 'stine') {
+								return 1;
+							}
+
 							if (aTotal > 9 && bTotal > 9) {
 								if (a.wins / aTotal >= b.wins / bTotal) {
 									return -1;
 								} else {
-									return +1;
+									return 1;
 								}
 							} else if (aTotal > 9) {
 								return -1;
 							} else if (bTotal > 9) {
-								return +1;
+								return 1;
 							}
 
 							if (a.wins >= b.wins) {
 								return -1;
 							} else if (b.wins > a.wins) {
-								return +1;
+								return 1;
 							}
 
 							if (a.userName > b.userName) {
-								return +1;
+								return 1;
 							} else {
 								return -1;
 							}
@@ -68,7 +72,10 @@ export default class Playerlist extends React.Component {
 
 							return (
 								<div key={i}>
-									<span style={{color: user.userName === 'coz' ? 'red' : ''}}>{user.userName}</span> <div className="userlist-stats-container">(<span className="userlist-stats">{user.wins}</span> / <span className="userlist-stats">{user.losses}</span>) <span className="userlist-stats"> {percentDisplay}</span></div>
+									<span style={{color: user.userName === 'coz' ? 'red' : ''}}>{user.userName}</span>
+									<div className="userlist-stats-container">(
+										<span className="userlist-stats">{user.wins}</span> / <span className="userlist-stats">{user.losses}</span>) <span className="userlist-stats"> {percentDisplay}</span>
+									</div>
 								</div>
 							);
 						});

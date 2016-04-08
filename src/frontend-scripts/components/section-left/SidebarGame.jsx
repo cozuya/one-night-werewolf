@@ -1,12 +1,11 @@
 'use strict';
 
 import React from 'react';
-import $ from 'jquery';
 import { roleMap } from '../../../../iso/util.js';
 
 export default class SidebarGame extends React.Component {
 	routeToGame(el) {
-		this.props.sidebarGameClicked($(el.currentTarget).attr('data-uid'));
+		this.props.sidebarGameClicked(el.currentTarget.getAttribute('data-uid'));
 	}
 
 	render() {
@@ -20,10 +19,23 @@ export default class SidebarGame extends React.Component {
 				);
 			});
 		},
-		{ game } = this.props;
+		{ game } = this.props,
+		gameClasses = () => {
+			let classes = 'ui vertical segment';
+
+			if (game.gameState.isStarted && !game.gameState.isCompleted) {
+				classes += ' inprogress';
+			}
+
+			if (game.gameState.isCompleted) {
+				classes += ' completed';
+			}
+
+			return classes;
+		}
 
 		return (
-			<div className={game.gameState.isStarted ? "ui vertical segment inprogress" : "ui vertical segment"} key={this.props.key} data-uid={game.uid} onClick={this.routeToGame.bind(this)}>
+			<div className={gameClasses()} key={this.props.key} data-uid={game.uid} onClick={this.routeToGame.bind(this)}>
 				<div>
 					<span className={game.kobk ? "gamename kobk" : "gamename"}>{game.name}</span>
 					<span className="gamelength">{game.time}</span> 

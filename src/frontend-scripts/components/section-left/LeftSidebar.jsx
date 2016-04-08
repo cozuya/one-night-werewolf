@@ -1,7 +1,6 @@
 'use strict';
 
 import React from 'react';
-import $ from 'jquery';
 import SidebarGame from './SidebarGame.jsx';
 
 export default class LeftSidebar extends React.Component {
