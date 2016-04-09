@@ -16,7 +16,8 @@ export default class Table extends React.Component {
 	}
 // todo-alpha make a new component in u/l corner with game name and length
 	componentDidUpdate(prevProps) {
-		let { gameInfo } = this.props;
+		let { gameInfo, userInfo } = this.props,
+			{ gameState } = gameInfo;
 
 		if (gameInfo.gameState.isStarted && !prevProps.gameInfo.gameState.isStarted) {
 			let $cards = $('div.card'),
@@ -36,15 +37,7 @@ export default class Table extends React.Component {
 			}, 5000);
 		}
 
-		// console.log(this.props.gameInfo);
-	}
-
-	shouldComponentUpdate(nextProps) {
-		return !_.isEqual(nextProps.gameInfo, this.props.gameInfo);
-	}
-
-	componentDidMount() {
-		if (this.props.userInfo.gameSettings && !this.props.userInfo.gameSettings.disablePopups) {
+		if (userInfo.seatNumber && gameState.isStarted && userInfo.gameSettings && !this.props.userInfo.gameSettings.disablePopups && !prevProps.gameInfo.gameState.isStarted) {
 			$(this.refs.reportIcon).popup({
 				inline: true,
 				hoverable: true,
@@ -55,6 +48,11 @@ export default class Table extends React.Component {
 				}
 			});
 		}
+		console.log(this.props.gameInfo);
+	}
+
+	shouldComponentUpdate(nextProps) {
+		return !_.isEqual(nextProps.gameInfo, this.props.gameInfo);
 	}
 
 	leaveGame() {
@@ -207,12 +205,12 @@ export default class Table extends React.Component {
 		let $card = $(e.currentTarget),
 			cardNumber = $card.attr('data-cardnumber'),
 			{ gameInfo, userInfo } = this.props,
-			{ tableState } = gameInfo,
+			{ tableState, gameState } = gameInfo,
 			data = {
 				uid: gameInfo.uid
 			};
 
-		if (tableState.nightAction && !tableState.nightAction.completed) {
+		if (tableState.nightAction && !tableState.nightAction.completed && !gameState.isDay && gameState.phase === tableState.nightAction.phase) {
 			data.userName = userInfo.userName;
 
 			if (tableState.nightAction.action === 'singleWerewolf' && $card.attr('data-cardnumber') > 6) {

@@ -575,40 +575,39 @@ module.exports.updateUserNightActionEvent = (socket, data) => {
 				chat.chat = `You swap the two cards between ${seat1player.userName} and ${seat2player.userName}.`;
 			},
 			robber() {
-				let robberPlayer = game.internals.seatedPlayers.find((player) => {
-						return player.userName === data.userName;
+				let action = parseInt(data.action),
+					playerSeat = player.tableState.seats[player.seatNumber],
+					swappedPlayerSeat = player.tableState.seats[action],
+					swappedPlayer = game.internals.seatedPlayers.find((play) => {
+						return play.seatNumber === action;
 					}),
-					action = parseInt(data.action),
-					playerSeat = player.tableState.seats[action],
-					swappedPlayer = game.internals.seatedPlayers.find((player) => {
-						return player.seatNumber === action;
-					});
+					_role = swappedPlayer.trueRole;
 
-				updatedTrueRoles = game.internals.seatedPlayers.map((player, index) => {
-					if (player.userName === robberPlayer.userName) {
+				updatedTrueRoles = game.internals.seatedPlayers.map((play) => {
+					if (play.userName === player.userName) {
 						return swappedPlayer.trueRole;
 					}
 
-					if (player.userName === swappedPlayer.userName) {
-						return robberPlayer.trueRole;
+					if (play.userName === swappedPlayer.userName) {
+						return player.trueRole;
 					}
 
-					return player.trueRole;
+					return play.trueRole;
 				});
 
 				player.tableState.nightAction.completed = true;
-				player.tableState.seats[player.seatNumber].swappedWithSeat = action;
-				playerSeat.swappedWithSeat = player.seatNumber;
+				swappedPlayerSeat.swappedWithSeat = player.seatNumber;
+				playerSeat.swappedWithSeat = swappedPlayer.seatNumber;
 				setTimeout(() => {
-					playerSeat.isFlipped = true;
-					playerSeat.role = swappedPlayer.trueRole; // todo-alpha in phase 2 a robber robbed a player who was the robber in phase 1 and while the gamechat was correct the UI flipped the wrong card.
+					swappedPlayerSeat.isFlipped = true;
+					swappedPlayerSeat.role = _role; 
 				}, 2000);
 				setTimeout(() => {
-					playerSeat.isFlipped = false;
+					swappedPlayerSeat.isFlipped = false;
 					sendInProgressGameUpdate(game);
 				}, 5000);
 
-				chat.chat = `You exchange cards between yourself and ${swappedPlayer.userName} and view your new role, which is a ${swappedPlayer.trueRole}.`;
+				chat.chat = `You exchange cards between yourself and ${swappedPlayer.userName} and view your new role, which is a ${_role}.`;
 			},
 			seer() {
 				let selectedCard = {
@@ -652,7 +651,7 @@ module.exports.updateUserNightActionEvent = (socket, data) => {
 
 	eventMap[data.role]();
 
-	if (updatedTrueRoles.length) { // todo-release refactor this whole idea
+	if (updatedTrueRoles.length) { // todo-release refactor this whole stupid idea
 		game.internals.seatedPlayers.map((player, index) => {
 			player.trueRole = updatedTrueRoles[index];
 			return player;
@@ -875,7 +874,7 @@ let endGame = (game) => {
 		setTimeout(() => {
 			eliminatedPlayersIndex.forEach((eliminatedPlayerIndex) => {
 				game.tableState.seats[eliminatedPlayerIndex] = {
-					role: seatedPlayers[eliminatedPlayersIndex].trueRole, // todo-alpha crashed game when 0 pointed to 6 and 2 pointed to 4 (truerole of undefined)
+					role: seatedPlayers[eliminatedPlayerIndex].trueRole,
 					isFlipped: true
 				};
 			});

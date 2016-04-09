@@ -135,7 +135,7 @@ module.exports.handleUpdatedTruncateGame = (data) => {
 	}
 };
 
-module.exports.handleUpdatedReportGame = (socket, data) => {
+module.exports.handleUpdatedReportGame = (socket, data) => { // todo-alpha works fine but unclickable (crash?) after game is done, should address when endgame stuff is redone soon
 	let game = games.find((el) => {
 			return el.uid === data.uid;
 		}),
