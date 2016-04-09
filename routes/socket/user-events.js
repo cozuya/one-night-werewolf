@@ -17,7 +17,6 @@ let { games, userList, generalChats } = require('./models'),
 		let { passport } = socket.handshake.session;
 
 		if (passport && Object.keys(passport).length) {
-			console.log(passport.user, 'hsd');
 			let userIndex = userList.findIndex((user) => {
 					return user.userName === passport.user;
 				}),
@@ -38,7 +37,6 @@ let { games, userList, generalChats } = require('./models'),
 
 				if (game.gameState.isStarted) {
 					game.seated[userSeatName].connected = false;
-					console.log('is started disconnection event');
 					sendInProgressGameUpdate(game);
 				} else {
 					if (seatNames.length === 1) {
@@ -73,7 +71,7 @@ let { games, userList, generalChats } = require('./models'),
 
 		return _chats;
 	},
-	sendInProgressGameUpdate = (game) => { // todo-alpha make this accept a socket argument and emit only to it if it exists
+	sendInProgressGameUpdate = (game) => { // todo-release make this accept a socket argument and emit only to it if it exists
 		let seatedPlayerNames = Object.keys(game.seated).map((seat) => {
 				return game.seated[seat].userName;
 			}),
@@ -81,9 +79,7 @@ let { games, userList, generalChats } = require('./models'),
 				return io.sockets.connected[sockedId];
 			}),
 			playerSockets = roomSockets.filter((socket) => {
-				if (socket.handshake.session.passport && Object.keys(socket.handshake.session.passport).length) {
-					return seatedPlayerNames.indexOf(socket.handshake.session.passport.user) >= 0;
-				}
+				return socket.handshake.session.passport && Object.keys(socket.handshake.session.passport).length && seatedPlayerNames.indexOf(socket.handshake.session.passport.user) >= 0;
 			}),
 			observerSockets = roomSockets.filter((socket) => {
 				return !socket.handshake.session.passport || seatedPlayerNames.indexOf(socket.handshake.session.passport.user) === -1;
@@ -91,24 +87,24 @@ let { games, userList, generalChats } = require('./models'),
 
 		playerSockets.forEach((sock, index) => {
 			let cloneGame = Object.assign({}, game),
-				userName = sock.handshake.session.passport.user;
+				{ user } = sock.handshake.session.passport;
 
 			if (!game.gameState.isCompleted) {
-				cloneGame.tableState = cloneGame.internals.seatedPlayers[index].tableState;
+				cloneGame.tableState = cloneGame.internals.seatedPlayers.find((player) => {
+					return user === player.userName;
+				}).tableState;
 			}
 			
-			cloneGame.chats = combineInProgressChats(cloneGame, userName);
+			cloneGame.chats = combineInProgressChats(cloneGame, user);
 			sock.emit('gameUpdate', secureGame(cloneGame));
 		});
 
-		if (observerSockets.length) {
-			observerSockets.forEach((sock) => {
-				let cloneGame = Object.assign({}, game);
+		observerSockets.forEach((sock) => {
+			let cloneGame = Object.assign({}, game);
 
-				cloneGame.chats = combineInProgressChats(cloneGame);
-				sock.emit('gameUpdate', secureGame(cloneGame));
-			});
-		}
+			cloneGame.chats = combineInProgressChats(cloneGame);
+			sock.emit('gameUpdate', secureGame(cloneGame));
+		});
 	};
 
 module.exports.handleUpdatedTruncateGame = (data) => {
@@ -236,7 +232,6 @@ module.exports.checkUserStatus = (socket) => {
 	let { passport } = socket.handshake.session;
 
 	if (passport && Object.keys(passport).length) {
-		console.log(passport.user, 'cus');
 		let { user } = passport,
 			{ sockets } = io.sockets,
 			game = games.find((game) => {
@@ -251,7 +246,6 @@ module.exports.checkUserStatus = (socket) => {
 			});
 
 		if (oldSocketID && sockets[oldSocketID]) {
-			console.log('delete old socket');
 			handleSocketDisconnect(sockets[oldSocketID]);
 			delete sockets[oldSocketID];
 		}
@@ -261,8 +255,6 @@ module.exports.checkUserStatus = (socket) => {
 				userSeatName = Object.keys(game.seated).find((seatName) => {
 					return game.seated[seatName].userName === user;
 				});
-
-			console.log('usfu');
 
 			game.seated[userSeatName].connected = true;
 			socket.join(game.uid);

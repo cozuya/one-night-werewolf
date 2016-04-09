@@ -83,8 +83,6 @@ module.exports.updateSeatedUsers = (socket, data) => {
 		socket.join(data.uid);
 	}
 
-	console.log('usu');
-
 	if (socketSession.passport && data.seatNumber && socketSession.passport.user === data.userInfo.userName) {
 		game.seated[`seat${data.seatNumber}`] = {
 			userName: data.userInfo.userName
@@ -877,7 +875,7 @@ let endGame = (game) => {
 		setTimeout(() => {
 			eliminatedPlayersIndex.forEach((eliminatedPlayerIndex) => {
 				game.tableState.seats[eliminatedPlayerIndex] = {
-					role: seatedPlayers[eliminatedPlayersIndex].trueRole,
+					role: seatedPlayers[eliminatedPlayersIndex].trueRole, // todo-alpha crashed game when 0 pointed to 6 and 2 pointed to 4 (truerole of undefined)
 					isFlipped: true
 				};
 			});
