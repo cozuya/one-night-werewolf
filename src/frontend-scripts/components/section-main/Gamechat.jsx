@@ -46,8 +46,6 @@ export default class Gamechat extends React.Component {
 				break;
 		}
 
-		console.log('dh');
-
 		return (
 			<div className="hotkey-container app-hidden">
 				<div className="hotkey-left" onClick={this.handleLeftHotkeyClick.bind(this)}>
@@ -282,8 +280,7 @@ export default class Gamechat extends React.Component {
 				</section>
 				<form className="segment inputbar" onSubmit={this.handleSubmit.bind(this)}>
 					{(() => {
-						let gameInfo = this.props.gameInfo,
-							userInfo = this.props.userInfo,
+						let { gameInfo, userInfo } = this.props,
 							classes = 'expando-container';
 
 						if (!gameInfo.gameState.isStarted || !userInfo.seatNumber) {

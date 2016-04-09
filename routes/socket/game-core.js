@@ -83,6 +83,8 @@ module.exports.updateSeatedUsers = (socket, data) => {
 		socket.join(data.uid);
 	}
 
+	console.log('usu');
+
 	if (socketSession.passport && data.seatNumber && socketSession.passport.user === data.userInfo.userName) {
 		game.seated[`seat${data.seatNumber}`] = {
 			userName: data.userInfo.userName
@@ -328,7 +330,7 @@ let beginNightPhases = (game) => {
 					nightAction.highlight = 'centercards';
 					nightAction.action = 'singleWerewolf';
 				} else {
-					message = 'You wake up, and see that the other werewolves in this game are:';
+					message = `You wake up, and see that the other ${werewolves.length === 2 ? 'werewolf' : 'werewolves'} in this game ${werewolves.length === 2 ? 'is' : 'are'}:`;
 					nightAction.highlight = others.map((other) => {
 						return other.seatNumber;
 					});
@@ -380,7 +382,7 @@ let beginNightPhases = (game) => {
 				if (!others.length) {
 					message = 'You wake up, and see that you are the only mason';
 				} else {
-					message = `You wake up, and see that the ${others.length == 1 ? 'mason' : 'masons'} in this game ${others.length == 1 ? 'is' : 'are'}: `;
+					message = `You wake up, and see that the ${others.length === 1 ? 'mason' : 'masons'} in this game ${others.length == 1 ? 'is' : 'are'}: `;
 					nightAction.highlight = others.map((other) => {
 						return other.seatNumber;
 					});
@@ -856,7 +858,7 @@ let endGame = (game) => {
 
 	seatedPlayers.forEach((player, index) => {
 
-		// todo-alpha this doesn't quite match the rules re: tanner.  tanner won but both werewolves also won.
+		// todo-alpha this doesn't quite match the rules re: tanner.  tanner won but both werewolves also won, tanner not on team village so they shouldn't.
 
 		if (!werewolfEliminated && (player.trueRole === 'werewolf' || player.trueRole === 'minion') || 
 			
