@@ -36,7 +36,7 @@ export default class Gamechat extends React.Component {
 		}
 	}	
 
-	displayHotkeys() {
+	createHotkeys() {
 		let textLeft, textRight;
 
 		switch (this.state.hotkey) {   // todo-release expand this functionality to include nightaction events
@@ -140,7 +140,7 @@ export default class Gamechat extends React.Component {
 							return input.value.match(new RegExp(`${role}$`, 'gi'));
 						});
 
-						chat.claim = claim;
+						chat.claim = claim[0];
 					}
 				});
 			}
@@ -286,13 +286,13 @@ export default class Gamechat extends React.Component {
 						if (!gameInfo.gameState.isStarted || !userInfo.seatNumber) {
 							classes += ' app-visibility-hidden';
 						}
-						// todo-alpha this isn't working
+						
 						return (
 							<div className={classes}>
 								<i className="large expand icon" onClick={this.clickExpand.bind(this)}></i>
 								{(() => {
 									if (gameInfo.gameState.isStarted && userInfo.seatNumber) {
-										{this.displayHotkeys()}
+										{return this.createHotkeys()}
 									}
 								})()}
 							</div>

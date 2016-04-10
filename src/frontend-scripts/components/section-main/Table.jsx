@@ -11,7 +11,7 @@ export default class Table extends React.Component {
 	constructor() {
 		this.state = {
 			firstClickedCard: '',
-			showClaims: false
+			showClaims: true
 		};
 	}
 
@@ -296,7 +296,7 @@ export default class Table extends React.Component {
 	handleTruncateClicked(e) {
 		let { gameInfo, userInfo } = this.props;
 
-		if (userInfo.seatNumber && !gameInfo.isNight && gameInfo.isStarted) {
+		if (gameInfo.gameState.isDay && gameInfo.gameState.isStarted) {
 			let clicked = !!$(e.currentTarget).is(':checked');
 
 			this.props.onUpdateTruncateGameSubmit({
@@ -322,7 +322,7 @@ export default class Table extends React.Component {
 			let iconClasses = () => {
 				let classes = 'warning sign icon';
 
-				if (gameInfo.tableState.reported) {
+				if (gameState.reportedGame[parseInt(userInfo.seatNumber)]) {
 					classes += ' report-game-clicked';
 				}
 
@@ -343,24 +343,30 @@ export default class Table extends React.Component {
 
 	createUserGameOptions() {
 		let { gameInfo, userInfo } = this.props,
-			{ gameState} = gameInfo,
+			{ gameState, tableState } = gameInfo,
 			toggleClaims = () => {
 				this.setState({
-					showClaims: $('input', this.refs.showclaims).is(':checked')
+					showClaims: !$('input', this.refs.showclaims).is(':checked')
 				});
 			}
 
-		if (userInfo.seatNumber && gameState.isStarted && gameState.isDay) { // todo alpha end game early should be hidden when below 15 seconds
+		if (userInfo.seatNumber && gameState.isStarted && gameState.isDay && !gameState.isCompleted) {
 			return (
 				<div className="game-options-container">
-					<div className="ui fitted toggle checkbox truncate-game">
-						<input type="checkbox" name="truncate-game" onClick={this.handleTruncateClicked.bind(this)}></input>
-						<label>End the game early</label>
-					</div>
 					<div className="ui fitted toggle checkbox checked showclaims" ref="showclaims">
 						<input type="checkbox" name="show-claims" onClick={toggleClaims}></input>
 						<label>Hide claims</label>
 					</div>
+					{(() => {
+						if (!tableState.isVotable) {
+							return (
+								<div className="ui fitted toggle checkbox truncate-game">
+									<input type="checkbox" name="truncate-game" onClick={this.handleTruncateClicked.bind(this)}></input>
+									<label>End game early</label>
+								</div>
+							);
+						}
+					})()}
 				</div>
 			);
 		}

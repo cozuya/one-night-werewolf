@@ -130,7 +130,17 @@ export default class Creategame extends React.Component {
 			tableState: {
 				seats: [{}, {}, {}, {}, {}, {}, {}, {}, {}, {}]
 			},
-			gameState: {},
+			gameState: {
+				reportedGame: {
+					0: false,
+					1: false,
+					2: false,
+					3: false,
+					4: false,
+					5: false,
+					6: false
+				}
+			},
 			uid: Math.random().toString(36).substring(6)
 		});	
 	}

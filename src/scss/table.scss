@@ -105,6 +105,7 @@
 			-webkit-perspective: 1000;
 			transition-property: top, left;
 			transition-duration: 1.5s;
+			cursor: pointer;
 
 			.card-flipper {
 				width: 59px;
@@ -279,7 +280,7 @@
 
 	.ui.fitted.toggle.checkbox.truncate-game {
 		position: absolute;
-		top: 413px;
+		top: 388px;
 		left: 0px;
 		width: 170px;
 
@@ -291,7 +292,7 @@
 	
 	.ui.fitted.toggle.checkbox.showclaims {
 		position: absolute;
-		top: 388px;
+		top: 413px;
 		left: 0px;
 		width: 170px;
 

@@ -135,16 +135,16 @@ module.exports.handleUpdatedTruncateGame = (data) => {
 	}
 };
 
-module.exports.handleUpdatedReportGame = (socket, data) => { // todo-alpha works fine but unclickable (crash?) after game is done, should address when endgame stuff is redone soon
+module.exports.handleUpdatedReportGame = (socket, data) => { // todo-alpha unclickable after game is done - need to restructure this idea as private tablestate goes away on game completion
 	let game = games.find((el) => {
 			return el.uid === data.uid;
 		}),
-		player = game.internals.seatedPlayers[parseInt(data.seatNumber)];
+		seatNumber = parseInt(data.seatNumber);
 
-	if (player.tableState.reported) {
-		player.tableState.reported = false;
+	if (game.gameState.reportedGame[seatNumber]) {
+		game.gameState.reportedGame[seatNumber] = false;
 	} else {
-		player.tableState.reported = true;
+		game.gameState.reportedGame[seatNumber] = true;
 	}
 
 	sendInProgressGameUpdate(game);
@@ -168,7 +168,7 @@ module.exports.handleAddNewGameChat = (data, uid) => {
 		});
 
 	data.timestamp = new Date();
-	game.chats.push(data); // todo-alpha errors out in chat after game complete?  game deleted early?
+	game.chats.push(data);
 
 	if (data.claim) {
 		let player = game.internals.seatedPlayers.find((player) => {

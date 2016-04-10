@@ -119,6 +119,46 @@ module.exports.updateSeatedUsers = (socket, data) => {
 			sendGameList();
 		}
 
+		if (completedDisconnectionCount === 7) {
+			let cloneGame = Object.assign({}, game), // todo-alpha need this?
+				saveGame = new Game({
+					uid: cloneGame.uid,
+					time: cloneGame.time,
+					date: new Date(),
+					roles: cloneGame.roles,
+					winningPlayers: cloneGame.internals.seatedPlayers.filter((player) => {
+						return player.wonGame;
+					}).map((player) => {
+						return {
+							userName: player.userName,
+							originalRole: player.originalRole,
+							trueRole: player.trueRole
+						};
+					}),
+					losingPlayers: cloneGame.internals.seatedPlayers.filter((player) => {
+						return !player.wonGame;
+					}).map((player) => {
+						return {
+							userName: player.userName,
+							originalRole: player.originalRole,
+							trueRole: player.trueRole
+						};
+					}),
+					reports: Object.keys(cloneGame.gameState.reportedGame).filter((seatNumber) => {
+						return cloneGame.gameState.reportedGame[seatNumber];
+					}).map((seatNumber) => {
+						return cloneGame.internals.seatedPlayers[seatNumber].userName;
+					}),
+					kobk: cloneGame.kobk
+				});
+		
+			saveGame.chats = cloneGame.chats.filter((chat) => {
+				return !chat.gameChat;
+			});
+
+			saveGame.save();
+		}
+
 		if (Object.keys(game.seated).length === 0 || completedDisconnectionCount === 7) {
 			games.splice(games.indexOf(game), 1);
 			sendGameList();
@@ -702,7 +742,7 @@ let dayPhase = (game) => {
 					});
 				}
 
-				if (seconds === devStatus.endingGame - 1) {
+				if (seconds === devStatus.endingGame - 1 || seconds === devStatus.endingGame - 3) {
 					game.internals.seatedPlayers.forEach((player) => {
 						if (!player.tableState.isVotable.selectedForElimination) {
 							highlightSeats(player, 'clear');
@@ -714,14 +754,6 @@ let dayPhase = (game) => {
 					game.internals.seatedPlayers.forEach((player) => {
 						if (!player.tableState.isVotable.selectedForElimination) {
 							highlightSeats(player, 'otherplayers', 'notify');
-						}
-					});
-				}
-
-				if (seconds === devStatus.endingGame - 3) {
-					game.internals.seatedPlayers.forEach((player) => {
-						if (!player.tableState.isVotable.selectedForElimination) {
-							highlightSeats(player, 'clear');
 						}
 					});
 				}
@@ -830,6 +862,7 @@ let endGame = (game) => {
 
 		elimination.transparent = transparent;
 	});
+
 	game.gameState.isCompleted = true;
 	sendInProgressGameUpdate(game);
 
@@ -845,9 +878,9 @@ let endGame = (game) => {
 
 	seatedPlayers.forEach((player, index) => {
 
-		// todo-alpha this doesn't quite match the rules re: tanner.  tanner won but both werewolves also won, tanner not on team village so they shouldn't.
+		// todo-alpha this doesn't quite match the rules re: tanner.
 
-		if (!werewolfEliminated && (player.trueRole === 'werewolf' || player.trueRole === 'minion') || 
+		if (!werewolfEliminated && (player.trueRole === 'werewolf' || player.trueRole === 'minion') && !tannerEliminations.length || 
 			
 			tannerEliminations.indexOf(index) !== -1 || 
 			
@@ -877,9 +910,6 @@ let endGame = (game) => {
 		let winningPlayers = seatedPlayers.filter((player) => {
 				return player.wonGame;
 			}),
-			losingPlayers = seatedPlayers.filter((player) => {
-				return !player.wonGame;
-			}),
 			winningPlayersIndex = winningPlayers.map((player) => {
 				return player.seatNumber;
 			}),
@@ -888,42 +918,12 @@ let endGame = (game) => {
 			}),
 			winningPlayersList = winningPlayers.map((player) => {
 				return player.userName;
-			}).join(' '),
-			saveGame = new Game({
-				uid: game.uid,
-				time: game.time,
-				date: new Date(),
-				roles: game.roles,
-				winningPlayers: winningPlayers.map((player) => {
-					return {
-						userName: player.userName,
-						originalRole: player.originalRole,
-						trueRole: player.trueRole
-					};
-				}),
-				losingPlayers: losingPlayers.map((player) => {
-					return {
-						userName: player.userName,
-						originalRole: player.originalRole,
-						trueRole: player.trueRole
-					};
-				}),
-				reports: seatedPlayers.filter((player) => {
-					return player.tableState.reported;
-				}).map((player) => {
-					return player.userName;
-				})        ,
-				kobk: game.kobk
-			});
+			}).join(' ');
 
 		game.chats.push({
 			gameChat: true,
-			chat: `${winningPlayers.length ? `The winning player${winningPlayersList.length === 1 ? '' : 's'} ${winningPlayersList.length === 1 ? 'is' : 'are'} ${winningPlayersList}.` : 'There are no winning players in this game.'}`,
+			chat: `${winningPlayers.length ? `The winning player${winningPlayerNames.length === 1 ? '' : 's'} ${winningPlayerNames.length === 1 ? 'is' : 'are'} ${winningPlayerNames}.` : 'There are no winning players in this game.'}`,
 			timestamp: new Date()
-		});
-
-		saveGame.chats = game.chats.filter((chat) => {
-			return !chat.gameChat;
 		});
 
 		game.tableState.seats.forEach((seat, index) => {
@@ -941,7 +941,6 @@ let endGame = (game) => {
 		});
 
 		sendInProgressGameUpdate(game);
-		saveGame.save();
 
 		Account.find({username: {$in: seatedPlayers.map((player) => {
 			return player.userName;
@@ -966,16 +965,18 @@ let endGame = (game) => {
 						return user.userName === player.username;
 					});
 
-					if (winner) {
-						userEntry.wins++;
-					} else {
-						userEntry.losses++; // todo-alpha crashed (userEntry undefined) when a player reloaded browser during end game phase
-					}
+					if (userEntry) {
+						if (winner) {
+							userEntry.wins++;
+						} else {
+							userEntry.losses++;
+						}
 
-					io.sockets.emit('userList', {
-						list: userList,
-						totalSockets: Object.keys(io.sockets.sockets).length
-					});
+						io.sockets.emit('userList', {
+							list: userList,
+							totalSockets: Object.keys(io.sockets.sockets).length
+						});
+					}
 				});
 			});
 		});
