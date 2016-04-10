@@ -265,6 +265,16 @@
 		.card-proceed {
 			box-shadow: 0 0 4px 4px $proceed;
 		}
+
+		.gameinformation-container {
+			position: absolute;
+			top: 10px;
+			left: 10px;
+
+			.game-name {
+				margin-right: 25px;
+			}
+		}
 	}
 
 	.ui.fitted.toggle.checkbox.truncate-game {

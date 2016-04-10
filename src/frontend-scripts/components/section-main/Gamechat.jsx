@@ -128,7 +128,7 @@ export default class Gamechat extends React.Component {
 				inProgress: gameInfo.inProgress
 			}
 
-			if (gameInfo.gameState.isStarted && !gameInfo.gameState.isCompleted) {
+			if (gameInfo.gameState.isStarted && !gameInfo.gameState.isCompleted && userInfo.seatNumber) {
 				let roles = _.uniq(gameInfo.roles),
 					roleRegexes = roles.map((role) => {
 						return new RegExp(`^i claim to be the ${role}`, 'gi');

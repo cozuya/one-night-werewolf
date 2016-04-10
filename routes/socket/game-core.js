@@ -328,7 +328,7 @@ let beginNightPhases = (game) => {
 					nightAction.highlight = 'centercards';
 					nightAction.action = 'singleWerewolf';
 				} else {
-					message = `You wake up, and see that the other ${werewolves.length === 2 ? 'werewolf' : 'werewolves'} in this game ${werewolves.length === 2 ? 'is' : 'are'}:`;
+					message = `You wake up, and see that the other ${werewolves.length === 2 ? 'werewolf' : 'werewolves'} in this game ${werewolves.length === 2 ? 'is' : 'are'} `;
 					nightAction.highlight = others.map((other) => {
 						return other.seatNumber;
 					});
@@ -353,7 +353,7 @@ let beginNightPhases = (game) => {
 					message = 'You wake up, and see that there are no werewolves in this game. Be careful - you lose if no villager is eliminated.';
 					game.internals.soloMinion = true;
 				} else {
-					message = `You wake up, and see that the ${werewolves.length === 1 ? 'werewolf' : 'werewolves'} in this game ${werewolves.length === 1 ? 'is' : 'are'}:`;
+					message = `You wake up, and see that the ${werewolves.length === 1 ? 'werewolf' : 'werewolves'} in this game ${werewolves.length === 1 ? 'is' : 'are'}`;
 					nightAction.highlight = werewolves.map((werewolf) => {
 						return werewolf.seatNumber;
 					});
@@ -380,7 +380,7 @@ let beginNightPhases = (game) => {
 				if (!others.length) {
 					message = 'You wake up, and see that you are the only mason';
 				} else {
-					message = `You wake up, and see that the ${others.length === 1 ? 'mason' : 'masons'} in this game ${others.length == 1 ? 'is' : 'are'}: `;
+					message = `You wake up, and see that the ${others.length === 1 ? 'mason' : 'masons'} in this game ${others.length == 1 ? 'is' : 'are'} `;
 					nightAction.highlight = others.map((other) => {
 						return other.seatNumber;
 					});
@@ -457,31 +457,21 @@ let nightPhases = (game, phases) => {
 						clearInterval(countDown);
 					} else {
 						game.status = `Night phase ${phases.length === 1 ? 1 : (phasesIndex).toString()} of ${phasesCount} ends in ${phaseTime} second${phaseTime === 1 ? '' : 's'}.`;
-						if (phaseTime === startPhaseTime - 1) {
+
+						if (phaseTime === startPhaseTime - 1 || phaseTime === startPhaseTime - 3) {
 							phasesPlayers.forEach((player) => {
 								if (player.tableState.nightAction.highlight) {
 									highlightSeats(player, player.tableState.nightAction.highlight, 'notify');
 								}
 							});
-						} else if (phaseTime === startPhaseTime - 2) {
-							phasesPlayers.forEach((player) => {
-								if (player.tableState.nightAction.highlight) {
-									highlightSeats(player, 'clear');
-								}
-							});
-						} else if (phaseTime === startPhaseTime - 3) {
-							phasesPlayers.forEach((player) => {
-								if (player.tableState.nightAction.highlight) {
-									highlightSeats(player, player.tableState.nightAction.highlight, 'notify');
-								}
-							});
-						} else if (phaseTime === startPhaseTime - 4) {
+						} else if (phaseTime === startPhaseTime - 2 || phaseTime === startPhaseTime - 4) {
 							phasesPlayers.forEach((player) => {
 								if (player.tableState.nightAction.highlight) {
 									highlightSeats(player, 'clear');
 								}
 							});
 						}
+
 						sendInProgressGameUpdate(game);
 					}
 					phaseTime--;
@@ -532,7 +522,7 @@ module.exports.updateUserNightActionEvent = (socket, data) => {
 					seat.isFlipped = false;
 					sendInProgressGameUpdate(game);
 				}, 3000);
-				chat.chat = `You select the ${selectedCard[data.action]} card and it is revealed to be a ${roleClicked}.`;
+				chat.chat = `You select the ${selectedCard[data.action]} card and it is revealed to be ${selectedCard[data.action] === 'insomniac' ? 'an' : 'a'} ${roleClicked}.`;
 			},
 			insomniac() {
 				let roleClicked = getTrueRoleBySeatNumber(data.action),
@@ -545,7 +535,7 @@ module.exports.updateUserNightActionEvent = (socket, data) => {
 					sendInProgressGameUpdate(game);
 				}, 3000);				
 				player.tableState.nightAction.completed = true;
-				chat.chat = `You look at your own card and it is revealed to be a ${roleClicked}.`;
+				chat.chat = `You look at your own card and it is revealed to be ${roleClicked === 'insomniac' ? 'an' : 'a'} ${roleClicked}.`;
 			},
 			troublemaker() {
 				let action1 = parseInt(data.action[0]),
@@ -607,7 +597,7 @@ module.exports.updateUserNightActionEvent = (socket, data) => {
 					sendInProgressGameUpdate(game);
 				}, 5000);
 
-				chat.chat = `You exchange cards between yourself and ${swappedPlayer.userName} and view your new role, which is a ${_role}.`;
+				chat.chat = `You exchange cards between yourself and ${swappedPlayer.userName} and view your new role, which is ${_role === 'insomniac' ? 'an' : 'a'} ${_role}.`;
 			},
 			seer() {
 				let selectedCard = {
@@ -628,7 +618,7 @@ module.exports.updateUserNightActionEvent = (socket, data) => {
 						seat.isFlipped = false;
 						sendInProgressGameUpdate(game);
 					}, 3000);
-					chat.chat = `You select to see the card of ${playerClicked.userName} and it is a ${playerClicked.originalRole}.`;
+					chat.chat = `You select to see the card of ${playerClicked.userName} and it is ${playerClicked.originalRole === 'insomniac' ? 'an' : 'a'} ${playerClicked.originalRole}.`;
 				} else {
 					let seats = [player.tableState.seats[parseInt(data.action[0])], player.tableState.seats[parseInt(data.action[1])]],
 						rolesClicked = data.action.map((role) => {
@@ -644,7 +634,7 @@ module.exports.updateUserNightActionEvent = (socket, data) => {
 						seats[1].isFlipped = false;
 						sendInProgressGameUpdate(game);
 					}, 3000);
-					chat.chat = `You select to see the ${selectedCard[data.action[1]]} and ${selectedCard[data.action[0]]} cards and they are a ${rolesClicked[1]} and a ${rolesClicked[0]}.`;
+					chat.chat = `You select to see the ${selectedCard[data.action[1]]} and ${selectedCard[data.action[0]]} cards and they are ${rolesClicked[1] === 'insomniac' ? 'an' : 'a'} ${rolesClicked[1]} and ${rolesClicked[0] === 'insomniac' ? 'an' : 'a'} ${rolesClicked[0]}.`;
 				}
 			}
 		};
@@ -928,7 +918,7 @@ let endGame = (game) => {
 
 		game.chats.push({
 			gameChat: true,
-			chat: winningPlayers.length ? `The winning player${winningPlayersList.length === 1 ? '' : 's'} ${winningPlayersList.length === 1 ? 'is' : 'are'} ${winningPlayersList}.` : `There are no winning players in this game.`,
+			chat: `${winningPlayers.length ? `The winning player${winningPlayersList.length === 1 ? '' : 's'} ${winningPlayersList.length === 1 ? 'is' : 'are'} ${winningPlayersList}.` : 'There are no winning players in this game.'}`,
 			timestamp: new Date()
 		});
 

@@ -14,7 +14,7 @@ export default class Table extends React.Component {
 			showClaims: false
 		};
 	}
-// todo-alpha make a new component in u/l corner with game name and length
+
 	componentDidUpdate(prevProps) {
 		let { gameInfo, userInfo } = this.props,
 			{ gameState } = gameInfo;
@@ -366,6 +366,17 @@ export default class Table extends React.Component {
 		}
 	}
 
+	createGameInformation() {
+		let { gameInfo } = this.props;
+
+		return (
+			<div className="gameinformation-container">
+				<span className="game-name">{gameInfo.name}</span>
+				<span className="game-time">{gameInfo.time}</span>
+			</div>
+		);
+	}
+
 	render() {
 		let { gameInfo, userInfo } = this.props;
 
@@ -374,6 +385,7 @@ export default class Table extends React.Component {
 				<div className={this.nightBlockerStatus('top')}></div>
 				<div className={this.nightBlockerStatus('bottom')}></div>
 				<div className="tableimage"></div>
+				{this.createGameInformation()}
 				{this.createSeats()}
 				{this.createCards()}
 				{(() => {
