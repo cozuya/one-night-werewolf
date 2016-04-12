@@ -120,40 +120,38 @@ module.exports.updateSeatedUsers = (socket, data) => {
 		}
 
 		if (completedDisconnectionCount === 7) {
-			let cloneGame = Object.assign({}, game), // todo-alpha need this?
-				saveGame = new Game({
-					uid: cloneGame.uid,
-					time: cloneGame.time,
-					date: new Date(),
-					roles: cloneGame.roles,
-					winningPlayers: cloneGame.internals.seatedPlayers.filter((player) => {
-						return player.wonGame;
-					}).map((player) => {
-						return {
-							userName: player.userName,
-							originalRole: player.originalRole,
-							trueRole: player.trueRole
-						};
-					}),
-					losingPlayers: cloneGame.internals.seatedPlayers.filter((player) => {
-						return !player.wonGame;
-					}).map((player) => {
-						return {
-							userName: player.userName,
-							originalRole: player.originalRole,
-							trueRole: player.trueRole
-						};
-					}),
-					reports: Object.keys(cloneGame.gameState.reportedGame).filter((seatNumber) => {
-						return cloneGame.gameState.reportedGame[seatNumber];
-					}).map((seatNumber) => {
-						return cloneGame.internals.seatedPlayers[seatNumber].userName;
-					}),
-					kobk: cloneGame.kobk
-				});
-		
-			saveGame.chats = cloneGame.chats.filter((chat) => {
-				return !chat.gameChat;
+			let saveGame = new Game({
+				uid: game.uid,
+				time: game.time,
+				date: new Date(),
+				roles: game.roles,
+				winningPlayers: game.internals.seatedPlayers.filter((player) => {
+					return player.wonGame;
+				}).map((player) => {
+					return {
+						userName: player.userName,
+						originalRole: player.originalRole,
+						trueRole: player.trueRole
+					};
+				}),
+				losingPlayers: game.internals.seatedPlayers.filter((player) => {
+					return !player.wonGame;
+				}).map((player) => {
+					return {
+						userName: player.userName,
+						originalRole: player.originalRole,
+						trueRole: player.trueRole
+					};
+				}),
+				reports: Object.keys(game.gameState.reportedGame).filter((seatNumber) => {
+					return game.gameState.reportedGame[seatNumber];
+				}).map((seatNumber) => {
+					return game.internals.seatedPlayers[seatNumber].userName;
+				}),
+				kobk: game.kobk,
+				chats: game.chats.filter((chat) => {
+					return !chat.gameChat;
+				})
 			});
 
 			saveGame.save();
@@ -845,7 +843,7 @@ let endGame = (game) => {
 
 	seatedPlayers.forEach((player, index) => {
 		if (player.trueRole === 'hunter' && eliminatedPlayersIndex.indexOf(index) !== -1 && eliminatedPlayersIndex.length !== 7) {
-			eliminatedPlayersIndex.push(player.selectedForElimination);
+			eliminatedPlayersIndex.push(parseInt(player.selectedForElimination));
 		}
 
 		if (player.trueRole === 'werewolf' || player.trueRole === 'minion') {
@@ -865,7 +863,6 @@ let endGame = (game) => {
 
 	game.gameState.isCompleted = true;
 	sendInProgressGameUpdate(game);
-
 	eliminatedPlayersIndex.forEach((eliminatedPlayerIndex) => {
 		if (seatedPlayers[eliminatedPlayerIndex].trueRole === 'werewolf' || seatedPlayers[eliminatedPlayerIndex].trueRole === 'minion' && game.internals.soloMinion) {
 			werewolfEliminated = true;

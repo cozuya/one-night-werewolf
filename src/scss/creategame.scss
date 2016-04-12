@@ -74,7 +74,7 @@
 		padding: 0 !important;
 		text-align: center;
 
-		 div {
+		.info-popup {
 			height: 110px;
 			margin-bottom: 5px;
 			border-radius: 4px;
@@ -133,7 +133,6 @@
 		-moz-user-select: none;
 		-ms-user-select: none;
 		user-select: none;
-		font-family: "Raleway", Helvetica, Arial, sans-serif;
 		.row:first-child {
 			display: block;
 			padding-bottom: 0;

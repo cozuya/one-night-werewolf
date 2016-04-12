@@ -135,7 +135,7 @@ module.exports.handleUpdatedTruncateGame = (data) => {
 	}
 };
 
-module.exports.handleUpdatedReportGame = (socket, data) => { // todo-alpha unclickable after game is done - need to restructure this idea as private tablestate goes away on game completion
+module.exports.handleUpdatedReportGame = (socket, data) => {
 	let game = games.find((el) => {
 			return el.uid === data.uid;
 		}),

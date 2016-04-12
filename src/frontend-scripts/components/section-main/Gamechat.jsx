@@ -223,13 +223,13 @@ export default class Gamechat extends React.Component {
 						};
 					}),
 					{
-						role: 'werewolves', // YES IT HAS TO BE DONE IN THIS ORDER I have no idea why but if you want a good laugh put this one first.  Babel issue?  Lodash?  Aliens?
+						role: 'werewolves',
 						team: 'werewolf',
 						regex: /werewolves/gi
 					}
 				];
 
-			roleRegexes.forEach((roleRegex) => {
+			roleRegexes.forEach((roleRegex) => { // todo-alpha this fucks up horribly when a player's name is inside of a gamechat.  need to restructure the way I do gamechats here so that regex only happens on the "role" or "player" fields not the whole chat.
 				chatContents = chatContents.replace(roleRegex.regex, `<span class="chat-role--${roleRegex.team}">${roleRegex.role}</span>`);
 			});
 

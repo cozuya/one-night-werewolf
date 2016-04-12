@@ -29,7 +29,7 @@ export default class Playerlist extends React.Component {
 					if (Object.keys(this.props.userList).length) {
 						let { list } = this.props.userList;
 						
-						list.sort((a, b) => {
+						list.sort((a, b) => {  // todo-alpha this "bounces" on update for 0/0 players
 							let aTotal = a.wins + a.losses,
 								bTotal = b.wins + b.losses;
 
