@@ -215,7 +215,7 @@ let startGame = (game) => {
 
 		game.internals.unSeatedGameChats.push({
 			gameChat: true,
-			chat: 'The game begins.',
+			chat: 'The game begins.', // todo-alpha test against a player named "game"
 			timestamp: new Date()
 		});
 
