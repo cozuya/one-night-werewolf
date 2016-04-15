@@ -406,7 +406,7 @@ let beginNightPhases = (game) => {
 				break;
 			
 			case 'mason': {
-				let others = masons.filter((mason) => {
+				others = masons.filter((mason) => {
 						return mason.userName !== player.userName;
 					});
 
