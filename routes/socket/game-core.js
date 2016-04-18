@@ -157,14 +157,17 @@ module.exports.updateSeatedUsers = (socket, data) => {
 			saveGame.save();
 		}
 
-		if (Object.keys(game.seated).length === 0 || completedDisconnectionCount === 7) {
-			games.splice(games.indexOf(game), 1);
-			sendGameList();
-		}
 
 		socket.leave(game.uid);
-		io.sockets.in(data.uid).emit('gameUpdate', secureGame(game));
-		socket.emit('gameUpdate', {}, data.isSettings);
+		if (Object.keys(game.seated).length === 0 || completedDisconnectionCount === 7) {
+			socket.emit('gameUpdate', {}, data.isSettings);
+			io.sockets.in(data.uid).emit('gameUpdate', {});
+			games.splice(games.indexOf(game), 1);
+			sendGameList();
+		} else {
+			io.sockets.in(data.uid).emit('gameUpdate', secureGame(game));
+			socket.emit('gameUpdate', {}, data.isSettings);
+		}
 	}
 };
 
@@ -875,15 +878,13 @@ let endGame = (game) => {
 
 	seatedPlayers.forEach((player, index) => {
 
-		// todo-alpha this doesn't quite match the rules re: tanner.
-
 		if (!werewolfEliminated && (player.trueRole === 'werewolf' || player.trueRole === 'minion') && !tannerEliminations.length || 
 			
 			tannerEliminations.indexOf(index) !== -1 || 
 			
 			(werewolfEliminated && (player.trueRole !== 'werewolf' && player.trueRole !== 'minion' && player.trueRole !== 'tanner') && eliminatedPlayersIndex.length !== 7) || 
 			
-			((player.trueRole === 'werewolf' || player.trueRole === 'minion') && eliminatedPlayersIndex.length === 7) || 
+			((player.trueRole === 'werewolf' || player.trueRole === 'minion' && !game.internals.soloMinion) && eliminatedPlayersIndex.length === 7) || 
 			
 			(eliminatedPlayersIndex.length === 7 && !werewolfTeamInGame)) {
 			player.wonGame = true;
