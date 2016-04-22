@@ -47,8 +47,16 @@ module.exports = () => {
 				created: new Date()
 			};
 
-		if (!/^[a-z0-9]+$/i.test(username) && username.length < 15) {
+		if (!/^[a-z0-9]+$/i.test(username)) {
 			res.status(401).json({message: 'Sorry, your username can only be alphanumeric.'});
+		} else if (username.length < 4) {
+			res.status(401).json({message: 'Sorry, your username is too short.'});
+		} else if (password.length > 19) {
+			res.status(401).json({message: 'Sorry, your username is too long.'});
+		// } else if (password.length < 5) {	
+		// 	res.status(401).json({message: 'Sorry, your password is too short.'});
+		} else if (password.length > 50) {
+			res.status(401).json({message: 'Sorry, your password is too long.'});
 		} else {
 			Account.register(new Account(save), password, (err) => {
 				if (err) {

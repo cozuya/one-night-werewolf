@@ -229,13 +229,33 @@ export default class Gamechat extends React.Component {
 					}
 				];
 
-			roleRegexes.forEach((roleRegex) => { // todo-alpha this fucks up horribly when a player's name is inside of a gamechat.  need to restructure the way I do gamechats here so that regex only happens on the "role" or "player" fields not the whole chat.
-				chatContents = chatContents.replace(roleRegex.regex, `<span class="chat-role--${roleRegex.team}">${roleRegex.role}</span>`);
-			});
+			if (!chat.gameChat) {
+				roleRegexes.forEach((roleRegex) => { // todo-alpha this fucks up horribly when a player's name is inside of a gamechat.  need to restructure the way I do gamechats here so that regex only happens on the "role" or "player" fields not the whole chat.
+					chatContents = chatContents.replace(roleRegex.regex, `<span class="chat-role--${roleRegex.team}">${roleRegex.role}</span>`);
+				});
 
-			playerRegexes.forEach((playerRegex) => {
-				chatContents = chatContents.replace(playerRegex.regex, `<span class="chat-player">${playerRegex.playerName}</span>`);
-			});
+				playerRegexes.forEach((playerRegex) => {
+					chatContents = chatContents.replace(playerRegex.regex, `<span class="chat-player">${playerRegex.playerName}</span>`);
+				});
+			} else {
+				chat.toProcess.forEach((toProcessChat, index) => {
+					let processedChat;
+
+					if (toProcessChat.type === 'roleName') {
+						roleRegexes.forEach((roleRegex) => {
+							processedChat = toProcessChat.replace(roleRegex.regex, `<span class="chat-role--${roleRegex.team}">${roleRegex.role}</span>`);
+						});
+					} else {
+						playerRegexes.forEach((playerRegex) => {
+							processedChat = toProcessChat.replace(playerRegex.regex, `<span class="chat-player">${playerRegex.playerName}</span>`);
+						});
+					}
+
+					chat.splice(index + 1, 0, processedChat);
+				});
+
+				chatContents = chatContents.join(''); 
+			}
 
 			if (chat.gameChat && (this.state.chatFilter === 'Game' || this.state.chatFilter === 'All')) {
 				return (

@@ -64,6 +64,18 @@ export default () => {
 			.modal('show');
 	});
 
+	$('body').on('focus', '#signup-username', function () {
+		$(this).parent().next().text('3-12 alphanumeric characters.').slideDown();
+	});
+
+	$('body').on('focus', '#signup-password', function () {
+		$(this).parent().next().text('6-50 characters.  We securely store your passwords and never in plain text.').slideDown();
+	});	
+
+	$('body').on('blur', '.signup-modal .ui.left.icon.input input', function () {
+		$(this).parent().next().slideUp();
+	});
+
 	$('button.signin-submit').on('click', function(event) {
 		event.preventDefault();
 		let username = $('#signin-username').val(),

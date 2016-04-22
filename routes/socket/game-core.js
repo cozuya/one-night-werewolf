@@ -207,10 +207,22 @@ let startGame = (game) => {
 		let nightPhasePause = devStatus.nightPhasePause,
 			countDown;
 		game.internals.seatedPlayers.forEach((player, index) => {
+			// player.gameChats.push({
+			// 	gameChat: true,
+			// 	userName: player.userName,
+			// 	chat: `The game begins and you receive the ${player.trueRole} role.`,
+			// 	timestamp: new Date()
+			// });
 			player.gameChats.push({
 				gameChat: true,
 				userName: player.userName,
-				chat: `The game begins and you receive the ${player.trueRole} role.`,
+				chat: ['The game begins and you receive the ', 'role.'],
+				toProcess: [
+					{
+						text: player.trueRole,
+						type: 'roleName' // 'playerName'
+					}
+				],
 				timestamp: new Date()
 			});
 			player.tableState.seats[index].role = game.internals.seatedPlayers[index].trueRole;
