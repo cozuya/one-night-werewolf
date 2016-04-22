@@ -877,10 +877,6 @@ let endGame = (game) => {
 	});
 
 	seatedPlayers.forEach((player, index) => {
-<<<<<<< HEAD
-
-=======
->>>>>>> 9eb34e813664869a49c1b705aa9e748e69085fa7
 		if (!werewolfEliminated && (player.trueRole === 'werewolf' || player.trueRole === 'minion') && !tannerEliminations.length || 
 			
 			tannerEliminations.indexOf(index) !== -1 || 
