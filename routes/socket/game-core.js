@@ -844,7 +844,7 @@ let endGame = (game) => {
 		}
 	});
 
-	seatedPlayers.forEach((player, index) => {
+	seatedPlayers.forEach((player, index) => { // todo-release hunter's fade out thingy should happen later/not give away that he or she is a hunter
 		if (player.trueRole === 'hunter' && eliminatedPlayersIndex.indexOf(index) !== -1 && eliminatedPlayersIndex.length !== 7) {
 			eliminatedPlayersIndex.push(parseInt(player.selectedForElimination));
 		}
@@ -877,12 +877,15 @@ let endGame = (game) => {
 	});
 
 	seatedPlayers.forEach((player, index) => {
+<<<<<<< HEAD
 
+=======
+>>>>>>> 9eb34e813664869a49c1b705aa9e748e69085fa7
 		if (!werewolfEliminated && (player.trueRole === 'werewolf' || player.trueRole === 'minion') && !tannerEliminations.length || 
 			
 			tannerEliminations.indexOf(index) !== -1 || 
 			
-			(werewolfEliminated && (player.trueRole !== 'werewolf' && player.trueRole !== 'minion' && player.trueRole !== 'tanner') && eliminatedPlayersIndex.length !== 7) || 
+			(werewolfEliminated && player.trueRole !== 'werewolf' && player.trueRole !== 'minion' && player.trueRole !== 'tanner' && eliminatedPlayersIndex.length !== 7) || 
 			
 			((player.trueRole === 'werewolf' || player.trueRole === 'minion' && !game.internals.soloMinion) && eliminatedPlayersIndex.length === 7) || 
 			
