@@ -1,7 +1,6 @@
 'use strict';
 
-let mongoose = require('mongoose'),
-	passport = require('passport'),
+let passport = require('passport'),
 	Account = require('../models/account');
 
 let ensureAuthenticated = (req, res, next)  => {
@@ -48,19 +47,19 @@ module.exports = () => {
 				created: new Date()
 			};
 
-		if (!/^[a-z0-9]+$/i.test(username)) {
+		if (!/^[a-z0-9]+$/i.test(username) && username.length < 15) {
 			res.status(401).json({message: 'Sorry, your username can only be alphanumeric.'});
-		}
+		} else {
+			Account.register(new Account(save), password, (err) => {
+				if (err) {
+					console.log(err);
+				}
 
-		Account.register(new Account(save), password, (err) => {
-			if (err) {
-				console.log(err);
-			}
-
-			passport.authenticate('local')(req, res, () => {
-				res.send();
+				passport.authenticate('local')(req, res, () => {
+					res.send();
+				});
 			});
-		});
+		}
 	});
 
 	app.post('/account/signin', passport.authenticate('local'), (req, res) => {

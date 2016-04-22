@@ -80,7 +80,10 @@
 				font-weight: 700;
 				left: 50%;
 				margin-left: -30px;
-				width: 100%;
+				text-overflow: ellipsis;
+				width: 85px;
+				white-space: nowrap;
+				overflow: hidden;
 				text-align: center;
 			}
 
