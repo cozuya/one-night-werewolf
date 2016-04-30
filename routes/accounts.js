@@ -49,7 +49,7 @@ module.exports = () => {
 
 		if (!/^[a-z0-9]+$/i.test(username)) {
 			res.status(401).json({message: 'Sorry, your username can only be alphanumeric.'});
-		} else if (username.length < 4) {
+		} else if (username.length < 3) {
 			res.status(401).json({message: 'Sorry, your username is too short.'});
 		} else if (username.length > 19) {
 			res.status(401).json({message: 'Sorry, your username is too long.'});

@@ -93,8 +93,9 @@ module.exports.updateSeatedUsers = (socket, data) => {
 			startGameCountdown(game);
 		} else {
 			io.sockets.in(data.uid).emit('gameUpdate', secureGame(game));
-			sendGameList();
 		}
+
+		sendGameList();
 	} else if (game) {
 		let completedDisconnectionCount = 0;
 
