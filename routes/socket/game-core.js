@@ -334,7 +334,7 @@ let beginNightPhases = (game) => {
 	// game.internals.centerRoles.forEach((role) => {
 	// 	let count = 1;
 
-	// 	if (role === 'robber' || role === 'troublemaker') {
+	// 	if (role === 'insomniac' && !insomniacs.length || role === 'robber' || role === 'troublemaker') {
 	// 		count++;
 	// 	}
 
@@ -390,7 +390,7 @@ let beginNightPhases = (game) => {
 							text: `${others.length > 1 ? 'werewolves' : 'werewolf'}`,
 							type: 'roleName'
 						},
-						{text: ` in this game ${others.length > 1 ? 'are ' : 'is '} `}
+						{text: ` in this game ${others.length > 1 ? 'are' : 'is'} `}
 					];
 
 					werewolves.forEach((player, index) => {
@@ -570,7 +570,6 @@ let nightPhases = (game, phases) => {
 						gameChat: true,
 						userName: player.userName,
 						chat: player.tableState.nightAction.gameChat,
-						// toProcess: player.tableState.nightAction.toProcess,
 						timestamp: new Date()
 					};
 					
