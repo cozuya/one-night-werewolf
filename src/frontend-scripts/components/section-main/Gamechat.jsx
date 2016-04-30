@@ -230,7 +230,7 @@ export default class Gamechat extends React.Component {
 				];
 
 			if (!chat.gameChat) {
-				roleRegexes.forEach((roleRegex) => { // todo-alpha this fucks up horribly when a player's name is inside of a gamechat.  need to restructure the way I do gamechats here so that regex only happens on the "role" or "player" fields not the whole chat.
+				roleRegexes.forEach((roleRegex) => {
 					chatContents = chatContents.replace(roleRegex.regex, `<span class="chat-role--${roleRegex.team}">${roleRegex.role}</span>`);
 				});
 
@@ -238,36 +238,29 @@ export default class Gamechat extends React.Component {
 					chatContents = chatContents.replace(playerRegex.regex, `<span class="chat-player">${playerRegex.playerName}</span>`);
 				});
 			} else {
-				if (typeof chat.toProcess !== 'undefined') {
-					let replaceIndex = 0;
+				let processedChat = [];
 
-					chat.toProcess.forEach((toProcessChat, index) => {
-						let processedChat;
-
-						console.log(toProcessChat);
-
-						if (toProcessChat.type === 'roleName') {
+				chatContents.forEach((chatInfo) => {
+					if (!chatInfo.type) {
+						processedChat.push(chatInfo.text);
+					} else {
+						if (chatInfo.type === 'roleName') {
 							roleRegexes.forEach((roleRegex) => {
-								if (roleRegex.regex.test(toProcessChat.text)) {
-									processedChat = toProcessChat.text.replace(roleRegex.regex, `<span class="chat-role--${roleRegex.team}">${roleRegex.role}</span>`);
+								if (roleRegex.regex.test(chatInfo.text)) {
+									processedChat.push(chatInfo.text.replace(roleRegex.regex, `<span class="chat-role--${roleRegex.team}">${roleRegex.role}</span>`));
 								}
 							});
 						} else {
 							playerRegexes.forEach((playerRegex) => {
-								if (playerRegex.regex.test(toProcessChat.text)) {
-									processedChat = toProcessChat.text.replace(playerRegex.regex, `<span class="chat-player">${playerRegex.playerName}</span>`);
+								if (playerRegex.regex.test(chatInfo.text)) {
+									processedChat.push(chatInfo.text.replace(playerRegex.regex, `<span class="chat-player">${playerRegex.playerName}</span>`));
 								}
 							});
 						}
+					}
+				});
 
-						console.log(processedChat);
-
-						chatContents.splice(index + replaceIndex + 1, 0, processedChat);
-						replaceIndex++;
-					});
-				}
-
-				chatContents = chatContents.join(''); 
+				chatContents = processedChat.join(''); 
 			}
 
 			if (chat.gameChat && (this.state.chatFilter === 'Game' || this.state.chatFilter === 'All')) {
