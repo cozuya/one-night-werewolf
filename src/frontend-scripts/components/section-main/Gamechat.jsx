@@ -238,21 +238,34 @@ export default class Gamechat extends React.Component {
 					chatContents = chatContents.replace(playerRegex.regex, `<span class="chat-player">${playerRegex.playerName}</span>`);
 				});
 			} else {
-				chat.toProcess.forEach((toProcessChat, index) => {
-					let processedChat;
+				if (typeof chat.toProcess !== 'undefined') {
+					let replaceIndex = 0;
 
-					if (toProcessChat.type === 'roleName') {
-						roleRegexes.forEach((roleRegex) => {
-							processedChat = toProcessChat.replace(roleRegex.regex, `<span class="chat-role--${roleRegex.team}">${roleRegex.role}</span>`);
-						});
-					} else {
-						playerRegexes.forEach((playerRegex) => {
-							processedChat = toProcessChat.replace(playerRegex.regex, `<span class="chat-player">${playerRegex.playerName}</span>`);
-						});
-					}
+					chat.toProcess.forEach((toProcessChat, index) => {
+						let processedChat;
 
-					chat.splice(index + 1, 0, processedChat);
-				});
+						console.log(toProcessChat);
+
+						if (toProcessChat.type === 'roleName') {
+							roleRegexes.forEach((roleRegex) => {
+								if (roleRegex.regex.test(toProcessChat.text)) {
+									processedChat = toProcessChat.text.replace(roleRegex.regex, `<span class="chat-role--${roleRegex.team}">${roleRegex.role}</span>`);
+								}
+							});
+						} else {
+							playerRegexes.forEach((playerRegex) => {
+								if (playerRegex.regex.test(toProcessChat.text)) {
+									processedChat = toProcessChat.text.replace(playerRegex.regex, `<span class="chat-player">${playerRegex.playerName}</span>`);
+								}
+							});
+						}
+
+						console.log(processedChat);
+
+						chatContents.splice(index + replaceIndex + 1, 0, processedChat);
+						replaceIndex++;
+					});
+				}
 
 				chatContents = chatContents.join(''); 
 			}

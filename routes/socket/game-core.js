@@ -207,16 +207,10 @@ let startGame = (game) => {
 		let nightPhasePause = devStatus.nightPhasePause,
 			countDown;
 		game.internals.seatedPlayers.forEach((player, index) => {
-			// player.gameChats.push({
-			// 	gameChat: true,
-			// 	userName: player.userName,
-			// 	chat: `The game begins and you receive the ${player.trueRole} role.`,
-			// 	timestamp: new Date()
-			// });
 			player.gameChats.push({
 				gameChat: true,
 				userName: player.userName,
-				chat: ['The game begins and you receive the ', 'role.'],
+				chat: ['The game begins and you receive the ', ' role.'],
 				toProcess: [
 					{
 						text: player.trueRole,
@@ -230,7 +224,7 @@ let startGame = (game) => {
 
 		game.internals.unSeatedGameChats.push({
 			gameChat: true,
-			chat: 'The game begins.', // todo-alpha test against a player named "game"
+			chat: ['The game begins.'], // todo-alpha test against a player named "game"
 			timestamp: new Date()
 		});
 
@@ -275,7 +269,7 @@ let beginNightPhases = (game) => {
 				player.tableState.nightAction = {
 					action: 'seer',
 					phase: 1,
-					gameChat: 'You wake up, and may look at one player\'s card, or two of the center cards.',
+					gameChat: ['You wake up, and may look at one player\'s card, or two of the center cards.'],
 					highlight: 'nonplayer'
 				};
 
@@ -285,7 +279,7 @@ let beginNightPhases = (game) => {
 			case 'robber':
 				player.tableState.nightAction = {
 					action: 'robber',
-					gameChat: 'You wake up, and may exchange your card with another player\'s, and view your new role (but do not take an additional night action).',
+					gameChat: ['You wake up, and may exchange your card with another player\'s, and view your new role (but do not take an additional night action).'],
 					highlight: 'otherplayers'
 				};
 
@@ -302,7 +296,7 @@ let beginNightPhases = (game) => {
 			case 'troublemaker':
 				player.tableState.nightAction = {
 					action: 'troublemaker',
-					gameChat: 'You wake up, and may switch cards between two other players without viewing them.',
+					gameChat: ['You wake up, and may switch cards between two other players without viewing them.'],
 					highlight: 'otherplayers'
 				};
 
@@ -319,7 +313,7 @@ let beginNightPhases = (game) => {
 			case 'insomniac':
 				player.tableState.nightAction = {
 					action: 'insomniac',
-					gameChat: 'You wake up, and may view your card again.',
+					gameChat: ['You wake up, and may view your card again.'],
 					highlight: 'player'
 				};
 
@@ -377,11 +371,17 @@ let beginNightPhases = (game) => {
 				});
 
 				if (werewolves.length === 1) {
-					message = 'You wake up, and see no other werewolves. You may look at a center card';
+					message = ['You wake up, and see no other ', '. You may look at a center card'];
+					nightAction.toProcess = [{
+						type: 'roleName',
+						text: 'werewolves'
+					}];
 					nightAction.highlight = 'centercards';
 					nightAction.action = 'singleWerewolf';
 				} else {
-					message = `You wake up, and see that the other ${werewolves.length === 2 ? 'werewolf' : 'werewolves'} in this game ${werewolves.length === 2 ? 'is' : 'are'} `;
+					message = ['You wake up, and see that the other ', ` in this game ${werewolves.length === 2 ? 'is' : 'are'} `];
+					nightAction.toProcess = werewolves.length === 2 ? [{text: 'werewolf'}] : [{text: 'werewolves'}];
+					nightAction.toProcess[0].type = 'roleName';
 					nightAction.highlight = others.map((other) => {
 						return other.seatNumber;
 					});
@@ -389,9 +389,12 @@ let beginNightPhases = (game) => {
 				}
 
 				others.forEach((other) => {
-					message = `${message} ${other.userName}`;
+					nightAction.toProcess.push({
+						type: 'playerName',
+						text: other.userName
+					});
 				});
-				message += '.';
+				message.push('.');
 				nightAction.gameChat = message;
 				player.tableState.nightAction = nightAction;
 				break;
@@ -403,19 +406,33 @@ let beginNightPhases = (game) => {
 				};
 
 				if (!werewolves.length) {
-					message = 'You wake up, and see that there are no werewolves in this game. Be careful - you lose if no villager is eliminated.';
+					message = ['You wake up, and see that there are no ', ' in this game. Be careful - you lose if no ', ' is eliminated.'];
+					nightAction.toProcess = [{
+							type: 'roleName',
+							text: 'werewolves'
+						},
+						{
+							type: 'roleName',
+							text: 'villager'
+						}
+					];
 					game.internals.soloMinion = true;
 				} else {
-					message = `You wake up, and see that the ${werewolves.length === 1 ? 'werewolf' : 'werewolves'} in this game ${werewolves.length === 1 ? 'is' : 'are'}`;
+					message = ['You wake up, and see that the ', ` in this game ${werewolves.length === 1 ? 'is' : 'are'}`];
+					nightAction.toProcess = werewolves.length === 1 ? [{text: 'werewolf'}] : [{text: 'werewolves'}];
+					nightAction.toProcess[0].type = 'roleName';
 					nightAction.highlight = werewolves.map((werewolf) => {
 						return werewolf.seatNumber;
 					});
 				}
 
 				werewolves.forEach((werewolf) => {
-					message = `${message} ${werewolf.userName}`;
+					nightAction.toProcess.push({
+						type: 'playerName',
+						text: werewolf.userName
+					});
 				});
-				message += '.';
+				message.push('.');
 				nightAction.gameChat = message;
 				player.tableState.nightAction = nightAction;
 				break;
@@ -431,19 +448,28 @@ let beginNightPhases = (game) => {
 				};
 
 				if (!others.length) {
-					message = 'You wake up, and see that you are the only mason';
+					message = ['You wake up, and see that you are the only '];
+					nightAction.toProcess = [{
+						type: 'roleName',
+						text: 'mason'
+					}];
 				} else {
-					message = `You wake up, and see that the ${others.length === 1 ? 'mason' : 'masons'} in this game ${others.length == 1 ? 'is' : 'are'} `;
+					message = ['You wake up, and see that the ', `in this game ${others.length == 1 ? 'is' : 'are'} `];
+					nightAction.toProcess = others.length === 1 ? [{text: 'mason'}] : [{text: 'masons'}];
+					nightAction.toProcess[0].type = 'roleName';
 					nightAction.highlight = others.map((other) => {
 						return other.seatNumber;
 					});
 				}
 
 				others.forEach((other) => {
-					message = `${message} ${other.userName}`;
+					nightAction.toProcess.push({
+						type: 'playerName',
+						text: other.userName
+					});
 				});
 
-				message += '.';
+				message.push('.');
 				nightAction.gameChat = message;
 				player.tableState.nightAction = nightAction;
 			}
@@ -467,7 +493,7 @@ let nightPhases = (game, phases) => {
 			game.status = 'Day begins..';
 			game.internals.unSeatedGameChats.push({
 				gameChat: true,
-				chat: 'Night ends and the day begins.',						
+				chat: ['Night ends and the day begins.'],
 				timestamp: new Date()
 			});
 			game.gameState.isNight = false;
@@ -491,6 +517,7 @@ let nightPhases = (game, phases) => {
 						gameChat: true,
 						userName: player.userName,
 						chat: player.tableState.nightAction.gameChat,
+						toProcess: player.tableState.nightAction.toProcess,
 						timestamp: new Date()
 					};
 					
@@ -575,7 +602,11 @@ module.exports.updateUserNightActionEvent = (socket, data) => {
 					seat.isFlipped = false;
 					sendInProgressGameUpdate(game);
 				}, 3000);
-				chat.chat = `You select the ${selectedCard[data.action]} card and it is revealed to be ${selectedCard[data.action] === 'insomniac' ? 'an' : 'a'} ${roleClicked}.`;
+				chat.chat = [`You select the ${selectedCard[data.action]} card and it is revealed to be ${selectedCard[data.action] === 'insomniac' ? 'an' : 'a'} `, '.'];
+				chat.toProcess = [{
+					type: 'roleName',
+					text: roleClicked
+				}];
 			},
 			insomniac() {
 				let roleClicked = getTrueRoleBySeatNumber(data.action),
@@ -588,7 +619,11 @@ module.exports.updateUserNightActionEvent = (socket, data) => {
 					sendInProgressGameUpdate(game);
 				}, 3000);				
 				player.tableState.nightAction.completed = true;
-				chat.chat = `You look at your own card and it is revealed to be ${roleClicked === 'insomniac' ? 'an' : 'a'} ${roleClicked}.`;
+				chat.chat = [`You look at your own card and it is revealed to be ${roleClicked === 'insomniac' ? 'an' : 'a'} `, '.'];
+				chat.toProcess = [{
+					type: 'roleName',
+					text: roleClicked
+				}];
 			},
 			troublemaker() {
 				let action1 = parseInt(data.action[0]),
@@ -615,7 +650,17 @@ module.exports.updateUserNightActionEvent = (socket, data) => {
 				player.tableState.nightAction.completed = true;
 				seat1.swappedWithSeat = action2;
 				seat2.swappedWithSeat = action1;
-				chat.chat = `You swap the two cards between ${seat1player.userName} and ${seat2player.userName}.`;
+				chat.chat = ['You swap the two cards between ', ' and ', '.'];
+				chat.toProcess = [
+					{
+						type: 'playerName',
+						text: seat1player.userName
+					},
+					{
+						type: 'playerName',
+						text: seat2player.userName
+					}
+				];
 			},
 			robber() {
 				let action = parseInt(data.action),
@@ -650,7 +695,17 @@ module.exports.updateUserNightActionEvent = (socket, data) => {
 					sendInProgressGameUpdate(game);
 				}, 5000);
 
-				chat.chat = `You exchange cards between yourself and ${swappedPlayer.userName} and view your new role, which is ${_role === 'insomniac' ? 'an' : 'a'} ${_role}.`;
+				chat.chat = ['You exchange cards between yourself and ', ` and view your new role, which is ${_role === 'insomniac' ? 'an' : 'a'} `, '.'];
+				chat.toProcess = [
+					{
+						type: 'playerName',
+						text: swappedPlayer.userName
+					},
+					{
+						type: 'roleName',
+						text: _role
+					}
+				];
 			},
 			seer() {
 				let selectedCard = {
@@ -671,7 +726,17 @@ module.exports.updateUserNightActionEvent = (socket, data) => {
 						seat.isFlipped = false;
 						sendInProgressGameUpdate(game);
 					}, 3000);
-					chat.chat = `You select to see the card of ${playerClicked.userName} and it is ${playerClicked.originalRole === 'insomniac' ? 'an' : 'a'} ${playerClicked.originalRole}.`;
+					chat.chat = ['You select to see the card of ', ` and it is ${playerClicked.originalRole === 'insomniac' ? 'an' : 'a'} `, '.'];
+					chat.toProcess = [
+						{
+							type: 'playerName',
+							text: playerClicked.userName
+						},
+						{
+							type: 'roleName',
+							text: playerClicked.originalRole
+						}
+					];
 				} else {
 					let seats = [player.tableState.seats[parseInt(data.action[0])], player.tableState.seats[parseInt(data.action[1])]],
 						rolesClicked = data.action.map((role) => {
@@ -687,7 +752,17 @@ module.exports.updateUserNightActionEvent = (socket, data) => {
 						seats[1].isFlipped = false;
 						sendInProgressGameUpdate(game);
 					}, 3000);
-					chat.chat = `You select to see the ${selectedCard[data.action[1]]} and ${selectedCard[data.action[0]]} cards and they are ${rolesClicked[1] === 'insomniac' ? 'an' : 'a'} ${rolesClicked[1]} and ${rolesClicked[0] === 'insomniac' ? 'an' : 'a'} ${rolesClicked[0]}.`;
+					chat.chat = [`You select to see the ${selectedCard[data.action[1]]} and ${selectedCard[data.action[0]]} cards and they are ${rolesClicked[1] === 'insomniac' ? 'an' : 'a'} `,  ` and ${rolesClicked[0] === 'insomniac' ? 'an' : 'a'} `, '.'];
+					chat.toProcess = [
+						{
+							type: 'roleName',
+							text: rolesClicked[1]
+						},
+						{
+							type: 'roleName',
+							text: rolesClicked[0]
+						}
+					];
 				}
 			}
 		};
@@ -746,7 +821,7 @@ let dayPhase = (game) => {
 						player.gameChats.push({
 							gameChat: true,
 							userName: player.userName,
-							chat: 'The game is coming to an end and you must select a player for elimination.',
+							chat: ['The game is coming to an end and you must select a player for elimination.'],
 							timestamp: new Date()
 						});
 						player.tableState.isVotable = {
@@ -799,7 +874,7 @@ let eliminationPhase = (game) => {
 
 	game.chats.push({
 		gameChat: true,
-		chat: 'The game ends.',
+		chat: ['The game ends.'],
 		timestamp: new Date()
 	});
 
@@ -928,6 +1003,8 @@ let endGame = (game) => {
 			winningPlayersList = winningPlayers.map((player) => {
 				return player.userName;
 			}).join(' ');
+
+			// todo-alpha change for new way of doing gamechats
 
 		game.chats.push({
 			gameChat: true,
