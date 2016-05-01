@@ -1,6 +1,7 @@
 Model info
 
 internals
+	centerRoles array of strings of roles
 	soloMinion bool
 	seatedPlayers array 0-6
 		seatNumber number 0-6

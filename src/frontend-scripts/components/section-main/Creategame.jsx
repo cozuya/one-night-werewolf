@@ -18,7 +18,7 @@ export default class Creategame extends React.Component {
 		}
 	}
 
-	componentDidMount() {
+	componentDidMount() { // todo-alpha need to clear 'default roles' somehow here.. player clicked default roles, changed them, played game, went back to this screen, clicked default roles again and it was not the defaults it was the changed one (???)
 		if (!this.props.userInfo.gameSettings.disablePopups) {
 			$('section.creategame .info-popup').popup({
 				inline: true,

@@ -262,62 +262,83 @@ let beginNightPhases = (game) => {
 	let phases = [[]],
 		roleChangerInPhase1 = false,
 		insomniacs = [],
-		seatedPlayers = _.shuffle(game.internals.seatedPlayers),
+		roles = _.shuffle(game.internals.seatedPlayers.concat(game.internals.centerRoles.map((role) => {
+			return {
+				trueRole: role,
+				isCenter: true
+			};
+		}))),
 		werewolves, masons;
 	
-	seatedPlayers.forEach((player, index) => {
+	roles.forEach((player, index) => {
 		switch (player.trueRole) {
 			case 'seer':
-				player.tableState.nightAction = {
-					action: 'seer',
-					phase: 1,
-					gameChat: [{text: 'You wake up, and may look at one player\'s card, or two of the center cards.'}],
-					highlight: 'nonplayer'
-				};
+				if (!player.isCenter) {
+					player.tableState.nightAction = {
+						action: 'seer',
+						phase: 1,
+						gameChat: [{text: 'You wake up, and may look at one player\'s card, or two of the center cards.'}],
+						highlight: 'nonplayer'
+					};
+				}
 
 				phases[0].push(player);
 				break;
 
 			case 'robber':
-				player.tableState.nightAction = {
-					action: 'robber',
-					gameChat: [{text: 'You wake up, and may exchange your card with another player\'s, and view your new role (but do not take an additional night action).'}],
-					highlight: 'otherplayers'
-				};
+				if (!player.isCenter) {
+					player.tableState.nightAction = {
+						action: 'robber',
+						gameChat: [{text: 'You wake up, and may exchange your card with another player\'s, and view your new role (but do not take an additional night action).'}],
+						highlight: 'otherplayers'
+					};
+				}
 
 				if (roleChangerInPhase1) {
-					player.tableState.nightAction.phase = phases.length + 1;
+					if (!player.isCenter) {
+						player.tableState.nightAction.phase = phases.length + 1;
+					}
 					phases.push([player]);
 				} else {
-					player.tableState.nightAction.phase = 1;
+					if (!player.isCenter) {
+						player.tableState.nightAction.phase = 1;
+					}
 					roleChangerInPhase1 = true;
 					phases[0].push(player);
 				}
 				break;
 			
 			case 'troublemaker':
-				player.tableState.nightAction = {
-					action: 'troublemaker',
-					gameChat: [{text: 'You wake up, and may switch cards between two other players without viewing them.'}],
-					highlight: 'otherplayers'
-				};
+				if (!player.isCenter) {
+					player.tableState.nightAction = {
+						action: 'troublemaker',
+						gameChat: [{text: 'You wake up, and may switch cards between two other players without viewing them.'}],
+						highlight: 'otherplayers'
+					};
+				}
 
 				if (roleChangerInPhase1) {
-					player.tableState.nightAction.phase = phases.length + 1;
+					if (!player.isCenter) {
+						player.tableState.nightAction.phase = phases.length + 1;
+					}
 					phases.push([player]);
 				} else {
-					player.tableState.nightAction.phase = 1;
+					if (!player.isCenter) {
+						player.tableState.nightAction.phase = 1;
+					}
 					roleChangerInPhase1 = true;
 					phases[0].push(player);
 				}
 				break;
 
 			case 'insomniac':
-				player.tableState.nightAction = {
-					action: 'insomniac',
-					gameChat: [{text: 'You wake up, and may view your card again.'}],
-					highlight: 'player'
-				};
+				if (!player.isCenter) {
+					player.tableState.nightAction = {
+						action: 'insomniac',
+						gameChat: [{text: 'You wake up, and may view your card again.'}],
+						highlight: 'player'
+					};
+				}
 
 				insomniacs.push(player);
 				break;
@@ -329,34 +350,22 @@ let beginNightPhases = (game) => {
 		}
 	});
 	
-	// todo-alpha insert dummy night phases also need to make sure that in cases where there's more than one role-changing role that person isn't ALWAYS in the first available night phase i.e. center cards can have dummy roles in earlier phases.  Will also need to be shuffled into the other phases so that part needs to be redone.
-
-	// game.internals.centerRoles.forEach((role) => {
-	// 	let count = 1;
-
-	// 	if (role === 'insomniac' && !insomniacs.length || role === 'robber' || role === 'troublemaker') {
-	// 		count++;
-	// 	}
-
-	// 	for (let i = 0; i < count; i++) {
-	// 		phases.push([]);
-	// 	}
-	// });
-
 	if (insomniacs.length) {
 		insomniacs.forEach((player, index) => {
-			player.tableState.nightAction.phase = phases.length + 1;
+			if (!player.isCenter) {
+				player.tableState.nightAction.phase = phases.length + 1;
+			}
 		});
 
 		phases.push([...insomniacs]);
 	}
 
 	werewolves = phases[0].filter((player) => {
-		return player.trueRole === 'werewolf';
+		return player.trueRole === 'werewolf' && !player.isCenter;
 	});
 
 	masons = phases[0].filter((player) => {
-		return player.trueRole === 'mason';
+		return player.trueRole === 'mason' && !player.isCenter;
 	});
 
 	phases[0].forEach((player, index) => {
@@ -417,7 +426,9 @@ let beginNightPhases = (game) => {
 
 				message.push({text: '.'});
 				nightAction.gameChat = message;
-				player.tableState.nightAction = nightAction;
+				if (!player.isCenter) {
+					player.tableState.nightAction = nightAction;
+				}
 				break;
 
 			case 'minion':
@@ -470,7 +481,9 @@ let beginNightPhases = (game) => {
 
 				message.push({text: '.'});
 				nightAction.gameChat = message;
-				player.tableState.nightAction = nightAction;
+				if (!player.isCenter) {
+					player.tableState.nightAction = nightAction;
+				}
 				break;
 			
 			case 'mason': {
@@ -524,7 +537,9 @@ let beginNightPhases = (game) => {
 
 				message.push({text: '.'});
 				nightAction.gameChat = message;
-				player.tableState.nightAction = nightAction;
+				if (!player.isCenter) {
+					player.tableState.nightAction = nightAction;
+				}
 			}
 		}
 	});
@@ -566,14 +581,16 @@ let nightPhases = (game, phases) => {
 					phasesPlayers = phases[phasesIndex];
 
 				phasesPlayers.forEach((player) => {
-					let chat = {
-						gameChat: true,
-						userName: player.userName,
-						chat: player.tableState.nightAction.gameChat,
-						timestamp: new Date()
-					};
-					
-					player.gameChats.push(chat);
+					if (!player.isCenter) {
+						let chat = {
+							gameChat: true,
+							userName: player.userName,
+							chat: player.tableState.nightAction.gameChat,
+							timestamp: new Date()
+						};
+						
+						player.gameChats.push(chat);
+					}
 				});
 
 				countDown = setInterval(() => {
@@ -592,13 +609,13 @@ let nightPhases = (game, phases) => {
 
 						if (phaseTime === startPhaseTime - 1 || phaseTime === startPhaseTime - 3) {
 							phasesPlayers.forEach((player) => {
-								if (player.tableState.nightAction.highlight) {
+								if (!player.isCenter && player.tableState.nightAction.highlight) {
 									highlightSeats(player, player.tableState.nightAction.highlight, 'notify');
 								}
 							});
 						} else if (phaseTime === startPhaseTime - 2 || phaseTime === startPhaseTime - 4) {
 							phasesPlayers.forEach((player) => {
-								if (player.tableState.nightAction.highlight) {
+								if (!player.isCenter && player.tableState.nightAction.highlight) {
 									highlightSeats(player, 'clear');
 								}
 							});

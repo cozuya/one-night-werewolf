@@ -289,7 +289,7 @@ export default class Gamechat extends React.Component {
 		}
 	}
 
-	render() {
+	render() { // todo-alpha disable chats during night
 		return (
 			<section className="gamechat">
 				<section className="ui pointing menu">
