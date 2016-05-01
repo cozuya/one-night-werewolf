@@ -250,7 +250,7 @@ module.exports.checkUserStatus = (socket) => {
 			delete sockets[oldSocketID];
 		}
 
-		if (game && game.gameState.isStarted) {
+		if (game && game.gameState.isStarted && !game.gameState.isCompleted) {
 			let internalPlayer = getInternalPlayerInGameByUserName(game, user),
 				userSeatName = Object.keys(game.seated).find((seatName) => {
 					return game.seated[seatName].userName === user;

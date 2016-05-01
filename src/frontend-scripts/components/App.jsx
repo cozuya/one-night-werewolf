@@ -119,7 +119,7 @@ class App extends React.Component {
 
 	// ***** begin dev helpers *****
 
-	componentDidUpdate(prevProps) {
+	componentDidUpdate(prevProps) {  // note: this breaks everything if these players try to leave a finished game
 		let autoPlayers = ['Jaina', 'Rexxar', 'Malfurian', 'Thrall', 'Valeera'],
 			{ userInfo, gameInfo, dispatch } = this.props,
 			prevSeatedNames = [];

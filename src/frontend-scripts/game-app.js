@@ -16,7 +16,7 @@ document.addEventListener('DOMContentLoaded', () => {
 	account();
 	polyfills();
 	
-	console.log('%c%s', 'color: teal; background: #eee; font-size: 14px; font-style: italic; font-family: verdana', 'Welcome to One Night Werewolf');
+	console.log('%c%s', 'color: teal; background: #eee; font-size: 14px; font-style: italic; font-family: verdana', 'One Night Werewolf');
 	
 	if (container) {
 		let store = createStore(wwapp);
@@ -29,10 +29,8 @@ document.addEventListener('DOMContentLoaded', () => {
 	}
 
 	$(document).keydown(function(e) {
-		if (e.ctrlKey) {
-			if (e.keyCode == 65) {
-				return false;
-			}
+		if (e.ctrlKey && e.keyCode == 65) {
+			return false;
 		}
 	});
 });

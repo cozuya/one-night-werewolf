@@ -1,11 +1,11 @@
 'use strict';
-
 let Game = require('../../models/game'),
 	Account = require('../../models/account'),
 	{ games, userList } = require('./models'),
 	{ secureGame, devStatus } = require('./util'),
 	{ sendInProgressGameUpdate } = require('./user-events'),
 	{ sendGameList } = require('./user-requests'),
+	_ = require('lodash'),
 	startGameCountdown = (game) => {
 		let { startGamePause } = devStatus,
 			countDown;
@@ -262,10 +262,10 @@ let beginNightPhases = (game) => {
 	let phases = [[]],
 		roleChangerInPhase1 = false,
 		insomniacs = [],
+		seatedPlayers = _.shuffle(game.internals.seatedPlayers),
 		werewolves, masons;
-	// todo-alpha players phases should be randomized - right now it goes in order of seatnumber and its possible to predict what cards are in the center by which player was last in phases.
-
-	game.internals.seatedPlayers.forEach((player, index) => {
+	
+	seatedPlayers.forEach((player, index) => {
 		switch (player.trueRole) {
 			case 'seer':
 				player.tableState.nightAction = {
@@ -329,7 +329,7 @@ let beginNightPhases = (game) => {
 		}
 	});
 	
-	// todo-alpha insert dummy night phases also need to make sure that in cases where there's more than one role-changing role that person isn't ALWAYS in the first available night phase i.e. center cards can have dummy roles in earlier phases
+	// todo-alpha insert dummy night phases also need to make sure that in cases where there's more than one role-changing role that person isn't ALWAYS in the first available night phase i.e. center cards can have dummy roles in earlier phases.  Will also need to be shuffled into the other phases so that part needs to be redone.
 
 	// game.internals.centerRoles.forEach((role) => {
 	// 	let count = 1;
@@ -366,7 +366,7 @@ let beginNightPhases = (game) => {
 			case 'werewolf':
 				nightAction = {
 					phase: 1
-				},
+				};
 			
 				others = werewolves.filter((werewolf) => {
 					return werewolf.userName !== player.userName;
@@ -374,7 +374,7 @@ let beginNightPhases = (game) => {
 
 				if (werewolves.length === 1) {
 					message = [
-						{text: 'You wake up, and see no other ',},
+						{text: 'You wake up, and see no other '},
 						{
 							text: 'werewolves',
 							type: 'roleName'
@@ -393,17 +393,17 @@ let beginNightPhases = (game) => {
 						{text: ` in this game ${others.length > 1 ? 'are' : 'is'} `}
 					];
 
-					werewolves.forEach((player, index) => {
+					others.forEach((player, index) => { // todo-alpha not working quite right
 						message.push({
 							text: player.userName,
 							type: 'playerName'
 						});
 
-						if (index <= werewolves.length - 3 && werewolves.length !== 1) {
+						if (index <= others.length - 3 && others.length !== 1) {
 							message.push({text: ', '});
 						}
 
-						if (index === werewolves.length - 2) {
+						if (index === others.length - 2) {
 							message.push({text: ' and '});
 						}
 					});
@@ -1066,9 +1066,6 @@ let endGame = (game) => {
 			winningPlayerNames = winningPlayers.map((player) => {
 				return player.userName;
 			}),
-			winningPlayersList = winningPlayers.map((player) => {
-				return player.userName;
-			}).join(' '),
 			wonGameChat = {
 				gameChat: true,
 				chat: [],
