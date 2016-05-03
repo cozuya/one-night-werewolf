@@ -402,7 +402,7 @@ let beginNightPhases = (game) => {
 						{text: ` in this game ${others.length > 1 ? 'are' : 'is'} `}
 					];
 
-					others.forEach((player, index) => { // todo-alpha not working quite right
+					others.forEach((player, index) => {
 						message.push({
 							text: player.userName,
 							type: 'playerName'
@@ -1036,6 +1036,7 @@ let endGame = (game) => {
 
 	game.gameState.isCompleted = true;
 	sendInProgressGameUpdate(game);
+	sendGameList();
 	eliminatedPlayersIndex.forEach((eliminatedPlayerIndex) => {
 		if (seatedPlayers[eliminatedPlayerIndex].trueRole === 'werewolf' || seatedPlayers[eliminatedPlayerIndex].trueRole === 'minion' && game.internals.soloMinion) {
 			werewolfEliminated = true;

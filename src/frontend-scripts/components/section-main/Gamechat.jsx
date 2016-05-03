@@ -289,7 +289,7 @@ export default class Gamechat extends React.Component {
 		}
 	}
 
-	render() { // todo-alpha disable chats during night
+	render() { // todo-alpha need to blur out of input field on game start
 		return (
 			<section className="gamechat">
 				<section className="ui pointing menu">
@@ -325,7 +325,18 @@ export default class Gamechat extends React.Component {
 						);
 						
 					})()}
-					<div className={this.props.userInfo.userName ? "ui action input" : "ui action input disabled"}>
+					<div className={
+						(() => {
+							let classes = 'ui action input',
+								{ gameState } = this.props.gameInfo;
+
+							if (!this.props.userInfo.userName || gameState.cardsDealt && !gameState.isDay) {
+								classes += ' disabled';
+							}
+
+							return classes;							
+						})()
+					}>
 						<input placeholder="Chat.." ref="gameChatInput" onKeyUp={this.handleKeyup.bind(this)} maxLength="300"></input>
 						<button className="ui primary button disabled">Chat</button>
 					</div>
