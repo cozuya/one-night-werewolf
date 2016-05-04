@@ -20,7 +20,7 @@ export default class SidebarGame extends React.Component {
 			});
 		},
 		{ game } = this.props,
-		gameClasses = () => { // todo-alpha needs to show different ui for in progress and completed games
+		gameClasses = () => {
 			let classes = 'ui vertical segment';
 
 			if (game.gameState.isStarted && !game.gameState.isCompleted) {

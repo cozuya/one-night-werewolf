@@ -70,6 +70,15 @@
 		}
 	}
 
+	.vertical.segment.inprogress {
+		background: $notification;
+	}
+
+	.vertical.segment.completed {
+		background: $proceed;
+		color: #fff;
+	}
+
 	.games-container {
 		height: 550px;
 		overflow-y: scroll;

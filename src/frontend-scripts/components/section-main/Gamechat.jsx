@@ -23,6 +23,10 @@ export default class Gamechat extends React.Component {
 
 		this.scrollChats();
 
+		if (prevProps && !prevProps.gameInfo.gameState.cardsDealt && this.props.gameInfo.gameState.cardsDealt) {
+			$input.val('').blur();
+		}
+
 		if (prevProps && prevProps.selectedGamerole.random !== this.props.selectedGamerole.random && this.props.selectedGamerole.role) {
 			$input.val(`${$input.val()}${this.props.selectedGamerole.role}`).next().removeClass('disabled');
 		}
@@ -289,7 +293,7 @@ export default class Gamechat extends React.Component {
 		}
 	}
 
-	render() { // todo-alpha need to blur out of input field on game start
+	render() {
 		return (
 			<section className="gamechat">
 				<section className="ui pointing menu">

@@ -1,5 +1,3 @@
-Model info
-
 internals
 	centerRoles array of strings of roles
 	soloMinion bool

@@ -8,7 +8,7 @@ export default class LeftSidebar extends React.Component {
 		this.props.onCreateGameButtonClick('createGame');
 	}
 
-	render() { // todo-alpha after leaving a completed game the first player clicked on creategame and nothign happened/noconsole error
+	render() {
 		return (
 			<section className="section-left three wide column leftsidebar">
 				{(() => {
