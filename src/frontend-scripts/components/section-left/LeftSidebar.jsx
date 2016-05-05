@@ -27,9 +27,9 @@ export default class LeftSidebar extends React.Component {
 					}
 				})()}
 				<div className="games-container">
-					{this.props.gameList.map((game, i) => {
+					{this.props.gameList.map((game, index) => {
 						return <SidebarGame
-									key={i}
+									key={index}
 									game={game}
 									sidebarGameClicked={this.props.sidebarGameClicked}
 								/>

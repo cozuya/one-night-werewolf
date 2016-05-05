@@ -10,7 +10,6 @@ import socket from 'socket.io-client';
 
 socket = socket();
 
-
 class App extends React.Component {
 	componentWillMount() {
 		let { dispatch } = this.props,

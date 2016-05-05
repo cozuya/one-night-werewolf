@@ -16,5 +16,5 @@ The 1% of developers who create the tools that the 99%, like me, use to make thi
 Language: English
 Doctype: HTML5
 Front end: React, Redux, Sass, SocketIO, SemanticUI.
-Back end: Node with Express, Jade, Passport, Mongodb with Mongoose, SocketIO.
+Back end: Node with Express, Pug, Passport, Mongodb with Mongoose, SocketIO.
 Build: Gulp, Browserify, Babel.

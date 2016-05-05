@@ -35,7 +35,7 @@ export default class SidebarGame extends React.Component {
 		}
 
 		return (
-			<div className={gameClasses()} key={this.props.key} data-uid={game.uid} onClick={this.routeToGame.bind(this)}>
+			<div className={gameClasses()} data-uid={game.uid} onClick={this.routeToGame.bind(this)}>
 				<div>
 					<span className={game.kobk ? "gamename kobk" : "gamename"}>{game.name}</span>
 					<span className="gamelength">{game.time}</span> 

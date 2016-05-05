@@ -5,7 +5,7 @@ A multiuser web game of deception and deduction.
 
 Front end: React, Redux, Sass, SemanticUI, SocketIO.
 
-Back end: Node, Express, Jade, Passport, Mongodb with Mongoose, SocketIO.
+Back end: Node, Express, Pug, Passport, Mongodb with Mongoose, SocketIO.
 
 Build: Gulp, Browserify, Babel (front end).
 
@@ -13,7 +13,7 @@ Latest version: 0.1.0.  Application works at a MVP level but is not quite ready 
 
 ## Installation ##
 
-Install node - currently works with v5.x and higher.
+Install node v5.x.
 
 Install mongodb, have it in your path.
 

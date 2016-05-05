@@ -21,7 +21,7 @@ let fs = require('fs'),
 	routes;
 
 app.set('views', `${__dirname}/views`);
-app.set('view engine', 'jade');
+app.set('view engine', 'pug');
 app.locals.pretty = true;
 
 app.use(logger('combined', {stream: logFile}));
