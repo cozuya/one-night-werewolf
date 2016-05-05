@@ -9,7 +9,7 @@ Back end: Node, Express, Jade, Passport, Mongodb with Mongoose, SocketIO.
 
 Build: Gulp, Browserify, Babel (front end).
 
-Work in progress. Estimated alpha deployment: May 2016.
+Latest version: 0.1.0.  Application works at a MVP level but is not quite ready for production deployment. Estimated alpha deployment: June 2016.  See docs/roadmap.txt.
 
 ## Installation ##
 
