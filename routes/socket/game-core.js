@@ -111,7 +111,7 @@ module.exports.updateSeatedUsers = (socket, data) => {
 				}
 			});
 			sendGameList(socket);
-		} else {
+		} else if (socketSession.passport && socketSession.passport.user) {
 			for (let key in game.seated) {
 				if (game.seated[key].userName === socketSession.passport.user) {
 					delete game.seated[key];
