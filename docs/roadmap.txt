@@ -1,7 +1,7 @@
 v0.1
 	all features implemented (game), all breaking bugs fixed
 v0.2
-	upgrade react to v15 and nodejs to v6
+	upgrade react to v15
 	styling review and overhaul
 	removal of semantic as a npm dependency (fixed semantic css file without media queries)
 v0.3

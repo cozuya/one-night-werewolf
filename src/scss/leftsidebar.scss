@@ -1,6 +1,11 @@
 .leftsidebar {
+	padding-left: 0;
+	padding-right: 0;
 
-	padding-right: 2px;
+	> .button {
+		width: 100%;
+		margin-bottom: 10px;
+	}
 
 	.vertical.segment {
 		cursor: pointer;

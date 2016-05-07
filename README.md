@@ -13,7 +13,7 @@ Latest version: 0.1.0.  Application works at a MVP level but is not quite ready 
 
 ## Installation ##
 
-Install node v5.x.
+Install node v5.x.  Does not yet work on node v6 at least on windows where most of the dev is done.
 
 Install mongodb, have it in your path.
 
@@ -40,16 +40,6 @@ For installation on windows, you may need to do a few extra steps if you are get
 > npm i --msvs_version=2013
 
 instead of the npm install found above.
-
-Also, if you receive an error with semantic on install despite the above, you can probably fix it by:
-
-> npm i semantic-ui
-
-go through the prompts, then
-
-> cd public/semantic
-
-> gulp build
 
 ## Running in dev mode ##
 
