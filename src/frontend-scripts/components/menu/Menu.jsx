@@ -18,6 +18,8 @@ export default class Menu extends React.Component {
 		}
 	}
 
+	// todo-alpha player who goes to another page on another tab gets logged out?
+
 	render() {
 		return (
 			<section className="ui menu">
@@ -49,7 +51,7 @@ export default class Menu extends React.Component {
 					} else {
 						return (
 							<div>
-								<div>
+								<div className="loggedin">
 									Logged in as <span className="playername">{userInfo.userName}</span>
 								</div>
 								<i className={iconClasses()} onClick={this.clickSettingsButton.bind(this)}></i>

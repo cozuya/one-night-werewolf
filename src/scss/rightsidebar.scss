@@ -3,34 +3,6 @@
 	padding-right: 0 !important;
 	padding-bottom: 0 !important;
 
-	.right-header {
-		padding: 5px 5px 30px 5px;
-
-		i {
-			float: right;
-			cursor: pointer;
-		}
-
-		i.disabled {
-			cursor: not-allowed;
-		}
-
-		> div {
-			&:after {
-				content: '';
-				display: table;
-				clear: both;
-			}
-			> div {
-				float: left;
-
-				.playername {
-					color: $villageteam;
-				}
-			}
-		}
-	}
-
 	.playerlist {
 		background: #F8F8F8;
 		padding: 5px 0 10px 5px;
@@ -51,8 +23,8 @@
 		}
 
 		.playerlist-body {
-			height: 232px;
-			overflow-y: scroll;
+			height: 250px;
+			overflow-y: auto;
 		}
 
 		.ui.header {
@@ -101,12 +73,16 @@
 		}
 
 		.chats {
-			overflow-y: scroll;
-			height: 226px;
+			overflow-y: auto;
+			height: 254px;
 			padding-left: 5px;
 
 			> .ui.list .item {
 				padding: 0;
+
+				.chat-user {
+					color: $lteal;
+				}
 
 				.admin {
 					color: red;

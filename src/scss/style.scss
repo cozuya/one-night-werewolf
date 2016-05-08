@@ -79,6 +79,27 @@ body {
 		color: #fff;
 	}
 
+	.item.right {
+		padding: 3px 10px;
+	}
+
+	.loggedin {
+		color: #000;
+		display: inline-block;
+
+		.playername {
+			color: $lteal;
+		}
+	}
+
+	i {
+		cursor: pointer;
+	}
+
+	i.disabled {
+		cursor: not-allowed;
+	}
+
 	.ui.button:hover, .ui.button:active {
 		color: #fff;
 		background: $dteal;

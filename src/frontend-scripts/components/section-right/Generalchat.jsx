@@ -58,13 +58,13 @@ export default class Gamechat extends React.Component {
 
 	scrollChats() {
 		let chatsContainer = document.querySelector('section.segment.chats'),
-			$chatPusher = $('section.generalchat div.chatpusher'),
+			$chatPusher = $(this.refs.genchatpusher),
 			chatCount = this.props.generalChats.length,
 			$lockIcon = $('section.gamechat > .ui.menu > i');
 
 		if (chatCount < 20) {
 			$chatPusher.css({
-				height: 195 - chatCount * 21.6,
+				height: 240 - chatCount * 15,
 			});
 		} else {
 			$chatPusher.remove();
@@ -105,7 +105,7 @@ export default class Gamechat extends React.Component {
 					<div className="ui divider right-sidebar-divider"></div>
 				</section>
 				<section className="segment chats">
-					<div className="chatpusher"></div>
+					<div ref="genchatpusher"></div>
 					<div className="ui list">
 						{this.processChats()}
 					</div>

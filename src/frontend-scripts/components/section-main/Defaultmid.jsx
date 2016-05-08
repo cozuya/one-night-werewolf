@@ -6,7 +6,7 @@ export default class Defaultmid extends React.Component {
 	render() {
 		return (
 			<section className="defaultmid">
-				<img src="images/ww-logo-fs2.png" style={{position: 'absolute', left: '50%', marginLeft: '-275px',top: '80px',opacity: '0.1', width: '550px'}}/>
+				<img src="images/ww-logo-fs2.png" style={{position: 'absolute', left: '50%', marginLeft: '-275px',top: '70px',opacity: '0.1', width: '550px'}}/>
 				<br />
 				<button style={{padding: '10px', width: '80px'}} data-name="Uther" className="loginquick">Uther</button>
 				<br />
