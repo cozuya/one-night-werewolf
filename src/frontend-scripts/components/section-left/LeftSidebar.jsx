@@ -8,7 +8,7 @@ export default class LeftSidebar extends React.Component {
 		this.props.onCreateGameButtonClick('createGame');
 	}
 
-	render() {
+	render() { // todo-alpha sort gamelist
 		return (
 			<section className="section-left three wide column leftsidebar">
 				{(() => {
