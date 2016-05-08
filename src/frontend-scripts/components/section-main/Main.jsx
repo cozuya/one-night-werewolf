@@ -28,7 +28,12 @@ export default class Main extends React.Component {
 					return classes;
 				})()
 			}>
-				<Menu userInfo={this.props.userInfo} />
+				<Menu
+					userInfo={this.props.userInfo}
+					updateSeatedUsers={this.props.updateSeatedUsers}
+					onSettingsButtonClick={this.props.onSettingsButtonClick}
+					gameInfo={this.props.gameInfo}
+				/>
 				{(() => {
 					switch (this.props.midSection) {
 						case 'createGame':

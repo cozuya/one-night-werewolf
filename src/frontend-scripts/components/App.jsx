@@ -239,6 +239,7 @@ class App extends React.Component {
 					onLeaveSettings={this.handleRoute.bind(this)}
 					updateSeatedUsers={this.handleUpdateSeatedUsers.bind(this)}
 					quickDefault={this.makeQuickDefault.bind(this)}
+					onSettingsButtonClick={this.handleRoute.bind(this)}
 				/>
 				{(() => {
 					if (this.props.midSection === 'game' && this.props.userInfo.gameSettings && !this.props.userInfo.gameSettings.disableRightSidebarInGame || !this.props.userInfo.userName || this.props.midSection !== 'game') {
@@ -246,10 +247,6 @@ class App extends React.Component {
 							<RightSidebar
 								userInfo={this.props.userInfo}
 								userList={this.props.userList}
-								gameInfo={this.props.gameInfo}
-								midSection={this.props.midSection}
-								onSettingsButtonClick={this.handleRoute.bind(this)}
-								updateSeatedUsers={this.handleUpdateSeatedUsers.bind(this)}
 								generalChats={this.props.generalChats}
 								onGeneralChatSubmit={this.handleGeneralChatSubmit.bind(this)}
 							/>
