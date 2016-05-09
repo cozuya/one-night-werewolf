@@ -198,7 +198,7 @@ class App extends React.Component {
 				userName: userInfo.userName
 			};
 
-		if (gameCompleted) {
+		if (gameCompleted && userInfo.seatNumber) {
 			delete userInfo.seatNumber;
 		} else {
 			userInfo.seatNumber = seatNumber;

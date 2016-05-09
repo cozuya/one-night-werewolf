@@ -27,7 +27,47 @@ export default class LeftSidebar extends React.Component {
 					}
 				})()}
 				<div className="games-container">
-					{this.props.gameList.map((game, index) => {
+					{this.props.gameList.sort((a, b) => {
+						if (a.gameState.isCompleted) {
+							return 1;
+						}
+
+						if (b.gameState.isCompleted) {
+							return -1;
+						}
+
+						if (a.gameState.isStarted && !a.gameState.isCompleted) {
+							if (b.gameState.isCompleted) {
+								return -1;
+							} else {
+								return 1;
+							}
+						}
+
+						if (a.gameState.isCompleted && b.gameState.isCompleted) {
+							return 0;
+						}
+
+						if (b.gameState.isStarted && !b.gameState.isCompleted) {
+							if (a.gameState.isCompleted) {
+								return 1;
+							} else {
+								return -1;
+							}
+						}
+
+						if (!a.gameState.isStarted) {
+							if (!b.gameState.isStarted) {
+								if (a.seatedCount >= b.seatedCount) {
+									return -1;
+								} else {
+									return 1;
+								}
+							} else {
+								return 1;
+							}
+						}
+					}).map((game, index) => {
 						return <SidebarGame
 									key={index}
 									game={game}

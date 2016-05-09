@@ -99,11 +99,11 @@ module.exports.updateSeatedUsers = (socket, data) => {
 	} else if (game) {
 		let completedDisconnectionCount = 0;
 
-		if (game.gameState.isCompleted) {
+		if (game.gameState.isCompleted && data.seatNumber) {
 			let playerSeat = Object.keys(game.seated).find((seatName) => {
 				return game.seated[seatName].userName === data.userName;
 			});
-
+			// todo-alpha I broke this
 			game.seated[playerSeat].connected = false;
 			Object.keys(game.seated).forEach((seatName) => {
 				if (!game.seated[seatName].connected) {

@@ -23,7 +23,6 @@ export default class Menu extends React.Component {
 	render() {
 		return (
 			<section className="ui menu">
-				<img src="images/ww-logo-fs2.png" alt="One Night Werewolf logo" />
 				<p>
 					<a href="/" target="blank">One Night Werewolf</a>
 				</p>

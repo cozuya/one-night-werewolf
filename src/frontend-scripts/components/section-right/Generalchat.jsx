@@ -64,7 +64,7 @@ export default class Gamechat extends React.Component {
 
 		if (chatCount < 20) {
 			$chatPusher.css({
-				height: 240 - chatCount * 15,
+				height: 230 - chatCount * 15,
 			});
 		} else {
 			$chatPusher.remove();
