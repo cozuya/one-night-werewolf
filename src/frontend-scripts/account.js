@@ -69,7 +69,7 @@ export default () => {
 	});
 
 	$('body').on('focus', '#signup-password', function () {
-		$(this).parent().next().text('6-50 characters.  We securely store your passwords and never in plain text.').slideDown();
+		$(this).parent().next().text('6-50 characters.').slideDown();
 	});	
 
 	$('body').on('blur', '.signup-modal .ui.left.icon.input input', function () {

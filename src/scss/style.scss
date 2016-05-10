@@ -160,6 +160,14 @@ body {
 	background: #eee;
 }
 
+.signin-modal, .signup-modal {
+	margin-left: -125px !important;
+}
+
+.signinnag {
+	margin-left: -237px;
+}
+
 ::-webkit-scrollbar {
   width: 3px;
   height: 3px;

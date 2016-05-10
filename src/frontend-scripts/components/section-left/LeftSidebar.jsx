@@ -27,7 +27,7 @@ export default class LeftSidebar extends React.Component {
 					}
 				})()}
 				<div className="games-container">
-					{this.props.gameList.sort((a, b) => {
+					{this.props.gameList.sort((a, b) => { // todo-alpha these bounce/change on updates at least for in progress games
 						if (a.gameState.isCompleted) {
 							return 1;
 						}

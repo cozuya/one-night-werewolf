@@ -401,8 +401,7 @@ export default class Table extends React.Component {
 				})()}
 				{this.createReportGame()}
 				{this.createUserGameOptions()}
-				<div className="ui basic small modal" ref="signinModal">
-					<i className="close icon"></i>
+				<div className="ui basic small modal signinnag" ref="signinModal">
 					<div className="ui header">You will need to sign in or sign up for an account to play.</div>
 				</div>
 			</section>
