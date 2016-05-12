@@ -73,103 +73,23 @@ let Game = require('../../models/game'),
 		}
 	};
 
-module.exports.updateSeatedUsers = (socket, data) => {
+module.exports.updateSeatedUser = (socket, data) => {
 	let game = games.find((el) => {
-			return el.uid === data.uid;
-		}),
-		socketSession = socket.handshake.session;
+		return el.uid === data.uid;
+	});
 
-	if (game) {
-		socket.join(data.uid);
+	game.seated[`seat${data.seatNumber}`] = {
+		userName: data.userName,
+		connected: true
+	};
+
+	if (Object.keys(game.seated).length === 7) {
+		startGameCountdown(game);
+	} else {
+		io.sockets.in(data.uid).emit('gameUpdate', secureGame(game));
 	}
 
-	if (socketSession.passport && data.seatNumber && socketSession.passport.user === data.userInfo.userName) {
-		game.seated[`seat${data.seatNumber}`] = {
-			userName: data.userInfo.userName
-		};
-		game.seated[`seat${data.seatNumber}`].connected = true;
-
-		if (Object.keys(game.seated).length === 7) {
-			startGameCountdown(game);
-		} else {
-			io.sockets.in(data.uid).emit('gameUpdate', secureGame(game));
-		}
-
-		sendGameList();
-	} else if (game) {
-		let completedDisconnectionCount = 0;
-
-		if (game.gameState.isCompleted && data.seatNumber) {
-			let playerSeat = Object.keys(game.seated).find((seatName) => {
-				return game.seated[seatName].userName === data.userName;
-			});
-			// todo-alpha I broke this
-			game.seated[playerSeat].connected = false;
-			Object.keys(game.seated).forEach((seatName) => {
-				if (!game.seated[seatName].connected) {
-					completedDisconnectionCount++;
-				}
-			});
-			sendGameList(socket);
-		} else if (socketSession.passport && socketSession.passport.user) {
-			for (let key in game.seated) {
-				if (game.seated[key].userName === socketSession.passport.user) {
-					delete game.seated[key];
-				}
-			}
-			sendGameList();
-		}
-
-		if (completedDisconnectionCount === 7) {
-			let saveGame = new Game({
-				uid: game.uid,
-				time: game.time,
-				date: new Date(),
-				roles: game.roles,
-				winningPlayers: game.internals.seatedPlayers.filter((player) => {
-					return player.wonGame;
-				}).map((player) => {
-					return {
-						userName: player.userName,
-						originalRole: player.originalRole,
-						trueRole: player.trueRole
-					};
-				}),
-				losingPlayers: game.internals.seatedPlayers.filter((player) => {
-					return !player.wonGame;
-				}).map((player) => {
-					return {
-						userName: player.userName,
-						originalRole: player.originalRole,
-						trueRole: player.trueRole
-					};
-				}),
-				reports: Object.keys(game.gameState.reportedGame).filter((seatNumber) => {
-					return game.gameState.reportedGame[seatNumber];
-				}).map((seatNumber) => {
-					return game.internals.seatedPlayers[seatNumber].userName;
-				}),
-				kobk: game.kobk,
-				chats: game.chats.filter((chat) => {
-					return !chat.gameChat;
-				})
-			});
-
-			saveGame.save();
-		}
-
-
-		socket.leave(game.uid);
-		if (Object.keys(game.seated).length === 0 || completedDisconnectionCount === 7) {
-			socket.emit('gameUpdate', {}, data.isSettings);
-			io.sockets.in(data.uid).emit('gameUpdate', {});
-			games.splice(games.indexOf(game), 1);
-			sendGameList();
-		} else {
-			io.sockets.in(data.uid).emit('gameUpdate', secureGame(game));
-			socket.emit('gameUpdate', {}, data.isSettings);
-		}
-	}
+	sendGameList();
 };
 
 let startGame = (game) => {

@@ -186,26 +186,23 @@ class App extends React.Component {
 
 	// ***** end dev helpers *****
 
-	handleUpdateSeatedUsers(seatNumber, gameCompleted, isSettings) {
-		let { uid } = this.props.gameInfo,
+	handleSeatingUser(seatNumber) {
+		let { gameInfo } = this.props,
 			{ dispatch, userInfo } = this.props,
 			data = {
-				uid,
+				uid: gameInfo.uid,
 				seatNumber,
-				userInfo,
-				gameCompleted,
-				isSettings,
 				userName: userInfo.userName
 			};
 
-		if (gameCompleted && userInfo.seatNumber) {
-			delete userInfo.seatNumber;
-		} else {
-			userInfo.seatNumber = seatNumber;
-		}
-
-		socket.emit('updateSeatedUsers', data);
+		userInfo.seatNumber = seatNumber;
+		socket.emit('updateSeatedUser', data);
 		dispatch(updateUser(userInfo));
+	}
+	
+	handleLeaveGame() {
+
+		// socket.emit('leaveGame', data);
 	}
 
 	render() {
@@ -237,7 +234,8 @@ class App extends React.Component {
 					onNewGameChat={this.handleNewGameChatSubmit.bind(this)}
 					gameInfo={this.props.gameInfo}
 					onLeaveSettings={this.handleRoute.bind(this)}
-					updateSeatedUsers={this.handleUpdateSeatedUsers.bind(this)}
+					onSeatingUser={this.handleSeatingUser.bind(this)}
+					onLeaveGame={this.handleLeaveGame.bind(this)}
 					quickDefault={this.makeQuickDefault.bind(this)}
 					onSettingsButtonClick={this.handleRoute.bind(this)}
 				/>

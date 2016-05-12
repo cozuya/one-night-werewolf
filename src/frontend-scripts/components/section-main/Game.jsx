@@ -48,7 +48,8 @@ class Game extends React.Component {
 								onUpdateTruncateGameSubmit={this.props.onUpdateTruncateGameSubmit}
 								onUpdateSelectedForEliminationSubmit={this.props.onUpdateSelectedForEliminationSubmit}
 								onUpdateReportGame={this.props.onUpdateReportGame}
-								updateSeatedUsers={this.props.updateSeatedUsers}
+								onSeatingUser={this.props.onSeatingUser}
+								onLeaveGame={this.props.onLeaveGame}
 								selectedPlayer={this.selectedPlayer.bind(this)}
 								gameInfo={this.props.gameInfo}
 								userInfo={this.props.userInfo}

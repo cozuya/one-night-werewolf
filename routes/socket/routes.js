@@ -1,8 +1,8 @@
 'use strict';
 
-let { handleUpdatedTruncateGame, handleUpdatedReportGame, handleAddNewGame, handleAddNewGameChat, handleNewGeneralChat, 	handleUpdatedGameSettings, handleSocketDisconnect, checkUserStatus } = require('./user-events'),
+let { handleUpdatedTruncateGame, handleUpdatedReportGame, handleAddNewGame, handleAddNewGameChat, handleNewGeneralChat, 	handleUpdatedGameSettings, handleSocketDisconnect, handleUserLeaveGame, checkUserStatus } = require('./user-events'),
 	{ sendGameInfo, sendUserGameSettings, sendGameList, sendGeneralChats, sendUserList } = require('./user-requests'),
-	{ updateSeatedUsers, updateSelectedElimination, updateUserNightActionEvent } = require('./game-core');
+	{ updateSeatedUser, leaveGame, updateSelectedElimination, updateUserNightActionEvent } = require('./game-core');
 
 module.exports = () => {
 	io.on('connection', (socket) => {
@@ -24,6 +24,8 @@ module.exports = () => {
 			handleUpdatedGameSettings(socket, data);
 		}).on('addNewGeneralChat', (data) => {
 			handleNewGeneralChat(data);
+		}).on('leaveGame', (data) => {
+			handleUserLeaveGame(socket, data);
 		}).on('disconnect', () => {
 			handleSocketDisconnect(socket);
 		})
@@ -44,8 +46,8 @@ module.exports = () => {
 
 		// game-core
 
-		.on('updateSeatedUsers', (data) => {
-			updateSeatedUsers(socket, data);
+		.on('updateSeatedUser', (data) => {
+			updateSeatedUser(socket, data);
 		}).on('updateSelectedForElimination', (data) => {
 			updateSelectedElimination(data);
 		}).on('userNightActionEvent', (data) => {

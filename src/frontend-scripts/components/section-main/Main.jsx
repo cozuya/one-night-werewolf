@@ -49,7 +49,8 @@ export default class Main extends React.Component {
 										onUpdateSelectedForEliminationSubmit={this.props.onUpdateSelectedForEliminationSubmit}
 										onUpdateReportGame={this.props.onUpdateReportGame}
 										onNewGameChat={this.props.onNewGameChat}
-										updateSeatedUsers={this.props.updateSeatedUsers}
+										onSeatingUser={this.props.onSeatingUser}
+										onLeaveGame={this.props.onLeaveGame}
 										userInfo={this.props.userInfo}
 										gameInfo={this.props.gameInfo}
 									/>

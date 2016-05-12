@@ -56,11 +56,7 @@ export default class Table extends React.Component {
 	}
 
 	leaveGame() {
-		if (this.props.gameInfo.gameState.isCompleted) {
-			this.props.updateSeatedUsers(null, true);			
-		} else {
-			this.props.updateSeatedUsers(null);
-		}
+		this.props.onLeaveGame();
 	}
 
 	handleSeatClicked(e) {
@@ -70,7 +66,7 @@ export default class Table extends React.Component {
 
 		if (userInfo.userName) {
 			if ($seat.hasClass('empty') && !userInfo.seatNumber && !gameInfo.gameState.isCompleted) {
-				this.props.updateSeatedUsers($seat.attr('data-seatnumber'));
+				this.props.onSeatingUser($seat.attr('data-seatnumber'));
 			} else {
 				this.props.selectedPlayer({
 					playerName: $(e.currentTarget).find('span.username').text(),
