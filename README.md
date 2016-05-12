@@ -54,3 +54,5 @@ start development task runner:
 navigate to:
 
 http://localhost:8080
+
+You'll most likely need a browser extension such as Chrome's Multilogin to have multiple sessions on the same browser.  No, incognito will not work.

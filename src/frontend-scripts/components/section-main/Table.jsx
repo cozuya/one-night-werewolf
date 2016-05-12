@@ -77,7 +77,7 @@ export default class Table extends React.Component {
 					random: Math.random().toString(36).substring(2)
 				});
 			}
-		} else {
+		} else if (!gameInfo.gameState.isStarted) {
 			$(this.refs.signinModal).modal('show');
 		}
 	}
@@ -284,9 +284,9 @@ export default class Table extends React.Component {
 	}
 
 	nightBlockerStatus(position) {
-		let { gameInfo } = this.props;
+		let { gameInfo, userInfo } = this.props;
 
-		if (gameInfo.tableState.isNight || gameInfo.gameState.isNight && !gameInfo.tableState.nightAction || gameInfo.tableState.nightAction && gameInfo.gameState.isNight && gameInfo.tableState.nightAction.phase !== gameInfo.gameState.phase) {
+		if (userInfo.seatNumber && (gameInfo.tableState.isNight || gameInfo.gameState.isNight && !gameInfo.tableState.nightAction || gameInfo.tableState.nightAction && gameInfo.gameState.isNight && gameInfo.tableState.nightAction.phase !== gameInfo.gameState.phase)) {
 			return position === 'top' ? 'nightblocker nightblocker-top-blocked' : 'nightblocker nightblocker-bottom-blocked';
 		} else {
 			return position === 'top' ? 'nightblocker nightblocker-top': 'nightblocker nightblocker-bottom';

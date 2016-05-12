@@ -8,7 +8,7 @@ export default class LeftSidebar extends React.Component {
 		this.props.onCreateGameButtonClick('createGame');
 	}
 
-	render() { // todo-alpha sort gamelist
+	render() {
 		return (
 			<section className="section-left three wide column leftsidebar">
 				{(() => {
@@ -27,46 +27,45 @@ export default class LeftSidebar extends React.Component {
 					}
 				})()}
 				<div className="games-container">
-					{this.props.gameList.sort((a, b) => { // todo-alpha these bounce/change on updates at least for in progress games
-						if (a.gameState.isCompleted) {
-							return 1;
-						}
-
-						if (b.gameState.isCompleted) {
+					{this.props.gameList.sort((a, b) => {
+						if (!a.gameState.isStarted && b.gameState.isStarted) {
 							return -1;
-						}
-
-						if (a.gameState.isStarted && !a.gameState.isCompleted) {
-							if (b.gameState.isCompleted) {
+						} else if (a.gameState.isStarted && !b.gameState.isStarted) {
+							return 1;
+						} else if (!a.gameState.isStarted && !b.gameState.isStarted) {
+							if (a.seatedCount > b.seatedCount) {
 								return -1;
-							} else {
+							} else if (b.seatedCount > a.seatedCount) {
 								return 1;
+							} else {
+								return 0;
 							}
 						}
 
-						if (a.gameState.isCompleted && b.gameState.isCompleted) {
-							return 0;
+
+						if (a.gameState.isStarted && !a.gameState.isCompleted) {
+							if (!b.gameState.isStarted) {
+								return -1;
+							} else {
+								return 0;
+							}
 						}
 
 						if (b.gameState.isStarted && !b.gameState.isCompleted) {
-							if (a.gameState.isCompleted) {
+							if (!a.gameState.isStarted) {
 								return 1;
 							} else {
-								return -1;
+								return 0;
 							}
 						}
 
-						if (!a.gameState.isStarted) {
-							if (!b.gameState.isStarted) {
-								if (a.seatedCount >= b.seatedCount) {
-									return -1;
-								} else {
-									return 1;
-								}
-							} else {
-								return 1;
-							}
+						if (a.gameState.isCompleted && !b.gameState.isCompleted) {
+							return 1;
+						} else if (b.gameState.isCompleted && !a.gameState.isCompleted) {
+							return -1;
 						}
+
+						return 0;
 					}).map((game, index) => {
 						return <SidebarGame
 									key={index}

@@ -2,12 +2,12 @@
 let Game = require('../../models/game'),
 	Account = require('../../models/account'),
 	{ games, userList } = require('./models'),
-	{ secureGame, devStatus } = require('./util'),
+	{ secureGame } = require('./util'),
 	{ sendInProgressGameUpdate } = require('./user-events'),
 	{ sendGameList } = require('./user-requests'),
 	_ = require('lodash'),
 	startGameCountdown = (game) => {
-		let { startGamePause } = devStatus,
+		let startGamePause = 5,
 			countDown;
 
 		game.gameState.isStarted = true;
@@ -89,7 +89,7 @@ module.exports.updateSeatedUsers = (socket, data) => {
 		};
 		game.seated[`seat${data.seatNumber}`].connected = true;
 
-		if (Object.keys(game.seated).length === devStatus.seatedCountToStartGame) {
+		if (Object.keys(game.seated).length === 7) {
 			startGameCountdown(game);
 		} else {
 			io.sockets.in(data.uid).emit('gameUpdate', secureGame(game));
@@ -205,7 +205,7 @@ let startGame = (game) => {
 	sendInProgressGameUpdate(game);	
 
 	setTimeout(() => {
-		let nightPhasePause = devStatus.nightPhasePause,
+		let nightPhasePause = 5,
 			countDown;
 		game.internals.seatedPlayers.forEach((player, index) => {
 			player.gameChats.push({
@@ -575,7 +575,7 @@ let nightPhases = (game, phases) => {
 			if (phasesIndex === phasesCount && phasesCount > 1) {
 				endPhases();
 			} else {
-				let phaseTime = devStatus.phaseTime,
+				let phaseTime = 10,
 					startPhaseTime = phaseTime,
 					countDown,
 					phasesPlayers = phases[phasesIndex];
@@ -898,7 +898,7 @@ let dayPhase = (game) => {
 			if (seconds < 60) {
 				status = `Day ends in ${seconds} second${seconds === 1 ? '' : 's'}`;
 
-				if (seconds === devStatus.endingGame) {
+				if (seconds === 15) {
 					game.internals.seatedPlayers.forEach((player) => {
 						highlightSeats(player, 'otherplayers', 'notify');
 						player.gameChats.push({
@@ -913,7 +913,7 @@ let dayPhase = (game) => {
 					});
 				}
 
-				if (seconds === devStatus.endingGame - 1 || seconds === devStatus.endingGame - 3) {
+				if (seconds === 14 || seconds === 12) {
 					game.internals.seatedPlayers.forEach((player) => {
 						if (!player.tableState.isVotable.selectedForElimination) {
 							highlightSeats(player, 'clear');
@@ -921,7 +921,7 @@ let dayPhase = (game) => {
 					});
 				}
 
-				if (seconds === devStatus.endingGame - 2) {
+				if (seconds === 13) {
 					game.internals.seatedPlayers.forEach((player) => {
 						if (!player.tableState.isVotable.selectedForElimination) {
 							highlightSeats(player, 'otherplayers', 'notify');
@@ -929,7 +929,7 @@ let dayPhase = (game) => {
 					});
 				}
 
-				if (seconds < devStatus.endingGame) {
+				if (seconds < 15) {
 					status += '. VOTE NOW';
 				}
 
@@ -1071,7 +1071,7 @@ let endGame = (game) => {
 			});
 
 			sendInProgressGameUpdate(game);
-		}, devStatus.revealLosersPause);
+		}, 5000);
 	}
 
 	setTimeout(() => {
@@ -1169,5 +1169,5 @@ let endGame = (game) => {
 			});
 		});
 
-	}, devStatus.revealAllCardsPause);
+	}, 11000);
 };
