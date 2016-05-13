@@ -30,7 +30,7 @@ export default class Main extends React.Component {
 			}>
 				<Menu
 					userInfo={this.props.userInfo}
-					updateSeatedUsers={this.props.updateSeatedUsers}
+					onLeaveGame={this.props.onLeaveGame}
 					onSettingsButtonClick={this.props.onSettingsButtonClick}
 					gameInfo={this.props.gameInfo}
 				/>

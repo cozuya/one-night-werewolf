@@ -56,7 +56,13 @@ export default class Table extends React.Component {
 	}
 
 	leaveGame() {
-		this.props.onLeaveGame();
+		let seatNumber;
+
+		if (this.props.userInfo.seatNumber) {
+			seatNumber = this.props.userInfo.seatNumber;
+		}
+
+		this.props.onLeaveGame(seatNumber);
 	}
 
 	handleSeatClicked(e) {

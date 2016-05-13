@@ -4,16 +4,12 @@ import React from 'react';
 
 export default class Menu extends React.Component {
 	clickSettingsButton(e) {
-		let { gameState } = this.props.gameInfo;
+		let { gameInfo, userInfo } = this.props,
+			{ gameState } = gameInfo;
 
-		if (!gameState || gameState && gameState.isCompleted || gameState && !gameState.isStarted) {
-			if (this.props.midSection === 'game') {
-				if (this.props.gameInfo.gameState.isCompleted) {
-					this.props.updateSeatedUsers(null, true, true);
-				} else {
-					this.props.updateSeatedUsers(null, null, true);
-				}
-			}
+		if (gameState && gameState.isCompleted && userInfo.seatNumber || gameState && !userInfo.seatNumber || gameState && !gameState.isStarted) {
+			this.props.onLeaveGame(userInfo.seatNumber, true);
+		} else if (!gameState) {
 			this.props.onSettingsButtonClick('settings');
 		}
 	}

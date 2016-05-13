@@ -200,9 +200,20 @@ class App extends React.Component {
 		dispatch(updateUser(userInfo));
 	}
 	
-	handleLeaveGame() {
+	handleLeaveGame(seatNumber, isSettings = false) {
+		let { dispatch, userInfo } = this.props;
 
-		// socket.emit('leaveGame', data);
+		if (userInfo.seatNumber) {
+			userInfo.seatNumber = '';
+			dispatch(updateUser(userInfo));
+		}
+		
+		socket.emit('leaveGame', {
+			userName: this.props.userInfo.userName,
+			seatNumber,
+			isSettings,
+			uid: this.props.gameInfo.uid
+		});
 	}
 
 	render() {

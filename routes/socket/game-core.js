@@ -1,6 +1,6 @@
 'use strict';
-let Game = require('../../models/game'),
-	Account = require('../../models/account'),
+
+let Account = require('../../models/account'),
 	{ games, userList } = require('./models'),
 	{ secureGame } = require('./util'),
 	{ sendInProgressGameUpdate } = require('./user-events'),

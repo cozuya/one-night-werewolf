@@ -5,6 +5,7 @@ let { games, userList, generalChats } = require('./models'),
 	{ roleMap } = require('../../iso/util'),
 	{ sendGameList, sendGeneralChats } = require('./user-requests'),
 	_ = require('lodash'),
+	Game = require('../../models/game'),
 	Account = require('../../models/account'),
 	Generalchats = require('../../models/generalchats'),
 	generalChatCount = 0,
@@ -164,8 +165,8 @@ module.exports.handleAddNewGame = (socket, data) => {
 
 module.exports.handleAddNewGameChat = (data, uid) => {
 	let game = games.find((el) => {
-			return el.uid === uid;
-		});
+		return el.uid === uid;
+	});
 
 	data.timestamp = new Date();
 	game.chats.push(data);
@@ -229,28 +230,26 @@ module.exports.handleUpdatedGameSettings = (socket, data) => {
 };
 
 module.exports.handleUserLeaveGame = (socket, data) => {
-		let completedDisconnectionCount = 0;
+	let game = games.find((el) => {
+			return el.uid === data.uid;
+		}),
+		completedDisconnectionCount;
 
-		if (game.gameState.isCompleted && data.seatNumber) {
-			let playerSeat = Object.keys(game.seated).find((seatName) => {
+	socket.leave(game.uid);
+
+	// todo-release for some reason when a player plays a game, it completes, leaves the table, and then comes back to the table, they don't have the private info from the game until there is a game update.
+
+	if (game.gameState.isCompleted && data.seatNumber) {
+		let playerSeat = Object.keys(game.seated).find((seatName) => {
 				return game.seated[seatName].userName === data.userName;
 			});
-			// todo-alpha I broke this
-			game.seated[playerSeat].connected = false;
-			Object.keys(game.seated).forEach((seatName) => {
-				if (!game.seated[seatName].connected) {
-					completedDisconnectionCount++;
-				}
-			});
-			sendGameList(socket);
-		} else if (socketSession.passport && socketSession.passport.user) {
-			for (let key in game.seated) {
-				if (game.seated[key].userName === socketSession.passport.user) {
-					delete game.seated[key];
-				}
-			}
-			sendGameList();
-		}
+
+		game.seated[playerSeat].connected = false;
+		sendGameList(socket);
+
+		completedDisconnectionCount = Object.keys(game.seated).filter((seat) => {
+			return !game.seated[seat].connected;
+		}).length;
 
 		if (completedDisconnectionCount === 7) {
 			let saveGame = new Game({
@@ -289,19 +288,20 @@ module.exports.handleUserLeaveGame = (socket, data) => {
 
 			saveGame.save();
 		}
-
-		socket.leave(game.uid);
-
-		if (Object.keys(game.seated).length === 0 || completedDisconnectionCount === 7) {
-			socket.emit('gameUpdate', {}, data.isSettings);
-			io.sockets.in(data.uid).emit('gameUpdate', {});
-			games.splice(games.indexOf(game), 1);
-			sendGameList();
-		} else {
-			io.sockets.in(data.uid).emit('gameUpdate', secureGame(game));
-			socket.emit('gameUpdate', {}, data.isSettings);
-		}
+	} else if (data.seatNumber && !game.gameState.isStarted) {
+		delete game.seated[`seat${data.seatNumber}`];
 	}
+
+	if (Object.keys(game.seated).length === 0 || completedDisconnectionCount === 7) {
+		socket.emit('gameUpdate', {}, data.isSettings);
+		io.sockets.in(data.uid).emit('gameUpdate', {});
+		games.splice(games.indexOf(game), 1);
+	} else {
+		io.sockets.in(data.uid).emit('gameUpdate', secureGame(game));
+		socket.emit('gameUpdate', {}, data.isSettings);
+	}
+
+	sendGameList();
 };
 
 module.exports.checkUserStatus = (socket) => {

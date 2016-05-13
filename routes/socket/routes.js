@@ -1,6 +1,6 @@
 'use strict';
 
-let { handleUpdatedTruncateGame, handleUpdatedReportGame, handleAddNewGame, handleAddNewGameChat, handleNewGeneralChat, 	handleUpdatedGameSettings, handleSocketDisconnect, handleUserLeaveGame, checkUserStatus } = require('./user-events'),
+let { handleUpdatedTruncateGame, handleUpdatedReportGame, handleAddNewGame, handleAddNewGameChat, handleNewGeneralChat, handleUpdatedGameSettings, handleSocketDisconnect, handleUserLeaveGame, checkUserStatus } = require('./user-events'),
 	{ sendGameInfo, sendUserGameSettings, sendGameList, sendGeneralChats, sendUserList } = require('./user-requests'),
 	{ updateSeatedUser, leaveGame, updateSelectedElimination, updateUserNightActionEvent } = require('./game-core');
 
