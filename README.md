@@ -5,13 +5,13 @@ A multiuser web game of deception and deduction.
 
 ![Screenshot](http://i.imgur.com/da9LDq6.png)
 
-Front end: React, Redux, Sass, SemanticUI, SocketIO.
+Front end: React, Redux, Sass, SemanticUI (jQuery), SocketIO.
 
 Back end: Node, Express, Pug, Passport, Mongodb with Mongoose, SocketIO.
 
 Build: Gulp, Browserify, Babel (front end).
 
-Latest version: 0.1.0.  Application works at a MVP level but is not quite ready for production deployment. Estimated alpha deployment: June 2016.  See docs/roadmap.txt.
+Latest version: 0.2.0.  Application works at a MVP level but is not quite ready for production deployment. Estimated alpha deployment: June 2016.  See docs/roadmap.txt.
 
 ## Installation ##
 

@@ -10,6 +10,8 @@ let gulp = require('gulp'),
 	rename = require('gulp-rename'),
 	opn = require('opn'),
 	sass = require('gulp-sass'),
+	cleanCSS = require('gulp-clean-css'),
+	uglify = require('gulp-uglify'),
 	wait = require('gulp-wait'),
 	sourcemaps = require('gulp-sourcemaps'),
 	notifier = require('node-notifier'),
@@ -72,4 +74,39 @@ gulp.task('reload', () => {
 	gulp.src('')
 		.pipe(wait(4500))
 		.pipe(livereload());
+});
+
+gulp.task('build', ['build-css', 'build-js']);
+
+gulp.task('build-js', () => {
+	gulp.src('./src/frontend-scripts/game-app.js')
+		.pipe(through2.obj((file, enc, next) => {
+			browserify(file.path)
+				.transform(babelify)
+				.bundle((err, res) => {
+					if (err) {
+						return next(err);
+					}
+					file.contents = res;
+					next(null, file);
+				});
+		}))
+		.on('error', function (error) {
+			notifier.notify({ title: 'JavaScript Error', message: ' '});
+			console.log(error.stack);
+			this.emit('end');
+		})
+		.pipe(rename('bundle.js'))
+		.pipe(uglify())
+		.pipe(gulp.dest('./public/scripts'));
+});
+
+gulp.task('build-css', () => {
+	return gulp.src('./src/scss/style.scss')
+		.pipe(plumber())
+		.pipe(sass({outputStyle: 'compressed'}).on('error', () => {
+			notifier.notify({ title: 'SASS Error', message: ' ' });
+		}))
+		.pipe(cleanCSS({keepSpecialComments: 0}))
+		.pipe(gulp.dest('./public/styles/'));
 });

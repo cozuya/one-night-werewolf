@@ -1,10 +1,23 @@
 v0.1 released 5/5/2016
 	all features implemented (game), all breaking bugs fixed
+
 v0.2
-	upgrade react to v15
+	upgrade react to v15 released 5/13/2016
 	styling review and overhaul
 	removal of semantic as a npm dependency (fixed semantic css file without media queries)
+
 v0.3
 	implementation of website that describes game and rules
-	performance/size of JS improvements, removal of source maps, uglification, CDNs for popular libraries
+	performance/size of CSS & JS improvements, removal of source maps, uglification
 	deployment and launch alpha event
+
+v1.0
+	implement lets encrypt https
+	launch and enable webcrawlers
+
+future
+	explore upgrading to node v6
+	explore cardback reward system
+	add full featured expando actions based on claimed roll
+	add email confirmation system/tokens
+	add remember me passport functionality
