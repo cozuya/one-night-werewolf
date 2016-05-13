@@ -76,6 +76,9 @@ let { games, userList, generalChats } = require('./models'),
 		let seatedPlayerNames = Object.keys(game.seated).map((seat) => {
 				return game.seated[seat].userName;
 			}),
+			roomSockets, playerSockets, observerSockets;
+
+		if (io.sockets.adapter.rooms[game.uid]) {
 			roomSockets = Object.keys(io.sockets.adapter.rooms[game.uid].sockets).map((sockedId) => {
 				return io.sockets.connected[sockedId];
 			}),
@@ -85,6 +88,7 @@ let { games, userList, generalChats } = require('./models'),
 			observerSockets = roomSockets.filter((socket) => {
 				return !socket.handshake.session.passport || seatedPlayerNames.indexOf(socket.handshake.session.passport.user) === -1;
 			});
+		}
 
 		playerSockets.forEach((sock, index) => {
 			let cloneGame = Object.assign({}, game),

@@ -30,13 +30,14 @@
 
 			.pointing.menu {
 				margin: 0;
+				min-height: initial;
 
 				.item {
-					padding: 8px;		
+					padding: 7px 8px 6px;		
 				}
 
 				.icon {
-					margin: 7px 0 0 180px;
+					margin: 4px 0 0 180px;
 					opacity: .5;
 					cursor: pointer;
 				}
@@ -61,7 +62,7 @@
 				}
 
 				.chat-user {
-					color: #16AB39;
+					color: $lteal;
 
 					.chat-timestamp {
 						color: #21792A;

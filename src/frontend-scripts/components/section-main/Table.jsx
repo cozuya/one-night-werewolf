@@ -52,7 +52,7 @@ export default class Table extends React.Component {
 	}
 
 	shouldComponentUpdate(nextProps) {
-		return !_.isEqual(nextProps.gameInfo, this.props.gameInfo);
+		return !_.isEqual(nextProps.gameInfo, this.props.gameInfo);  // todo-release review this
 	}
 
 	leaveGame() {

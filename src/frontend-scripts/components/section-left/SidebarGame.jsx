@@ -39,7 +39,7 @@ export default class SidebarGame extends React.Component {
 				<div>
 					<span className={game.kobk ? "gamename kobk" : "gamename"}>{game.name}</span>
 					<span className="gamelength">{game.time}</span> 
-					<span className="seatedcount">{game.seatedCount}/7</span>
+					<span className="seatedcount">{game.seatedCount.toString()}/7</span>
 				</div>
 				<div className="rolelist">
 					<div>

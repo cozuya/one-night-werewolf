@@ -301,7 +301,11 @@ export default class Gamechat extends React.Component {
 					<i className={this.state.lock ? 'large lock icon' : 'large unlock alternate icon'} onClick={this.handleChatLockClick.bind(this)}></i>
 				</section>
 				<section className="segment chats">
-					<div className="chatpusher"></div>
+					{(() => {
+						if (this.props.gameInfo.chats.length < 20) {
+							return <div className="chatpusher"></div>
+						}
+					})()}
 					<div className="ui list">
 						{this.processChats()}
 					</div>

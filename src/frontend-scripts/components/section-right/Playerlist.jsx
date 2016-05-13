@@ -42,26 +42,14 @@ export default class Playerlist extends React.Component {
 							}
 
 							if (aTotal > 9 && bTotal > 9) {
-								if (a.wins / aTotal > b.wins / bTotal) {
-									return -1;
-								} else if (b.wins / bTotal > a.wins / aTotal) {
-									return 1;
-								} else {
-									return 0;
-								}
+								return b.wins / bTotal - a.wins / aTotal;
 							} else if (aTotal > 9) {
 								return -1;
 							} else if (bTotal > 9) {
 								return 1;
 							}
 
-							if (a.wins > b.wins) {
-								return -1;
-							} else if (b.wins > a.wins) {
-								return 1;
-							} else {
-								return 0;
-							}
+							return b.wins - a.wins;
 						});
 
 						return list.map((user, i) => {
