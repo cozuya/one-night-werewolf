@@ -1,0 +1,121 @@
+$werewolfteam: #DC6969;
+$villageteam: #4B6A90;
+$tannerteam: #DCB469;
+$notification: #FBBD08;
+$selection: #DB2828;
+$proceed: #2185D0;
+$lteal: #097892;
+$dteal: #034f61;
+
+body {
+	background-image: url('../images/pw_maze_white.png');
+
+	> .ui.container {
+		width: 1127px;
+		margin-left: auto;
+		margin-right: auto;
+		max-width: inherit !important;
+	}
+}
+
+.clearfix:after {
+	display: table;
+	content: '';
+	clear: both;
+}
+
+.team-werewolf {
+	color: $werewolfteam;
+}
+
+.team-village {
+	color: $villageteam;
+}
+
+.team-tanner {
+	color: $tannerteam;
+}
+
+.header-container {
+	text-align: center;
+	height: 100px;
+	margin-top: 45px;
+	padding-top: 18px;
+	background: radial-gradient(ellipse at center, #056e8e 0%, #002323 100%);
+
+	h1.ui.header {
+		color: #eee;
+		font-size: 44px;
+		font-family: 'raleway', 'lato', helvetica, arial, sans-serif;
+		text-shadow: 3px 3px #000;
+	}
+}
+
+p {
+	font-size: 16px;
+}
+
+#top-menu {
+	margin-left: 5.7%;
+	width: 88.6%;
+
+	.left.menu .button {
+		background: $werewolfteam none !important;
+		color: #fff;
+	}
+
+	.ui.button {
+		background: $lteal none !important;
+		color: #fff;
+	}
+}
+
+.ui.grid.mainpage {
+	background: #eee;
+}
+
+#general-info, #top-menu{
+	background: #eee;
+}
+
+.signin-modal, .signup-modal {
+	margin-left: -125px !important;
+}
+
+.signinnag {
+	margin-left: -237px;
+}
+
+::-webkit-scrollbar {
+  width: 3px;
+  height: 3px;
+}
+::-webkit-scrollbar-button {
+  width: 0px;
+  height: 0px;
+}
+::-webkit-scrollbar-thumb {
+  background: #717171;
+  border: 0px none #ffffff;
+  border-radius: 0px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #191919;
+}
+::-webkit-scrollbar-thumb:active {
+  background: #c4c4c4;
+}
+::-webkit-scrollbar-track {
+  background: #bfbfbf;
+  border: 0px none #ffffff;
+  border-radius: 0px;
+}
+::-webkit-scrollbar-track:hover {
+  background: #666666;
+}
+::-webkit-scrollbar-track:active {
+  background: #a4a4a4;
+}
+::-webkit-scrollbar-corner {
+  background: transparent;
+}

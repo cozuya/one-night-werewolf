@@ -18,14 +18,14 @@ module.exports = () => {
 
 	app.get('/', (req, res) => {
 		if (req.user) {
-			res.render('signed-in');
+			res.render('signed-in', {username: req.user.username});
 		} else {
 			res.render('signed-out');
 		}
 	});
 
 	app.get('/game', ensureAuthenticated, (req, res) => {
-		res.render('game', {user: req.user.username});
+		res.render('game', {user: req.user.username, game: true});
 	});
 
 	app.get('/observe', (req, res) => {
@@ -33,7 +33,7 @@ module.exports = () => {
 			req.session.destroy();
 			req.logout();
 		}
-		res.render('game');
+		res.render('game', {game: true});
 	});
 
 	app.get('*', (req, res) => {

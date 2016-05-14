@@ -6,8 +6,13 @@ html(lang="en")
 		meta(name="msapplication-TileColor" content="#034f61")
 		meta(name="msapplication-TileImage" content="/ms-icon-144x144.png")
 		meta(name="theme-color" content="#034f61")
+		if game
+			link(rel="stylesheet", type="text/css", href="styles/style.css")
+		else
+			meta(name="viewport", content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1")
+			link(rel="stylesheet", type="text/css", href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.1.8/semantic.min.css")
+			link(rel="stylesheet", type="text/css", href="styles/style-web.css")
 		link(href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet" type="text/css")
-		link(rel="stylesheet", type="text/css", href="styles/style.css")
 		link(rel="author" href="humans.txt")
 		link(rel="icon" type="image/png" sizes="192x192"  href="/android-icon-192x192.png")
 		link(rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png")
@@ -61,5 +66,10 @@ html(lang="en")
 				.ui.dimmer.inverted
 					.ui.text.loader Signing up..
 				.ui.negative.hidden.message
-		script(src="scripts/bundle.js")
+		if game
+			script(src="scripts/bundle.js")
+		else
+			script(src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.3/jquery.min.js")
+			script(src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.1.8/semantic.min.js")
+			script(src="scripts/site.js")
 		block footer

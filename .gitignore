@@ -20,4 +20,4 @@ data/*
 data/mongod.lock
 public/semantic/*
 misc/*
-public/scripts/*
+public/scripts/bundle.js

@@ -18,12 +18,12 @@ let gulp = require('gulp'),
 	notifier = require('node-notifier'),
 	exec = require('child_process').exec;
 
-gulp.task('default', ['watch', 'scripts']);
+gulp.task('default', ['watch', 'scripts', 'styles', 'styles-web']);
 
 gulp.task('watch', () => {
 	process.env.NODE_ENV = 'development';
 	livereload.listen();
-	gulp.watch('./src/scss/*.scss', ['styles']);
+	gulp.watch('./src/scss/*.scss', ['styles', 'styles-web']);
 	gulp.watch('./src/frontend-scripts/**/*.js*', ['scripts', 'lint']);
 	gulp.watch('./routes/*.js', ['reload']);
 	gulp.watch('./src/images/*', ['imagemin']);
@@ -43,6 +43,19 @@ gulp.task('lint', () => {
 
 gulp.task('styles', () => {
 	return gulp.src('./src/scss/style.scss')
+		.pipe(plumber())
+		.pipe(sourcemaps.init())
+		.pipe(sass({outputStyle: 'compressed'}).on('error', () => {
+			notifier.notify({ title: 'SASS Error', message: ' ' });
+		}))
+		.pipe(sourcemaps.write())
+		.pipe(gulp.dest('./public/styles/'))
+		.pipe(wait(1000))
+		.pipe(livereload());
+});
+
+gulp.task('styles-web', () => {
+	return gulp.src('./src/scss/style-web.scss')
 		.pipe(plumber())
 		.pipe(sourcemaps.init())
 		.pipe(sass({outputStyle: 'compressed'}).on('error', () => {
