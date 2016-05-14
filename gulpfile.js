@@ -13,6 +13,7 @@ let gulp = require('gulp'),
 	cleanCSS = require('gulp-clean-css'),
 	uglify = require('gulp-uglify'),
 	wait = require('gulp-wait'),
+	imagemin = require('gulp-imagemin'),
 	sourcemaps = require('gulp-sourcemaps'),
 	notifier = require('node-notifier'),
 	exec = require('child_process').exec;
@@ -20,11 +21,18 @@ let gulp = require('gulp'),
 gulp.task('default', ['watch', 'scripts']);
 
 gulp.task('watch', () => {
-	// opn('http://localhost:8080/');
+	process.env.NODE_ENV = 'development';
 	livereload.listen();
 	gulp.watch('./src/scss/*.scss', ['styles']);
 	gulp.watch('./src/frontend-scripts/**/*.js*', ['scripts', 'lint']);
 	gulp.watch('./routes/*.js', ['reload']);
+	gulp.watch('./src/images/*', ['imagemin']);
+});
+
+gulp.task('imagemin', () => {
+	gulp.src('./src/images/*')
+		.pipe(imagemin())
+		.pipe(gulp.dest('./public/images'));
 });
 
 gulp.task('lint', () => {
@@ -79,6 +87,7 @@ gulp.task('reload', () => {
 gulp.task('build', ['build-css', 'build-js']);
 
 gulp.task('build-js', () => {
+	process.env.NODE_ENV = 'production';
 	gulp.src('./src/frontend-scripts/game-app.js')
 		.pipe(through2.obj((file, enc, next) => {
 			browserify(file.path)

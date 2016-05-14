@@ -54,11 +54,10 @@ body {
 	color: $tannerteam;
 }
 
-.ui.menu {
+#game-container .ui.menu {
 	border-radius: 0;
-	border-left: 0;
-	border-right: 0;
-	border-bottom: 1px solid rgba(34,36,38, 0.15);
+	border: 0;
+	box-shadow: 0;
 
 	> img {
 		margin-left: 10px;
@@ -115,17 +114,17 @@ body {
 }
 
 .section-left, .section-right, .section-main {
-	border: 1px solid rgba(34,36,38,.15);
 	box-shadow: 0 1px 2px 0 rgba(34,36,38,.15);
 	background: #fff;
 }
 
 .section-main > section {
 	min-height: 555px;
+	border-top: 1px solid #eee;
 }
 
 .defaultmid {
-	background: #fafafa;
+	background: #fdfdfd;
 }
 
 #game-container .section-main {

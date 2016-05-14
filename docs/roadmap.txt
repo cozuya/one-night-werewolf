@@ -18,6 +18,8 @@ v1.0
 future
 	explore upgrading to node v6
 	explore cardback reward system
+	explore guest mode
 	add full featured expando actions based on claimed roll
 	add email confirmation system/tokens
 	add remember me passport functionality
+	more roles

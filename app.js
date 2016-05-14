@@ -9,6 +9,7 @@ let fs = require('fs'),
 	socketSession = require('express-socket.io-session'),
 	passport = require('passport'),
 	mongoose = require('mongoose'),
+	compression = require('compression'),
 	Strategy = require('passport-local').Strategy,
 	Account = require('./models/account'),
 	routesIndex = require('./routes/index'),
@@ -24,12 +25,13 @@ app.set('views', `${__dirname}/views`);
 app.set('view engine', 'pug');
 app.locals.pretty = true;
 
+app.use(compression());
 app.use(logger('combined', {stream: logFile}));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(favicon(`${__dirname}/public/favicon.ico`));
 app.use(cookieParser());
-app.use(express.static(`${__dirname}/public`));
+app.use(express.static(`${__dirname}/public`, {maxAge: 86400000 * 28}));
 
 app.use(session);
 
