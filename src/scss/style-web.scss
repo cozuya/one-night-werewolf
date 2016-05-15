@@ -72,6 +72,19 @@ p {
 
 .ui.grid.mainpage {
 	background: #eee;
+
+}
+
+#general-info {
+	.news {
+		background: #FFFF7B;
+		border: 1px solid #333;
+		border-radius: 5px;
+	}
+
+	img {
+		margin-top: 40px;
+	}
 }
 
 #general-info, #top-menu{
