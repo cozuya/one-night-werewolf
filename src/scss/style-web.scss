@@ -9,13 +9,6 @@ $dteal: #034f61;
 
 body {
 	background-image: url('../images/pw_maze_white.png');
-
-	> .ui.container {
-		width: 1127px;
-		margin-left: auto;
-		margin-right: auto;
-		max-width: inherit !important;
-	}
 }
 
 .clearfix:after {
@@ -36,12 +29,11 @@ body {
 	color: $tannerteam;
 }
 
-.header-container {
+#header-container {
 	text-align: center;
-	height: 100px;
 	margin-top: 45px;
-	padding-top: 18px;
 	background: radial-gradient(ellipse at center, #056e8e 0%, #002323 100%);
+	background-color: #002323;
 
 	h1.ui.header {
 		color: #eee;
@@ -56,8 +48,9 @@ p {
 }
 
 #top-menu {
-	margin-left: 5.7%;
-	width: 88.6%;
+	width: 1127px;
+	margin-left: auto!important;
+	margin-right: auto!important;
 
 	.left.menu .button {
 		background: $werewolfteam none !important;
@@ -72,13 +65,18 @@ p {
 
 .ui.grid.mainpage {
 	background: #eee;
+	box-shadow: 0px 3px 4px 1px #ccc;
 
+	h2 {
+		font-size: 30px;
+		text-align: center;
+	}
 }
 
 #general-info {
 	.news {
 		background: #FFFF7B;
-		border: 1px solid #333;
+		box-shadow: 0 0 2px 2px #ccc;
 		border-radius: 5px;
 	}
 

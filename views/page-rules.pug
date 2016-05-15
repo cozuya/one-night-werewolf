@@ -1,0 +1,56 @@
+extends layout
+block content
+	nav.ui.secondary.pointing.top.fixed.menu#top-menu
+		.left.menu
+			a.ui.button(href="/observe") Observe Now
+		a.item(href="/") Home
+		a.active.item Rules
+		a.item(href="/how-to-play") How to Play
+		a.item(href="/about") About
+		if username
+			div.item.right
+				a.right#logout(href="#", style="margin-right: 20px;") Logout
+				a.right(href="/account") Account
+		else
+			.right.menu
+				.ui.buttons
+					button.ui.button Sign In
+					.or
+					button.ui.positive.button Sign Up
+	.ui.segment
+		h1.ui.header The rules of One Night Werewolf
+	.ui.segment
+		h2.ui.header The game in a paragraph
+		p After 7 players are seated at a game table, the 10 roles chosen to be in this game by the game's creator are shuffled, distributed to the players, and are looked at once.  The remaining 3 role cards go into the center.  This is a game of teams - most roles are on the village team, but a few may be on the werewolf team. Then the night phase begins - players "wake up" and interact with other players in certain ways which can be read about below, notably, the werewolf team players know who the other werewolves are in secret.  After night phases are complete, the day phase begins, at the end of which every player must select another player for elimination.  The player(s) with the most votes then reveals his or her card - if a werewolf is eliminated, everyone on the village team wins.  Otherwise, the werewolves win.  If no one has more than a single vote (everyone votes in a circle), everyone on the village team wins if the center contains all of the werewolf cards.
+	.ui.segment
+		h2.ui.header The roles
+	.ui.segment
+		h3.ui.header Werewolf
+		p Werewolves wake up, and look for other werewolves.  If there are none, they may look at a center card.  There is a minimum of 2 werewolves in every game, and a maximum of 5 werewolf team roles in every game.  Werewolves are on the werewolf team, and wake up in phase 1.
+	.ui.segment
+		h3.ui.header Minion
+		p Minions wake up, and get to see who the werewolves are - but the werewolves are not aware of who the minions are.  Minions win if the werewolves win, and in the event of no werewolves in the game, win if a villager dies.  There is a maximum of 5 werewolf team roles in every game.  Minions are on the werewolf team, and wake up in phase 1.
+	.ui.segment
+		h3.ui.header Mason
+		p Masons wake up, and look for other masons.  Masons are on the village team, and wake up in phase 1.
+	.ui.segment
+		h3.ui.header Seer
+		p Seers wake up, and have the choice of looking at another player's card, or two of the center cards.  Seers are on the village team, and wake up in phase 1.
+	.ui.segment
+		h3.ui.header Robber
+		p Robbers wake up, and swap their card with the card of another player.  They then look at their new card, and become the team they have stolen (and vice versa) - however they do not do an additional night action.  Robbers are on the village team, and as a role-changing role, randomly wakes up in a phase that another role-changer does not wake up in.
+	.ui.segment
+		h3.ui.header Troublemaker
+		p Troublemakers wake up, and swap the cards of two different players without looking at them.  Troublemakers are on the village team, and as a role-changing role, randomly wakes up in a phase that another role-changer does not wake up in.
+	.ui.segment
+		h3.ui.header Insomniac
+		p Insomniacs wake up, and look at their card again to see what role they are.  Insomniacs are on the village team, and wake up in the last night phase.
+	.ui.segment
+		h3.ui.header Hunter
+		p Hunters do not wake up.  If a hunter is eliminated, the player he or she is selecting for elimination is also eliminated.  Hunters are on the village team.
+	.ui.segment
+		h3.ui.header Tanner
+		p Tanners do not wake up.  Tanners are suicidal and only win if they themselves are eliminated.  There is a maximum of 3 tanners per game.  Tanners are on their own team individually and do not win if another tanner wins.
+	.ui.segment
+		h3.ui.header Villager
+		p Villagers do not wake up.  Villagers are on the village team.

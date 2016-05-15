@@ -145,7 +145,7 @@ export default class Creategame extends React.Component {
 		});	
 	}
 
-	render() {
+	render() {  // todo-alpha team names aren't colored any more
 		return (
 			<section className="creategame">
 				<i className="remove icon" onClick={this.leaveCreateGame.bind(this)}></i>

@@ -13,7 +13,7 @@ module.exports.roleMap = {
 	minion: {
 		initial: 'Mi',
 		team: 'werewolf',
-		description: 'Minions wake up, and get to see who the werewolves are - but the werewolves are not aware of who the minions are.  Minions win if the werewolves win, and in the event of no werewolves, win if a villager dies.  There is a maximum of 5 werewolf team roles in every game.  Minions are on the <span class="team-werewolf">werewolf team.</span>'
+		description: 'Minions wake up, and get to see who the werewolves are - but the werewolves are not aware of who the minions are.  Minions win if the werewolves win, and in the event of no werewolves in the game, win if a villager dies.  There is a maximum of 5 werewolf team roles in every game.  Minions are on the <span class="team-werewolf">werewolf team.</span>'
 	},
 	mason: {
 		initial: 'Ma',

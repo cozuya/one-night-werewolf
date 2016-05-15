@@ -1,0 +1,32 @@
+extends layout
+block content
+	nav.ui.secondary.pointing.top.fixed.menu#top-menu
+		.left.menu
+			a.ui.button(href="/observe") Observe Now
+		a.active.item Home
+		a.item(href="/rules") Rules
+		a.item(href="/how-to-play") How to Play
+		a.item(href="/about") About
+		if username
+			div.item.right
+				a.right#logout(href="#", style="margin-right: 20px;") Logout
+				a.right(href="/account") #[username]'s account
+		else
+			.right.menu
+				.ui.buttons
+					button.ui.button Sign In
+					.or
+					button.ui.positive.button Sign Up
+	#header-container.ui.segment
+		h1.ui.header One Night Werewolf Online
+	.ui.segment
+		.ui.grid.mainpage
+			.row#general-info
+				.seven.wide.column
+					h2.ui.header A multiplayer web game of deception and deduction
+					p In One Night Werewolf Online, take on 6 other players in this fast paced game of social deduction.  Use the knowledge of what role you've randomly received to help your fellow villagers to uncover a werewolf.. or hide if you're a werewolf yourself.  With a large number of roles available anything can happen! Read #[a(href="/rules") the rules] to learn more, or hop into the #[a(href="/observe") the game] itself right now.
+				.two.wide.column
+					img(src="images/ww-logo-fs.png", width="100", height="100" alt="One Night Werewolf Online logo")
+				.seven.wide.column.news
+					h2.ui.header News
+					p Welcome to the alpha event!

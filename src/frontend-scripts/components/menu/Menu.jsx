@@ -20,7 +20,7 @@ export default class Menu extends React.Component {
 		return (
 			<section className="ui menu">
 				<p>
-					<a href="/" target="blank">One Night Werewolf</a>
+					<a href="/" target="_blank">One Night Werewolf</a>
 				</p>
 				<div className="item right">
 				{(() => {

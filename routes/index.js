@@ -18,9 +18,33 @@ module.exports = () => {
 
 	app.get('/', (req, res) => {
 		if (req.user) {
-			res.render('signed-in', {username: req.user.username});
+			res.render('page-home', {username: req.user.username});
 		} else {
-			res.render('signed-out');
+			res.render('page-home');
+		}
+	});
+
+	app.get('/rules', (req, res) => {
+		if (req.user) {
+			res.render('page-rules', {username: req.user.username});
+		} else {
+			res.render('page-rules');
+		}
+	});
+
+	app.get('/how-to-play', (req, res) => {
+		if (req.user) {
+			res.render('page-howtoplay', {username: req.user.username});
+		} else {
+			res.render('page-howtoplay');
+		}
+	});	
+
+	app.get('/about', (req, res) => {
+		if (req.user) {
+			res.render('page-about', {username: req.user.username});
+		} else {
+			res.render('page-about');
 		}
 	});
 
