@@ -14,8 +14,6 @@ export default class Menu extends React.Component {
 		}
 	}
 
-	// todo-alpha player who goes to another page on another tab gets logged out?
-
 	render() {
 		return (
 			<section className="ui menu">

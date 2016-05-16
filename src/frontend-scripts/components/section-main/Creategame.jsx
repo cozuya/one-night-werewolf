@@ -145,7 +145,7 @@ export default class Creategame extends React.Component {
 		});	
 	}
 
-	render() {  // todo-alpha team names aren't colored any more
+	render() {
 		return (
 			<section className="creategame">
 				<i className="remove icon" onClick={this.leaveCreateGame.bind(this)}></i>
@@ -181,17 +181,15 @@ export default class Creategame extends React.Component {
 								<div className="menu"></div>
 							</i>
 							<div className="menu">
-								<div className="item">0:05</div>
 								<div className="item">0:30</div>
 								<div className="item">1:00</div>
 								<div className="item">1:30</div>
 								<div className="item">2:00</div>
-								<div className="item">2:30</div>
 								<div className="item">3:00</div>
-								<div className="item">3:30</div>
 								<div className="item">4:00</div>
-								<div className="item">4:30</div>
 								<div className="item">5:00</div>
+								<div className="item">7:30</div>
+								<div className="item">10:00</div>
 							</div>
 						</div>
 					</div>

@@ -963,7 +963,7 @@ let endGame = (game) => {
 		}
 
 		if (seatedPlayers[eliminatedPlayerIndex].trueRole === 'tanner') {
-			tannerEliminations.push(eliminatedPlayerIndex);zzzzzzzzzzz
+			tannerEliminations.push(eliminatedPlayerIndex);
 		}
 	});
 

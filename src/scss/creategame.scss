@@ -181,13 +181,13 @@
 			width: 330px;
 			max-width: inherit;
 
-			> span + span {
+			> span {
 				color: $villageteam;
 			}
 		}
 
 		.werewolf .popup, .minion .popup {
-			> span + span {
+			> span {
 				color: $werewolfteam;
 			}
 		}

@@ -3,9 +3,9 @@ one-night-werewolf
 
 A multiuser web game of deception and deduction.
 
-![Screenshot](http://i.imgur.com/da9LDq6.png)
+![Screenshot](http://i.imgur.com/B1rRHbY.png)
 
-Front end: React, Redux, Sass, SemanticUI (jQuery), SocketIO.
+Front end: React, Redux, Sass, SemanticUI, jQuery, SocketIO.
 
 Back end: Node, Express, Pug, Passport, Mongodb with Mongoose, SocketIO.
 
@@ -37,6 +37,8 @@ For installation on windows, you may need to do a few extra steps if you are get
 
 instead of the npm install found above.
 
+On occasion semantic-ui itself will attempt to install for some reason - you can safely control-c at the prompt.
+
 ## Running in dev mode ##
 
 start mongo:
@@ -46,6 +48,10 @@ start mongo:
 start server:
 
 > nodemon bin/dev
+
+build assets:
+
+> gulp build
 
 start development task runner:
 

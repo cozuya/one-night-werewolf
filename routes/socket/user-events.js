@@ -124,13 +124,33 @@ module.exports.handleUpdatedTruncateGame = (data) => {
 	if (!game.internals.truncated) {
 		if (!data.truncate && game.internals.truncateGameCount !== 0) {
 			game.internals.truncateGameCount--;
-			chat.chat = `${data.userName} has removed their vote to end the game early. [${game.internals.truncateGameCount} / 4]`;
+			chat.chat = [
+				{
+					text: `${data.userName}`,
+					type: 'playerName'
+				},
+				{
+					text: ` has removed their vote to end the game early. [${game.internals.truncateGameCount} / 4]`
+				}
+			];
 		} else {
 			game.internals.truncateGameCount++;
-			chat.chat = `${data.userName} has voted to end the game early. [${game.internals.truncateGameCount} / 4]`;
+			chat.chat = [
+				{
+					text: `${data.userName}`,
+					type: 'playerName'
+				},
+				{
+					text: ` has voted to end the game early. [${game.internals.truncateGameCount} / 4]`
+				}
+			];
 
 			if (game.internals.truncateGameCount === 4) {
-				chat.chat = `${chat.chat} The majority of players have voted to end the game early.`;
+				chat.chat = [
+					{
+						text: `The majority of players have voted to end the game early.`
+					}
+				];
 				game.internals.truncateGame = true;
 				game.internals.truncated = true;
 			}
