@@ -76,7 +76,9 @@ let { games, userList, generalChats } = require('./models'),
 		let seatedPlayerNames = Object.keys(game.seated).map((seat) => {
 				return game.seated[seat].userName;
 			}),
-			roomSockets, playerSockets, observerSockets;
+			roomSockets = [],
+			playerSockets = [],
+			observerSockets = []; // these are here for edge-case disconnection issues
 
 		if (io.sockets.adapter.rooms[game.uid]) {
 			roomSockets = Object.keys(io.sockets.adapter.rooms[game.uid].sockets).map((sockedId) => {

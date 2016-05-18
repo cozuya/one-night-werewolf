@@ -70,7 +70,7 @@ export default class Table extends React.Component {
 			{ userInfo, gameInfo } = this.props,
 			$seat = $(e.currentTarget);
 
-		if (userInfo.userName) {
+		if (userInfo.userName && !gameInfo.gameState.isNight) {
 			if ($seat.hasClass('empty') && !userInfo.seatNumber && !gameInfo.gameState.isCompleted) {
 				this.props.onSeatingUser($seat.attr('data-seatnumber'));
 			} else {

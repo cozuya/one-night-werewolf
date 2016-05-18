@@ -2,15 +2,14 @@
 
 let passport = require('passport'),
 	Account = require('../models/account'),
-	socketRoutes = require('./socket/routes.js');
-
-let ensureAuthenticated = (req, res, next)  => {
-	if (req.isAuthenticated()) {
-		return next();
-	} else {
-		res.redirect('/observe');
-	}
-};
+	socketRoutes = require('./socket/routes.js'),
+	ensureAuthenticated = (req, res, next)  => {
+		if (req.isAuthenticated()) {
+			return next();
+		} else {
+			res.redirect('/observe');
+		}
+	};
 
 module.exports = () => {
 	socketRoutes();

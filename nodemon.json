@@ -6,8 +6,5 @@
 		"data/*",
 		"logs/*",
 		"node_modules/*"
-	],
-	"execMap": {
-		"": "node --harmony_destructuring"
-	}
+	]
 }

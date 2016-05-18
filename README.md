@@ -15,7 +15,7 @@ Latest version: 0.2.0.  Application works at a MVP level but is not quite ready 
 
 ## Installation ##
 
-Install node v5.x.  Has not been tested on Node v6.
+Install node v6.x.
 
 Install mongodb, have it in your path.
 
@@ -49,7 +49,7 @@ start server:
 
 > nodemon bin/dev
 
-build assets:
+build assets (first time only):
 
 > gulp build
 
