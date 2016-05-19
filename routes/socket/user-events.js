@@ -76,9 +76,7 @@ let { games, userList, generalChats } = require('./models'),
 		let seatedPlayerNames = Object.keys(game.seated).map((seat) => {
 				return game.seated[seat].userName;
 			}),
-			roomSockets = [],
-			playerSockets = [],
-			observerSockets = []; // these are here for edge-case disconnection issues
+			roomSockets, playerSockets, observerSockets;
 
 		if (io.sockets.adapter.rooms[game.uid]) {
 			roomSockets = Object.keys(io.sockets.adapter.rooms[game.uid].sockets).map((sockedId) => {
@@ -92,26 +90,30 @@ let { games, userList, generalChats } = require('./models'),
 			});
 		}
 
-		playerSockets.forEach((sock, index) => {
-			let cloneGame = Object.assign({}, game),
-				{ user } = sock.handshake.session.passport;
+		if (playerSockets.length) {
+			playerSockets.forEach((sock, index) => {
+				let cloneGame = Object.assign({}, game),
+					{ user } = sock.handshake.session.passport;
 
-			if (!game.gameState.isCompleted) {
-				cloneGame.tableState = cloneGame.internals.seatedPlayers.find((player) => {
-					return user === player.userName;
-				}).tableState;
-			}
-			
-			cloneGame.chats = combineInProgressChats(cloneGame, user);
-			sock.emit('gameUpdate', secureGame(cloneGame));
-		});
+				if (!game.gameState.isCompleted) {
+					cloneGame.tableState = cloneGame.internals.seatedPlayers.find((player) => {
+						return user === player.userName;
+					}).tableState;
+				}
+				
+				cloneGame.chats = combineInProgressChats(cloneGame, user);
+				sock.emit('gameUpdate', secureGame(cloneGame));
+			});
+		}
 
-		observerSockets.forEach((sock) => {
-			let cloneGame = Object.assign({}, game);
+		if (observerSockets.length) {
+			observerSockets.forEach((sock) => {
+				let cloneGame = Object.assign({}, game);
 
-			cloneGame.chats = combineInProgressChats(cloneGame);
-			sock.emit('gameUpdate', secureGame(cloneGame));
-		});
+				cloneGame.chats = combineInProgressChats(cloneGame);
+				sock.emit('gameUpdate', secureGame(cloneGame));
+			});
+		}
 	};
 
 module.exports.handleUpdatedTruncateGame = (data) => {
@@ -373,7 +375,6 @@ module.exports.checkUserStatus = (socket) => {
 	sendGeneralChats(socket);
 	sendGameList(socket);
 };
-
 
 module.exports.handleSocketDisconnect = handleSocketDisconnect;
 module.exports.sendInProgressGameUpdate = sendInProgressGameUpdate;

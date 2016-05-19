@@ -1,7 +1,7 @@
 internals
 	centerRoles array of strings of roles
 	soloMinion bool
-	seatedPlayers array 0-6
+	seatedPlayers array 7
 		seatNumber number 0-6
 		trueRole string
 		selectedForElimination string
