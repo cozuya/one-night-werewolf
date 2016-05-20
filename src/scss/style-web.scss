@@ -20,15 +20,15 @@ body {
 }
 
 .team-werewolf {
-	color: $werewolfteam;
+	color: $werewolfteam !important;
 }
 
 .team-village {
-	color: $villageteam;
+	color: $villageteam !important;
 }
 
 .team-tanner {
-	color: $tannerteam;
+	color: $tannerteam !important;
 }
 
 #header-container {
@@ -47,6 +47,10 @@ body {
 
 p {
 	font-size: 16px;
+}
+
+span.emphasis {
+	font-weight: 700;
 }
 
 #top-menu {
@@ -74,7 +78,7 @@ p {
 	box-shadow: 0px 3px 4px 1px #ccc;
 
 	h2 {
-		font-size: 30px;
+		font-size: 28px;
 		text-align: center;
 	}
 }
