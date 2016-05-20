@@ -122,7 +122,7 @@ class App extends React.Component {
 	// componentDidUpdate(prevProps) {  // note: this breaks everything if these players try to leave a finished game
 	// 	let autoPlayers = ['Jaina', 'Rexxar', 'Malfurian', 'Thrall', 'Valeera'],
 	// 		{ userInfo, gameInfo, dispatch } = this.props,
-	// 		prevSeatedNames = [];
+	// 		prevSeatedNames;
 
 	// 		if (Object.keys(prevProps).length && prevProps.gameInfo && prevProps.gameInfo.seated) {
 	// 			prevSeatedNames = Object.keys(prevProps.gameInfo.seated).map((seatName) => {

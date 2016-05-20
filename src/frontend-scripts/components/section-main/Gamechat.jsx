@@ -265,6 +265,12 @@ export default class Gamechat extends React.Component {
 				chatContents = processedChat.join(''); 
 			}
 
+			console.log(chatContents);
+
+			 // todo-alpha, users can chat html (not script tags) that affect the game for other users.
+
+			 // <div style="font-weight: 700 !important;color: orange;">xss!</div>
+
 			if (chat.gameChat && (this.state.chatFilter === 'Game' || this.state.chatFilter === 'All')) {
 				return (
 					<div className="item" key={i}>
@@ -328,8 +334,7 @@ export default class Gamechat extends React.Component {
 									}
 								})()}
 							</div>
-						);
-						
+						);					
 					})()}
 					<div className={
 						(() => {

@@ -41,9 +41,9 @@ let { games, userList, generalChats } = require('./models'),
 					sendInProgressGameUpdate(game);
 				} else {
 					if (seatNames.length === 1) {
-						// todo-release kick out observer sockets/route to default?
 						games.splice(games.indexOf(game), 1);
 					} else {
+						// todo-release kick out observer sockets/route to default?
 						delete game.seated[userSeatName];
 						io.sockets.in(game.uid).emit('gameUpdate', game);
 					}
@@ -83,35 +83,35 @@ let { games, userList, generalChats } = require('./models'),
 				return io.sockets.connected[sockedId];
 			}),
 			playerSockets = roomSockets.filter((socket) => {
-				return socket.handshake.session.passport && Object.keys(socket.handshake.session.passport).length && seatedPlayerNames.indexOf(socket.handshake.session.passport.user) >= 0;
+				return socket.handshake.session.passport && Object.keys(socket.handshake.session.passport).length && seatedPlayerNames.includes(socket.handshake.session.passport.user);
 			}),
 			observerSockets = roomSockets.filter((socket) => {
-				return !socket.handshake.session.passport || seatedPlayerNames.indexOf(socket.handshake.session.passport.user) === -1;
+				return !socket.handshake.session.passport || !seatedPlayerNames.includes(socket.handshake.session.passport.user);
 			});
 		}
 
 		if (playerSockets.length) {
 			playerSockets.forEach((sock, index) => {
-				let cloneGame = Object.assign({}, game),
+				let _game = Object.assign({}, game),
 					{ user } = sock.handshake.session.passport;
 
 				if (!game.gameState.isCompleted) {
-					cloneGame.tableState = cloneGame.internals.seatedPlayers.find((player) => {
+					_game.tableState = _game.internals.seatedPlayers.find((player) => {
 						return user === player.userName;
 					}).tableState;
 				}
 				
-				cloneGame.chats = combineInProgressChats(cloneGame, user);
-				sock.emit('gameUpdate', secureGame(cloneGame));
+				_game.chats = combineInProgressChats(_game, user);
+				sock.emit('gameUpdate', secureGame(_game));
 			});
 		}
 
 		if (observerSockets.length) {
 			observerSockets.forEach((sock) => {
-				let cloneGame = Object.assign({}, game);
+				let _game = Object.assign({}, game);
 
-				cloneGame.chats = combineInProgressChats(cloneGame);
-				sock.emit('gameUpdate', secureGame(cloneGame));
+				_game.chats = combineInProgressChats(_game);
+				sock.emit('gameUpdate', secureGame(_game));
 			});
 		}
 	};
@@ -133,9 +133,7 @@ module.exports.handleUpdatedTruncateGame = (data) => {
 					text: `${data.userName}`,
 					type: 'playerName'
 				},
-				{
-					text: ` has removed their vote to end the game early. [${game.internals.truncateGameCount} / 4]`
-				}
+				{text: ` has removed their vote to end the game early. [${game.internals.truncateGameCount} / 4]`}
 			];
 		} else {
 			game.internals.truncateGameCount++;
@@ -144,16 +142,12 @@ module.exports.handleUpdatedTruncateGame = (data) => {
 					text: `${data.userName}`,
 					type: 'playerName'
 				},
-				{
-					text: ` has voted to end the game early. [${game.internals.truncateGameCount} / 4]`
-				}
+				{text: ` has voted to end the game early. [${game.internals.truncateGameCount} / 4]`}
 			];
 
 			if (game.internals.truncateGameCount === 4) {
 				chat.chat = [
-					{
-						text: `The majority of players have voted to end the game early.`
-					}
+					{text: 'The majority of players have voted to end the game early.'}
 				];
 				game.internals.truncateGame = true;
 				game.internals.truncated = true;

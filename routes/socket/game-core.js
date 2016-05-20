@@ -11,6 +11,7 @@ let Account = require('../../models/account'),
 			countDown;
 
 		game.gameState.isStarted = true;
+
 		Object.keys(game.seated).forEach((seat, index) => {
 			game.internals.seatedPlayers[index].userName = game.seated[seat].userName;
 			game.internals.seatedPlayers[index].seatNumber = index;
@@ -104,8 +105,7 @@ let startGame = (game) => {
 					allWerewolvesNotInCenter = true;
 				}
 
-				player.trueRole = role;
-				player.originalRole = role;
+				player.trueRole = player.originalRole = role;
 				_roles.splice(roleIndex, 1);
 			});
 
@@ -935,7 +935,7 @@ let endGame = (game) => {
 	});
 
 	seatedPlayers.forEach((player, index) => { // todo-release hunter's fade out thingy should happen later/not give away that he or she is a hunter
-		if (player.trueRole === 'hunter' && eliminatedPlayersIndex.indexOf(index) !== -1 && eliminatedPlayersIndex.length !== 7) {
+		if (player.trueRole === 'hunter' && eliminatedPlayersIndex.includes(index) && eliminatedPlayersIndex.length !== 7) {
 			eliminatedPlayersIndex.push(parseInt(player.selectedForElimination));
 		}
 
@@ -947,7 +947,7 @@ let endGame = (game) => {
 	game.gameState.eliminations.forEach((elimination) => {
 		let transparent = false;
 
-		if (eliminatedPlayersIndex.length === 7 || eliminatedPlayersIndex.indexOf(elimination.seatNumber) === -1) {
+		if (eliminatedPlayersIndex.length === 7 || !eliminatedPlayersIndex.includes(elimination.seatNumber)) {
 			transparent = true;
 		}
 
@@ -970,7 +970,7 @@ let endGame = (game) => {
 	seatedPlayers.forEach((player, index) => {
 		if (!werewolfEliminated && (player.trueRole === 'werewolf' || player.trueRole === 'minion') && !tannerEliminations.length || 
 			
-			tannerEliminations.indexOf(index) !== -1 || 
+			tannerEliminations.includes(index) || 
 			
 			(werewolfEliminated && player.trueRole !== 'werewolf' && player.trueRole !== 'minion' && player.trueRole !== 'tanner' && eliminatedPlayersIndex.length !== 7) || 
 			
@@ -1041,7 +1041,7 @@ let endGame = (game) => {
 				seat.role = game.internals.centerRoles[index - 7];
 			}
 
-			if (winningPlayersIndex.indexOf(index) !== -1) {
+			if (winningPlayersIndex.includes(index)) {
 				seat.highlight = 'proceed';
 			}
 
@@ -1060,7 +1060,7 @@ let endGame = (game) => {
 			results.forEach((player) => {
 				let winner = false;
 
-				if (winningPlayerNames.indexOf(player.username) !== -1) {
+				if (winningPlayerNames.includes(player.username)) {
 					player.wins++;
 					winner = true;
 				} else {
@@ -1089,5 +1089,4 @@ let endGame = (game) => {
 			});
 		});
 
-	}, 11000);
-};
+	}, 11000);};

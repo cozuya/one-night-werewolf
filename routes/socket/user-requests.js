@@ -57,10 +57,9 @@ module.exports.sendUserList = (socket) => {
 
 module.exports.sendGameInfo = (socket, uid) => {
 	let game = games.find((el) => {
-			return el.uid === uid;
-		}),
-		cloneGame = Object.assign({}, game);
+		return el.uid === uid;
+	});
 
 	socket.join(uid);
-	socket.emit('gameUpdate', secureGame(cloneGame));
+	socket.emit('gameUpdate', secureGame(game));
 };

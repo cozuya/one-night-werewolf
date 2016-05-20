@@ -5,4 +5,4 @@ module.exports.secureGame = (game) => {
 
 	delete _game.internals;
 	return _game;
-}
+};

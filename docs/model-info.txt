@@ -1,5 +1,5 @@
 internals
-	centerRoles array of strings of roles
+	centerRoles array of strings of roles (3)
 	soloMinion bool
 	seatedPlayers array 7
 		seatNumber number 0-6
@@ -7,7 +7,7 @@ internals
 		selectedForElimination string
 		tableState
 			reported bool
-			isNight - beginNightPhases
+			isNight bool - beginNightPhases
 			isVotable - dayPhase
 				enabled bool
 				selectedForElimination number 0-6
@@ -22,7 +22,7 @@ internals
 					swappedWithSeat number 0-6
 				...
 		...
-gameState:
+gameState
 	isStarted bool - startGameCountdown
 	cardsDealt bool  - startGame
 	isCompleted bool - ?
@@ -32,5 +32,21 @@ gameState:
 		transparent bool
 	reportedGame 0-6
 		0 bool
-		1 bool
 		...
+chats array
+	chat array
+	gameChat bool
+	timestamp time
+	userName string
+kobk bool
+name string
+roles array of strings (10)
+seated
+	seat0
+		connect bool
+		userName string
+	...
+status string
+tableState (see internals)
+time string
+uid string
