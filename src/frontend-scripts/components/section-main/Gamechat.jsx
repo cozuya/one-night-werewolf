@@ -200,6 +200,7 @@ export default class Gamechat extends React.Component {
 
 		return gameInfo.chats.map((chat, i) => {
 			let chatContents = chat.chat,
+				processedChat = [],
 				playerRegexes = Object.keys(gameInfo.seated).map((seatName) => {
 					return gameInfo.seated[seatName].userName;
 				}).map((playerName) => {
@@ -221,26 +222,38 @@ export default class Gamechat extends React.Component {
 						return {
 							role,
 							team: roleMap[role].team,
-							regex: new RegExp(role, 'gi')
+							regex: new RegExp(role, 'i')
 						};
 					}),
 					{
 						role: 'werewolves',
 						team: 'werewolf',
-						regex: /werewolves/gi
+						regex: /werewolves/i
 					}
 				];
+			// console.log(chat.chat);
 
 			if (!chat.gameChat) {
-				roleRegexes.forEach((roleRegex) => {
-					chatContents = chatContents.replace(roleRegex.regex, `<span class="chat-role--${roleRegex.team}">${roleRegex.role}</span>`);
-				});
+				function processChat(chat) {
+					roleRegexes.forEach((roleRegex) => {
+						let splitStr = chat.split(roleRegex);
 
-				playerRegexes.forEach((playerRegex) => {
-					chatContents = chatContents.replace(playerRegex.regex, `<span class="chat-player">${playerRegex.playerName}</span>`);
-				});
+						if (splitStr.length > 1) {
+							splitStr.forEach((strSegment, index) => {
+								processChat(splitStr[index]);
+
+							})
+						} else {
+
+						}
+					});
+
+					playerRegexes.forEach((playerRegex) => {
+						chatContents = chatContents.replace(playerRegex.regex, `<span class="chat-player">${playerRegex.playerName}</span>`);
+					});
+				}
+
 			} else {
-				let processedChat = [];
 
 				chatContents.forEach((chatInfo) => {
 					if (!chatInfo.type) {
@@ -265,7 +278,7 @@ export default class Gamechat extends React.Component {
 				chatContents = processedChat.join(''); 
 			}
 
-			console.log(chatContents);
+			// console.log(chatContents);
 
 			// /(?:(?!HELLO).)*/i matches everything before "HELLO"
 			// /HELLO(.*)/i)[1] matches everything after the first (but ignores the rest) hit of HELLO
@@ -287,7 +300,34 @@ export default class Gamechat extends React.Component {
 				return (
 					<div className="item" key={i}>
 						<span className="chat-user">{chat.userName}{isObserver() ? '' : ' (Observer)'}{this.handleTimestamps.call(this, chat.timestamp)}: </span>
-						<span className="game-chat">{chatContents}</span>
+						<span className="game-chat">
+							{(() => {
+								let c = [{
+									chat: 'hello my name is '
+								}, 
+								{
+									chat: 'uther',
+									type: 'playerName'
+								},
+								{
+									chat: ' and '
+								},
+								{
+									chat: 'werewolf',
+									type: 'roleName',
+									text: 'werewolf'
+								},
+								{
+									chat: ' talks about himself in 3rd person.'
+								}];
+
+								return c.map((cc) => {
+									console.log(cc);
+									// return <span>{cc.chat}</span>;
+									return cc.type ? <span className="chat-player">{cc.chat}</span> : cc.chat;
+								});
+							})()}
+						</span>
 					</div>
 				);
 			};
