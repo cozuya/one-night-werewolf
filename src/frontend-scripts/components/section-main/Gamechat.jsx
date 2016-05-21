@@ -267,6 +267,11 @@ export default class Gamechat extends React.Component {
 
 			console.log(chatContents);
 
+			// /(?:(?!HELLO).)*/i matches everything before "HELLO"
+			// /HELLO(.*)/i)[1] matches everything after the first (but ignores the rest) hit of HELLO
+
+
+
 			 // todo-alpha, users can chat html (not script tags) that affect the game for other users.
 
 			 // <div style="font-weight: 700 !important;color: orange;">xss!</div>
@@ -275,14 +280,14 @@ export default class Gamechat extends React.Component {
 				return (
 					<div className="item" key={i}>
 						<span className="chat-user--game">[GAME] {this.handleTimestamps.call(this, chat.timestamp)}: </span>
-						<span className="game-chat" dangerouslySetInnerHTML={{__html: chatContents}}></span>
+						<span className="game-chat">{chatContents}</span>
 					</div>
 				);
 			} else if (!chat.gameChat && this.state.chatFilter !== 'Game') {
 				return (
 					<div className="item" key={i}>
 						<span className="chat-user">{chat.userName}{isObserver() ? '' : ' (Observer)'}{this.handleTimestamps.call(this, chat.timestamp)}: </span>
-						<span dangerouslySetInnerHTML={{__html: chatContents}}></span>
+						<span className="game-chat">{chatContents}</span>
 					</div>
 				);
 			};

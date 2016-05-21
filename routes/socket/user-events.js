@@ -257,7 +257,7 @@ module.exports.handleUserLeaveGame = (socket, data) => {
 		}),
 		completedDisconnectionCount;
 
-	socket.leave(game.uid);
+	socket.leave(game.uid);  // todo-alpha this caused a crash (no room), need to check to see if room exists with if statement here
 
 	// todo-release for some reason when a player plays a game, it completes, leaves the table, and then comes back to the table, they don't have the private info from the game until there is a game update.
 
