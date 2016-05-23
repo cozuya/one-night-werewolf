@@ -316,7 +316,7 @@ module.exports.handleUserLeaveGame = (socket, data) => {
 		delete game.seated[`seat${data.seatNumber}`];
 	}
 
-	if (Object.keys(game.seated).length === 0 || completedDisconnectionCount === 7) {
+	if (game && Object.keys(game.seated).length === 0 || completedDisconnectionCount === 7) {
 		socket.emit('gameUpdate', {}, data.isSettings);
 		io.sockets.in(data.uid).emit('gameUpdate', {});
 		games.splice(games.indexOf(game), 1);
