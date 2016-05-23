@@ -201,82 +201,82 @@ export default class Gamechat extends React.Component {
 		return gameInfo.chats.map((chat, i) => {
 			let chatContents = chat.chat,
 				processedChat = [],
-				playerRegexes = Object.keys(gameInfo.seated).map((seatName) => {
+				// playerRegexes = Object.keys(gameInfo.seated).map((seatName) => {
+				// 	return gameInfo.seated[seatName].userName;
+				// }).map((playerName) => {
+				// 	return {
+				// 		playerName,
+				// 		regex: new RegExp(playerName, 'gi')
+				// 	};
+				// }),
+				playerNames = Object.keys(gameInfo.seated).map((seatName) => {
 					return gameInfo.seated[seatName].userName;
-				}).map((playerName) => {
-					return {
-						playerName,
-						regex: new RegExp(playerName, 'gi')
-					};
 				}),
 				isObserver = () => {
 					return !!Object.keys(gameInfo.seated).find((seatName) => {
 						return gameInfo.seated[seatName].userName === chat.userName;
 					});
 				},
-				roleRegexes = [{
-						role: 'masons',
-						team: 'village',
-						regex: /masons/gi
-					}, ..._.uniq(gameInfo.roles).map((role) => { // javascript!
+				roles = [{
+						name: 'masons',
+						team: 'village'
+					}, ..._.uniq(gameInfo.roles).map((name) => { // javascript!
 						return {
-							role,
-							team: roleMap[role].team,
-							regex: new RegExp(role, 'i')
+							name,
+							team: roleMap[name].team
 						};
 					}),
 					{
-						role: 'werewolves',
-						team: 'werewolf',
-						regex: /werewolves/i
+						name: 'werewolves',
+						team: 'werewolf'
 					}
 				];
 			// console.log(chat.chat);
 
-			if (!chat.gameChat) {
-				function processChat(chat) {
-					roleRegexes.forEach((roleRegex) => {
-						let splitStr = chat.split(roleRegex);
+			// if (!chat.gameChat) {
+			// 	function processChat(chat) {
+			// 		roleRegexes.forEach((roleRegex) => {
+			// 			let splitStr = chat.split(roleRegex);
 
-						if (splitStr.length > 1) {
-							splitStr.forEach((strSegment, index) => {
-								processChat(splitStr[index]);
+			// 			if (splitStr.length > 1) {
+			// 				splitStr.forEach((strSegment, index) => {
+			// 					processChat(splitStr[index]);
 
-							})
-						} else {
+			// 				})
+			// 			} else {
 
-						}
-					});
+			// 			}
+			// 		});
 
-					playerRegexes.forEach((playerRegex) => {
-						chatContents = chatContents.replace(playerRegex.regex, `<span class="chat-player">${playerRegex.playerName}</span>`);
-					});
-				}
+			// 		playerRegexes.forEach((playerRegex) => {
+			// 			chatContents = chatContents.replace(playerRegex.regex, `<span class="chat-player">${playerRegex.playerName}</span>`);
+			// 		});
+			// 	}
 
-			} else {
+			// } else {
 
-				chatContents.forEach((chatInfo) => {
-					if (!chatInfo.type) {
-						processedChat.push(chatInfo.text);
-					} else {
-						if (chatInfo.type === 'roleName') {
-							roleRegexes.forEach((roleRegex) => {
-								if (roleRegex.regex.test(chatInfo.text)) {
-									processedChat.push(chatInfo.text.replace(roleRegex.regex, `<span class="chat-role--${roleRegex.team}">${roleRegex.role}</span>`));
-								}
-							});
-						} else {
-							playerRegexes.forEach((playerRegex) => {
-								if (playerRegex.regex.test(chatInfo.text)) {
-									processedChat.push(chatInfo.text.replace(playerRegex.regex, `<span class="chat-player">${playerRegex.playerName}</span>`));
-								}
-							});
-						}
-					}
-				});
+			// 	chatContents.forEach((chatInfo) => {
+			// 		if (!chatInfo.type) {
+			// 			processedChat.push(chatInfo.text);
+			// 		} else {
+			// 			if (chatInfo.type === 'roleName') {
+			// 				roleRegexes.forEach((roleRegex) => {
+			// 					if (roleRegex.regex.test(chatInfo.text)) {
+			// 						processedChat.push(chatInfo.text.replace(roleRegex.regex, `<span class="chat-role--${roleRegex.team}">${roleRegex.role}</span>`));
+			// 					}
+			// 				});
+			// 			} else {
+			// 				playerRegexes.forEach((playerRegex) => {
+			// 					if (playerRegex.regex.test(chatInfo.text)) {
+			// 						processedChat.push(chatInfo.text.replace(playerRegex.regex, `<span class="chat-player">${playerRegex.playerName}</span>`));
+			// 					}
+			// 				});
+			// 			}
+			// 		}
+			// 	});
 
-				chatContents = processedChat.join(''); 
-			}
+			// 	chatContents = processedChat.join(''); 
+			// }
 
 			// console.log(chatContents);
 
@@ -302,30 +302,84 @@ export default class Gamechat extends React.Component {
 						<span className="chat-user">{chat.userName}{isObserver() ? '' : ' (Observer)'}{this.handleTimestamps.call(this, chat.timestamp)}: </span>
 						<span className="game-chat">
 							{(() => {
-								let c = [{
-									chat: 'hello my name is '
-								}, 
-								{
-									chat: 'uther',
-									type: 'playerName'
-								},
-								{
-									chat: ' and '
-								},
-								{
-									chat: 'werewolf',
-									type: 'roleName',
-									text: 'werewolf'
-								},
-								{
-									chat: ' talks about himself in 3rd person.'
-								}];
+								let toProcessChats = [];
 
-								return c.map((cc) => {
-									console.log(cc);
-									// return <span>{cc.chat}</span>;
-									return cc.type ? <span className="chat-player">{cc.chat}</span> : cc.chat;
-								});
+								function recursivelyProcessChats (chat) {
+									playerNames.forEach((name) => {
+										var regex = new RegExp(`(?:(?!${name}).)*`, 'i');
+
+										var result = chat.match(regex);  // todo-alpha ytf is this returning an array?
+
+										var regex2 = /(?:(?!uther).)*/i;
+										var result2 = chat.match(regex2);
+
+										console.log(chat);
+										console.log(name);
+										console.log(regex);
+										console.log(result);
+
+										// if (match.length !== chat.length) {
+										// 	toProcessChats.push({
+										// 		name,
+										// 		type: 'playerName',
+ 									// 			index: match.length
+										// 	});
+
+										// 	recursivelyProcessChats(match);
+										// }
+									});
+
+									// roles.forEach((role) => {
+									// 	let regex = new RegExp(`(?:(?!${role.name}).)*`, 'i'),
+									// 		match = chat.match(regex);
+
+										// if (match.length !== chat.length) {
+										// 	toProcessChats.push({
+										// 		name: role.name,
+										// 		type: 'roleName',
+										// 		index: match.length,
+										// 		team: role.team
+										// 	});
+										// }
+
+										// recursivelyProcessChats(match);
+									// });
+								}
+
+								console.log(chatContents);
+
+								recursivelyProcessChats(chatContents);
+
+								console.log(toProcessChats);
+
+								// /(?:(?!HELLO).)*/i matches everything before "HELLO"
+
+								// let c = [{
+								// 		chat: 'hello my name is '
+								// 	}, 
+								// 	{
+								// 		chat: 'uther',
+								// 		type: 'playerName'
+								// 	},
+								// 	{
+								// 		chat: ' and '
+								// 	},
+								// 	{
+								// 		chat: 'werewolf',
+								// 		type: 'roleName',
+								// 		text: 'werewolf'
+								// 	},
+								// 	{
+								// 		chat: ' talks about himself in 3rd person.'
+								// 	}];
+
+								// return c.map((cc) => {
+								// 	let chatRoleClasses = () => {
+								// 		return `chat-role--${cc.text}`;
+								// 	};
+
+								// 	return cc.type === 'playerName' ? <span className="chat-player">{cc.chat}</span> : cc.type === 'roleName' ? <span className={chatRoleClasses()}>{cc.chat}</span> : cc.chat;
+								// });
 							})()}
 						</span>
 					</div>

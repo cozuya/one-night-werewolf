@@ -36,7 +36,6 @@ export default class LeftSidebar extends React.Component {
 							return b.seatedCount - a.seatedCount;
 						}
 
-
 						if (a.gameState.isStarted && !a.gameState.isCompleted) {
 							if (!b.gameState.isStarted) {
 								return -1;

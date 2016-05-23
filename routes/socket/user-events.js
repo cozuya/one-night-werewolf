@@ -175,7 +175,7 @@ module.exports.handleUpdatedReportGame = (socket, data) => {
 
 module.exports.handleAddNewGame = (socket, data) => {
 	data.internals = {
-		unSeatedGameChats: [],
+		unSeatedGameChats: [],  //todo-release clean up this mess
 		seatedPlayers: [{gameChats: [], tableState: {seats: [{}, {}, {}, {}, {}, {}, {}, {}, {}, {}]}}, {gameChats: [], tableState: {seats: [{}, {}, {}, {}, {}, {}, {}, {}, {}, {}]}}, {gameChats: [], tableState: {seats: [{}, {}, {}, {}, {}, {}, {}, {}, {}, {}]}}, {gameChats: [], tableState: {seats: [{}, {}, {}, {}, {}, {}, {}, {}, {}, {}]}}, {gameChats: [], tableState: {seats: [{}, {}, {}, {}, {}, {}, {}, {}, {}, {}]}}, {gameChats: [], tableState: {seats: [{}, {}, {}, {}, {}, {}, {}, {}, {}, {}]}}, {gameChats: [], tableState: {seats: [{}, {}, {}, {}, {}, {}, {}, {}, {}, {}]}}],
 		truncateGameCount: 0
 	};
@@ -257,11 +257,13 @@ module.exports.handleUserLeaveGame = (socket, data) => {
 		}),
 		completedDisconnectionCount;
 
-	socket.leave(game.uid);  // todo-alpha this caused a crash (no room), need to check to see if room exists with if statement here
+	if (game && io.sockets.adapter.rooms[game.uid]) {
+		socket.leave(game.uid);
+	}
 
 	// todo-release for some reason when a player plays a game, it completes, leaves the table, and then comes back to the table, they don't have the private info from the game until there is a game update.
 
-	if (game.gameState.isCompleted && data.seatNumber) {
+	if (game && game.gameState.isCompleted && data.seatNumber) {
 		let playerSeat = Object.keys(game.seated).find((seatName) => {
 				return game.seated[seatName].userName === data.userName;
 			});
