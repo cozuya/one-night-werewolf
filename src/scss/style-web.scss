@@ -125,7 +125,7 @@ span.emphasis {
 	h2 {
 		margin-top: 20px !important;
 
-		& + p {
+		& ~ p {
 			font-size: 18px;
 		}
 	}
