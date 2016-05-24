@@ -17,50 +17,51 @@ block content
 					button.ui.button Sign In
 					.or
 					button.ui.positive.button Sign Up
-	.ui.text.container
-		h1.ui.header The rules of One Night Werewolf Online
-	.ui.text.container
-		h2.ui.header.centered The game in a paragraph
-		p #[span.emphasis This is a game of teams] - most roles are on the village team, but a few may be on the werewolf team.  After 7 players are seated at a game table, the 10 roles chosen to be in this game by the game's creator are shuffled, distributed to the players, and are looked at once.  The remaining 3 role cards go into the center.  Then the night phase begins - players "wake up" and interact with other players in certain ways which can be read about below, notably, the werewolf team players know who the other werewolves are in secret.  After night phases are complete, the day phase begins, at the end of which every player must select another player for elimination.  The player(s) with the most votes then reveals his or her card - #[span.emphasis if a werewolf is eliminated, everyone on the village team wins.  Otherwise, the werewolves win.] If no one has more than a single vote (everyone votes in a circle), everyone on the village team wins if the center contains all of the werewolf cards.
-	.ui.text.container
-		h2.ui.header.centered The roles
-	.ui.text.container.clearfix
-		h3.ui.header.centered.team-werewolf Werewolf
-		img.ui.image(src="/images/cards/card-werewolf.png")
-		p Werewolves wake up, and look for other werewolves.  If there are none, they may look at a center card.  There is a minimum of 2 werewolves in every game, and a maximum of 5 werewolf team roles in every game.  Werewolves are on the #[span.team-werewolf werewolf team], and wake up in phase 1.
-	.ui.text.container
-		h3.ui.header.centered.team-werewolf Minion
-		img.ui.image(src="/images/cards/card-minion.png")
-		p Minions wake up, and get to see who the werewolves are - but the werewolves are not aware of who the minions are.  Minions win if the werewolves win, and in the event of no werewolves in the game, win if a villager dies and they themselves are not eliminated.  There is a maximum of 5 werewolf team roles in every game.  Minions are on the #[span.team-werewolf werewolf team], and wake up in phase 1.
-	.ui.text.container
-		h3.ui.header.centered.team-village Mason
-		img.ui.image(src="/images/cards/card-mason.png")
-		p Masons wake up, and look for other masons.  Masons are on the #[span.team-village village team], and wake up in phase 1.
-	.ui.text.container
-		h3.ui.header.centered.team-village Seer
-		img.ui.image(src="/images/cards/card-seer.png")
-		p Seers wake up, and have the choice of looking at another player's card, or two of the center cards.  Seers are on the #[span.team-village village team], and wake up in phase 1.
-	.ui.text.container
-		h3.ui.header.centered.team-village Robber
-		img.ui.image(src="/images/cards/card-robber.png")
-		p Robbers wake up, and swap their card with the card of another player.  They then look at their new card, and become a member of the team they have stolen (and vice versa) - however they do not do an additional night action.  Robbers are on the #[span.team-village village team], and as a role-changing role, randomly wakes up in a phase that another role-changer is not in.
-	.ui.text.container
-		h3.ui.header.centered.team-village Troublemaker
-		img.ui.image(src="/images/cards/card-troublemaker.png")
-		p Troublemakers wake up, and swap the cards of two different players without looking at them.  Troublemakers are on the #[span.team-village village team], and as a role-changing role, randomly wakes up in a phase that another role-changer is not in.
-	.ui.text.container
-		h3.ui.header.centered.team-village Insomniac
-		img.ui.image(src="/images/cards/card-insomniac.png")
-		p Insomniacs wake up, and look at their card again to see what role they are.  Insomniacs are on the #[span.team-village village team], and wake up in the last night phase.
-	.ui.text.container
-		h3.ui.header.centered.team-village Hunter
-		img.ui.image(src="/images/cards/card-hunter.png")
-		p Hunters do not wake up.  If a hunter is eliminated, the player he or she is selecting for elimination is also eliminated.  Hunters are on the #[span.team-village village team].
-	.ui.text.container
-		h3.ui.header.centered.team-tanner Tanner
-		img.ui.image(src="/images/cards/card-tanner.png")
-		p Tanners do not wake up.  Tanners are suicidal and only win if they themselves are eliminated.  There is a maximum of 3 tanners per game.  Tanners are on #[span.team-tanner their own team individually] and do not win if another tanner wins.
-	.ui.text.container
-		h3.ui.header.centered.team-village Villager
-		img.ui.image(src="/images/cards/card-villager.png")
-		p Villagers do not wake up.  Villagers are on the #[span.team-village village team].
+	.ui.container.howtoplay-container
+		.ui.text.container
+			h1.ui.header.centered The rules of One Night Werewolf Online
+		.ui.text.container
+			h2.ui.header.centered The game in a paragraph
+			p #[span.emphasis This is a game of teams] - most roles are on the village team, but a few may be on the werewolf team.  After 7 players are seated at a game table, the 10 roles chosen to be in this game by the game's creator are shuffled, distributed to the players, and are looked at once.  The remaining 3 role cards go into the center.  Then the night phase begins - players "wake up" and interact with other players in certain ways which can be read about below, notably, the werewolf team players know who the other werewolves are in secret.  After night phases are complete, the day phase begins, at the end of which every player must select another player for elimination.  When time runes out. the player(s) with the most votes then reveals his or her card - #[span.emphasis if a werewolf is eliminated, everyone on the village team wins.  Otherwise, the werewolves win.] If no one has more than a single vote (everyone votes in a circle), everyone on the village team wins if the center contains all of the werewolf cards.
+		.ui.text.container
+			h2.ui.header.centered The roles
+		.ui.text.container.clearfix
+			h3.ui.header.centered.team-werewolf Werewolf
+			img.ui.image(src="/images/cards/card-werewolf.png")
+			p Werewolves wake up, and look for other werewolves.  If there are none, they may look at a center card.  There is a minimum of 2 werewolves in every game, and a maximum of 5 werewolf team roles in every game.  Werewolves are on the #[span.team-werewolf werewolf team], and wake up in phase 1.
+		.ui.text.container
+			h3.ui.header.centered.team-werewolf Minion
+			img.ui.image(src="/images/cards/card-minion.png")
+			p Minions wake up, and get to see who the werewolves are - but the werewolves are not aware of who the minions are.  Minions win if the werewolves win, and in the event of no werewolves in the game, win if a villager dies and they themselves are not eliminated.  There is a maximum of 5 werewolf team roles in every game.  Minions are on the #[span.team-werewolf werewolf team], and wake up in phase 1.
+		.ui.text.container
+			h3.ui.header.centered.team-village Mason
+			img.ui.image(src="/images/cards/card-mason.png")
+			p Masons wake up, and look for other masons.  Masons are on the #[span.team-village village team], and wake up in phase 1.
+		.ui.text.container
+			h3.ui.header.centered.team-village Seer
+			img.ui.image(src="/images/cards/card-seer.png")
+			p Seers wake up, and have the choice of looking at another player's card, or two of the center cards.  Seers are on the #[span.team-village village team], and wake up in phase 1.
+		.ui.text.container
+			h3.ui.header.centered.team-village Robber
+			img.ui.image(src="/images/cards/card-robber.png")
+			p Robbers wake up, and swap their card with the card of another player.  They then look at their new card, and become a member of the team they have stolen (and vice versa) - however they do not do an additional night action.  Robbers are on the #[span.team-village village team], and as a role-changing role, randomly wakes up in a phase that another role-changer is not in.
+		.ui.text.container
+			h3.ui.header.centered.team-village Troublemaker
+			img.ui.image(src="/images/cards/card-troublemaker.png")
+			p Troublemakers wake up, and swap the cards of two different players without looking at them.  Troublemakers are on the #[span.team-village village team], and as a role-changing role, randomly wakes up in a phase that another role-changer is not in.
+		.ui.text.container
+			h3.ui.header.centered.team-village Insomniac
+			img.ui.image(src="/images/cards/card-insomniac.png")
+			p Insomniacs wake up, and look at their card again to see what role they are.  Insomniacs are on the #[span.team-village village team], and wake up in the last night phase.
+		.ui.text.container
+			h3.ui.header.centered.team-village Hunter
+			img.ui.image(src="/images/cards/card-hunter.png")
+			p Hunters do not wake up.  If a hunter is eliminated, the player he or she is selecting for elimination is also eliminated.  Hunters are on the #[span.team-village village team].
+		.ui.text.container
+			h3.ui.header.centered.team-tanner Tanner
+			img.ui.image(src="/images/cards/card-tanner.png")
+			p Tanners do not wake up.  Tanners are suicidal and only win if they themselves are eliminated.  There is a maximum of 3 tanners per game.  Tanners are on #[span.team-tanner their own team individually] and do not win if another tanner wins.
+		.ui.text.container
+			h3.ui.header.centered.team-village Villager
+			img.ui.image(src="/images/cards/card-villager.png")
+			p Villagers do not wake up.  Villagers are on the #[span.team-village village team].

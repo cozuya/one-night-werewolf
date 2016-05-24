@@ -114,13 +114,13 @@ export default class Menu extends React.Component {
 			$.fn.textEffect.options = {
 				effect: 'random',
 				effectSpeed: 100,
-				completionSpeed: 6000,
+				completionSpeed: Math.floor(Math.random() * 20000),
 				jumbleColor: '#7f7f7f',
 				reverse: false
 			};
 		})($);
 
-		$('section.ui.menu a').textEffect();
+		$('section.nav-menu > p > a').textEffect();
 	}
 
 	clickSettingsButton(e) {
@@ -136,7 +136,7 @@ export default class Menu extends React.Component {
 
 	render() {
 		return (
-			<section className="ui menu">
+			<section className="ui menu nav-menu">
 				<p>
 					<a href="/" target="_blank">One Night Werewolf</a>
 				</p>

@@ -13,6 +13,9 @@ body {
 	overflow-x: auto;
 }
 
+html {
+	height: auto;
+}
 
 .clearfix:after {
 	display: table;
@@ -79,7 +82,9 @@ span.emphasis {
 	box-shadow: 0px 3px 4px 1px #ccc;
 
 	h2 {
-		font-size: 28px;
+		font-size: 30px;
+		padding-left: 10%;
+		padding-right: 10%;
 		text-align: center;
 	}
 }
@@ -87,7 +92,6 @@ span.emphasis {
 #general-info {
 	.news {
 		background: $tannerteam;
-		box-shadow: 0 0 2px 2px #ccc;
 		border-radius: 5px;
 	}
 
@@ -97,7 +101,7 @@ span.emphasis {
 }
 
 #general-info, #top-menu{
-	background: #eee;
+	background: #fefefe;
 }
 
 .signin-modal, .signup-modal {
@@ -106,6 +110,25 @@ span.emphasis {
 
 .signinnag {
 	margin-left: -237px;
+}
+
+.ui.container.howtoplay-container {
+	box-shadow: 0px 3px 4px 1px #ccc;
+	margin: 50px 0 0 0;
+	padding: 10px 0;
+	background: #fefefe;
+
+	h1 {
+		margin-bottom: 10px;
+	}
+
+	h2 {
+		margin-top: 20px !important;
+
+		& + p {
+			font-size: 18px;
+		}
+	}
 }
 
 ::-webkit-scrollbar {
