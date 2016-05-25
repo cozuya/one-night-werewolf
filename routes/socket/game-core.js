@@ -958,6 +958,9 @@ let endGame = (game) => {
 	sendInProgressGameUpdate(game);
 	sendGameList();
 	eliminatedPlayersIndex.forEach((eliminatedPlayerIndex) => {
+
+		// todo-alpha app crashed on line below (truerole of undefined @ werewolf) after a game where 2 players reloaded the page during night I believe
+
 		if (seatedPlayers[eliminatedPlayerIndex].trueRole === 'werewolf' || seatedPlayers[eliminatedPlayerIndex].trueRole === 'minion' && game.internals.soloMinion) {
 			werewolfEliminated = true;
 		}

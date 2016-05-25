@@ -90,7 +90,7 @@ let { games, userList, generalChats } = require('./models'),
 			});
 		}
 
-		if (playerSockets.length) {
+		if (playerSockets) {
 			playerSockets.forEach((sock, index) => {
 				let _game = Object.assign({}, game),
 					{ user } = sock.handshake.session.passport;
@@ -106,7 +106,7 @@ let { games, userList, generalChats } = require('./models'),
 			});
 		}
 
-		if (observerSockets.length) {
+		if (observerSockets) {
 			observerSockets.forEach((sock) => {
 				let _game = Object.assign({}, game);
 
