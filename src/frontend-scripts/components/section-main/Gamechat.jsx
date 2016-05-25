@@ -149,7 +149,7 @@ export default class Gamechat extends React.Component {
 				});
 			}
 
-			this.props.onNewGameChat(chat, this.props.gameInfo.uid);
+			this.props.socket.emit('addNewGameChat', chat, this.props.gameInfo.uid);
 			input.value = '';
 			input.focus();
 			$button.addClass('disabled');

@@ -2,7 +2,10 @@ extends layout
 block content
 	nav.ui.secondary.pointing.top.fixed.menu#top-menu
 		.left.menu
-			a.ui.button(href="/observe") Observe Now
+			if username
+				a.ui.button(href="/game") Play Now
+			else
+				a.ui.button(href="/observe") Observe Now
 		a.item(href="/") Home
 		a.item(href="/rules") Rules
 		a.active.item How to Play
@@ -10,18 +13,37 @@ block content
 		if username
 			div.item.right
 				a.right#logout(href="#", style="margin-right: 20px;") Logout
-				a.right(href="/account") Account
+				a.right(href="/account")
+					= username + '\'s account'
 		else
 			.right.menu
 				.ui.buttons
 					button.ui.button Sign In
 					.or
 					button.ui.positive.button Sign Up
-	.ui.segment
-		h1.ui.header How to play One Night Werewolf Online
-	.ui.segment
-		h2.ui.header
-		p The default UI.  Click on games to the left to join the game view or to make your own game - white means seats are still available, yellow is an in progress game, blue is a completed game who's players have not all left.  View your game settings on the top menu, see who's online to the upper right, and read general chat to the lower right.  A red title denotes kill or be killed mode is on for that game.
-		p The game view. Click a person's name, or a gamerole on the bottom, to put it into the chat input.  Clicking the expando next to chat will also preload the chat input with useful text.  You can also filter to only certain types of text to the upper right.
-		p Settings view - self explanatory
-		p Create games view - select 10 roles to create a new game, jump to the game view, and then wait for 6 more players to join.  Leaving a game you are the only seated player at deletes it. Kill or be killed mode forces there to be at least one werewolf among the seated players meaning they all can't be in the center cards.  This makes the village team more powerful and should be used carefully.
+	.ui.container.howtoplay-container
+		h1.ui.centered.header How to play One Night Werewolf Online
+		h2.ui.centered.header The default view
+		img(src="//i.imgur.com/ayCm1pD.png")
+		.ui.text.container
+			p Click on games to the left to join the game view or to make your own game - white background means seats are still available, yellow is an in progress game, blue is a completed game whose players have not all left.  A red title denotes kill or be killed mode is on for that game.  View your game settings on the top menu, see who's online to the upper right, and read general chat to the lower right.
+		h2.ui.centered.header Settings view
+		img(src="//i.imgur.com/w65FrYe.png")
+		.ui.text.container
+			p Self explanatory.  Not accessable while you are in an in-progress game.
+		h2.ui.centered.header Create games view
+		img(src="//i.imgur.com/yo08EQT.png")
+		.ui.text.container
+			p Create games view - select 10 roles to create a new game, jump to the game view, and then wait for 6 more players to join.  Leaving a game you are the only seated player at deletes it. Kill or be killed mode forces there to be at least one werewolf among the seated players meaning they all can't be in the center cards.  This makes the village team more powerful and should be used carefully.
+		h2.ui.centered.header Unstarted game view
+		img(src="//i.imgur.com/ZGqymN7.jpg")
+		.ui.text.container
+			p Click a person's name, or a gamerole on the bottom, to put it into the chat input.  You can also filter to only certain types of text to the upper right, and lock chats from scrolling.
+		h2.ui.centered.header In progress game
+		img(src="//i.imgur.com/1TKIt3l.jpg")
+		.ui.text.container
+			p Chat and the table UI has shown this player who started as an insomniac has been turned into a werewolf!  When a game begins, a player can click on the ! icon near the bottom of the table to mark this game for review in case of player abuse.  If you find a bug, please email us.  Also, click the expando next to chat to auto fill into the chat input claims and accusations.  During the day, toggles become available in the lower left corner to vote to end the game early (needs majority of players), and to clear away the claim UI overlays on players.
+		h2.ui.centered.header Completed game
+		img(src="//i.imgur.com/a3FzaFG.jpg")
+		.ui.text.container
+			p A completed game.  Our player was not able to prevent the other players from discovering she was a werewolf, and has been eliminated - everyone on the village team wins.  At this point you can leave the game (or go to settings) and join or make new games.

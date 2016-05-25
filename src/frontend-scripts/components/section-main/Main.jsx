@@ -52,6 +52,7 @@ export default class Main extends React.Component {
 										onSeatingUser={this.props.onSeatingUser}
 										onLeaveGame={this.props.onLeaveGame}
 										userInfo={this.props.userInfo}
+										socket={this.props.socket}
 										gameInfo={this.props.gameInfo}
 									/>
 						case 'settings':

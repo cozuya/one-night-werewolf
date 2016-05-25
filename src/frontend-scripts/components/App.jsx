@@ -109,10 +109,6 @@ class App extends React.Component {
 		socket.emit('updateGameSettings', event);
 	}
 
-	handleNewGameChatSubmit(chat, uid) {
-		socket.emit('addNewGameChat', chat, uid);
-	}
-
 	handleSidebarGameClicked(uid) {
 		socket.emit('getGameInfo', uid);
 	}
@@ -216,6 +212,8 @@ class App extends React.Component {
 		});
 	}
 
+	// todo-alpha pass socket to these and emit stuff that will cause updates and delete the handlers above
+	
 	render() {
 		return (
 			<section className="ui grid">
@@ -242,8 +240,8 @@ class App extends React.Component {
 					onUpdateReportGame={this.handleUpdateReportGameSubmit.bind(this)}
 					onUpdatedGameSettings={this.handleUpdateGameSettingsSubmit.bind(this)}
 					onLeaveCreateGame={this.handleRoute.bind(this)}
-					onNewGameChat={this.handleNewGameChatSubmit.bind(this)}
 					gameInfo={this.props.gameInfo}
+					socket={socket}
 					onLeaveSettings={this.handleRoute.bind(this)}
 					onSeatingUser={this.handleSeatingUser.bind(this)}
 					onLeaveGame={this.handleLeaveGame.bind(this)}

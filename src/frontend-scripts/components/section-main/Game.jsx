@@ -78,6 +78,7 @@ class Game extends React.Component {
 								clickedGameRole={this.props.gameRoleInfo}
 								clickedPlayer={this.props.clickedPlayerInfo}
 								roleState={this.roleState.bind(this)}
+								socket={this.props.socket}
 								selectedGamerole={this.props.clickedGamerole}
 								selectedPlayer={this.props.clickedPlayer}
 							/>

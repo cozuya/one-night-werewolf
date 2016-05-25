@@ -106,10 +106,7 @@ span.emphasis {
 
 .signin-modal, .signup-modal {
 	margin-left: -125px !important;
-}
-
-.signinnag {
-	margin-left: -237px;
+	left: 38% !important;
 }
 
 .ui.container.howtoplay-container {
@@ -117,6 +114,13 @@ span.emphasis {
 	margin: 50px 0 0 0;
 	padding: 10px 0;
 	background: #fefefe;
+
+	img {
+		max-width: 90%;
+		display: block;
+		box-shadow: 0px 3px 4px 1px #ccc;
+		margin: 0 auto 10px auto;
+	}
 
 	h1 {
 		margin-bottom: 10px;
@@ -159,7 +163,6 @@ span.emphasis {
 		margin-bottom: 60px !important;
 	}
 }
-
 
 ::-webkit-scrollbar {
   width: 3px;
