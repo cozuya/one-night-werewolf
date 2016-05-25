@@ -149,6 +149,18 @@ span.emphasis {
 	margin: 0 0 30px 30px;
 }
 
+.about-container {
+	box-shadow: 0px 3px 4px 1px #ccc;
+	margin: 50px 0 0 0;
+	padding: 10px 0;
+	background: #fefefe;
+
+	h1 {
+		margin-bottom: 60px !important;
+	}
+}
+
+
 ::-webkit-scrollbar {
   width: 3px;
   height: 3px;

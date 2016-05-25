@@ -18,6 +18,5 @@ var
 *.log
 data/*
 data/mongod.lock
-public/semantic/*
 misc/*
 public/scripts/bundle.js

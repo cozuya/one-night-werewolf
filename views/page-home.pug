@@ -10,7 +10,8 @@ block content
 		if username
 			div.item.right
 				a.right#logout(href="#", style="margin-right: 20px;") Logout
-				a.right(href="/account") #[username]'s account
+				a.right(href="/account")
+					= username + '\'s account'
 		else
 			.right.menu
 				.ui.buttons
