@@ -13,7 +13,7 @@ let ensureAuthenticated = (req, res, next)  => {
 
 module.exports = () => {
 	app.get('/account', ensureAuthenticated, (req, res) => {
-		res.render('my-account');
+		res.render('page-account', {username: req.user.username});
 	});
 
 	app.post('/account/change-password', ensureAuthenticated, (req, res) => {

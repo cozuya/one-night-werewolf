@@ -109,6 +109,25 @@ span.emphasis {
 	left: 38% !important;
 }
 
+.ui.container.rules-container {
+	box-shadow: 0px 3px 4px 1px #ccc;
+	margin: 50px 0 0 0;
+	padding: 10px 0;
+	background: #fefefe;
+
+	h1 {
+		margin-bottom: 10px;
+	}
+
+	h2 {
+		margin: 20px 0 !important;
+
+		& ~ p {
+			font-size: 18px;
+		}
+	}
+}
+
 .ui.container.howtoplay-container {
 	box-shadow: 0px 3px 4px 1px #ccc;
 	margin: 50px 0 0 0;
