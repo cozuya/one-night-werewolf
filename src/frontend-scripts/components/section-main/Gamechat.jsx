@@ -302,32 +302,64 @@ export default class Gamechat extends React.Component {
 						<span className="chat-user">{chat.userName}{isObserver() ? '' : ' (Observer)'}{this.handleTimestamps.call(this, chat.timestamp)}: </span>
 						<span className="game-chat">
 							{(() => {
-								let toProcessChats = [];
+								let toProcessChats = [],
+									splitChat;
 
-								function recursivelyProcessChats (chat) {
-									playerNames.forEach((name) => {
-										var regex = new RegExp(`(?:(?!${name}).)*`, 'i');
+									// hi uther my name is also uther isn't that interesting.  I am a werewolf.
+								playerNames.forEach((name) => {
+									let split = chatContents.split(new RegExp(name, 'i'));
 
-										var result = chat.match(regex);  // todo-alpha ytf is this returning an array?
+									if (split.length > 1) {
+										split.forEach((piece, index) => {
+											if (index < split.length - 1) {
+												toProcessChats.push({
+													text: name,
+													index: split[index].length,
+													type: 'playerName'
+												});
+											}
+										});
+									}
+								});
 
-										var regex2 = /(?:(?!uther).)*/i;
-										var result2 = chat.match(regex2);
+								roles.forEach((role) => {
+									let split = chatContents.split(new RegExp(role.name, 'i'));
 
-										console.log(chat);
-										console.log(name);
-										console.log(regex);
-										console.log(result);
+									if (split.length > 1) {
+										split.forEach((piece, index) => {
+											if (index < split.length - 1) {
+												toProcessChats.push({
+													text: role.name,
+													index: split[index].length,
+													type: 'roleName',
+													team: role.team
+												});
+											}
+										});
+									}
+								});
 
-										// if (match.length !== chat.length) {
-										// 	toProcessChats.push({
-										// 		name,
-										// 		type: 'playerName',
- 									// 			index: match.length
-										// 	});
+								toProcessChats.sort((a, b) => {
+									return a.index - b.index;
+								});
 
-										// 	recursivelyProcessChats(match);
-										// }
-									});
+								splitChat = chatContents.split(/uther|werewolf/i);
+
+								return splitChat.map((piece, index) => {
+									if (index) {
+										let item = toProcessChats[index - 1],
+											itemClass = item.team ? `chat-role--${item.team}` : 'chat-player';
+
+										return (
+											<span key={index}>
+												<span className={itemClass}>{item.text}</span>{piece}
+											</span>
+										);
+									} else {
+										return piece;
+									}
+								});
+								console.log(toProcessChats);
 
 									// roles.forEach((role) => {
 									// 	let regex = new RegExp(`(?:(?!${role.name}).)*`, 'i'),
@@ -344,14 +376,6 @@ export default class Gamechat extends React.Component {
 
 										// recursivelyProcessChats(match);
 									// });
-								}
-
-								console.log(chatContents);
-
-								recursivelyProcessChats(chatContents);
-
-								console.log(toProcessChats);
-
 								// /(?:(?!HELLO).)*/i matches everything before "HELLO"
 
 								// let c = [{

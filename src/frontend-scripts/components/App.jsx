@@ -85,22 +85,6 @@ class App extends React.Component {
 		socket.emit('addNewGame', game);
 	}
 
-	handleUserNightActionEventSubmit(event) {
-		socket.emit('userNightActionEvent', event);
-	}
-
-	handleUpdateTruncateGameSubmit(event) {
-		socket.emit('updateTruncateGame', event);
-	}
-
-	handleUpdateSelectedForEliminationSubmit(event) {
-		socket.emit('updateSelectedForElimination', event);
-	}
-
-	handleUpdateReportGameSubmit(event) {
-		socket.emit('updateReportGame', event);
-	}
-
 	// ***** begin dev helpers *****
 
 	// componentDidUpdate(prevProps) {  // note: this breaks everything if these players try to leave a finished game
@@ -200,8 +184,6 @@ class App extends React.Component {
 		});
 	}
 
-	// todo-alpha pass socket to these and emit stuff that will cause updates and delete the handlers above
-	
 	render() {
 		return (
 			<section className="ui grid">
@@ -212,8 +194,8 @@ class App extends React.Component {
 								userInfo={this.props.userInfo}
 								midSection={this.props.midSection}
 								gameList={this.props.gameList}
-								socket={socket}
 								onCreateGameButtonClick={this.handleRoute.bind(this)}
+								socket={socket}
 							/>
 						);
 					}
@@ -222,27 +204,23 @@ class App extends React.Component {
 					userInfo={this.props.userInfo}
 					midSection={this.props.midSection}
 					onCreateGameSubmit={this.handleCreateGameSubmit.bind(this)}
-					onUserNightActionEventSubmit={this.handleUserNightActionEventSubmit.bind(this)}
-					onUpdateTruncateGameSubmit={this.handleUpdateTruncateGameSubmit.bind(this)}
-					onUpdateSelectedForEliminationSubmit={this.handleUpdateSelectedForEliminationSubmit.bind(this)}
-					onUpdateReportGame={this.handleUpdateReportGameSubmit.bind(this)}
 					onLeaveCreateGame={this.handleRoute.bind(this)}
 					gameInfo={this.props.gameInfo}
-					socket={socket}
 					onLeaveSettings={this.handleRoute.bind(this)}
 					onSeatingUser={this.handleSeatingUser.bind(this)}
 					onLeaveGame={this.handleLeaveGame.bind(this)}
 					quickDefault={this.makeQuickDefault.bind(this)}
 					onSettingsButtonClick={this.handleRoute.bind(this)}
+					socket={socket}
 				/>
 				{(() => {
 					if (this.props.midSection === 'game' && this.props.userInfo.gameSettings && !this.props.userInfo.gameSettings.disableRightSidebarInGame || !this.props.userInfo.userName || this.props.midSection !== 'game') {
 						return (
 							<RightSidebar
-								socket={socket}
 								userInfo={this.props.userInfo}
 								userList={this.props.userList}
 								generalChats={this.props.generalChats}
+								socket={socket}
 							/>
 						);
 					}

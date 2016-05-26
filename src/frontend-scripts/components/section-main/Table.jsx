@@ -218,13 +218,13 @@ export default class Table extends React.Component {
 			if (tableState.nightAction.action === 'singleWerewolf' && $card.attr('data-cardnumber') > 6) {
 				data.role = 'singleWerewolf';
 				data.action = cardNumber;
-				this.props.onUserNightActionEventSubmit(data);
+				this.props.socket.emit('userNightActionEvent', data);
 			}
 
 			if (tableState.nightAction.action === 'insomniac' && cardNumber === userInfo.seatNumber) {
 				data.role = 'insomniac';
 				data.action = cardNumber;
-				this.props.onUserNightActionEventSubmit(data);
+				this.props.socket.emit('userNightActionEvent', data);
 			}
 
 			if (tableState.nightAction.action === 'troublemaker' && parseInt(cardNumber) < 7 && cardNumber !== userInfo.seatNumber) {
@@ -234,7 +234,7 @@ export default class Table extends React.Component {
 					if (cardNumber !== firstClickedCard) {
 						data.role = 'troublemaker';
 						data.action = [this.state.firstClickedCard, cardNumber];
-						this.props.onUserNightActionEventSubmit(data);
+						this.props.socket.emit('userNightActionEvent', data);
 					}
 				} else {
 					this.setState({
@@ -255,7 +255,7 @@ export default class Table extends React.Component {
 
 					data.role = 'seer';
 					data.action = action;				
-					this.props.onUserNightActionEventSubmit(data);
+					this.props.socket.emit('userNightActionEvent', data);
 				} else if (parseInt(cardNumber) > 6) {
 					this.setState({
 						firstClickedCard: cardNumber
@@ -266,7 +266,7 @@ export default class Table extends React.Component {
 			if (tableState.nightAction.action === 'robber' && parseInt(cardNumber) < 7 && cardNumber !== userInfo.seatNumber) {
 				data.role = 'robber';
 				data.action = cardNumber;
-				this.props.onUserNightActionEventSubmit(data);
+				this.props.socket.emit('userNightActionEvent', data);
 			}
 		}
 
@@ -276,7 +276,7 @@ export default class Table extends React.Component {
 			if ((swappedWithSeat === 0 || swappedWithSeat) && userInfo.seatNumber !== swappedWithSeat || !swappedWithSeat && userInfo.seatNumber !== cardNumber) {
 				$card.parent().find('.card').removeClass('card-select');
 				$card.addClass('card-select');
-				this.props.onUpdateSelectedForEliminationSubmit({
+				this.props.socket.emit('updateSelectedForElimination', {
 					uid: gameInfo.uid,
 					seatNumber: userInfo.seatNumber,
 					selectedForElimination: swappedWithSeat || cardNumber
@@ -301,7 +301,7 @@ export default class Table extends React.Component {
 		if (gameInfo.gameState.isDay && gameInfo.gameState.isStarted) {
 			let clicked = !!$(e.currentTarget).is(':checked');
 
-			this.props.onUpdateTruncateGameSubmit({
+			this.props.socket.emit('updateTruncateGame', {
 				truncate: clicked,
 				userName: userInfo.userName,
 				uid: gameInfo.uid
@@ -310,7 +310,7 @@ export default class Table extends React.Component {
 	}
 
 	handleClickedReportGame() {
-		this.props.onUpdateReportGame({
+		this.props.socket.emit('updateReportGame', {
 			seatNumber: this.props.userInfo.seatNumber,
 			uid: this.props.gameInfo.uid
 		});

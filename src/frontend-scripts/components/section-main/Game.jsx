@@ -53,6 +53,7 @@ class Game extends React.Component {
 								selectedPlayer={this.selectedPlayer.bind(this)}
 								gameInfo={this.props.gameInfo}
 								userInfo={this.props.userInfo}
+								socket={this.props.socket}
 							/>
 						</div>
 						<div className={
@@ -78,9 +79,9 @@ class Game extends React.Component {
 								clickedGameRole={this.props.gameRoleInfo}
 								clickedPlayer={this.props.clickedPlayerInfo}
 								roleState={this.roleState.bind(this)}
-								socket={this.props.socket}
 								selectedGamerole={this.props.clickedGamerole}
 								selectedPlayer={this.props.clickedPlayer}
+								socket={this.props.socket}
 							/>
 						</div>
 					</div>

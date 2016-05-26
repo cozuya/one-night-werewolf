@@ -111,16 +111,15 @@ export default class Menu extends React.Component {
 					texteffect.init(options, this);
 				});
 			};
-			$.fn.textEffect.options = {
-				effect: 'random',
-				effectSpeed: 100,
-				completionSpeed: Math.floor(Math.random() * 20000),
-				jumbleColor: '#7f7f7f',
-				reverse: false
-			};
 		})($);
 
-		$('section.nav-menu > p > a').textEffect();
+		$('section.nav-menu > p > a').textEffect({
+			effect: 'random',
+			effectSpeed: 100,
+			completionSpeed: Math.floor(Math.random() * 20000),
+			jumbleColor: '#7f7f7f',
+			reverse: !!(Math.random() >= 0.5)
+		});
 	}
 
 	clickSettingsButton(e) {

@@ -57,7 +57,8 @@ body {
 #game-container .ui.menu {
 	border-radius: 0;
 	border: 0;
-	box-shadow: 0;
+	box-shadow: none;
+	overflow-x: hidden;
 
 	> img {
 		margin-left: 10px;
