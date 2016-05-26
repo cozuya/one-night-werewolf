@@ -57,9 +57,9 @@ export default class Main extends React.Component {
 									/>
 						case 'settings':
 							return <Settings
-										onUpdatedGameSettings={this.props.onUpdatedGameSettings}
 										onLeaveSettings={this.props.onLeaveSettings}
 										userInfo={this.props.userInfo}
+										socket={this.props.socket}
 									/>
 						default:
 							return <Defaultmid

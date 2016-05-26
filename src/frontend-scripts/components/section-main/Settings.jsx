@@ -15,7 +15,8 @@ $.fn.checkbox = Checkbox;
 
 export default class Settings extends React.Component {
 	componentDidMount() {
-		let self = this;
+		let self = this,
+			{ socket } = this.props;
 
 		$(this.refs.popups).popup({
 			inline: true,
@@ -27,12 +28,12 @@ export default class Settings extends React.Component {
 			}
 		}).checkbox({
 			onChecked() {
-				self.props.onUpdatedGameSettings({
+				socket.emit('updateGameSettings', {
 					disablePopups: true
 				});
 			},
 			onUnchecked() {
-				self.props.onUpdatedGameSettings({
+				socket.emit('updateGameSettings', {
 					disablePopups: false
 				});
 			},
@@ -40,12 +41,12 @@ export default class Settings extends React.Component {
 
 		$(this.refs.timestamps).checkbox({
 			onChecked() {
-				self.props.onUpdatedGameSettings({
+				socket.emit('updateGameSettings', {
 					enableTimestamps: true
 				});
 			},
 			onUnchecked() {
-				self.props.onUpdatedGameSettings({
+				socket.emit('updateGameSettings', {
 					enableTimestamps: false
 				});
 			}
@@ -53,12 +54,12 @@ export default class Settings extends React.Component {
 
 		$(this.refs.sidebar).checkbox({
 			onChecked() {
-				self.props.onUpdatedGameSettings({
+				socket.emit('updateGameSettings', {
 					disableRightSidebarInGame: true
 				});
 			},
 			onUnchecked() {
-				self.props.onUpdatedGameSettings({
+				socket.emit('updateGameSettings', {
 					disableRightSidebarInGame: false
 				});
 			}

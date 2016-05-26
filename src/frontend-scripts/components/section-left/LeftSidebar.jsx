@@ -63,7 +63,7 @@ export default class LeftSidebar extends React.Component {
 						return <SidebarGame
 									key={index}
 									game={game}
-									sidebarGameClicked={this.props.sidebarGameClicked}
+									socket={this.props.socket}
 								/>
 					})}
 				</div>

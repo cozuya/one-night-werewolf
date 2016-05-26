@@ -5,7 +5,7 @@ import { roleMap } from '../../../../iso/util.js';
 
 export default class SidebarGame extends React.Component {
 	routeToGame(el) {
-		this.props.sidebarGameClicked(el.currentTarget.getAttribute('data-uid'));
+		this.props.socket.emit('getGameInfo', this.props.game.uid);
 	}
 
 	render() {

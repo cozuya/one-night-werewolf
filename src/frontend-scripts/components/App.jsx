@@ -85,10 +85,6 @@ class App extends React.Component {
 		socket.emit('addNewGame', game);
 	}
 
-	handleGeneralChatSubmit(chat) {
-		socket.emit('addNewGeneralChat', chat);
-	}
-
 	handleUserNightActionEventSubmit(event) {
 		socket.emit('userNightActionEvent', event);
 	}
@@ -103,14 +99,6 @@ class App extends React.Component {
 
 	handleUpdateReportGameSubmit(event) {
 		socket.emit('updateReportGame', event);
-	}
-
-	handleUpdateGameSettingsSubmit(event) {
-		socket.emit('updateGameSettings', event);
-	}
-
-	handleSidebarGameClicked(uid) {
-		socket.emit('getGameInfo', uid);
 	}
 
 	// ***** begin dev helpers *****
@@ -224,8 +212,8 @@ class App extends React.Component {
 								userInfo={this.props.userInfo}
 								midSection={this.props.midSection}
 								gameList={this.props.gameList}
+								socket={socket}
 								onCreateGameButtonClick={this.handleRoute.bind(this)}
-								sidebarGameClicked={this.handleSidebarGameClicked.bind(this)}
 							/>
 						);
 					}
@@ -238,7 +226,6 @@ class App extends React.Component {
 					onUpdateTruncateGameSubmit={this.handleUpdateTruncateGameSubmit.bind(this)}
 					onUpdateSelectedForEliminationSubmit={this.handleUpdateSelectedForEliminationSubmit.bind(this)}
 					onUpdateReportGame={this.handleUpdateReportGameSubmit.bind(this)}
-					onUpdatedGameSettings={this.handleUpdateGameSettingsSubmit.bind(this)}
 					onLeaveCreateGame={this.handleRoute.bind(this)}
 					gameInfo={this.props.gameInfo}
 					socket={socket}
@@ -252,10 +239,10 @@ class App extends React.Component {
 					if (this.props.midSection === 'game' && this.props.userInfo.gameSettings && !this.props.userInfo.gameSettings.disableRightSidebarInGame || !this.props.userInfo.userName || this.props.midSection !== 'game') {
 						return (
 							<RightSidebar
+								socket={socket}
 								userInfo={this.props.userInfo}
 								userList={this.props.userList}
 								generalChats={this.props.generalChats}
-								onGeneralChatSubmit={this.handleGeneralChatSubmit.bind(this)}
 							/>
 						);
 					}

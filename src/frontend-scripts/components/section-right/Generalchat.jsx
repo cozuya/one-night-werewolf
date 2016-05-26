@@ -45,7 +45,7 @@ export default class Gamechat extends React.Component {
 		e.preventDefault();
 
 		if (input.value) {
-			this.props.onGeneralChatSubmit({
+			this.props.socket.emit('addNewGeneralChat', {
 				userName: this.props.userInfo.userName,
 				chat: input.value
 			});
