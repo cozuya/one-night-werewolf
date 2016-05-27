@@ -102,6 +102,7 @@ class Game extends React.Component {
 						roles={this.props.gameInfo.roles}
 						roleState={this.props.expandoInfo}
 						selectedGamerole={this.selectedGamerole.bind(this)}
+						gameInfo={this.props.gameInfo}
 					/>
 				</div>
 			</section>

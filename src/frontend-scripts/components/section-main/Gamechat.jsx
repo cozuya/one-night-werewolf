@@ -203,7 +203,7 @@ export default class Gamechat extends React.Component {
 				playerNames = Object.keys(gameInfo.seated).map((seatName) => {
 					return gameInfo.seated[seatName].userName;
 				}),
-				isObserver = () => {
+				isSeated = () => {
 					return !!Object.keys(gameInfo.seated).find((seatName) => {
 						return gameInfo.seated[seatName].userName === chat.userName;
 					});
@@ -253,19 +253,18 @@ export default class Gamechat extends React.Component {
 			} else if (!chat.gameChat && this.state.chatFilter !== 'Game') {
 				return (
 					<div className="item" key={i}>
-						<span className="chat-user">{chat.userName}{isObserver() ? '' : ' (Observer)'}{this.handleTimestamps.call(this, chat.timestamp)}: </span>
+						<span className="chat-user">{chat.userName}{isSeated() ? '' : ' (Observer)'}{this.handleTimestamps.call(this, chat.timestamp)}: </span>
 						<span className="game-chat">
 							{(() => {
 								let toProcessChats = [],
 									splitChat = chatContents.split((() => {
 										let toRegex = playerNames.concat(roles.map((role) => {
 											return role.name;
-									})).join('|');
+										})).join('|');
 
 									return new RegExp(toRegex, 'i');
 								})());
 
-									// hi uther my name is also uther isn't that interesting.  I am a werewolf.
 								playerNames.forEach((name) => {
 									let split = chatContents.split(new RegExp(name, 'i'));
 

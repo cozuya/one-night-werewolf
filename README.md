@@ -11,7 +11,7 @@ Back end: Node, Express, Pug, Passport, Mongodb with Mongoose, SocketIO.
 
 Build: Gulp, Browserify, Babel (front end).
 
-Latest version: 0.2.0.  Application works at a MVP level but is not quite ready for production deployment. Estimated alpha deployment: June 2016.  See docs/roadmap.txt.
+Latest version: 0.3.0.  Application works at a MVP level but is not quite ready for production deployment. Estimated alpha deployment: May 31 2016.  See docs/roadmap.txt.
 
 ## Installation ##
 
@@ -57,8 +57,6 @@ start development task runner:
 
 > gulp
 
-navigate to:
-
-http://localhost:8080
+navigate to: http://localhost:8080
 
 You'll most likely need a browser extension such as Chrome's Multilogin to have multiple sessions on the same browser.  No, incognito will not work.

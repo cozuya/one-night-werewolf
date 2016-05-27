@@ -27,7 +27,7 @@ export default class LeftSidebar extends React.Component {
 					}
 				})()}
 				<div className="games-container">
-					{this.props.gameList.sort((a, b) => {  // todo-alpha in progress appeared under completed
+					{this.props.gameList.sort((a, b) => {
 						if (!a.gameState.isStarted && b.gameState.isStarted) {
 							return -1;
 						} else if (a.gameState.isStarted && !b.gameState.isStarted) {
@@ -38,17 +38,17 @@ export default class LeftSidebar extends React.Component {
 
 						if (a.gameState.isStarted && !a.gameState.isCompleted) {
 							if (!b.gameState.isStarted) {
-								return -1;
+								return 1;
 							} else {
-								return 0;
+								return -1;
 							}
 						}
 
 						if (b.gameState.isStarted && !b.gameState.isCompleted) {
 							if (!a.gameState.isStarted) {
-								return 1;
+								return -1;
 							} else {
-								return 0;
+								return 1;
 							}
 						}
 

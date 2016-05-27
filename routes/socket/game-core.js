@@ -385,7 +385,7 @@ let beginNightPhases = (game) => {
 							type: 'playerName'
 						});
 
-						if (index >= werewolves.length - 3 && werewolves.length !== 1) {
+						if (index >= werewolves.length - 3 && werewolves.length !== 1 && index !== werewolves.length - 1) {
 							message.push({text: ', '});
 						}
 
@@ -789,7 +789,6 @@ module.exports.updateSelectedElimination = (data) => {
 		}),
 		player = game.internals.seatedPlayers[parseInt(data.seatNumber)],
 		{ selectedForElimination } = data;
-
 	player.selectedForElimination = selectedForElimination;
 	highlightSeats(player, 'clear');
 	highlightSeats(player, [parseInt(selectedForElimination)], 'selection');
@@ -961,13 +960,21 @@ let endGame = (game) => {
 
 		// todo-alpha app crashed on line below (truerole of undefined @ werewolf) after a game where 2 players reloaded the page during night I believe
 
-		if (seatedPlayers[eliminatedPlayerIndex].trueRole === 'werewolf' || seatedPlayers[eliminatedPlayerIndex].trueRole === 'minion' && game.internals.soloMinion) {
-			werewolfEliminated = true;
+		try {
+			if (seatedPlayers[eliminatedPlayerIndex].trueRole === 'werewolf' || seatedPlayers[eliminatedPlayerIndex].trueRole === 'minion' && game.internals.soloMinion) {
+				werewolfEliminated = true;
+			}
+			if (seatedPlayers[eliminatedPlayerIndex].trueRole === 'tanner') {
+				tannerEliminations.push(eliminatedPlayerIndex);
+			}
+		} catch (e) {
+			console.log('app crashed');
+			console.log(e);
+			console.log(playersSelectedForElimination); // [ 6, 2, 6, 5, 0, 6, 0] confirmed to not be the origination of the problem
+			console.log(eliminatedPlayerIndex); // NaN on crash
+			console.log(modeMap);
 		}
 
-		if (seatedPlayers[eliminatedPlayerIndex].trueRole === 'tanner') {
-			tannerEliminations.push(eliminatedPlayerIndex);
-		}
 	});
 
 	seatedPlayers.forEach((player, index) => {

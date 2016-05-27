@@ -48,7 +48,6 @@ export default class Table extends React.Component {
 				}
 			});
 		}
-		console.log(this.props.gameInfo);
 	}
 
 	shouldComponentUpdate(nextProps) {
@@ -73,7 +72,7 @@ export default class Table extends React.Component {
 		if (userInfo.userName && !gameInfo.gameState.isNight) {
 			if ($seat.hasClass('empty') && !userInfo.seatNumber && !gameInfo.gameState.isCompleted) {
 				this.props.onSeatingUser($seat.attr('data-seatnumber'));
-			} else {
+			} else if (!(gameInfo.gameState.isStarted && !gameInfo.gameState.isDay)) {
 				this.props.selectedPlayer({
 					playerName: $(e.currentTarget).find('span.username').text(),
 					random: Math.random().toString(36).substring(2)
@@ -274,7 +273,7 @@ export default class Table extends React.Component {
 			let swappedWithSeat = tableState.seats[parseInt(cardNumber)].swappedWithSeat;
 
 			if ((swappedWithSeat === 0 || swappedWithSeat) && userInfo.seatNumber !== swappedWithSeat || !swappedWithSeat && userInfo.seatNumber !== cardNumber) {
-				$card.parent().find('.card').removeClass('card-select');
+				$card.parent().find('.card').removeClass('card-select'); // todo-release remove jquery crap
 				$card.addClass('card-select');
 				this.props.socket.emit('updateSelectedForElimination', {
 					uid: gameInfo.uid,

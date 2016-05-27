@@ -6,7 +6,7 @@ v0.2 released 5/13/2016
 	styling review and overhaul
 	removal of semantic as a npm dependency (fixed semantic css file without media queries)
 
-v0.3
+v0.3 released 5/27/2016
 	implementation of website that describes game and rules
 	performance/size of CSS & JS improvements, removal of source maps, uglification
 	deployment and launch alpha event

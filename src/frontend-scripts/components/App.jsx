@@ -115,8 +115,8 @@ class App extends React.Component {
 			game = {
 				kobk: false,
 				name: 'New Game',
-				// roles: ['werewolf', 'werewolf', 'werewolf', 'werewolf', 'werewolf', 'villager', 'villager', 'villager', 'villager', 'villager'],
-				roles: ['werewolf', 'werewolf', 'seer', 'robber', 'troublemaker', 'robber', 'hunter', 'villager', 'villager', 'insomniac'],
+				roles: ['werewolf', 'werewolf', 'villager', 'villager', 'villager', 'villager', 'villager', 'villager', 'villager', 'villager'],
+				// roles: ['werewolf', 'werewolf', 'seer', 'robber', 'troublemaker', 'robber', 'hunter', 'villager', 'villager', 'insomniac'],
 				// roles: ['werewolf', 'werewolf', 'robber', 'troublemaker', 'mason', 'minion', 'troublemaker', 'mason', 'robber', 'troublemaker'],
 				seated: {
 					seat0: {

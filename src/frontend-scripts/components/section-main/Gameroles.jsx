@@ -21,10 +21,9 @@ export default class Gameroles extends React.Component {
 			});
 		}
 	}
-	
 
 	handleRoleClick(e) {
-		if (this.props.userInfo.userName) {
+		if (this.props.userInfo.userName && !(this.props.gameInfo.gameState.isStarted && !this.props.gameInfo.gameState.isDay)) {
 			this.props.selectedGamerole({
 				role: $(e.currentTarget).attr('data-role'),
 				random: Math.random().toString(36).substring(2)

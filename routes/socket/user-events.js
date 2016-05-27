@@ -9,6 +9,43 @@ let { games, userList, generalChats } = require('./models'),
 	Account = require('../../models/account'),
 	Generalchats = require('../../models/generalchats'),
 	generalChatCount = 0,
+	saveGame = (game) => {
+		let gameToSave = new Game({
+			uid: game.uid,
+			time: game.time,
+			date: new Date(),
+			roles: game.roles,
+			winningPlayers: game.internals.seatedPlayers.filter((player) => {
+				return player.wonGame;
+			}).map((player) => {
+				return {
+					userName: player.userName,
+					originalRole: player.originalRole,
+					trueRole: player.trueRole
+				};
+			}),
+			losingPlayers: game.internals.seatedPlayers.filter((player) => {
+				return !player.wonGame;
+			}).map((player) => {
+				return {
+					userName: player.userName,
+					originalRole: player.originalRole,
+					trueRole: player.trueRole
+				};
+			}),
+			reports: Object.keys(game.gameState.reportedGame).filter((seatNumber) => {
+				return game.gameState.reportedGame[seatNumber];
+			}).map((seatNumber) => {
+				return game.internals.seatedPlayers[seatNumber].userName;
+			}),
+			kobk: game.kobk,
+			chats: game.chats.filter((chat) => {
+				return !chat.gameChat;
+			})
+		});
+
+		gameToSave.save();
+	},
 	getInternalPlayerInGameByUserName = (game, userName) => {
 		return game.internals.seatedPlayers.find((player) => {
 			return player.userName === userName;
@@ -36,11 +73,16 @@ let { games, userList, generalChats } = require('./models'),
 						return game.seated[seatName].userName === passport.user;
 					});
 
-				if (game.gameState.isStarted) {
+				if (game.gameState.isStarted && !game.gameState.isCompleted) {
 					game.seated[userSeatName].connected = false;
 					sendInProgressGameUpdate(game);
 				} else {
-					if (seatNames.length === 1) {
+					if (game.gameState.isCompleted && Object.keys(game.seated).filter((seat) => {
+						return !game.seated[seat].connected;
+					}).length === 6) {
+						saveGame(game);
+						games.splice(games.indexOf(game), 1);
+					} else if (seatNames.length === 1) {
 						games.splice(games.indexOf(game), 1);
 					} else {
 						// todo-release kick out observer sockets/route to default?
@@ -276,42 +318,9 @@ module.exports.handleUserLeaveGame = (socket, data) => {
 		}).length;
 
 		if (completedDisconnectionCount === 7) {
-			let saveGame = new Game({
-				uid: game.uid,
-				time: game.time,
-				date: new Date(),
-				roles: game.roles,
-				winningPlayers: game.internals.seatedPlayers.filter((player) => {
-					return player.wonGame;
-				}).map((player) => {
-					return {
-						userName: player.userName,
-						originalRole: player.originalRole,
-						trueRole: player.trueRole
-					};
-				}),
-				losingPlayers: game.internals.seatedPlayers.filter((player) => {
-					return !player.wonGame;
-				}).map((player) => {
-					return {
-						userName: player.userName,
-						originalRole: player.originalRole,
-						trueRole: player.trueRole
-					};
-				}),
-				reports: Object.keys(game.gameState.reportedGame).filter((seatNumber) => {
-					return game.gameState.reportedGame[seatNumber];
-				}).map((seatNumber) => {
-					return game.internals.seatedPlayers[seatNumber].userName;
-				}),
-				kobk: game.kobk,
-				chats: game.chats.filter((chat) => {
-					return !chat.gameChat;
-				})
-			});
-
-			saveGame.save();
+			saveGame(game);
 		}
+
 	} else if (data.seatNumber && !game.gameState.isStarted) {
 		delete game.seated[`seat${data.seatNumber}`];
 	}
