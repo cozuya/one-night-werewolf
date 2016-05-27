@@ -200,15 +200,6 @@ export default class Gamechat extends React.Component {
 
 		return gameInfo.chats.map((chat, i) => {
 			let chatContents = chat.chat,
-				processedChat = [],
-				// playerRegexes = Object.keys(gameInfo.seated).map((seatName) => {
-				// 	return gameInfo.seated[seatName].userName;
-				// }).map((playerName) => {
-				// 	return {
-				// 		playerName,
-				// 		regex: new RegExp(playerName, 'gi')
-				// 	};
-				// }),
 				playerNames = Object.keys(gameInfo.seated).map((seatName) => {
 					return gameInfo.seated[seatName].userName;
 				}),
@@ -231,69 +222,32 @@ export default class Gamechat extends React.Component {
 						team: 'werewolf'
 					}
 				];
-			// console.log(chat.chat);
-
-			// if (!chat.gameChat) {
-			// 	function processChat(chat) {
-			// 		roleRegexes.forEach((roleRegex) => {
-			// 			let splitStr = chat.split(roleRegex);
-
-			// 			if (splitStr.length > 1) {
-			// 				splitStr.forEach((strSegment, index) => {
-			// 					processChat(splitStr[index]);
-
-			// 				})
-			// 			} else {
-
-			// 			}
-			// 		});
-
-			// 		playerRegexes.forEach((playerRegex) => {
-			// 			chatContents = chatContents.replace(playerRegex.regex, `<span class="chat-player">${playerRegex.playerName}</span>`);
-			// 		});
-			// 	}
-
-			// } else {
-
-			// 	chatContents.forEach((chatInfo) => {
-			// 		if (!chatInfo.type) {
-			// 			processedChat.push(chatInfo.text);
-			// 		} else {
-			// 			if (chatInfo.type === 'roleName') {
-			// 				roleRegexes.forEach((roleRegex) => {
-			// 					if (roleRegex.regex.test(chatInfo.text)) {
-			// 						processedChat.push(chatInfo.text.replace(roleRegex.regex, `<span class="chat-role--${roleRegex.team}">${roleRegex.role}</span>`));
-			// 					}
-			// 				});
-			// 			} else {
-			// 				playerRegexes.forEach((playerRegex) => {
-			// 					if (playerRegex.regex.test(chatInfo.text)) {
-			// 						processedChat.push(chatInfo.text.replace(playerRegex.regex, `<span class="chat-player">${playerRegex.playerName}</span>`));
-			// 					}
-			// 				});
-			// 			}
-			// 		}
-			// 	});
-
-			// 	chatContents = processedChat.join(''); 
-			// }
-
-			// console.log(chatContents);
-
-			// /(?:(?!HELLO).)*/i matches everything before "HELLO"
-			// /HELLO(.*)/i)[1] matches everything after the first (but ignores the rest) hit of HELLO
-
-
-
-			 // todo-alpha, users can chat html (not script tags) that affect the game for other users.
-
-			 // <div style="font-weight: 700 !important;color: orange;">xss!</div>
 
 			if (chat.gameChat && (this.state.chatFilter === 'Game' || this.state.chatFilter === 'All')) {
 				return (
 					<div className="item" key={i}>
 						<span className="chat-user--game">[GAME] {this.handleTimestamps.call(this, chat.timestamp)}: </span>
-						<span className="game-chat">{chatContents}</span>
+						<span className="game-chat">
+							{(() => {
+								return chatContents.map((chatSegment, index) => {
+									if (chatSegment.type) {
+										let classes;
+
+										if (chatSegment.type === 'playerName') {
+											classes = 'chat-player';
+										} else {
+											classes = `chat-role--${roles.find((role) => {
+												return role.name === chatSegment.text;
+											}).team}`;
+										}
+
+										return <span key={index} className={classes}>{chatSegment.text}</span>;
+									} else {
+										return chatSegment.text;
+									}
+								});
+							})()}
+						</span>
 					</div>
 				);
 			} else if (!chat.gameChat && this.state.chatFilter !== 'Game') {
@@ -303,7 +257,13 @@ export default class Gamechat extends React.Component {
 						<span className="game-chat">
 							{(() => {
 								let toProcessChats = [],
-									splitChat;
+									splitChat = chatContents.split((() => {
+										let toRegex = playerNames.concat(roles.map((role) => {
+											return role.name;
+									})).join('|');
+
+									return new RegExp(toRegex, 'i');
+								})());
 
 									// hi uther my name is also uther isn't that interesting.  I am a werewolf.
 								playerNames.forEach((name) => {
@@ -343,67 +303,19 @@ export default class Gamechat extends React.Component {
 									return a.index - b.index;
 								});
 
-								splitChat = chatContents.split(/uther|werewolf/i);
-
 								return splitChat.map((piece, index) => {
 									if (index) {
-										let item = toProcessChats[index - 1],
-											itemClass = item.team ? `chat-role--${item.team}` : 'chat-player';
+										let item = toProcessChats[index - 1];
 
 										return (
 											<span key={index}>
-												<span className={itemClass}>{item.text}</span>{piece}
+												<span className={item.team ? `chat-role--${item.team}` : 'chat-player'}>{item.text}</span>{piece}
 											</span>
 										);
 									} else {
 										return piece;
 									}
 								});
-								console.log(toProcessChats);
-
-									// roles.forEach((role) => {
-									// 	let regex = new RegExp(`(?:(?!${role.name}).)*`, 'i'),
-									// 		match = chat.match(regex);
-
-										// if (match.length !== chat.length) {
-										// 	toProcessChats.push({
-										// 		name: role.name,
-										// 		type: 'roleName',
-										// 		index: match.length,
-										// 		team: role.team
-										// 	});
-										// }
-
-										// recursivelyProcessChats(match);
-									// });
-								// /(?:(?!HELLO).)*/i matches everything before "HELLO"
-
-								// let c = [{
-								// 		chat: 'hello my name is '
-								// 	}, 
-								// 	{
-								// 		chat: 'uther',
-								// 		type: 'playerName'
-								// 	},
-								// 	{
-								// 		chat: ' and '
-								// 	},
-								// 	{
-								// 		chat: 'werewolf',
-								// 		type: 'roleName',
-								// 		text: 'werewolf'
-								// 	},
-								// 	{
-								// 		chat: ' talks about himself in 3rd person.'
-								// 	}];
-
-								// return c.map((cc) => {
-								// 	let chatRoleClasses = () => {
-								// 		return `chat-role--${cc.text}`;
-								// 	};
-
-								// 	return cc.type === 'playerName' ? <span className="chat-player">{cc.chat}</span> : cc.type === 'roleName' ? <span className={chatRoleClasses()}>{cc.chat}</span> : cc.chat;
-								// });
 							})()}
 						</span>
 					</div>
