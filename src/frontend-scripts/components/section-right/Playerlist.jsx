@@ -58,7 +58,7 @@ export default class Playerlist extends React.Component {
 
 							return (
 								<div key={i}>
-									<span style={{color: user.userName === 'coz' ? 'red' : ''}}>{user.userName}</span>
+									<span style={{color: user.userName === 'coz' ? 'red' : user.userName === 'stine' ? 'red' : ''}}>{user.userName}</span>
 									<div className="userlist-stats-container">(
 										<span className="userlist-stats">{user.wins}</span> / <span className="userlist-stats">{user.losses}</span>) <span className="userlist-stats"> {percentDisplay}</span>
 									</div>

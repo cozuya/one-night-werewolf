@@ -11,7 +11,7 @@ Back end: Node, Express, Pug, Passport, Mongodb with Mongoose, SocketIO.
 
 Build: Gulp, Browserify, Babel (front end).
 
-Latest version: 0.3.0.  Application works at a MVP level but is not quite ready for production deployment. Estimated alpha deployment: May 31 2016.  See docs/roadmap.txt.
+Latest version: 0.3.1.  Alpha deployment: May 31st 2016, 7pm.  See docs/roadmap.txt.
 
 ## Installation ##
 
@@ -28,6 +28,10 @@ Install mongodb, have it in your path.
 > npm i -g gulp nodemon
 
 > npm i
+
+At this point you may receive an error regarding node-sass so you'll need to do
+
+> npm rebuild node-sass
 
 For installation on windows, you may need to do a few extra steps if you are getting node-gyp errors, specifically installing the required MS programs referred to on node-gyp's github, and then possibly doing:
 

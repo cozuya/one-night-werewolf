@@ -11,9 +11,9 @@ v0.3 released 5/27/2016
 	performance/size of CSS & JS improvements, removal of source maps, uglification
 	deployment and launch alpha event
 
-v1.0
-	implement lets encrypt https
-	launch and enable webcrawlers
+v0.3.1 released 5/29/2016
+	minor bug fixes to be ready for alpha
+	implemented HTTPS via let's encrypt
 
 future
 	explore cardback reward system

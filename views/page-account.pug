@@ -24,7 +24,7 @@ block content
 	.ui.container.howtoplay-container
 		h1.ui.centered.header My account
 		button#change-password.ui.primary.button(style="display: block; margin: 0 auto;") Change your password
-		button#delete-account.ui.primary.button(style="display: block; margin: 10px auto 0;") Delete your account
+		//- button#delete-account.ui.primary.button(style="display: block; margin: 10px auto 0;") Delete your account
 
 	section.passwordchange-modal.ui.modal.small.segment.column
 		h2.header Change your password
@@ -32,11 +32,11 @@ block content
 			.field
 				.ui.left.icon.input
 					i.lock.icon
-					input#passwordchange-password(placeholder="New password")
+					input#passwordchange-password(placeholder="New password", type="password")
 			.field
 				.ui.left.icon.input
 					i.lock.icon
-					input#passwordchange-confirmpassword(placeholder="Confirm new password")
+					input#passwordchange-confirmpassword(placeholder="Confirm new password", type="password")
 			button.ui.primary.button.fluid.large#passwordchange-submit Submit
 			.ui.dimmer.inverted
 				.ui.text.loader Changing your password..
