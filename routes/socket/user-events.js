@@ -2,7 +2,6 @@
 
 let { games, userList, generalChats } = require('./models'),
 	{ secureGame } = require('./util'),
-	{ roleMap } = require('../../iso/util'),
 	{ sendGameList, sendGeneralChats } = require('./user-requests'),
 	_ = require('lodash'),
 	Game = require('../../models/game'),

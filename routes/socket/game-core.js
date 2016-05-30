@@ -127,6 +127,7 @@ let startGame = (game) => {
 	setTimeout(() => {
 		let nightPhasePause = 5,
 			countDown;
+
 		game.internals.seatedPlayers.forEach((player, index) => {
 			player.gameChats.push({
 				gameChat: true,
@@ -431,7 +432,7 @@ let beginNightPhases = (game) => {
 							type: 'roleName',
 							text: others.length === 1 ? 'mason' : 'masons'
 						},
-						{text: ` in this game ${others.length == 1 ? 'is' : 'are'} `}
+						{text: ` in this game ${others.length === 1 ? 'is' : 'are'} `}
 					];
 
 					nightAction.highlight = others.map((other) => {
@@ -444,16 +445,15 @@ let beginNightPhases = (game) => {
 							type: 'playerName'
 						});
 
-						if (index !== others.length && others.length > 1) {
+						if (index <= others.length - 3 && others.length !== 1) {
 							message.push({text: ', '});
 						}
 
-						if (index === others.length - 1) {
-							message.push({text: 'and '});
+						if (index === others.length - 2) {
+							message.push({text: ' and '});
 						}
 					});
 				}
-
 
 				message.push({text: '.'});
 				nightAction.gameChat = message;
@@ -789,6 +789,7 @@ module.exports.updateSelectedElimination = (data) => {
 		}),
 		player = game.internals.seatedPlayers[parseInt(data.seatNumber)],
 		{ selectedForElimination } = data;
+
 	player.selectedForElimination = selectedForElimination;
 	highlightSeats(player, 'clear');
 	highlightSeats(player, [parseInt(selectedForElimination)], 'selection');
@@ -956,6 +957,7 @@ let endGame = (game) => {
 	game.gameState.isCompleted = true;
 	sendInProgressGameUpdate(game);
 	sendGameList();
+
 	eliminatedPlayersIndex.forEach((eliminatedPlayerIndex) => {
 
 		// todo-alpha app crashed on line below (truerole of undefined @ werewolf) after a game where 2 players reloaded the page during night I believe

@@ -2,7 +2,7 @@
 
 const { handleUpdatedTruncateGame, handleUpdatedReportGame, handleAddNewGame, handleAddNewGameChat, handleNewGeneralChat, handleUpdatedGameSettings, handleSocketDisconnect, handleUserLeaveGame, checkUserStatus } = require('./user-events'),
 	{ sendGameInfo, sendUserGameSettings, sendGameList, sendGeneralChats, sendUserList } = require('./user-requests'),
-	{ updateSeatedUser, leaveGame, updateSelectedElimination, updateUserNightActionEvent } = require('./game-core');
+	{ updateSeatedUser, updateSelectedElimination, updateUserNightActionEvent } = require('./game-core');
 
 module.exports = () => {
 	io.on('connection', (socket) => {
