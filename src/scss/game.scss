@@ -44,11 +44,6 @@
 				}
 			}
 
-			.chatpusher {
-				height: 290px;
-				background: #F9FAFF;
-			}
-
 			.chats {
 				height: 335px;
 				overflow-y: auto;
@@ -56,11 +51,23 @@
 				font-size: 18px;
 				padding-left: 5px;
 				cursor: not-allowed;
+				-moz-transform: scaleY(-1);
+				-o-transform: scaleY(-1);
+				-webkit-transform: scaleY(-1);
+				transform: scaleY(-1);
+				filter: FlipV;
+				-ms-filter: "FlipV";
 
 				.item {
 					word-wrap: break-word;
 					line-height: 1;
 					padding: 0;
+					-moz-transform: scaleY(-1);
+			        -o-transform: scaleY(-1);
+			        -webkit-transform: scaleY(-1);
+			        transform: scaleY(-1);
+			        filter: FlipV;
+			        -ms-filter: "FlipV";
 				}
 
 				.chat-user {

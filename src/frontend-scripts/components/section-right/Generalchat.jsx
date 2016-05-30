@@ -57,21 +57,10 @@ export default class Gamechat extends React.Component {
 	}
 
 	scrollChats() {
-		let chatsContainer = document.querySelector('section.segment.chats'),
-			$chatPusher = $(this.refs.genchatpusher),
-			chatCount = this.props.generalChats.length,
-			$lockIcon = $('section.gamechat > .ui.menu > i');
-
-		if (chatCount < 20) {
-			$chatPusher.css({
-				height: 230 - chatCount * 15,
-			});
-		} else {
-			$chatPusher.remove();
-		}
-
+		let chatsContainer = document.querySelector('section.segment.chats');
+			
 		if (!this.state.lock) {
-			chatsContainer.scrollTop = chatsContainer.scrollHeight;
+			chatsContainer.scrollTop = 0;
 		}
 	}
 
@@ -79,11 +68,11 @@ export default class Gamechat extends React.Component {
 		return this.props.generalChats.map((chat, i) => {		
 			return (
 				<div className="item" key={i}>
-					<span className={chat.userName === 'coz' ? 'chat-user admin' : 'chat-user'}>{chat.userName}: </span>
+					<span className={chat.userName === 'coz' ? 'chat-user admin' : chat.userName === 'stine' ? 'chat-user admin' : 'chat-user'}>{chat.userName}: </span>
 					<span>{chat.chat}</span>
 				</div>
 			);
-		});
+		}).reverse();
 	}
 
 	handleChatLockClick(e) {
@@ -105,7 +94,6 @@ export default class Gamechat extends React.Component {
 					<div className="ui divider right-sidebar-divider"></div>
 				</section>
 				<section className="segment chats">
-					<div ref="genchatpusher"></div>
 					<div className="ui list">
 						{this.processChats()}
 					</div>

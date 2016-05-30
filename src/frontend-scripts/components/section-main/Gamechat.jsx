@@ -158,19 +158,10 @@ export default class Gamechat extends React.Component {
 	}
 
 	scrollChats() {
-		let chatsContainer = document.querySelector('section.segment.chats'),
-			$chatPusher = $('section.gamechat div.chatpusher'),
-			chatCount = this.props.gameInfo.chats.length,
-			$lockIcon = $('section.gamechat > .ui.menu > i');
-
-		if (chatCount < 20) {
-			$chatPusher.css({
-				height: 310 - chatCount * 18,
-			});
-		}
+		let chatsContainer = document.querySelector('section.segment.chats');
 		
 		if (!this.state.lock) {
-			chatsContainer.scrollTop = chatsContainer.scrollHeight;
+			chatsContainer.scrollTop = 0;
 		}
 	}
 
@@ -320,7 +311,7 @@ export default class Gamechat extends React.Component {
 					</div>
 				);
 			};
-		});	
+		}).reverse();	
 	}
 
 	handleChatLockClick(e) {
@@ -341,11 +332,6 @@ export default class Gamechat extends React.Component {
 					<i className={this.state.lock ? 'large lock icon' : 'large unlock alternate icon'} onClick={this.handleChatLockClick.bind(this)}></i>
 				</section>
 				<section className="segment chats">
-					{(() => {
-						if (this.props.gameInfo.chats.length < 20) {
-							return <div className="chatpusher"></div>
-						}
-					})()}
 					<div className="ui list">
 						{this.processChats()}
 					</div>
