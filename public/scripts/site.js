@@ -1,4 +1,4 @@
-$(document).ready(function () {
+$(document).ready(function () {  // yay ES5
 	$('body').on('click', '#signup', function(event) {
 		event.preventDefault();
 
@@ -9,11 +9,11 @@ $(document).ready(function () {
 
 	$('button.signup-submit').on('click', function(event) {
 		event.preventDefault();
-		let username = $('#signup-username').val(),
+		var username = $('#signup-username').val(),
 			password = $('#signup-password').val(),
 			$loader = $(this).next(),
 			$message = $loader.next(),
-			submitErr = (message) => {
+			submitErr = function (message) {
 				$loader.removeClass('active');
 				$message.text(message).removeClass('hidden');
 			};
@@ -24,19 +24,19 @@ $(document).ready(function () {
 			url: '/account/signup',
 			method: 'POST',
 			contentType: 'application/json; charset=UTF-8',
-			data: JSON.stringify({username, password}),
+			data: JSON.stringify({username: username, password: password}),
 			statusCode: {
-				200() {
+				200: function () {
 					if (window.location.pathname === '/observe') {
 						window.location.pathname = '/game';
 					} else {
 						window.location.reload();
 					}
 				},
-				400() {
+				400: function () {
 					submitErr('Sorry, that request did not look right.');
 				},
-				401(xhr) {
+				401: function (xhr) {
 					let message = typeof xhr.responseJSON !== 'undefined' ? xhr.responseJSON.message : 'Sorry, that username already exists and you did not provide the correct password.';
 
 					submitErr(message);
@@ -67,11 +67,11 @@ $(document).ready(function () {
 
 	$('button.signin-submit').on('click', function(event) {
 		event.preventDefault();
-		let username = $('#signin-username').val(),
+		var username = $('#signin-username').val(),
 			password = $('#signin-password').val(),
 			$loader = $(this).next(),
 			$message = $(this).next().next(),
-			submitErr = (message) => {
+			submitErr = function (message) {
 				$loader.removeClass('active');
 				$message.text(message).removeClass('hidden');
 			};
@@ -82,19 +82,19 @@ $(document).ready(function () {
 			url: '/account/signin',
 			method: 'POST',
 			contentType: 'application/json; charset=UTF-8',
-			data: JSON.stringify({username, password}),
+			data: JSON.stringify({username: username, password: password}),
 			statusCode: {
-				200() {
+				200: function () {
 					if (window.location.pathname === '/observe') {
 						window.location.pathname = '/game';
 					} else {
 						window.location.reload();
 					}
 				},
-				400() {
+				400: function () {
 					submitErr('Sorry, that request did not look right.');
 				},
-				401() {
+				401: function () {
 					submitErr('Sorry, that was not the correct password for that username.');
 				}
 			}
@@ -107,7 +107,7 @@ $(document).ready(function () {
 		$.ajax({
 			url: '/account/logout',
 			method: 'POST',
-			success() {
+			success: function () {
 				window.location.reload();
 			}
 		});
@@ -122,14 +122,14 @@ $(document).ready(function () {
 	$('button#passwordchange-submit').on('click', function (event) {
 		event.preventDefault();
 		
-		let newPassword = $('#passwordchange-password').val(),
+		var newPassword = $('#passwordchange-password').val(),
 			newPasswordConfirm = $('#passwordchange-confirmpassword').val(),
 			$loader = $(this).next(),
 			$errMessage = $loader.next(),
 			$successMessage = $errMessage.next(),
 			data = JSON.stringify({
-				newPassword,
-				newPasswordConfirm
+				newPassword: newPassword,
+				newPasswordConfirm: newPasswordConfirm
 			});
 
 		$loader.addClass('active');
@@ -138,17 +138,16 @@ $(document).ready(function () {
 			url: '/account/change-password',
 			method: 'POST',
 			contentType: 'application/json; charset=UTF-8',
-			data,
+			data: data,
 			statusCode: {
-				200() {
+				200: function () {
 					$loader.removeClass('active');
 					$successMessage.removeClass('hidden');
 					if (!$errMessage.hasClass('hidden')) {
 						$errMessage.addClass('hidden');
 					}
-
 				},
-				401() {
+				401: function () {
 					$loader.removeClass('active');
 					$errMessage.text('Your new password and your confirm password did not match.').removeClass('hidden');
 					if (!$successMessage.hasClass('hidden')) {
@@ -169,11 +168,11 @@ $(document).ready(function () {
 		return; // todo-release
 		event.preventDefault();
 		
-		let password = $('#deleteaccount-password').val(),
+		var password = $('#deleteaccount-password').val(),
 			$loader = $(this).next(),
 			$errMessage = $loader.next(),
 			$successMessage = $errMessage.next(),
-			data = JSON.stringify({password});
+			data = JSON.stringify({password: password});
 
 		$loader.addClass('active');
 
@@ -181,9 +180,9 @@ $(document).ready(function () {
 			url: '/account/delete-account',
 			method: 'POST',
 			contentType: 'application/json; charset=UTF-8',
-			data,
+			data: data,
 			statusCode: {
-				200() {
+				200: function () {
 					$loader.removeClass('active');
 					$successMessage.removeClass('hidden');
 					setTimeout(function () {
@@ -193,7 +192,7 @@ $(document).ready(function () {
 						$errMessage.addClass('hidden');
 					}
 				},
-				400() {
+				400: function () {
 					$loader.removeClass('active');
 					$errMessage.text('Your password did not match.').removeClass('hidden');
 					if (!$successMessage.hasClass('hidden')) {
