@@ -20,7 +20,7 @@ export default () => {
 
 	$('button.signup-submit').on('click', function(event) {
 		event.preventDefault();
-		let username = $('#signup-username').val(),
+		const username = $('#signup-username').val(),
 			password = $('#signup-password').val(),
 			$loader = $(this).next(),
 			$message = $loader.next(),
@@ -48,7 +48,7 @@ export default () => {
 					submitErr('Sorry, that request did not look right.');
 				},
 				401(xhr) {
-					let message = typeof xhr.responseJSON !== 'undefined' ? xhr.responseJSON.message : 'Sorry, that username already exists and you did not provide the correct password.';
+					const message = typeof xhr.responseJSON !== 'undefined' ? xhr.responseJSON.message : 'Sorry, that username already exists and you did not provide the correct password.';
 
 					submitErr(message);
 				}
@@ -78,7 +78,7 @@ export default () => {
 
 	$('button.signin-submit').on('click', function(event) {
 		event.preventDefault();
-		let username = $('#signin-username').val(),
+		const username = $('#signin-username').val(),
 			password = $('#signin-password').val(),
 			$loader = $(this).next(),
 			$message = $(this).next().next(),
@@ -133,7 +133,7 @@ export default () => {
 	$('button#passwordchange-submit').on('click', function (event) {
 		event.preventDefault();
 		
-		let newPassword = $('#passwordchange-password').val(),
+		const newPassword = $('#passwordchange-password').val(),
 			newPasswordConfirm = $('#passwordchange-confirmpassword').val(),
 			$loader = $(this).next(),
 			$errMessage = $loader.next(),
@@ -180,7 +180,7 @@ export default () => {
 		return; // todo-release
 		event.preventDefault();
 		
-		let password = $('#deleteaccount-password').val(),
+		const password = $('#deleteaccount-password').val(),
 			$loader = $(this).next(),
 			$errMessage = $loader.next(),
 			$successMessage = $errMessage.next(),
@@ -219,7 +219,7 @@ export default () => {
 
 		$('body').on('click', '.loginquick', function(event) {
 			event.preventDefault();
-			let user = $(this).attr('data-name');
+			const user = $(this).attr('data-name');
 
 			$.ajax({
 				url: '/account/signin',

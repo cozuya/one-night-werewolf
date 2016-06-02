@@ -1,6 +1,6 @@
 'use strict';
 
-let Account = require('../../models/account'),
+const Account = require('../../models/account'),
 	{ games, userList, generalChats } = require('./models'),
 	{ secureGame } = require('./util');
 
@@ -24,7 +24,7 @@ module.exports.sendUserGameSettings = (socket, username) => {
 };
 
 module.exports.sendGameList = (socket) => {
-	let formattedGames = games.map((game) => {
+	const formattedGames = games.map((game) => {
 		return {
 			kobk: game.kobk,
 			time: game.time,
@@ -56,7 +56,7 @@ module.exports.sendUserList = (socket) => {
 };
 
 module.exports.sendGameInfo = (socket, uid) => {
-	let game = games.find((el) => {
+	const game = games.find((el) => {
 		return el.uid === uid;
 	});
 

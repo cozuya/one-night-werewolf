@@ -11,7 +11,7 @@ import polyfills from '../../iso/polyfills.js';
 import $ from 'jquery';
 
 document.addEventListener('DOMContentLoaded', () => {
-	let container = document.getElementById('game-container');
+	const container = document.getElementById('game-container');
 
 	account();
 	polyfills();
@@ -19,7 +19,7 @@ document.addEventListener('DOMContentLoaded', () => {
 	console.log('%c%s', 'color: teal; background: #eee; font-size: 14px; font-style: italic; font-family: verdana', 'One Night Werewolf');
 	
 	if (container) {
-		let store = createStore(wwapp);
+		const store = createStore(wwapp);
 
 		render(
 			<Provider store={store}>

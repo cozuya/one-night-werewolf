@@ -16,11 +16,11 @@ export default class Table extends React.Component {
 	}
 
 	componentDidUpdate(prevProps) {
-		let { gameInfo, userInfo } = this.props,
+		const { gameInfo, userInfo } = this.props,
 			{ gameState } = gameInfo;
 
 		if (gameInfo.gameState.isStarted && !prevProps.gameInfo.gameState.isStarted) {
-			let $cards = $('div.card'),
+			const $cards = $('div.card'),
 				centerTop = 190,
 				centerLeft = 260,
 				shuffleInterval = setInterval(() => {
@@ -48,6 +48,8 @@ export default class Table extends React.Component {
 				}
 			});
 		}
+
+		console.log(gameInfo.gameState.secondsLeftInNight);
 	}
 
 	shouldComponentUpdate(nextProps) {
@@ -65,7 +67,7 @@ export default class Table extends React.Component {
 	}
 
 	handleSeatClicked(e) {
-		let { seated } = this.props.gameInfo,
+		const { seated } = this.props.gameInfo,
 			{ userInfo, gameInfo } = this.props,
 			$seat = $(e.currentTarget);
 
@@ -84,7 +86,7 @@ export default class Table extends React.Component {
 	}
 
 	createCards() {
-		let { gameInfo, userInfo } = this.props,
+		const { gameInfo, userInfo } = this.props,
 			{ gameState, tableState } = gameInfo;
 
 		return _.range(0, 10).map((num) => { 
@@ -135,8 +137,9 @@ export default class Table extends React.Component {
 					}></div>
 						<div className={
 							(() => {
-								let classes = `card-front seat-${num}`,
-									seat = tableState.seats[num];
+								let classes = `card-front seat-${num}`;
+
+								const seat = tableState.seats[num];
 
 								if (seat.role) {
 									classes += ` ${seat.role}`;
@@ -152,10 +155,10 @@ export default class Table extends React.Component {
 	}
 
 	createSeats() {
-		let { gameInfo, userInfo } = this.props;
+		const { gameInfo, userInfo } = this.props;
 
 		return _.range(0, 10).map((el) => {
-			let seated = this.props.gameInfo.seated[`seat${el}`],
+			const seated = this.props.gameInfo.seated[`seat${el}`],
 				user = seated ? gameInfo.seated[`seat${el}`].userName : '';
 
 			return (
@@ -183,8 +186,9 @@ export default class Table extends React.Component {
 						</div>
 						<div className={
 							(() => {
-								let classes = 'eliminator',
-									{ eliminations } = gameInfo.gameState;
+								let classes = 'eliminator';
+
+								const { eliminations } = gameInfo.gameState;
 
 								if (el < 7 && eliminations && eliminations[el]) {
 									classes += ` target-seat${gameInfo.gameState.eliminations[el].seatNumber}`;
@@ -203,7 +207,7 @@ export default class Table extends React.Component {
 	}
 
 	handleCardClicked(e) {
-		let $card = $(e.currentTarget),
+		const $card = $(e.currentTarget),
 			cardNumber = $card.attr('data-cardnumber'),
 			{ gameInfo, userInfo } = this.props,
 			{ tableState, gameState } = gameInfo,
@@ -227,7 +231,7 @@ export default class Table extends React.Component {
 			}
 
 			if (tableState.nightAction.action === 'troublemaker' && parseInt(cardNumber) < 7 && cardNumber !== userInfo.seatNumber) {
-				let { firstClickedCard } = this.state;
+				const { firstClickedCard } = this.state;
 
 				if (firstClickedCard) {
 					if (cardNumber !== firstClickedCard) {
@@ -243,10 +247,10 @@ export default class Table extends React.Component {
 			}
 
 			if (tableState.nightAction.action === 'seer' && cardNumber !== userInfo.seatNumber) {
-				let { firstClickedCard } = this.state;
+				const { firstClickedCard } = this.state;
 
 				if (firstClickedCard || parseInt(cardNumber) < 7) {
-					let action = [cardNumber];
+					const action = [cardNumber];
 
 					if (firstClickedCard) {
 						action.push(this.state.firstClickedCard);
@@ -270,7 +274,7 @@ export default class Table extends React.Component {
 		}
 
 		if (gameInfo.tableState.isVotable && gameInfo.tableState.isVotable.enabled && userInfo.seatNumber) {
-			let swappedWithSeat = tableState.seats[parseInt(cardNumber)].swappedWithSeat;
+			const swappedWithSeat = tableState.seats[parseInt(cardNumber)].swappedWithSeat;
 
 			if ((swappedWithSeat === 0 || swappedWithSeat) && userInfo.seatNumber !== swappedWithSeat || !swappedWithSeat && userInfo.seatNumber !== cardNumber) {
 				$card.parent().find('.card').removeClass('card-select'); // todo-release remove jquery crap
@@ -285,7 +289,9 @@ export default class Table extends React.Component {
 	}
 
 	nightBlockerStatus(position) {
-		let { gameInfo, userInfo } = this.props;
+		const { gameInfo, userInfo } = this.props;
+
+		// return position === 'top' ? 'nightblocker nightblocker-top-blocked' : 'nightblocker nightblocker-bottom-blocked';
 
 		if (userInfo.seatNumber && (gameInfo.tableState.isNight || gameInfo.gameState.isNight && !gameInfo.tableState.nightAction || gameInfo.tableState.nightAction && gameInfo.gameState.isNight && gameInfo.tableState.nightAction.phase !== gameInfo.gameState.phase)) {
 			return position === 'top' ? 'nightblocker nightblocker-top-blocked' : 'nightblocker nightblocker-bottom-blocked';
@@ -295,10 +301,10 @@ export default class Table extends React.Component {
 	}
 	
 	handleTruncateClicked(e) {
-		let { gameInfo, userInfo } = this.props;
+		const { gameInfo, userInfo } = this.props;
 
 		if (gameInfo.gameState.isDay && gameInfo.gameState.isStarted) {
-			let clicked = !!$(e.currentTarget).is(':checked');
+			const clicked = !!$(e.currentTarget).is(':checked');
 
 			this.props.socket.emit('updateTruncateGame', {
 				truncate: clicked,
@@ -316,11 +322,11 @@ export default class Table extends React.Component {
 	}
 
 	createReportGame() {
-		let { gameInfo, userInfo } = this.props,
+		const { gameInfo, userInfo } = this.props,
 			{ gameState, tableState } = gameInfo;
 
 		if (userInfo.seatNumber && gameState.isStarted) {
-			let iconClasses = () => {
+			const iconClasses = () => {
 				let classes = 'warning sign icon';
 
 				if (gameState.reportedGame[parseInt(userInfo.seatNumber)]) {
@@ -343,7 +349,7 @@ export default class Table extends React.Component {
 	}
 
 	createUserGameOptions() {
-		let { gameInfo, userInfo } = this.props,
+		const { gameInfo, userInfo } = this.props,
 			{ gameState, tableState } = gameInfo,
 			toggleClaims = () => {
 				this.setState({
@@ -374,7 +380,7 @@ export default class Table extends React.Component {
 	}
 
 	createGameInformation() {
-		let { gameInfo } = this.props;
+		const { gameInfo } = this.props;
 
 		return (
 			<div className="gameinformation-container">
@@ -384,12 +390,35 @@ export default class Table extends React.Component {
 		);
 	}
 
+	createMoon() {
+		// top: 140px; left: -50px; left: 590px
+		let top, left, styles, percent;
+
+		const { secondsLeftInNight, maxSecondsLeftInNight } = this.props.gameInfo.gameState;
+
+		percent = secondsLeftInNight / maxSecondsLeftInNight;
+
+		// let 100left = -50;
+		// let 0left = 590;
+		// let 100top = 140;
+		// let 50top = 20;
+
+		left = -50 + (640 - 640 * percent);
+		// top = percent <= .5 ? 20 + (60 - (120 * percent * 2)) : 20 + (
+
+		styles = `top: 140px; left: ${left}px;`;
+
+		return <div className="moon" style={{top: '140px', left: `${left}px`}}></div>;
+	}
+
 	render() {
-		let { gameInfo, userInfo } = this.props;
+		const { gameInfo, userInfo } = this.props;
 
 		return (
 			<section className="table">
-				<div className={this.nightBlockerStatus('top')}></div>
+				<div className={this.nightBlockerStatus('top')}>
+				{this.createMoon()}
+				</div>
 				<div className={this.nightBlockerStatus('bottom')}></div>
 				<div className="tableimage"></div>
 				{this.createGameInformation()}

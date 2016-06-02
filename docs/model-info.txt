@@ -6,6 +6,7 @@ internals
 		trueRole string
 		selectedForElimination string
 		tableState
+			secondsLeftInNight
 			reported bool
 			isNight bool - beginNightPhases
 			isVotable - dayPhase
@@ -27,6 +28,8 @@ gameState
 	cardsDealt bool  - startGame
 	isCompleted bool - ?
 	isDay bool - ?
+	maxSecondsLeftInNight - nightphases
+	secondsLeftInNight - nightphases
 	eliminations array
 		seatNumber string (0-6 of what seat this seat is pointing at)
 		transparent bool
@@ -43,7 +46,7 @@ name string
 roles array of strings (10)
 seated
 	seat0
-		connect bool
+		connected bool
 		userName string
 	...
 status string

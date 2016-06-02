@@ -27,10 +27,10 @@ export default class Playerlist extends React.Component {
 				<div className="playerlist-body">
 				{(() => {
 					if (Object.keys(this.props.userList).length) {
-						let { list } = this.props.userList;
+						const { list } = this.props.userList;
 						
 						list.sort((a, b) => {
-							let aTotal = a.wins + a.losses,
+							const aTotal = a.wins + a.losses,
 								bTotal = b.wins + b.losses;
 
 							if (a.userName === 'coz' || a.userName === 'stine') {
@@ -53,7 +53,7 @@ export default class Playerlist extends React.Component {
 						});
 
 						return list.map((user, i) => {
-							let percent = ((user.wins / (user.wins + user.losses)) * 100).toFixed(0),
+							const percent = ((user.wins / (user.wins + user.losses)) * 100).toFixed(0),
 								percentDisplay = (user.wins + user.losses) > 9 ? `${percent}%` : '';
 
 							return (

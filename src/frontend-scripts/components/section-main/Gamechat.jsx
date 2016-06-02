@@ -10,7 +10,8 @@ export default class Gamechat extends React.Component {
 		this.state = {
 			chatFilter: 'All',
 			lock: false,
-			hotkey: 'init'
+			hotkey: 'init',
+			expandoExpanded: true
 		};
 	}
 
@@ -19,7 +20,7 @@ export default class Gamechat extends React.Component {
 	}
 
 	componentDidUpdate(prevProps) {
-		let $input = $(this.refs.gameChatInput);
+		const $input = $(this.refs.gameChatInput);
 
 		this.scrollChats();
 
@@ -50,20 +51,22 @@ export default class Gamechat extends React.Component {
 				break;
 		}
 
-		return (
-			<div className="hotkey-container app-hidden">
-				<div className="hotkey-left" onClick={this.handleLeftHotkeyClick.bind(this)}>
-					{textLeft}
+		if (this.state.expandoExpanded) {
+			return (
+				<div className="hotkey-container">
+					<div className="hotkey-left" onClick={this.handleLeftHotkeyClick.bind(this)}>
+						{textLeft}
+					</div>
+					<div className="hotkey-right" onClick={this.handleRightHotkeyClick.bind(this)}>
+						{textRight}
+					</div>
 				</div>
-				<div className="hotkey-right" onClick={this.handleRightHotkeyClick.bind(this)}>
-					{textRight}
-				</div>
-			</div>
-		);
+			);
+		}
 	}
 
 	handleLeftHotkeyClick(e) {
-		let keyText = $(e.currentTarget).text(),
+		const keyText = $(e.currentTarget).text(),
 			$input = $(e.currentTarget).parent().parent().next().find('input');
 
 		switch (keyText) {
@@ -78,7 +81,7 @@ export default class Gamechat extends React.Component {
 	}
 
 	handleRightHotkeyClick(e) {
-		let keyText = $(e.currentTarget).text(),
+		const keyText = $(e.currentTarget).text(),
 			$input = $(e.currentTarget).parent().parent().next().find('input');
 
 		switch (keyText) {
@@ -93,14 +96,11 @@ export default class Gamechat extends React.Component {
 	}
 
 	clickExpand(e) {
-		let $icon = $(e.currentTarget);
-
-		$icon.toggleClass('expand').toggleClass('compress');
-		$icon.next().toggleClass('app-hidden');
+		this.setState({expandoExpanded: !this.state.expandoExpanded});
 	}
 
 	handleKeyup(e) {
-		let $input = $(e.currentTarget),
+		const $input = $(e.currentTarget),
 			inputValue = $input.val(),
 			$button = $input.next(),
 			$clearIcon = $input.parent().next();
@@ -115,7 +115,7 @@ export default class Gamechat extends React.Component {
 	}
 
 	handleSubmit(e) {
-		let input = $(e.currentTarget).find('input')[0],
+		const input = $(e.currentTarget).find('input')[0],
 			$button = $(e.currentTarget).find('button'),
 			$clearIcon = $button.parent().next(),
 			{ seatNumber } = this.props.userInfo,
@@ -124,7 +124,7 @@ export default class Gamechat extends React.Component {
 		e.preventDefault();
 
 		if (input.value) {
-			let chat = {
+			const chat = {
 				userName: this.props.userInfo.userName,
 				chat: input.value,
 				gameChat: false,
@@ -133,14 +133,14 @@ export default class Gamechat extends React.Component {
 			}
 
 			if (gameInfo.gameState.isStarted && !gameInfo.gameState.isCompleted && userInfo.seatNumber) {
-				let roles = _.uniq(gameInfo.roles),
+				const roles = _.uniq(gameInfo.roles),
 					roleRegexes = roles.map((role) => {
 						return new RegExp(`^i claim to be the ${role}`, 'gi');
 					});
 				
 				roleRegexes.forEach((regex) => {
 					if (regex.test(input.value)) {
-						let claim = roles.filter((role) => {
+						const claim = roles.filter((role) => {
 							return input.value.match(new RegExp(`${role}$`, 'gi'));
 						});
 
@@ -158,7 +158,7 @@ export default class Gamechat extends React.Component {
 	}
 
 	scrollChats() {
-		let chatsContainer = document.querySelector('section.segment.chats');
+		const chatsContainer = document.querySelector('section.segment.chats');
 		
 		if (!this.state.lock) {
 			chatsContainer.scrollTop = 0;
@@ -172,10 +172,10 @@ export default class Gamechat extends React.Component {
 	}
 
 	handleTimestamps(timestamp) {
-		let { userInfo } = this.props;
+		const { userInfo } = this.props;
 
-		if (userInfo.userName && userInfo.gameSettings && userInfo.gameSettings.enableTimestamps) {
-			let minutes = (`0${new Date(timestamp).getMinutes()}`).slice(-2),
+		if (userInfo.userName && userInfo.gameSettings && userInfo.gameSettings.enabconstimestamps) {
+			const minutes = (`0${new Date(timestamp).getMinutes()}`).slice(-2),
 				seconds = (`0${new Date(timestamp).getSeconds()}`).slice(-2);
 
 			return (
@@ -187,10 +187,10 @@ export default class Gamechat extends React.Component {
 	}
 
 	processChats() {
-		let { gameInfo } = this.props;
+		const { gameInfo } = this.props;
 
 		return gameInfo.chats.map((chat, i) => {
-			let chatContents = chat.chat,
+			const chatContents = chat.chat,
 				playerNames = Object.keys(gameInfo.seated).map((seatName) => {
 					return gameInfo.seated[seatName].userName;
 				}),
@@ -247,9 +247,9 @@ export default class Gamechat extends React.Component {
 						<span className="chat-user">{chat.userName}{isSeated() ? '' : ' (Observer)'}{this.handleTimestamps.call(this, chat.timestamp)}: </span>
 						<span>
 							{(() => {
-								let toProcessChats = [],
+								const toProcessChats = [],
 									splitChat = chatContents.split((() => {
-										let toRegex = playerNames.concat(roles.map((role) => {
+										const toRegex = playerNames.concat(roles.map((role) => {
 											return role.name;
 										})).join('|');
 
@@ -257,7 +257,7 @@ export default class Gamechat extends React.Component {
 								})());
 
 								playerNames.forEach((name) => {
-									let split = chatContents.split(new RegExp(name, 'i'));
+									const split = chatContents.split(new RegExp(name, 'i'));
 
 									if (split.length > 1) {
 										split.forEach((piece, index) => {
@@ -273,7 +273,7 @@ export default class Gamechat extends React.Component {
 								});
 
 								roles.forEach((role) => {
-									let split = chatContents.split(new RegExp(role.name, 'i'));
+									const split = chatContents.split(new RegExp(role.name, 'i'));
 
 									if (split.length > 1) {
 										split.forEach((piece, index) => {
@@ -295,7 +295,7 @@ export default class Gamechat extends React.Component {
 
 								return splitChat.map((piece, index) => {
 									if (index) {
-										let item = toProcessChats[index - 1];
+										const item = toProcessChats[index - 1];
 
 										return (
 											<span key={index}>
@@ -338,28 +338,42 @@ export default class Gamechat extends React.Component {
 				</section>
 				<form className="segment inputbar" onSubmit={this.handleSubmit.bind(this)}>
 					{(() => {
-						let { gameInfo, userInfo } = this.props,
-							classes = 'expando-container';
+						let classes = 'expando-container';
 
-						if (!gameInfo.gameState.isStarted || !userInfo.seatNumber) {
+						const { gameInfo, userInfo } = this.props;
+
+						if (!userInfo.seatNumber || !gameInfo.gameState.isDay) {
 							classes += ' app-visibility-hidden';
 						}
-						
+
 						return (
 							<div className={classes}>
-								<i className="large expand icon" onClick={this.clickExpand.bind(this)}></i>
+								<i className={
+									(() => {
+										let classes = 'large';
+
+										if (this.state.expandoExpanded) {
+											classes += ' compress icon';
+										} else {
+											classes += ' expand icon';
+										}
+
+										return classes;
+									})()
+								} onClick={this.clickExpand.bind(this)}></i>
 								{(() => {
 									if (gameInfo.gameState.isStarted && userInfo.seatNumber) {
 										{return this.createHotkeys()}
 									}
 								})()}
 							</div>
-						);					
+						);
 					})()}
 					<div className={
 						(() => {
-							let classes = 'ui action input',
-								{ gameState } = this.props.gameInfo;
+							let classes = 'ui action input';
+
+							const { gameState } = this.props.gameInfo;
 
 							if (!this.props.userInfo.userName || gameState.cardsDealt && !gameState.isDay) {
 								classes += ' disabled';

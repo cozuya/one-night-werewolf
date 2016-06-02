@@ -43,7 +43,7 @@ export default class Gameroles extends React.Component {
 								<div key={i}>
 									<div data-role={role} onClick={this.handleRoleClick.bind(this)} ref="roles" className={
 										(() => {
-											let notifyClass = this.props.roleState === 'notify' ? 'notify' : '';
+											const notifyClass = this.props.roleState === 'notify' ? 'notify' : '';
 											
 											return `roles role-${role} ${this.props.roleState} ${notifyClass}`;
 										})()

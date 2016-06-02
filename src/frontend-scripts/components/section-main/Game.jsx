@@ -9,19 +9,19 @@ import { updateExpandoInfo, updateClickedGamerole, updateClickedPlayer } from '.
 
 class Game extends React.Component {
 	roleState(state) {
-		let { dispatch } = this.props;
+		const { dispatch } = this.props;
 
 		dispatch(updateExpandoInfo(state));
 	}
 
 	selectedGamerole(state) {
-		let { dispatch } = this.props;
+		const { dispatch } = this.props;
 
 		dispatch(updateClickedGamerole(state));
 	}
 
 	selectedPlayer(state) {
-		let { dispatch } = this.props;
+		const { dispatch } = this.props;
 		dispatch(updateClickedPlayer(state));
 	}
 
@@ -110,7 +110,7 @@ class Game extends React.Component {
 	}
 };
 
-let select = (state) => {
+const select = (state) => {
 	return state;
 }
 

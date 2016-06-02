@@ -123,7 +123,7 @@ export default class Menu extends React.Component {
 	}
 
 	clickSettingsButton(e) {
-		let { gameInfo, userInfo } = this.props,
+		const { gameInfo, userInfo } = this.props,
 			{ gameState } = gameInfo;
 
 		if (gameState && gameState.isCompleted && userInfo.seatNumber || gameState && !userInfo.seatNumber || gameState && !gameState.isStarted) {
@@ -141,7 +141,7 @@ export default class Menu extends React.Component {
 				</p>
 				<div className="item right">
 				{(() => {
-					let { gameInfo, userInfo } = this.props,
+					const { gameInfo, userInfo } = this.props,
 						iconClasses = () => {
 							let classes = 'setting icon large';
 

@@ -11,7 +11,7 @@ import { UPDATE_CLICKEDGAMEROLE, updateClickedGamerole } from '../actions/action
 import { UPDATE_GENERALCHATS, updateGeneralChats } from '../actions/actions.js';
 import { UPDATE_CLICKEDPLAYER, updateClickedPlayer } from '../actions/actions.js';
 
-let userInfo = (state = {}, action) => {
+const userInfo = (state = {}, action) => {
 	switch (action.type) {
 		case UPDATE_USER:
 			return state = action.user;
@@ -20,7 +20,7 @@ let userInfo = (state = {}, action) => {
 	}
 };
 
-let midSection = (state = 'default', action) => {
+const midSection = (state = 'default', action) => {
 	switch (action.type) {
 		case UPDATE_MIDSECTION:
 			return state = action.midSection;
@@ -29,7 +29,7 @@ let midSection = (state = 'default', action) => {
 	}
 };
 
-let gameList = (state = [], action) => {
+const gameList = (state = [], action) => {
 	switch (action.type) {
 		case UPDATE_GAMELIST:
 			return state = action.gameList;
@@ -38,7 +38,7 @@ let gameList = (state = [], action) => {
 	}
 };
 
-let gameInfo = (state = {}, action) => {
+const gameInfo = (state = {}, action) => {
 	switch (action.type) {
 		case UPDATE_GAMEINFO:
 			return state = action.gameInfo;
@@ -47,7 +47,7 @@ let gameInfo = (state = {}, action) => {
 	}
 };
 
-let userList = (state = {}, action) => {
+const userList = (state = {}, action) => {
 	switch (action.type) {
 		case UPDATE_USERLIST:
 			return state = action.userList;
@@ -56,7 +56,7 @@ let userList = (state = {}, action) => {
 	}
 };
 
-let expandoInfo = (state = 'empty', action) => {
+const expandoInfo = (state = 'empty', action) => {
 	switch (action.type) {
 		case UPDATE_EXPANDOINFO:
 			return state = action.info;
@@ -65,7 +65,7 @@ let expandoInfo = (state = 'empty', action) => {
 	}
 };
 
-let clickedGamerole = (state = {}, action) => {
+const clickedGamerole = (state = {}, action) => {
 	switch (action.type) {
 		case UPDATE_CLICKEDGAMEROLE:
 			return state = action.info;
@@ -74,7 +74,7 @@ let clickedGamerole = (state = {}, action) => {
 	}
 };
 
-let clickedPlayer = (state = {}, action) => {
+const clickedPlayer = (state = {}, action) => {
 	switch (action.type) {
 		case UPDATE_CLICKEDPLAYER:
 			return state = action.info;
@@ -83,7 +83,7 @@ let clickedPlayer = (state = {}, action) => {
 	}
 };
 
-let generalChats = (state = [], action) => {
+const generalChats = (state = [], action) => {
 	switch (action.type) {
 		case UPDATE_GENERALCHATS:
 			return state = action.info;

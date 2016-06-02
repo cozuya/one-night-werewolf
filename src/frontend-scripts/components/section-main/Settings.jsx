@@ -15,8 +15,7 @@ $.fn.checkbox = Checkbox;
 
 export default class Settings extends React.Component {
 	componentDidMount() {
-		let self = this,
-			{ socket } = this.props;
+		const { socket } = this.props;
 
 		$(this.refs.popups).popup({
 			inline: true,

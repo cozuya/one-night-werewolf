@@ -23,7 +23,7 @@ export default class Gamechat extends React.Component {
 	}
 
 	handleKeyup(e) {
-		let $input = $(e.currentTarget),
+		const $input = $(e.currentTarget),
 			inputValue = $input.val(),
 			$button = $input.next(),
 			$clearIcon = $input.parent().next();
@@ -38,7 +38,7 @@ export default class Gamechat extends React.Component {
 	}
 
 	handleSubmit(e) {
-		let input = $(e.currentTarget).find('input')[0],
+		const input = $(e.currentTarget).find('input')[0],
 			$button = $(e.currentTarget).find('button'),
 			$clearIcon = $button.parent().next();
 
@@ -57,7 +57,7 @@ export default class Gamechat extends React.Component {
 	}
 
 	scrollChats() {
-		let chatsContainer = document.querySelector('section.segment.chats');
+		const chatsContainer = document.querySelector('section.segment.chats');
 			
 		if (!this.state.lock) {
 			chatsContainer.scrollTop = 0;

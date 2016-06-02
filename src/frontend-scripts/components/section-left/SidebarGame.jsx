@@ -9,7 +9,7 @@ export default class SidebarGame extends React.Component {
 	}
 
 	render() {
-		let setClass = (role) => {
+		const setClass = (role) => {
 			return roleMap[role].team;
 		},
 		renderRoles = (roles) => {
@@ -33,6 +33,8 @@ export default class SidebarGame extends React.Component {
 
 			return classes;
 		}
+
+// todo-alpha line 44 errored (undefined)
 
 		return (
 			<div className={gameClasses()} data-uid={game.uid} onClick={this.routeToGame.bind(this)}>

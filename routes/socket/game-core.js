@@ -1,6 +1,6 @@
 'use strict';
 
-let Account = require('../../models/account'),
+const Account = require('../../models/account'),
 	{ games, userList } = require('./models'),
 	{ secureGame } = require('./util'),
 	{ sendInProgressGameUpdate } = require('./user-events'),
@@ -13,8 +13,16 @@ let Account = require('../../models/account'),
 		game.gameState.isStarted = true;
 
 		Object.keys(game.seated).forEach((seat, index) => {
-			game.internals.seatedPlayers[index].userName = game.seated[seat].userName;
+			const userName = game.seated[`seat${index}`].userName;
+
+			game.internals.seatedPlayers[index].userName = userName;
 			game.internals.seatedPlayers[index].seatNumber = index;
+			game.internals.seatedPlayers[index].gameChats.push({
+				gameChat: true,
+				userName, 
+				chat: [{text: 'The table is full and the game will begin.'}],
+				timestamp: new Date()
+			});
 		});
 
 		countDown = setInterval(() => {
@@ -75,7 +83,7 @@ let Account = require('../../models/account'),
 	};
 
 module.exports.updateSeatedUser = (socket, data) => {
-	let game = games.find((el) => {
+	const game = games.find((el) => {
 		return el.uid === data.uid;
 	});
 
@@ -93,24 +101,25 @@ module.exports.updateSeatedUser = (socket, data) => {
 	sendGameList();
 };
 
-let startGame = (game) => {
-	let allWerewolvesNotInCenter = false,
-		assignRoles = () => {
-			let _roles = [...game.roles];
-			game.internals.seatedPlayers.forEach((player, index) => {
-				let roleIndex = Math.floor((Math.random() * _roles.length)),
-					role = _roles[roleIndex];
+const startGame = (game) => {
+	let allWerewolvesNotInCenter = false;
 
-				if (role === 'werewolf' && !allWerewolvesNotInCenter) {
-					allWerewolvesNotInCenter = true;
-				}
+	const assignRoles = () => {
+		const _roles = [...game.roles];
+		game.internals.seatedPlayers.forEach((player, index) => {
+			const roleIndex = Math.floor((Math.random() * _roles.length)),
+				role = _roles[roleIndex];
 
-				player.trueRole = player.originalRole = role;
-				_roles.splice(roleIndex, 1);
-			});
+			if (role === 'werewolf' && !allWerewolvesNotInCenter) {
+				allWerewolvesNotInCenter = true;
+			}
 
-			game.internals.centerRoles = [..._roles];
-		};
+			player.trueRole = player.originalRole = role;
+			_roles.splice(roleIndex, 1);
+		});
+
+		game.internals.centerRoles = [..._roles];
+	};
 
 	assignRoles();
 
@@ -175,21 +184,22 @@ let startGame = (game) => {
 	}, 50);
 };
 
-let beginNightPhases = (game) => {
+const beginNightPhases = (game) => {
 	// round 1: all werewolves minions masons seers and (one robber or troublemaker)
 	// round 2 through x: robbercount + troublemaker count minus 1
 	// round x+1: all insomniacs
 
-	let phases = [[]],
-		roleChangerInPhase1 = false,
+	let roleChangerInPhase1 = false,
+		werewolves, masons;
+
+	const phases = [[]],
 		insomniacs = [],
 		roles = _.shuffle(game.internals.seatedPlayers.concat(game.internals.centerRoles.map((role) => {
 			return {
 				trueRole: role,
 				isCenter: true
 			};
-		}))),
-		werewolves, masons;
+		})));
 	
 	roles.forEach((player, index) => {
 		switch (player.trueRole) {
@@ -472,13 +482,21 @@ let beginNightPhases = (game) => {
 	}, 3000);
 };
 
-let nightPhases = (game, phases) => {
+const nightPhases = (game, phases) => {
 	let phasesIndex = 0,
-		phasesCount = phases.length,
-		phasesTimer,
+		phasesTimer;
+		
+	const phasesCount = phases.length,
 		endPhases = () => {
 			clearInterval(phasesTimer);
-			game.status = 'Day begins..';
+			game.internals.seatedPlayers.forEach((player) => {
+				player.gameChats.push({
+					gameChat: true,
+					userName: player.userName,
+					chat: [{text: 'Night ends and the day begins.'}],
+					timestamp: new Date()
+				});
+			});
 			game.internals.unSeatedGameChats.push({
 				gameChat: true,
 				chat: [{text: 'Night ends and the day begins.'}],
@@ -496,13 +514,14 @@ let nightPhases = (game, phases) => {
 				endPhases();
 			} else {
 				let phaseTime = 10,
-					startPhaseTime = phaseTime,
-					countDown,
+					countDown;
+
+				const startPhaseTime = phaseTime,
 					phasesPlayers = phases[phasesIndex];
 
 				phasesPlayers.forEach((player) => {
 					if (!player.isCenter) {
-						let chat = {
+						const chat = {
 							gameChat: true,
 							userName: player.userName,
 							chat: player.tableState.nightAction.gameChat,
@@ -514,7 +533,10 @@ let nightPhases = (game, phases) => {
 				});
 
 				countDown = setInterval(() => {
+					game.gameState.secondsLeftInNight--;
+
 					if (phaseTime === 0) {	
+						game.status = `Night phase ${phases.length === 1 ? 1 : (phasesIndex).toString()} of ${phasesCount} ends.`
 						phasesIndex++;
 						game.gameState.phase++;
 						sendInProgressGameUpdate(game);
@@ -548,16 +570,19 @@ let nightPhases = (game, phases) => {
 			}
 		};
 
+	game.gameState.secondsLeftInNight = game.gameState.maxSecondsLeftInNight = phases.length * 10 + 6;
 	phasesFn();
 
 	if (phases.length > 1) {
 		phasesIndex++;
-		phasesTimer = setInterval(phasesFn, 10000);
+		phasesTimer = setInterval(phasesFn, 11000);
 	}
 };
 
 module.exports.updateUserNightActionEvent = (socket, data) => {
-	let game = games.find((el) => {
+	let updatedTrueRoles = [];
+
+	const game = games.find((el) => {
 			return el.uid === data.uid;
 		}),
 		player = game.internals.seatedPlayers.find((player) => {
@@ -573,10 +598,9 @@ module.exports.updateUserNightActionEvent = (socket, data) => {
 
 			return num < 7 ? game.internals.seatedPlayers[num].trueRole : game.internals.centerRoles[num - 7];
 		},
-		updatedTrueRoles = [],
 		eventMap = {
 			singleWerewolf() {
-				let selectedCard = {
+				const selectedCard = {
 					7: 'center left',
 					8: 'center middle',
 					9: 'center right'
@@ -601,7 +625,7 @@ module.exports.updateUserNightActionEvent = (socket, data) => {
 				];
 			},
 			insomniac() {
-				let roleClicked = getTrueRoleBySeatNumber(data.action),
+				const roleClicked = getTrueRoleBySeatNumber(data.action),
 					seat = player.tableState.seats[parseInt(data.action)];
 
 				seat.isFlipped = true;
@@ -621,7 +645,7 @@ module.exports.updateUserNightActionEvent = (socket, data) => {
 				];
 			},
 			troublemaker() {
-				let action1 = parseInt(data.action[0]),
+				const action1 = parseInt(data.action[0]),
 					action2 = parseInt(data.action[1]),
 					seat1player = game.internals.seatedPlayers.find((player) => {
 						return player.seatNumber === action1;
@@ -660,7 +684,7 @@ module.exports.updateUserNightActionEvent = (socket, data) => {
 				];
 			},
 			robber() {
-				let action = parseInt(data.action),
+				const action = parseInt(data.action),
 					playerSeat = player.tableState.seats[player.seatNumber],
 					swappedPlayerSeat = player.tableState.seats[action],
 					swappedPlayer = game.internals.seatedPlayers.find((play) => {
@@ -707,7 +731,7 @@ module.exports.updateUserNightActionEvent = (socket, data) => {
 				];
 			},
 			seer() {
-				let selectedCard = {
+				const selectedCard = {
 					7: 'center left',
 					8: 'center middle',
 					9: 'center right'
@@ -716,7 +740,7 @@ module.exports.updateUserNightActionEvent = (socket, data) => {
 				player.tableState.nightAction.completed = true;
 
 				if (data.action.length === 1) {
-					let playerClicked = game.internals.seatedPlayers[parseInt(data.action[0])],
+					const playerClicked = game.internals.seatedPlayers[parseInt(data.action[0])],
 						seat = player.tableState.seats[parseInt(data.action[0])];
 
 					seat.isFlipped = true;
@@ -739,7 +763,7 @@ module.exports.updateUserNightActionEvent = (socket, data) => {
 						{text: '.'}
 					];
 				} else {
-					let seats = [player.tableState.seats[parseInt(data.action[0])], player.tableState.seats[parseInt(data.action[1])]],
+					const seats = [player.tableState.seats[parseInt(data.action[0])], player.tableState.seats[parseInt(data.action[1])]],
 						rolesClicked = data.action.map((role) => {
 							return getTrueRoleBySeatNumber(role);
 						});
@@ -784,7 +808,7 @@ module.exports.updateUserNightActionEvent = (socket, data) => {
 };
 
 module.exports.updateSelectedElimination = (data) => {
-	let game = games.find((el) => {
+	const game = games.find((el) => {
 			return el.uid === data.uid;
 		}),
 		player = game.internals.seatedPlayers[parseInt(data.seatNumber)],
@@ -796,9 +820,9 @@ module.exports.updateSelectedElimination = (data) => {
 	sendInProgressGameUpdate(game);
 };
 
-let dayPhase = (game) => {
+const dayPhase = (game) => {
 	let seconds = (() => {
-		let _time = game.time.split(':');
+		const _time = game.time.split(':');
 
 		return !_time[0] ? parseInt(_time[1]) : parseInt(_time[0]) * 60 + parseInt(_time[1]);
 	})(),
@@ -824,7 +848,7 @@ let dayPhase = (game) => {
 						player.gameChats.push({
 							gameChat: true,
 							userName: player.userName,
-							chat: [{text: 'The game is coming to an end and you must select a player for elimination.'}],
+							chat: [{text: 'The game is coming to an end and you must click on a player\'s card to mark them for elimination.'}],
 							timestamp: new Date()
 						});
 						player.tableState.isVotable = {
@@ -855,7 +879,7 @@ let dayPhase = (game) => {
 
 				status += '.';
 			} else {
-				let minutes = Math.floor(seconds / 60),
+				const minutes = Math.floor(seconds / 60),
 					remainder = seconds - minutes * 60;
 
 				status = `Day ends in ${minutes}:${remainder < 10 ? `0${remainder}` : remainder}.`;  // yo dawg, I heard you like template strings.
@@ -870,10 +894,11 @@ let dayPhase = (game) => {
 	game.gameState.isDay = true;
 };
 
-let eliminationPhase = (game) => {
+const eliminationPhase = (game) => {
 	let index = 0,
-		{ seatedPlayers } = game.internals,
 		countDown;
+
+	const { seatedPlayers } = game.internals;
 
 	game.chats.push({
 		gameChat: true,
@@ -894,7 +919,7 @@ let eliminationPhase = (game) => {
 			clearInterval(countDown);
 			endGame(game);
 		} else {
-			let noSelection = index === 6 ? 0 : index + 1;
+			const noSelection = index === 6 ? 0 : index + 1;
 
 			game.gameState.eliminations[index] = {
 				seatNumber: seatedPlayers[index].selectedForElimination ? parseInt(seatedPlayers[index].selectedForElimination) : noSelection
@@ -906,16 +931,17 @@ let eliminationPhase = (game) => {
 	}, 1000);
 };
 
-let endGame = (game) => {
-	let playersSelectedForElimination = game.gameState.eliminations.map((elimination) => {
+const endGame = (game) => {
+	let werewolfEliminated = false,
+		werewolfTeamInGame = false,
+		eliminatedPlayersIndex = [],
+		maxCount = 1;
+
+	const playersSelectedForElimination = game.gameState.eliminations.map((elimination) => {
 			return elimination.seatNumber;
 		}),
 		modeMap = {},
-		maxCount = 1,
-		eliminatedPlayersIndex = [],
 		{ seatedPlayers } = game.internals,
-		werewolfTeamInGame = false,
-		werewolfEliminated = false,
 		tannerEliminations = [];
 
 	playersSelectedForElimination.forEach((el) => {
@@ -950,7 +976,6 @@ let endGame = (game) => {
 		if (eliminatedPlayersIndex.length === 7 || !eliminatedPlayersIndex.includes(elimination.seatNumber)) {
 			transparent = true;
 		}
-
 		elimination.transparent = transparent;
 	});
 
@@ -1007,7 +1032,7 @@ let endGame = (game) => {
 	}
 
 	setTimeout(() => {
-		let winningPlayers = seatedPlayers.filter((player) => {
+		const winningPlayers = seatedPlayers.filter((player) => {
 				return player.wonGame;
 			}),
 			winningPlayersIndex = winningPlayers.map((player) => {

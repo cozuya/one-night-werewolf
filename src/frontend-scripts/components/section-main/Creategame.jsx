@@ -46,16 +46,17 @@ export default class Creategame extends React.Component {
 	}
 
 	handleChangeRole(e) {
-		let $target = $(e.target),
+		let werewolfTeamCount = this.state.roles.filter((el) => {
+				return el === 'werewolf' || el === 'minion';
+			}).length,
+			tannerTeamCount = this.state.roles.filter((el) => {
+				return el === 'tanner';
+			}).length;
+			
+		const $target = $(e.target),
 			role = $target.parent().find('div:first-child').attr('data-role'),
 			$progress = $(this.refs.progressbar),
 			roles = this.state.roles,
-			werewolfTeamCount = roles.filter((el) => {
-				return el === 'werewolf' || el === 'minion';
-			}).length,
-			tannerTeamCount = roles.filter((el) => {
-				return el === 'tanner';
-			}).length,
 			currentRoleCount = roles.filter((el) => {
 				return el === role;
 			}).length;
@@ -314,7 +315,7 @@ export default class Creategame extends React.Component {
 					<div className="four wide column">
 						<div className={
 							(() => {
-								let classes = 'ui button primary',
+								const classes = 'ui button primary',
 									disabled = this.state.roles.length !== 10 ? 'disabled ' : ''; // strings and ternaries don't mix well
 
 								return disabled + classes;

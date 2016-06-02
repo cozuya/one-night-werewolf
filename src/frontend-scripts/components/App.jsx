@@ -12,11 +12,11 @@ socket = socket();
 
 class App extends React.Component {
 	componentWillMount() {
-		let { dispatch } = this.props,
+		const { dispatch } = this.props,
 			{ classList } = document.getElementById('game-container');
 
 		if (classList.length) {
-			let username = classList[0].split('username-')[1];
+			const username = classList[0].split('username-')[1];
 
 			dispatch(updateUser({userName: username}));
 			socket.emit('getUserGameSettings', username);
@@ -27,7 +27,7 @@ class App extends React.Component {
 		});
 
 		socket.on('gameSettings', (settings) => {
-			let { userInfo } = this.props;
+			const { userInfo } = this.props;
 
 			userInfo.gameSettings = settings;
 			dispatch(updateUser(userInfo));
@@ -58,7 +58,7 @@ class App extends React.Component {
 		});
 
 		socket.on('updateSeatForUser', (seatNumber) => {
-			let { userInfo } = this.props;
+			const { userInfo } = this.props;
 
 			userInfo.seatNumber = seatNumber;
 			dispatch(updateUser(userInfo));
@@ -70,13 +70,13 @@ class App extends React.Component {
 	}
 
 	handleRoute(route) {
-		let { dispatch } = this.props;
+		const { dispatch } = this.props;
 
 		dispatch(updateMidsection(route));
 	}
 
 	handleCreateGameSubmit(game) {
-		let { dispatch, userInfo } = this.props;
+		const { dispatch, userInfo } = this.props;
 
 		userInfo.seatNumber = '0';
 		dispatch(updateGameInfo(game));
@@ -88,7 +88,7 @@ class App extends React.Component {
 	// ***** begin dev helpers *****
 
 	// componentDidUpdate(prevProps) {  // note: this breaks everything if these players try to leave a finished game
-	// 	let autoPlayers = ['Jaina', 'Rexxar', 'Malfurian', 'Thrall', 'Valeera'],
+	// 	const autoPlayers = ['Jaina', 'Rexxar', 'Malfurian', 'Thrall', 'Valeera'],
 	// 		{ userInfo, gameInfo, dispatch } = this.props,
 	// 		prevSeatedNames;
 
@@ -111,7 +111,7 @@ class App extends React.Component {
 
 
 	makeQuickDefault() {
-		let { dispatch, userInfo } = this.props,
+		const { dispatch, userInfo } = this.props,
 			game = {
 				kobk: false,
 				name: 'New Game',
@@ -155,7 +155,7 @@ class App extends React.Component {
 	// ***** end dev helpers *****
 
 	handleSeatingUser(seatNumber) {
-		let { gameInfo } = this.props,
+		const { gameInfo } = this.props,
 			{ dispatch, userInfo } = this.props,
 			data = {
 				uid: gameInfo.uid,
@@ -169,7 +169,7 @@ class App extends React.Component {
 	}
 	
 	handleLeaveGame(seatNumber, isSettings = false) {
-		let { dispatch, userInfo } = this.props;
+		const { dispatch, userInfo } = this.props;
 
 		if (userInfo.seatNumber) {
 			userInfo.seatNumber = '';
@@ -230,7 +230,7 @@ class App extends React.Component {
 	}
 };
 
-let select = (state) => {
+const select = (state) => {
 	return state;
 }
 
