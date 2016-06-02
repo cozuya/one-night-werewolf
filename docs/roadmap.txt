@@ -15,10 +15,18 @@ v0.3.1 released 5/29/2016
 	minor bug fixes to be ready for alpha
 	implemented HTTPS via let's encrypt
 
+v0.3.2 released 5/31/2016
+	fixes for alpha
+
+v0.3.3 
+	added “moon” for night phases
+	UI improvements based on alpha feedback
+	fixed game breaking issue with seated players
+
 future
 	explore cardback reward system
+	add dark theme
 	explore guest mode
 	add full featured expando actions based on claimed roll
 	add email confirmation system/tokens
-	add remember me passport functionality
 	more roles

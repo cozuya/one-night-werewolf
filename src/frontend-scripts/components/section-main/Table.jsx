@@ -392,7 +392,7 @@ export default class Table extends React.Component {
 
 	createMoon() {
 		// top: 140px; left: -50px; left: 590px
-		let top, left, styles, percent;
+		let top, left, percent;
 
 		const { secondsLeftInNight, maxSecondsLeftInNight } = this.props.gameInfo.gameState;
 
@@ -404,11 +404,20 @@ export default class Table extends React.Component {
 		// let 50top = 20;
 
 		left = -50 + (640 - 640 * percent);
-		// top = percent <= .5 ? 20 + (60 - (120 * percent * 2)) : 20 + (
 
-		styles = `top: 140px; left: ${left}px;`;
+		console.log(percent, '%');
 
-		return <div className="moon" style={{top: '140px', left: `${left}px`}}></div>;
+		if (percent >= .5) {
+			top = 20 + (120 - 120 * (percent));
+		} else {
+			top = 20;
+		}
+
+		// @ 0 top = 140
+		// @ 50 top = 20
+		// @ 100 top = 140
+
+		return <div className="moon" style={{top: `${top}px`, left: `${left}px`}}></div>;
 	}
 
 	render() {

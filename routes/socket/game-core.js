@@ -503,7 +503,6 @@ const nightPhases = (game, phases) => {
 				timestamp: new Date()
 			});
 			game.gameState.isNight = false;
-
 			sendInProgressGameUpdate(game);
 			setTimeout(() => {
 				dayPhase(game);
@@ -533,7 +532,9 @@ const nightPhases = (game, phases) => {
 				});
 
 				countDown = setInterval(() => {
-					game.gameState.secondsLeftInNight--;
+					if (game.gameState.secondsLeftInNight) {
+						game.gameState.secondsLeftInNight--;
+					}
 
 					if (phaseTime === 0) {	
 						game.status = `Night phase ${phases.length === 1 ? 1 : (phasesIndex).toString()} of ${phasesCount} ends.`
@@ -570,7 +571,9 @@ const nightPhases = (game, phases) => {
 			}
 		};
 
-	game.gameState.secondsLeftInNight = game.gameState.maxSecondsLeftInNight = phases.length * 10 + 6;
+	// 1 night phase needs 10 seconds for moon
+
+	game.gameState.secondsLeftInNight = game.gameState.maxSecondsLeftInNight = phases.length * 10 + phases.length; 
 	phasesFn();
 
 	if (phases.length > 1) {
