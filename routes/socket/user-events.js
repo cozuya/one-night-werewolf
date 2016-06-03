@@ -87,6 +87,7 @@ const { games, userList, generalChats } = require('./models'),
 						// todo-release kick out observer sockets/route to default?
 						delete game.seated[userSeatName];
 						io.sockets.in(game.uid).emit('gameUpdate', game);
+						sendGameList();
 					}
 					io.sockets.emit('gameList', games);					
 				}
@@ -298,7 +299,7 @@ module.exports.handleUserLeaveGame = (socket, data) => {
 			return el.uid === data.uid;
 		});
 
-	let completedDisconnectionCount;
+	let completedGameLeftPlayerCount;
 
 	if (game && io.sockets.adapter.rooms[game.uid]) {
 		socket.leave(game.uid);
@@ -312,13 +313,12 @@ module.exports.handleUserLeaveGame = (socket, data) => {
 			});
 
 		game.seated[playerSeat].connected = false;
-		sendGameList(socket);
 
-		completedDisconnectionCount = Object.keys(game.seated).filter((seat) => {
+		completedGameLeftPlayerCount = Object.keys(game.seated).filter((seat) => {
 			return !game.seated[seat].connected;
 		}).length;
 
-		if (completedDisconnectionCount === 7) {
+		if (completedGameLeftPlayerCount === 7) {
 			saveGame(game);
 		}
 
@@ -326,7 +326,7 @@ module.exports.handleUserLeaveGame = (socket, data) => {
 		delete game.seated[`seat${data.seatNumber}`];
 	}
 
-	if (game && Object.keys(game.seated).length === 0 || completedDisconnectionCount === 7) {
+	if (game && Object.keys(game.seated).length === 0 || completedGameLeftPlayerCount === 7) {
 		socket.emit('gameUpdate', {}, data.isSettings);
 		io.sockets.in(data.uid).emit('gameUpdate', {});
 		games.splice(games.indexOf(game), 1);

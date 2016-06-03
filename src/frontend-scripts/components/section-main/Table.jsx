@@ -49,7 +49,7 @@ export default class Table extends React.Component {
 			});
 		}
 
-		console.log(gameInfo.gameState.secondsLeftInNight);
+		// console.log(gameInfo.gameState.secondsLeftInNight);
 	}
 
 	shouldComponentUpdate(nextProps) {
@@ -398,14 +398,12 @@ export default class Table extends React.Component {
 
 		percent = secondsLeftInNight / maxSecondsLeftInNight;
 
-		// let 100left = -50;
-		// let 0left = 590;
 		// let 100top = 140;
 		// let 50top = 20;
 
 		left = -50 + (640 - 640 * percent);
 
-		console.log(percent, '%');
+		// console.log(percent, '%');
 
 		if (percent >= .5) {
 			top = 20 + (120 - 120 * (percent));

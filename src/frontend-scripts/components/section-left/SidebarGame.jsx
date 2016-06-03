@@ -34,14 +34,14 @@ export default class SidebarGame extends React.Component {
 			return classes;
 		}
 
-// todo-alpha line 44 errored (undefined)
+// todo-release take closer look at functionality re: negative ternairy @ line 44
 
 		return (
 			<div className={gameClasses()} data-uid={game.uid} onClick={this.routeToGame.bind(this)}>
 				<div>
 					<span className={game.kobk ? "gamename kobk" : "gamename"}>{game.name}</span>
 					<span className="gamelength">{game.time}</span> 
-					<span className="seatedcount">{game.seatedCount.toString()}/7</span>
+					<span className="seatedcount">{game.seatedCount ? game.seatedCount.toString() : ''}/7</span>
 				</div>
 				<div className="rolelist">
 					<div>
