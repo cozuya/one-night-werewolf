@@ -1,8 +1,8 @@
-/* TEAM */
+/* TEAM *
 Author: Chris Ozols
 Design: Chris Ozols
 HTML/CSS assistance: Christine Ozols
-Site: https://github.com/cozuya/one-night-werewolf, http://www.twolongos.com, deploy site TBD
+Site: production: https://onenightwerewolf.online, see also: https://github.com/cozuya/one-night-werewolf, http://www.twolongos.com
 Contact: chris.v.ozols@gmail.com
 IDE: Sublime Text 3
 Twitter: https://twitter.com/cozuya
@@ -15,6 +15,6 @@ The 1% of developers who create the tools that the 99%, like me, use to make thi
 /* SITE */
 Language: English
 Doctype: HTML5
-Front end: React, Redux, Sass, SocketIO, SemanticUI.
+Front end: React, Redux, Sass, SocketIO, SemanticUI, jQuery.
 Back end: Node with Express, Pug, Passport, Mongodb with Mongoose, SocketIO.
 Build: Gulp, Browserify, Babel.

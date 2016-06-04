@@ -89,8 +89,9 @@ class App extends React.Component {
 
 	// componentDidUpdate(prevProps) {  // note: this breaks everything if these players try to leave a finished game
 	// 	const autoPlayers = ['Jaina', 'Rexxar', 'Malfurian', 'Thrall', 'Valeera'],
-	// 		{ userInfo, gameInfo, dispatch } = this.props,
-	// 		prevSeatedNames;
+	// 		{ userInfo, gameInfo, dispatch } = this.props;
+		
+	// 	let prevSeatedNames;
 
 	// 		if (Object.keys(prevProps).length && prevProps.gameInfo && prevProps.gameInfo.seated) {
 	// 			prevSeatedNames = Object.keys(prevProps.gameInfo.seated).map((seatName) => {
@@ -98,7 +99,7 @@ class App extends React.Component {
 	// 			});
 	// 		}
 
-	// 	if (!prevSeatedNames.indexOf(userInfo.userName) !== -1 && autoPlayers.indexOf(userInfo.userName) !== -1 && !Object.keys(gameInfo).length) {
+	// 	if (prevSeatedNames && !prevSeatedNames.indexOf(userInfo.userName) !== -1 && autoPlayers.indexOf(userInfo.userName) !== -1 && !Object.keys(gameInfo).length) {
 	// 		userInfo.seatNumber = (autoPlayers.indexOf(userInfo.userName) + 1).toString();
 	// 		dispatch(updateUser(userInfo));
 	// 		socket.emit('updateSeatedUsers', {
@@ -115,8 +116,8 @@ class App extends React.Component {
 			game = {
 				kobk: false,
 				name: 'New Game',
-				// roles: ['werewolf', 'werewolf', 'villager', 'villager', 'villager', 'villager', 'villager', 'villager', 'villager', 'villager'],
-				roles: ['werewolf', 'werewolf', 'seer', 'robber', 'troublemaker', 'robber', 'hunter', 'villager', 'villager', 'insomniac'],
+				roles: ['werewolf', 'werewolf', 'villager', 'villager', 'villager', 'villager', 'villager', 'villager', 'villager', 'villager'],
+				// roles: ['werewolf', 'werewolf', 'seer', 'robber', 'troublemaker', 'robber', 'hunter', 'villager', 'villager', 'insomniac'],
 				// roles: ['werewolf', 'werewolf', 'robber', 'troublemaker', 'mason', 'minion', 'troublemaker', 'mason', 'robber', 'troublemaker'],
 				seated: {
 					seat0: {

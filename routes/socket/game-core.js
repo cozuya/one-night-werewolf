@@ -571,9 +571,8 @@ const nightPhases = (game, phases) => {
 			}
 		};
 
-	// 1 night phase needs 10 seconds for moon
+	game.gameState.secondsLeftInNight = game.gameState.maxSecondsLeftInNight = [10,21,32,43,54,65,76,86][phases.length - 1];
 
-	game.gameState.secondsLeftInNight = game.gameState.maxSecondsLeftInNight = phases.length * 10 + phases.length; 
 	phasesFn();
 
 	if (phases.length > 1) {
@@ -988,7 +987,7 @@ const endGame = (game) => {
 
 	eliminatedPlayersIndex.forEach((eliminatedPlayerIndex) => {
 
-		// todo-alpha app crashed on line below (truerole of undefined @ werewolf) after a game where 2 players reloaded the page during night I believe
+		// app crashed on line below (truerole of undefined @ werewolf) after a game where 2 players reloaded the page during night I believe.  After much trying have not been able to reproduce much lately.  Could be related to wrong types but I'm not seeing it not be a string lately.  Will look at logs after release to see if its still happening.
 
 		try {
 			if (seatedPlayers[eliminatedPlayerIndex].trueRole === 'werewolf' || seatedPlayers[eliminatedPlayerIndex].trueRole === 'minion' && game.internals.soloMinion) {

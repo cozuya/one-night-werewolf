@@ -11,7 +11,7 @@ Back end: Node, Express, Pug, Passport, Mongodb with Mongoose, SocketIO.
 
 Build: Gulp, Browserify, Babel (front end).
 
-Latest version: 0.3.1.  Alpha deployment: May 31st 2016, 7pm.  See docs/roadmap.txt.
+Latest version: 0.3.3.  Open alpha event #2 to be held on June 7th, 2016, 8pm CST.
 
 ## Installation ##
 

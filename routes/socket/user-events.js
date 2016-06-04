@@ -75,22 +75,22 @@ const { games, userList, generalChats } = require('./models'),
 				if (game.gameState.isStarted && !game.gameState.isCompleted) {
 					game.seated[userSeatName].connected = false;
 					sendInProgressGameUpdate(game);
-				} else {
-					if (game.gameState.isCompleted && Object.keys(game.seated).filter((seat) => {
+				} else if (game.gameState.isCompleted && Object.keys(game.seated).filter((seat) => {
 						return !game.seated[seat].connected;
 					}).length === 6) {
-						saveGame(game);
-						games.splice(games.indexOf(game), 1);
-					} else if (seatNames.length === 1) {
-						games.splice(games.indexOf(game), 1);
-					} else {
-						// todo-release kick out observer sockets/route to default?
-						delete game.seated[userSeatName];
-						io.sockets.in(game.uid).emit('gameUpdate', game);
-						sendGameList();
-					}
-					io.sockets.emit('gameList', games);					
+					saveGame(game);
+					games.splice(games.indexOf(game), 1);
+				} else if (seatNames.length === 1) {
+					games.splice(games.indexOf(game), 1);
+				} else if (game.gameState.isStarted && !game.gameState.isCompleted) {
+					// todo-release kick out observer sockets/route to default?
+					delete game.seated[userSeatName];
+					io.sockets.in(game.uid).emit('gameUpdate', game);
+				} else if (game.gameState.isStarted && game.gameState.isCompleted) {
+					game.seated[userSeatName].connected = false;
+					sendInProgressGameUpdate(game);
 				}
+				sendGameList();
 			}
 		}
 
@@ -119,7 +119,7 @@ const { games, userList, generalChats } = require('./models'),
 				return game.seated[seat].userName;
 			});
 
-		let	roomSockets, playerSockets, observerSockets;
+		let roomSockets, playerSockets, observerSockets;
 
 		if (io.sockets.adapter.rooms[game.uid]) {
 			roomSockets = Object.keys(io.sockets.adapter.rooms[game.uid].sockets).map((sockedId) => {
@@ -168,7 +168,9 @@ module.exports.handleUpdatedTruncateGame = (data) => {
 			timestamp: new Date()
 		};
 
-	if (!game.internals.truncated) {
+	// todo-release this game check shouldn't be necessary but saw a crash some how - added debugging
+	
+	if (game && !game.internals.truncated) {
 		if (!data.truncate && game.internals.truncateGameCount !== 0) {
 			game.internals.truncateGameCount--;
 			chat.chat = [
@@ -178,7 +180,7 @@ module.exports.handleUpdatedTruncateGame = (data) => {
 				},
 				{text: ` has removed their vote to end the game early. [${game.internals.truncateGameCount} / 4]`}
 			];
-		} else {
+		} else if (game) {
 			game.internals.truncateGameCount++;
 			chat.chat = [
 				{
@@ -196,8 +198,13 @@ module.exports.handleUpdatedTruncateGame = (data) => {
 				game.internals.truncated = true;
 			}
 		}
-		game.chats.push(chat);
-		sendInProgressGameUpdate(game);
+
+		if (game) {
+			game.chats.push(chat);
+			sendInProgressGameUpdate(game);
+		} else {
+			console.log(data, 'Truncate game returned no game on its find');
+		}
 	}
 };
 

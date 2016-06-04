@@ -18,15 +18,16 @@ v0.3.1 released 5/29/2016
 v0.3.2 released 5/31/2016
 	fixes for alpha
 
-v0.3.3 
+v0.3.3 releaed 6/3/2016
 	added “moon” for night phases
 	UI improvements based on alpha feedback
 	fixed game breaking issue with seated players
+	fixed some minor issues related to gamelist and disconnected players
 
 future
 	explore cardback reward system
-	add dark theme
 	explore guest mode
+	add dark theme
 	add full featured expando actions based on claimed roll
 	add email confirmation system/tokens
 	more roles
