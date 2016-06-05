@@ -4,7 +4,7 @@ const Account = require('../../models/account'),
 	{ games, userList } = require('./models'),
 	{ secureGame } = require('./util'),
 	{ sendInProgressGameUpdate } = require('./user-events'),
-	{ sendGameList } = require('./user-requests'),
+	{ sendGameList, sendUserList } = require('./user-requests'),
 	_ = require('lodash'),
 	highlightSeats = (player, seats, type) => {
 		if (typeof seats === 'string') {
@@ -1106,7 +1106,7 @@ const endGame = (game) => {
 
 				player.games.push(game.uid);
 				player.save(() => {
-					let userEntry = userList.find((user) => {
+					const userEntry = userList.find((user) => {
 						return user.userName === player.username;
 					});
 
@@ -1117,10 +1117,7 @@ const endGame = (game) => {
 							userEntry.losses++;
 						}
 
-						io.sockets.emit('userList', {
-							list: userList,
-							totalSockets: Object.keys(io.sockets.sockets).length
-						});
+						sendUserList();
 					}
 				});
 			});

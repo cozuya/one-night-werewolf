@@ -1,28 +1,3 @@
-internals
-	centerRoles array of strings of roles (3)
-	soloMinion bool
-	seatedPlayers array 7
-		seatNumber number 0-6
-		trueRole string
-		selectedForElimination string
-		tableState
-			secondsLeftInNight
-			reported bool
-			isNight bool - beginNightPhases
-			isVotable - dayPhase
-				enabled bool
-				selectedForElimination number 0-6
-			nightaction
-				stuff
-			seats array 0-9
-				seat0
-					highlight string (notify select proceed)
-					isFlipped bool (shows card, can't have it on role)
-					role string (assigns role class to card)
-					claim string of roles
-					swappedWithSeat number 0-6
-				...
-		...
 gameState
 	isStarted bool - startGameCountdown
 	cardsDealt bool  - startGame
@@ -53,3 +28,28 @@ status string
 tableState (see internals)
 time string
 uid string
+internals
+	centerRoles array of strings of roles (3)
+	soloMinion bool
+	seatedPlayers array 7
+		seatNumber number 0-6
+		trueRole string
+		selectedForElimination string
+		tableState
+			secondsLeftInNight
+			reported bool
+			isNight bool - beginNightPhases
+			isVotable - dayPhase
+				enabled bool
+				selectedForElimination number 0-6
+			nightaction
+				stuff
+			seats array 0-9
+				seat0
+					highlight string (notify select proceed)
+					isFlipped bool (shows card, can't have it on role)
+					role string (assigns role class to card)
+					claim string of roles
+					swappedWithSeat number 0-6
+				...
+		...

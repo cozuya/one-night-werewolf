@@ -12,7 +12,9 @@ module.exports = () => {
 
 		// user-events
 
-		.on('updateTruncateGame', (data) => {
+		.on('disconnect', () => {
+			handleSocketDisconnect(socket);
+		}).on('updateTruncateGame', (data) => {
 			handleUpdatedTruncateGame(data);
 		}).on('addNewGameChat', (chat, uid) => {
 			handleAddNewGameChat(chat, uid);
@@ -26,10 +28,7 @@ module.exports = () => {
 			handleNewGeneralChat(data);
 		}).on('leaveGame', (data) => {
 			handleUserLeaveGame(socket, data);
-		}).on('disconnect', () => {
-			handleSocketDisconnect(socket);
 		})
-
 		// user-requests
 
 		.on('getGameList', () => {

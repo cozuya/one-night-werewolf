@@ -49,10 +49,17 @@ module.exports.sendGeneralChats = (socket) => {
 };
 
 module.exports.sendUserList = (socket) => {
-	socket.emit('userList', {
-		list: userList,
-		totalSockets: Object.keys(io.sockets.sockets).length
-	});
+	if (socket) {
+		socket.emit('userList', {
+			list: userList,
+			totalSockets: Object.keys(io.sockets.sockets).length
+		});
+	} else {
+		io.sockets.emit('userList', {
+			list: userList,
+			totalSockets: Object.keys(io.sockets.sockets).length
+		});
+	}
 };
 
 module.exports.sendGameInfo = (socket, uid) => {

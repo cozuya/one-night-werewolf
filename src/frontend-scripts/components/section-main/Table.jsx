@@ -7,6 +7,8 @@ import _ from 'lodash';
 
 $.fn.popup = Popup;
 
+// todo-alpha: check different browser zoom levels and adjust ui/styling a bit
+
 export default class Table extends React.Component {
 	constructor() {
 		this.state = {
