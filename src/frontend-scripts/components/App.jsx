@@ -8,7 +8,9 @@ import { connect } from 'react-redux';
 import { updateUser, updateMidsection, updateGameList, updateGameInfo, updateUserList, updateGeneralChats } from '../actions/actions.js';
 import socket from 'socket.io-client';
 
-socket = socket();
+socket = socket({
+	reconnection: false
+});
 
 class App extends React.Component {
 	componentWillMount() {
