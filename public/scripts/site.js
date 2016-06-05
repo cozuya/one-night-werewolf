@@ -10,7 +10,8 @@ $(document).ready(function () {  // yay ES5
 	$('button.signup-submit').on('click', function(event) {
 		event.preventDefault();
 		var username = $('#signup-username').val(),
-			password = $('#signup-password').val(),
+			password = $('#signup-password1').val(),
+			password2 = $('#signup-password2').val(),
 			$loader = $(this).next(),
 			$message = $loader.next(),
 			submitErr = function (message) {
@@ -24,7 +25,11 @@ $(document).ready(function () {  // yay ES5
 			url: '/account/signup',
 			method: 'POST',
 			contentType: 'application/json; charset=UTF-8',
-			data: JSON.stringify({username: username, password: password}),
+			data: JSON.stringify({
+				username: username,
+				password: password,
+				password2: password2
+			}),
 			statusCode: {
 				200: function () {
 					if (window.location.pathname === '/observe') {
@@ -37,7 +42,7 @@ $(document).ready(function () {  // yay ES5
 					submitErr('Sorry, that request did not look right.');
 				},
 				401: function (xhr) {
-					let message = typeof xhr.responseJSON !== 'undefined' ? xhr.responseJSON.message : 'Sorry, that username already exists and you did not provide the correct password.';
+					var message = typeof xhr.responseJSON !== 'undefined' ? xhr.responseJSON.message : 'Sorry, that username already exists and you did not provide the correct password.';
 
 					submitErr(message);
 				}

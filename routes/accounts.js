@@ -32,14 +32,16 @@ module.exports = () => {
 		});
 	});
 
-	app.post('/account/signup', (req, res) => {
+	app.post('/account/signup', (req, res, next) => {
 		let username = req.body.username,
 			password = req.body.password,
+			password2 = req.body.password2,
 			save = {
 				username,
 				gameSettings: {
 					disablePopups: false,
-					enableTimestamps: false
+					enableTimestamps: false,
+					disableRightSidebarInGame: false
 				},
 				games: [],
 				wins: 0,
@@ -57,10 +59,12 @@ module.exports = () => {
 			res.status(401).json({message: 'Sorry, your password is too short.'});
 		} else if (password.length > 50) {
 			res.status(401).json({message: 'Sorry, your password is too long.'});
+		} else if (password !== password2) {
+			res.status(401).json({message: 'Sorry, your passwords did not match.'});
 		} else {
 			Account.register(new Account(save), password, (err) => {
 				if (err) {
-					console.log(err);
+					return next(err);
 				}
 
 				passport.authenticate('local')(req, res, () => {

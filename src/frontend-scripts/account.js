@@ -21,7 +21,8 @@ export default () => {
 	$('button.signup-submit').on('click', function(event) {
 		event.preventDefault();
 		const username = $('#signup-username').val(),
-			password = $('#signup-password').val(),
+			password = $('#signup-password1').val(),
+			password2 = $('#signup-password2').val(),
 			$loader = $(this).next(),
 			$message = $loader.next(),
 			submitErr = (message) => {
@@ -35,7 +36,11 @@ export default () => {
 			url: '/account/signup',
 			method: 'POST',
 			contentType: 'application/json; charset=UTF-8',
-			data: JSON.stringify({username, password}),
+			data: JSON.stringify({
+				username,
+				password,
+				password2
+			}),
 			statusCode: {
 				200() {
 					if (window.location.pathname === '/observe') {

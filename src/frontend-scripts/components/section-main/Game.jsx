@@ -22,6 +22,7 @@ class Game extends React.Component {
 
 	selectedPlayer(state) {
 		const { dispatch } = this.props;
+		
 		dispatch(updateClickedPlayer(state));
 	}
 

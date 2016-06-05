@@ -6,36 +6,6 @@ const Account = require('../../models/account'),
 	{ sendInProgressGameUpdate } = require('./user-events'),
 	{ sendGameList } = require('./user-requests'),
 	_ = require('lodash'),
-	startGameCountdown = (game) => {
-		let startGamePause = 5,
-			countDown;
-
-		game.gameState.isStarted = true;
-
-		Object.keys(game.seated).forEach((seat, index) => {
-			const userName = game.seated[`seat${index}`].userName;
-
-			game.internals.seatedPlayers[index].userName = userName;
-			game.internals.seatedPlayers[index].seatNumber = index;
-			game.internals.seatedPlayers[index].gameChats.push({
-				gameChat: true,
-				userName, 
-				chat: [{text: 'The table is full and the game will begin.'}],
-				timestamp: new Date()
-			});
-		});
-
-		countDown = setInterval(() => {
-			if (startGamePause === 0) {
-				clearInterval(countDown);
-				startGame(game);
-			} else {
-				game.status = `Game starts in ${startGamePause} second${startGamePause === 1 ? '' : 's'}.`;
-				sendInProgressGameUpdate(game);
-			}
-			startGamePause--;
-		}, 1000);
-	},
 	highlightSeats = (player, seats, type) => {
 		if (typeof seats === 'string') {
 			switch (seats) {
@@ -93,7 +63,34 @@ module.exports.updateSeatedUser = (socket, data) => {
 	};
 
 	if (Object.keys(game.seated).length === 7) {
-		startGameCountdown(game);
+		let startGamePause = 5,
+			countDown;
+
+		game.gameState.isStarted = true;
+
+		Object.keys(game.seated).forEach((seat, index) => {
+			const userName = game.seated[`seat${index}`].userName;
+
+			game.internals.seatedPlayers[index].userName = userName;
+			game.internals.seatedPlayers[index].seatNumber = index;
+			game.internals.seatedPlayers[index].gameChats.push({
+				gameChat: true,
+				userName, 
+				chat: [{text: 'The table is full and the game will begin.'}],
+				timestamp: new Date()
+			});
+		});
+
+		countDown = setInterval(() => {
+			if (startGamePause === 0) {
+				clearInterval(countDown);
+				startGame(game);
+			} else {
+				game.status = `Game starts in ${startGamePause} second${startGamePause === 1 ? '' : 's'}.`;
+				sendInProgressGameUpdate(game);
+			}
+			startGamePause--;
+		}, 1000);
 	} else {
 		io.sockets.in(data.uid).emit('gameUpdate', secureGame(game));
 	}
@@ -106,6 +103,7 @@ const startGame = (game) => {
 
 	const assignRoles = () => {
 		const _roles = [...game.roles];
+		
 		game.internals.seatedPlayers.forEach((player, index) => {
 			const roleIndex = Math.floor((Math.random() * _roles.length)),
 				role = _roles[roleIndex];
