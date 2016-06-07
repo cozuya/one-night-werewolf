@@ -62,7 +62,7 @@ $(document).ready(function () {  // yay ES5
 		$(this).parent().next().text('3-12 alphanumeric characters.').slideDown();
 	});
 
-	$('body').on('focus', '#signup-password', function () {
+	$('body').on('focus', '#signup-password1', function () {
 		$(this).parent().next().text('6-50 characters.').slideDown();
 	});	
 
