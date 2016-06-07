@@ -206,7 +206,9 @@ export default class Gamechat extends React.Component {
 	processChats() {
 		const { gameInfo } = this.props;
 
-		return gameInfo.chats.map((chat, i) => {
+		return gameInfo.chats.sort((a, b) => {
+			return new Date(b.timestamp) - new Date(a.timestamp);
+		}).map((chat, i) => {
 			const chatContents = chat.chat,
 				playerNames = Object.keys(gameInfo.seated).map((seatName) => {
 					return gameInfo.seated[seatName].userName;
@@ -328,7 +330,7 @@ export default class Gamechat extends React.Component {
 					</div>
 				);
 			};
-		}).reverse();	
+		});	
 	}
 
 	handleChatLockClick(e) {

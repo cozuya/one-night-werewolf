@@ -73,7 +73,7 @@ export default () => {
 		$(this).parent().next().text('3-12 alphanumeric characters.').slideDown();
 	});
 
-	$('body').on('focus', '#signup-password', function () {
+	$('body').on('focus', '#signup-password1', function () {
 		$(this).parent().next().text('6-50 characters.').slideDown();
 	});	
 
@@ -86,7 +86,7 @@ export default () => {
 		const username = $('#signin-username').val(),
 			password = $('#signin-password').val(),
 			$loader = $(this).next(),
-			$message = $(this).next().next(),
+			$message = $loader.next(),
 			submitErr = (message) => {
 				$loader.removeClass('active');
 				$message.text(message).removeClass('hidden');

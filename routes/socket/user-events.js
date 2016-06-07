@@ -2,7 +2,7 @@
 
 const { games, userList, generalChats } = require('./models'),
 	{ secureGame } = require('./util'),
-	{ sendGameList, sendGeneralChats } = require('./user-requests'),
+	{ sendGameList, sendGeneralChats, sendUserList } = require('./user-requests'),
 	_ = require('lodash'),
 	Game = require('../../models/game'),
 	Account = require('../../models/account'),
@@ -94,25 +94,18 @@ const { games, userList, generalChats } = require('./models'),
 			}
 		}
 
-		io.sockets.emit('userList', {
-			list: userList,
-			totalSockets: Object.keys(io.sockets.sockets).length
-		});
+		sendUserList();
 	},
 	combineInProgressChats = (game, userName) => {
-		let player, gameChats, _chats;
+		let player, gameChats;
 
 		if (userName) {
 			player = getInternalPlayerInGameByUserName(game, userName);
 		}
 
 		gameChats = player ? player.gameChats : game.internals.unSeatedGameChats;
-		_chats = gameChats.concat(game.chats);
-		_chats.sort((chat1, chat2) => { // todo-release move to front end?  everything else is
-			return chat1.timestamp - chat2.timestamp;
-		});
 
-		return _chats;
+		return gameChats.concat(game.chats);
 	},
 	sendInProgressGameUpdate = (game) => { // todo-release make this accept a socket argument and emit only to it if it exists
 		const seatedPlayerNames = Object.keys(game.seated).map((seat) => {
@@ -379,10 +372,7 @@ module.exports.checkUserStatus = (socket) => {
 			sendInProgressGameUpdate(game);
 		}
 	} else {
-		io.sockets.emit('userList', {
-			list: userList,
-			totalSockets: Object.keys(io.sockets.sockets).length
-		});
+		sendUserList();
 	}
 
 	sendGeneralChats(socket);

@@ -1,7 +1,7 @@
 {
   "name": "one-night-werewolf",
   "description": "A multiplayer web game of deception and deduction.",
-  "version": "0.1.0",
+  "version": "0.3.4",
   "repository": "https://github.com/cozuya/one-night-werewolf.git",
   "author": "Chris Ozols <chris.v.ozols@gmail.com>",
   "dependencies": {
