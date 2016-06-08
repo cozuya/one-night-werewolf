@@ -261,7 +261,7 @@ module.exports.handleAddNewGameChat = (data, uid) => {
 
 module.exports.handleNewGeneralChat = (data) => {
 	if (generalChatCount === 100) {
-		const chats = new Generalchats({chats: generalChats});
+		let chats = new Generalchats({chats: generalChats});
 		
 		chats.save();
 		generalChatCount = 0;
