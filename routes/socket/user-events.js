@@ -1,5 +1,7 @@
 'use strict';
 
+let generalChatCount = 0;
+
 const { games, userList, generalChats } = require('./models'),
 	{ secureGame } = require('./util'),
 	{ sendGameList, sendGeneralChats, sendUserList } = require('./user-requests'),
@@ -7,7 +9,6 @@ const { games, userList, generalChats } = require('./models'),
 	Game = require('../../models/game'),
 	Account = require('../../models/account'),
 	Generalchats = require('../../models/generalchats'),
-	generalChatCount = 0,
 	saveGame = (game) => {
 		const gameToSave = new Game({
 			uid: game.uid,
