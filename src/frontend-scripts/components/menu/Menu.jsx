@@ -22,7 +22,7 @@ export default class Menu extends React.Component {
 				},
 				setup: function (effectOption) {
 					this.textArray = [];
-					this.$elem.html('');  // oddly jQuery.empty() doesn't work as well here.
+					this.$elem.html('');
 					for (var i = 0; i < this.oldText.length; i++) {
 						this.textArray[i] = "<span class='text-effect' style='" + effectOption + "'>" + this.oldText.substr(i, 1) + "</span>";
 						this.$elem.append(this.textArray[i]);
@@ -167,6 +167,15 @@ export default class Menu extends React.Component {
 									Logged in as <span className="playername">{userInfo.userName}</span>
 								</div>
 								<i className={iconClasses()} onClick={this.clickSettingsButton.bind(this)}></i>
+							</div>
+						);
+					}
+				})()}
+				{(() => {
+					if (this.props.userInfo.userName) {
+						return (
+							<div className="item right">
+								<a href="/observe">Logout</a>
 							</div>
 						);
 					}

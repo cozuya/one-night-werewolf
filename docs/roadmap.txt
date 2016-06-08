@@ -2,7 +2,7 @@ v0.1 released 5/5/2016
 	all features implemented (game), all breaking bugs fixed
 
 v0.2 released 5/13/2016
-	upgrade react to v15
+	upgraded react to v15
 	styling review and overhaul
 	removal of semantic as a npm dependency (fixed semantic css file without media queries)
 
@@ -18,11 +18,15 @@ v0.3.1 released 5/29/2016
 v0.3.2 released 5/31/2016
 	fixes for alpha
 
-v0.3.3 releaed 6/3/2016
+v0.3.3 released 6/3/2016
 	added “moon” for night phases
 	UI improvements based on alpha feedback
 	fixed game breaking issue with seated players
 	fixed some minor issues related to gamelist and disconnected players
+
+v0.3.4 released 6/5/2016
+	chat sorting moved client side
+	sockets no longer automatically reconnect
 
 future
 	explore cardback reward system
@@ -31,3 +35,4 @@ future
 	add full featured expando actions based on claimed roll
 	add email confirmation system/tokens
 	more roles
+	do something to fix issue that reverses the direction of mouse scroll wheels in chats (switch to flex?)

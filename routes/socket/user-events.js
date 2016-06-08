@@ -1,5 +1,7 @@
 'use strict';
 
+let generalChatCount = 0;
+
 const { games, userList, generalChats } = require('./models'),
 	{ secureGame } = require('./util'),
 	{ sendGameList, sendGeneralChats, sendUserList } = require('./user-requests'),
@@ -7,7 +9,6 @@ const { games, userList, generalChats } = require('./models'),
 	Game = require('../../models/game'),
 	Account = require('../../models/account'),
 	Generalchats = require('../../models/generalchats'),
-	generalChatCount = 0,
 	saveGame = (game) => {
 		const gameToSave = new Game({
 			uid: game.uid,
@@ -37,10 +38,16 @@ const { games, userList, generalChats } = require('./models'),
 			}).map((seatNumber) => {
 				return game.internals.seatedPlayers[seatNumber].userName;
 			}),
-			kobk: game.kobk,
 			chats: game.chats.filter((chat) => {
 				return !chat.gameChat;
-			})
+			}).map((chat) => {
+				return {
+					timestamp: chat.timestamp,
+					chat: chat.chat,
+					userName: chat.userName
+				};
+			}),
+			kobk: game.kobk
 		});
 
 		gameToSave.save();
@@ -250,6 +257,8 @@ module.exports.handleAddNewGameChat = (data, uid) => {
 				seatedPlayer.tableState.seats[player.seatNumber].claim = data.claim;
 			}
 		});
+
+		game.tableState.seats[player.seatNumber].claim = data.claim;
 	}
 
 	if (game.gameState.isStarted) {

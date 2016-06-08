@@ -83,6 +83,17 @@ export default class Gamechat extends React.Component {
 		}
 	}
 
+	handleScroll(e) {
+		// todo-release address issue with reverse scrolling
+
+		// const $chatcontainer = $(e.currentTarget).find('.list'),
+		// 	$list = $chatcontainer.find('.list'),
+		// 	height = $chatcontainer.innerHeight();
+
+		// console.log($chatcontainer[0].scrollTop);
+		// console.log(height);
+	}
+
 	render() {
 		return (
 			<section className="generalchat">
@@ -93,8 +104,8 @@ export default class Gamechat extends React.Component {
 					</div>
 					<div className="ui divider right-sidebar-divider"></div>
 				</section>
-				<section className="segment chats">
-					<div className="ui list">
+				<section className="segment chats" onScroll={this.handleScroll.bind(this)}>
+					<div className="ui list genchat-container">
 						{this.processChats()}
 					</div>
 				</section>

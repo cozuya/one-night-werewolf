@@ -36,7 +36,6 @@ internals
 		trueRole string
 		selectedForElimination string
 		tableState
-			secondsLeftInNight
 			reported bool
 			isNight bool - beginNightPhases
 			isVotable - dayPhase
