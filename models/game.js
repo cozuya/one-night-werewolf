@@ -10,6 +10,7 @@ let mongoose = require('mongoose'),
 		winningPlayers: Array,
 		losingPlayers: Array,
 		reports: Array,
+		chats: Array,
 		kobk: Boolean
 	});
 

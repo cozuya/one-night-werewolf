@@ -7,8 +7,6 @@ import _ from 'lodash';
 
 $.fn.popup = Popup;
 
-// todo-alpha: check different browser zoom levels and adjust ui/styling a bit
-
 export default class Table extends React.Component {
 	constructor() {
 		this.state = {
@@ -295,7 +293,7 @@ export default class Table extends React.Component {
 
 		// return position === 'top' ? 'nightblocker nightblocker-top-blocked' : 'nightblocker nightblocker-bottom-blocked';
 
-		if (userInfo.seatNumber && (gameInfo.tableState.isNight || gameInfo.gameState.isNight && !gameInfo.tableState.nightAction || gameInfo.tableState.nightAction && gameInfo.gameState.isNight && gameInfo.tableState.nightAction.phase !== gameInfo.gameState.phase)) {
+		if (gameInfo.tableState.isNight || gameInfo.gameState.isNight && !gameInfo.tableState.nightAction || gameInfo.tableState.nightAction && gameInfo.gameState.isNight && gameInfo.tableState.nightAction.phase !== gameInfo.gameState.phase) {
 			return position === 'top' ? 'nightblocker nightblocker-top-blocked' : 'nightblocker nightblocker-bottom-blocked';
 		} else {
 			return position === 'top' ? 'nightblocker nightblocker-top': 'nightblocker nightblocker-bottom';

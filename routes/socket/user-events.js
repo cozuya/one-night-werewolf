@@ -38,10 +38,16 @@ const { games, userList, generalChats } = require('./models'),
 			}).map((seatNumber) => {
 				return game.internals.seatedPlayers[seatNumber].userName;
 			}),
-			kobk: game.kobk,
 			chats: game.chats.filter((chat) => {
 				return !chat.gameChat;
-			})
+			}).map((chat) => {
+				return {
+					timestamp: chat.timestamp,
+					chat: chat.chat,
+					userName: chat.userName
+				};
+			}),
+			kobk: game.kobk
 		});
 
 		gameToSave.save();
@@ -251,6 +257,8 @@ module.exports.handleAddNewGameChat = (data, uid) => {
 				seatedPlayer.tableState.seats[player.seatNumber].claim = data.claim;
 			}
 		});
+
+		game.tableState.seats[player.seatNumber].claim = data.claim;
 	}
 
 	if (game.gameState.isStarted) {
@@ -262,7 +270,7 @@ module.exports.handleAddNewGameChat = (data, uid) => {
 
 module.exports.handleNewGeneralChat = (data) => {
 	if (generalChatCount === 100) {
-		let chats = new Generalchats({chats: generalChats});
+		const chats = new Generalchats({chats: generalChats});
 		
 		chats.save();
 		generalChatCount = 0;
