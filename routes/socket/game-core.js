@@ -165,7 +165,7 @@ const startGame = (game) => {
 			if (nightPhasePause === 0) {
 				clearInterval(countDown);
 				game.status = 'Night begins..';
-				beginNightPhases(game);
+				prepareNightPhases(game);
 			} else if (nightPhasePause === 1) {
 				game.internals.seatedPlayers.forEach((player, index) => {
 					player.tableState.seats[index].isFlipped = false;
@@ -182,7 +182,7 @@ const startGame = (game) => {
 	}, 50);
 };
 
-const beginNightPhases = (game) => {
+const prepareNightPhases = (game) => {
 	// round 1: all werewolves minions masons seers and (one robber or troublemaker)
 	// round 2 through x: robbercount + troublemaker count minus 1
 	// round x+1: all insomniacs

@@ -11,7 +11,6 @@ export default class Gamechat extends React.Component {
 			chatFilter: 'All',
 			lock: false,
 			hotkey: 'init',
-			expandoExpanded: true
 		};
 	}
 
@@ -36,7 +35,7 @@ export default class Gamechat extends React.Component {
 				}
 			}
 
-			$input.val(`${$input.val()}${this.props.selectedGamerole.role}`).next().removeClass('disabled');
+			$input.val(`${$input.val()}${selectedGamerole.role}`).next().removeClass('disabled');
 		}
 
 		if (prevProps && prevProps.selectedPlayer.random !== selectedPlayer.random && selectedPlayer.playerName.length) {
@@ -62,18 +61,16 @@ export default class Gamechat extends React.Component {
 				textRight = 'I swapped..'
 		}
 
-		if (this.state.expandoExpanded) {
-			return (
-				<div className="hotkey-container">
-					<div className="hotkey-left" onClick={this.handleLeftHotkeyClick.bind(this)}>
-						{textLeft}
-					</div>
-					<div className="hotkey-right" onClick={this.handleRightHotkeyClick.bind(this)}>
-						{textRight}
-					</div>
+		return (
+			<div className="hotkey-container">
+				<div className="hotkey-left" onClick={this.handleLeftHotkeyClick.bind(this)}>
+					{textLeft}
 				</div>
-			);
-		}
+				<div className="hotkey-right" onClick={this.handleRightHotkeyClick.bind(this)}>
+					{textRight}
+				</div>
+			</div>
+		);
 	}
 
 	handleLeftHotkeyClick(e) {
@@ -110,10 +107,6 @@ export default class Gamechat extends React.Component {
 
 	handleChatClearClick(e) {
 		$(e.currentTarget).addClass('app-hidden').prev().find('input').val('');
-	}
-
-	clickExpand(e) {
-		this.setState({expandoExpanded: !this.state.expandoExpanded});
 	}
 
 	handleKeyup(e) {
@@ -357,29 +350,11 @@ export default class Gamechat extends React.Component {
 				</section>
 				<form className="segment inputbar" onSubmit={this.handleSubmit.bind(this)}>
 					{(() => {
-						let classes = 'expando-container';
-
 						const { gameInfo, userInfo } = this.props;
 
-						if (!userInfo.seatNumber || !gameInfo.gameState.isDay) {
-							classes += ' app-visibility-hidden';
-						}
-
 						return (
-							<div className={classes}>
-								<i className={
-									(() => {
-										let classes = 'large';
-
-										if (this.state.expandoExpanded) {
-											classes += ' compress icon';
-										} else {
-											classes += ' expand icon';
-										}
-
-										return classes;
-									})()
-								} onClick={this.clickExpand.bind(this)}></i>
+							<div className="expando-container">
+								<i className="large delete icon app-visibility-hidden" onClick={this.handleChatClearClick.bind(this)}></i>
 								{(() => {
 									if (gameInfo.gameState.isStarted && userInfo.seatNumber) {
 										{return this.createHotkeys()}
@@ -404,7 +379,6 @@ export default class Gamechat extends React.Component {
 						<input placeholder="Chat.." id="gameChatInput" ref="gameChatInput" onKeyUp={this.handleKeyup.bind(this)} maxLength="300"></input>
 						<button className="ui primary button disabled">Chat</button>
 					</div>
-					<i className="large delete icon app-hidden" onClick={this.handleChatClearClick.bind(this)}></i>;
 				</form>
 			</section>
 		);

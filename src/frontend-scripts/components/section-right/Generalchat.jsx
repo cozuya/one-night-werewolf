@@ -57,10 +57,10 @@ export default class Gamechat extends React.Component {
 	}
 
 	scrollChats() {
-		const chatsContainer = document.querySelector('section.segment.chats');
+		const chatsContainer = document.querySelector('.genchat-container');
 			
 		if (!this.state.lock) {
-			chatsContainer.scrollTop = 0;
+			chatsContainer.scrollTop = 254;
 		}
 	}
 
@@ -72,7 +72,8 @@ export default class Gamechat extends React.Component {
 					<span>{chat.chat}</span>
 				</div>
 			);
-		}).reverse();
+		});
+
 	}
 
 	handleChatLockClick(e) {
