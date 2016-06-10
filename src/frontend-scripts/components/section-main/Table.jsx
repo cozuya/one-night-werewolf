@@ -48,12 +48,10 @@ export default class Table extends React.Component {
 				}
 			});
 		}
-
-		// console.log(gameInfo.gameState.secondsLeftInNight);
 	}
 
 	shouldComponentUpdate(nextProps) {
-		return !_.isEqual(nextProps.gameInfo, this.props.gameInfo);  // todo-release review this
+		return !_.isEqual(nextProps.gameInfo, this.props.gameInfo);  // todo-release review this - without it updates way more than it should
 	}
 
 	leaveGame() {
@@ -290,8 +288,6 @@ export default class Table extends React.Component {
 
 	nightBlockerStatus(position) {
 		const { gameInfo, userInfo } = this.props;
-
-		// return position === 'top' ? 'nightblocker nightblocker-top-blocked' : 'nightblocker nightblocker-bottom-blocked';
 
 		if (gameInfo.tableState.isNight || gameInfo.gameState.isNight && !gameInfo.tableState.nightAction || gameInfo.tableState.nightAction && gameInfo.gameState.isNight && gameInfo.tableState.nightAction.phase !== gameInfo.gameState.phase) {
 			return position === 'top' ? 'nightblocker nightblocker-top-blocked' : 'nightblocker nightblocker-bottom-blocked';

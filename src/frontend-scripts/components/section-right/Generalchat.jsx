@@ -27,11 +27,11 @@ export default class Gamechat extends React.Component {
 	}
 
 	handleSubmit(e) {
-		const inputValue = this.state.inputValue;
+		const { inputValue } = this.state;
 
 		e.preventDefault();
 
-		if (inputValue.length) {
+		if (inputValue) {
 			this.props.socket.emit('addNewGeneralChat', {
 				userName: this.props.userInfo.userName,
 				chat: inputValue
@@ -41,11 +41,10 @@ export default class Gamechat extends React.Component {
 		}
 	}
 
+
 	scrollChats() {
-		const chatsContainer = document.querySelector('.genchat-container');
-			
 		if (!this.state.lock) {
-			chatsContainer.scrollTop = 999;
+			document.querySelector('.genchat-container').scrollTop = 999;
 		}
 	}
 
@@ -82,29 +81,9 @@ export default class Gamechat extends React.Component {
 				<form className="segment inputbar" onSubmit={this.handleSubmit.bind(this)}>
 					<div className={this.props.userInfo.userName ? 'ui action input' : 'ui action input disabled'}>
 						<input placeholder="Chat.." value={this.state.inputValue} onChange={this.handleKeyup.bind(this)} maxLength="300"></input>
-						<button className={
-							(() => {
-								let classes = 'ui primary button';
-
-								if (!this.state.inputValue.length) {
-									classes += ' disabled';
-								}
-
-								return classes;
-							})()
-						}>Chat</button>
+						<button className={this.state.inputValue ? 'ui primary button' : 'ui primary button disabled'}>Chat</button>
 					</div>
-					<i className={
-						(() => {
-							let classes = 'large delete icon'
-
-							if (!this.state.inputValue.length) {
-								classes += '  app-hidden';
-							}
-
-							return classes;
-						})()
-					} onClick={this.handleChatClearClick.bind(this)}></i>
+					<i className={this.state.inputValue ? 'large delete icon' : 'large delete icon app-hidden'} onClick={this.handleChatClearClick.bind(this)}></i>
 				</form>
 			</section>
 		);
