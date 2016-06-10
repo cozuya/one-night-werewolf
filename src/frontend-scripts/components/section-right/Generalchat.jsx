@@ -1,12 +1,12 @@
 'use strict';
 
 import React from 'react';
-import $ from 'jquery';
 
 export default class Gamechat extends React.Component {
 	constructor() {
 		this.state = {
 			lock: false,
+			inputValue: ''
 		};
 	}
 
@@ -19,40 +19,25 @@ export default class Gamechat extends React.Component {
 	}	
 
 	handleChatClearClick(e) {
-		$(e.currentTarget).addClass('app-hidden').prev().find('input').val(''); // todo-release redo all this jquery junk
+		this.setState({inputValue: ''});
 	}
 
 	handleKeyup(e) {
-		const $input = $(e.currentTarget),
-			inputValue = $input.val(),
-			$button = $input.next(),
-			$clearIcon = $input.parent().next();
-
-		if (inputValue.length) {
-			$button.removeClass('disabled');
-			$clearIcon.removeClass('app-hidden');
-		} else {
-			$button.addClass('disabled');
-			$clearIcon.addClass('app-hidden');
-		}
+		this.setState({inputValue: `${e.target.value}`});
 	}
 
 	handleSubmit(e) {
-		const input = $(e.currentTarget).find('input')[0],
-			$button = $(e.currentTarget).find('button'),
-			$clearIcon = $button.parent().next();
+		const inputValue = this.state.inputValue;
 
 		e.preventDefault();
 
-		if (input.value) {
+		if (inputValue.length) {
 			this.props.socket.emit('addNewGeneralChat', {
 				userName: this.props.userInfo.userName,
-				chat: input.value
+				chat: inputValue
 			});
-			input.value = '';
-			input.focus();
-			$button.addClass('disabled');
-			$clearIcon.addClass('app-hidden');
+
+			this.setState({inputValue: ''});
 		}
 	}
 
@@ -60,7 +45,7 @@ export default class Gamechat extends React.Component {
 		const chatsContainer = document.querySelector('.genchat-container');
 			
 		if (!this.state.lock) {
-			chatsContainer.scrollTop = 254;
+			chatsContainer.scrollTop = 999;
 		}
 	}
 
@@ -76,22 +61,7 @@ export default class Gamechat extends React.Component {
 	}
 
 	handleChatLockClick(e) {
-		if (this.state.lock) {
-			this.setState({lock: false});
-		} else {
-			this.setState({lock: true});
-		}
-	}
-
-	handleScroll(e) {
-		// todo-release address issue with reverse scrolling
-
-		// const $chatcontainer = $(e.currentTarget).find('.list'),
-		// 	$list = $chatcontainer.find('.list'),
-		// 	height = $chatcontainer.innerHeight();
-
-		// console.log($chatcontainer[0].scrollTop);
-		// console.log(height);
+		this.setState({lock: !this.state.lock});
 	}
 
 	render() {
@@ -104,17 +74,37 @@ export default class Gamechat extends React.Component {
 					</div>
 					<div className="ui divider right-sidebar-divider"></div>
 				</section>
-				<section className="segment chats" onScroll={this.handleScroll.bind(this)}>
+				<section className="segment chats">
 					<div className="ui list genchat-container">
 						{this.processChats()}
 					</div>
 				</section>
 				<form className="segment inputbar" onSubmit={this.handleSubmit.bind(this)}>
 					<div className={this.props.userInfo.userName ? 'ui action input' : 'ui action input disabled'}>
-						<input placeholder="Chat.." onKeyUp={this.handleKeyup.bind(this)} maxLength="300"></input>
-						<button className="ui primary button disabled">Chat</button>
+						<input placeholder="Chat.." value={this.state.inputValue} onChange={this.handleKeyup.bind(this)} maxLength="300"></input>
+						<button className={
+							(() => {
+								let classes = 'ui primary button';
+
+								if (!this.state.inputValue.length) {
+									classes += ' disabled';
+								}
+
+								return classes;
+							})()
+						}>Chat</button>
 					</div>
-					<i className="large delete icon app-hidden" onClick={this.handleChatClearClick.bind(this)}></i>
+					<i className={
+						(() => {
+							let classes = 'large delete icon'
+
+							if (!this.state.inputValue.length) {
+								classes += '  app-hidden';
+							}
+
+							return classes;
+						})()
+					} onClick={this.handleChatClearClick.bind(this)}></i>
 				</form>
 			</section>
 		);
