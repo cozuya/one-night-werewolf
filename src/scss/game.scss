@@ -45,30 +45,25 @@
 			}
 
 			.chats {
-				padding-top: 2px;
 				height: 335px;
-				overflow-y: auto;
+				position: relative;
 				background: #F9FAFF;
 				font-size: 18px;
-				padding-left: 5px;
 				cursor: not-allowed;
-				-moz-transform: scaleY(-1);
-				-o-transform: scaleY(-1);
-				-webkit-transform: scaleY(-1);
-				transform: scaleY(-1);
-				filter: FlipV;
-				-ms-filter: "FlipV";
+				
+				.ui.list {
+					padding-left: 5px;
+					overflow-y: auto;
+					position: absolute;
+					bottom: 0;
+					max-height: 335px;
+					width: 350px;
+				}
 
 				.item {
 					word-wrap: break-word;
-					line-height: 1;
+					line-height: inherit;
 					padding: 0;
-					-moz-transform: scaleY(-1);
-			        -o-transform: scaleY(-1);
-			        -webkit-transform: scaleY(-1);
-			        transform: scaleY(-1);
-			        filter: FlipV;
-			        -ms-filter: "FlipV";
 				}
 
 				.chat-user {
@@ -181,10 +176,14 @@
 	}
 }
 
-.game>.ui.grid .eight.chat-container .gamechat .inputbar .input {
+.game > .ui.grid .eight.chat-container .gamechat .inputbar .input {
 	width: 518px;
 }
 
-.game>.ui.grid .eight.chat-container .gamechat .pointing.menu .icon {
+.game > .ui.grid .eight.chat-container .gamechat .chats .ui.list {
+	width: 577px;
+}
+
+.game > .ui.grid .eight.chat-container .gamechat .pointing.menu .icon {
 	margin: 7px 0 0 410px;
 }

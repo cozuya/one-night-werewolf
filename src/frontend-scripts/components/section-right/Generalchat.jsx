@@ -14,7 +14,7 @@ export default class Gamechat extends React.Component {
 		this.scrollChats();
 	}
 
-	componentDidUpdate(prevProps) {
+	componentDidUpdate() {
 		this.scrollChats();
 	}	
 
@@ -73,7 +73,6 @@ export default class Gamechat extends React.Component {
 				</div>
 			);
 		});
-
 	}
 
 	handleChatLockClick(e) {

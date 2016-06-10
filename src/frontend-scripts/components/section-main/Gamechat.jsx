@@ -11,6 +11,7 @@ export default class Gamechat extends React.Component {
 			chatFilter: 'All',
 			lock: false,
 			hotkey: 'init',
+			inputValue: ''
 		};
 	}
 
@@ -20,29 +21,31 @@ export default class Gamechat extends React.Component {
 
 	componentDidUpdate(prevProps) {
 		const $input = $(this.refs.gameChatInput),
-			{ selectedGamerole, selectedPlayer } = this.props;
+			{ selectedGamerole, selectedPlayer } = this.props,
+			currentValue = this.state.inputValue;
 
 		this.scrollChats();
 
 		if (prevProps && !prevProps.gameInfo.gameState.cardsDealt && this.props.gameInfo.gameState.cardsDealt) {
-			$input.val('').blur();
+			this.setState({inputValue: ''});
+			$input.blur();
 		}
 
 		if (prevProps && prevProps.selectedGamerole.random !== selectedGamerole.random && selectedGamerole.role) {
-			if ($input.val() === 'I claim to be the ') {
+			if (currentValue === 'I claim to be the ') {
 				if (selectedGamerole.role === 'troublemaker') {
 					this.setState({hotkey: 'troublemaker'});
 				}
 			}
 
-			$input.val(`${$input.val()}${selectedGamerole.role}`).next().removeClass('disabled');
+			this.setState({inputValue: `${currentValue}${selectedGamerole.role}`});
 		}
 
 		if (prevProps && prevProps.selectedPlayer.random !== selectedPlayer.random && selectedPlayer.playerName.length) {
-			if ($input.val() === 'I think that ') {
-				$input.val(`${$input.val()}${selectedPlayer.playerName} is a `).next().removeClass('disabled');
+			if (currentValue === 'I think that ') {
+				this.setState({inputValue: `${currentValue}${selectedPlayer.playerName} is a `});
 			} else {
-				$input.val(`${$input.val()}${selectedPlayer.playerName}`).next().removeClass('disabled');
+				this.setState({inputValue: `${currentValue}${selectedPlayer.playerName}`});
 			}
 		}
 	}	
@@ -74,11 +77,9 @@ export default class Gamechat extends React.Component {
 	}
 
 	handleLeftHotkeyClick(e) {
-		const $input = $(e.currentTarget).parent().parent().next().find('input');
-
 		switch (this.state.hotkey) {
 			case 'init':
-				$input.val('I claim to be the ');
+				this.setState({inputValue: 'I claim to be the '});
 				this.props.roleState('notify');
 				setTimeout(() => {
 					this.props.roleState('');
@@ -91,52 +92,39 @@ export default class Gamechat extends React.Component {
 	}
 
 	handleRightHotkeyClick(e) {
-		const $input = $(e.currentTarget).parent().parent().next().find('input');
+		const $input = $(this.refs.gameChatInput);
 
 		switch (this.state.hotkey) {
 			case 'init':
-				$input.val('I think that ');
+				this.setState({inputValue: 'I claim to be the '});
 				break;
 
 			case 'troublemaker':
-				$input.val(`${$input.val()} and I swapped the cards between `);
+				this.setState({inputValue: `${this.state.inputValue} and I swapped the cards between `});
 				$input.focus();
 				$input[0].setSelectionRange($input.val().length);
 		}
 	}
 
 	handleChatClearClick(e) {
-		$(e.currentTarget).addClass('app-hidden').prev().find('input').val('');
+		this.setState({inputValue: ''});
 	}
 
-	handleKeyup(e) {
-		// const $input = $(e.currentTarget),
-		// 	inputValue = $input.val(),
-		// 	$button = $input.next(),
-		// 	$clearIcon = $input.parent().next();
-
-		// if (inputValue.length) {
-		// 	$button.removeClass('disabled');  // todo-release get this jquery nonsense out of here but I'm too lazy and there's other stuff to do
-		// 	$clearIcon.removeClass('app-hidden');
-		// } else {
-		// 	$button.addClass('disabled');
-		// 	$clearIcon.addClass('app-hidden');
-		// }
+	handleInputChange(e) {
+		this.setState({inputValue: `${e.target.value}`});
 	}
 
 	handleSubmit(e) {
-		const input = $(e.currentTarget).find('input')[0],
-			$button = $(e.currentTarget).find('button'),
-			$clearIcon = $button.parent().next(),
+		const currentValue = this.state.inputValue,
 			{ seatNumber } = this.props.userInfo,
 			{ gameInfo, userInfo } = this.props;
 
 		e.preventDefault();
 
-		if (input.value) {
+		if (currentValue.length) {
 			const chat = {
 				userName: this.props.userInfo.userName,
-				chat: input.value,
+				chat: currentValue,
 				gameChat: false,
 				uid: gameInfo.uid,
 				inProgress: gameInfo.inProgress
@@ -160,18 +148,15 @@ export default class Gamechat extends React.Component {
 			}
 
 			this.props.socket.emit('addNewGameChat', chat, this.props.gameInfo.uid);
-			input.value = '';
-			input.focus();
-			$button.addClass('disabled');
-			$clearIcon.addClass('app-hidden');
+			this.setState({inputValue: ''});
 		}
 	}
 
 	scrollChats() {
-		const chatsContainer = document.querySelector('section.segment.chats');
+		const chatsContainer = document.querySelector('section.segment.chats > .ui.list');
 		
 		if (!this.state.lock) {
-			chatsContainer.scrollTop = 0;
+			chatsContainer.scrollTop = 999;
 		}
 	}
 
@@ -200,7 +185,7 @@ export default class Gamechat extends React.Component {
 		const { gameInfo } = this.props;
 
 		return gameInfo.chats.sort((a, b) => {
-			return new Date(b.timestamp) - new Date(a.timestamp);
+			return new Date(a.timestamp) - new Date(b.timestamp);
 		}).map((chat, i) => {
 			const chatContents = chat.chat,
 				playerNames = Object.keys(gameInfo.seated).map((seatName) => {
@@ -354,7 +339,18 @@ export default class Gamechat extends React.Component {
 
 						return (
 							<div className="expando-container">
-								<i className="large delete icon app-visibility-hidden" onClick={this.handleChatClearClick.bind(this)}></i>
+								<i className={
+									(() => {
+										let classes = 'large delete icon';
+
+										if (!this.state.inputValue.length) {
+											classes += ' app-visibility-hidden';
+										}
+
+										return classes;
+									})()
+								}
+								 onClick={this.handleChatClearClick.bind(this)}></i>
 								{(() => {
 									if (gameInfo.gameState.isStarted && userInfo.seatNumber) {
 										{return this.createHotkeys()}
@@ -376,8 +372,18 @@ export default class Gamechat extends React.Component {
 							return classes;							
 						})()
 					}>
-						<input placeholder="Chat.." id="gameChatInput" ref="gameChatInput" onKeyUp={this.handleKeyup.bind(this)} maxLength="300"></input>
-						<button className="ui primary button disabled">Chat</button>
+						<input value={this.state.inputValue} placeholder="Chat.." id="gameChatInput" ref="gameChatInput" onChange={this.handleInputChange.bind(this)} maxLength="300"></input>
+						<button className={
+							(() => {
+								let classes = 'ui primary button';
+
+								if (!this.state.inputValue.length) {
+									classes += ' disabled';
+								}
+
+								return classes;
+							})()
+						}>Chat</button>
 					</div>
 				</form>
 			</section>
