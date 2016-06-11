@@ -11,6 +11,7 @@ export default class Gamechat extends React.Component {
 			chatFilter: 'All',
 			lock: false,
 			hotkey: 'init',
+			altClaim: '',
 			inputValue: ''
 		};
 	}
@@ -47,6 +48,14 @@ export default class Gamechat extends React.Component {
 				default:
 					this.setState({inputValue: `${currentValue}${selectedGamerole.role}`});
 			}
+
+			if (this.state.hotkey === 'insomniac' && /^(I claim to be the insomniac and when I awoke, I was the)/i.test(currentValue) ) {
+				this.setState({altClaim: selectedGamerole.role});
+			}
+
+			if (this.state.hotkey === 'robber' && /^(I claim to be the robber and I swapped my card with the card of )/i.test(currentValue) ) {
+				this.setState({altClaim: selectedGamerole.role});
+			}
 		}
 
 		if (prevProps && prevProps.selectedPlayer.random !== selectedPlayer.random && selectedPlayer.playerName.length) {
@@ -61,6 +70,10 @@ export default class Gamechat extends React.Component {
 
 				case 'I claim to be the seer and I looked at the card of ':
 					this.setState({inputValue: `${currentValue}${selectedPlayer.playerName} and they were a `});
+					break;
+
+				case 'I claim to be the robber and I swapped my card with the card of ':
+					this.setState({inputValue: `${currentValue}${selectedPlayer.playerName} and am now a `});
 					break;
 
 				default:
@@ -80,7 +93,7 @@ export default class Gamechat extends React.Component {
 
 			case 'mason':
 				textLeft = 'reset';
-				textRight = 'Others..';
+				textRight = 'others..';
 				break;
 
 			case 'seer':
@@ -91,6 +104,11 @@ export default class Gamechat extends React.Component {
 			case 'insomniac':
 				textLeft = 'reset';
 				textRight = 'woke to..';
+				break;
+
+			case 'robber':
+				textLeft = 'reset';
+				textRight = 'switched..';
 				break;
 
 			default:
@@ -113,7 +131,10 @@ export default class Gamechat extends React.Component {
 	handleLeftHotkeyClick(e) {
 		switch (this.state.hotkey) {
 			case 'init':
-				this.setState({inputValue: 'I claim to be the '});
+				this.setState({
+					inputValue: 'I claim to be the ',
+					altClaim: ''
+				});
 				this.props.roleState('notify');
 				setTimeout(() => {
 					this.props.roleState('');
@@ -127,6 +148,7 @@ export default class Gamechat extends React.Component {
 			default:
 				this.setState({
 					inputValue: '',
+					altClaim: '',
 					hotkey: 'init'
 				});
 		}
@@ -152,6 +174,10 @@ export default class Gamechat extends React.Component {
 				this.setState({inputValue: `${this.state.inputValue} and when I awoke, I was the `});
 				break;
 
+			case 'robber':
+				this.setState({inputValue: `${this.state.inputValue} and I swapped my card with the card of `});
+				break;
+
 			default:
 				this.setState({inputValue: 'I think that '});
 		}
@@ -160,6 +186,7 @@ export default class Gamechat extends React.Component {
 	handleChatClearClick(e) {
 		this.setState({
 			inputValue: '',
+			altClaim: '',
 			hotkey: 'init'
 		});
 	}
@@ -172,7 +199,7 @@ export default class Gamechat extends React.Component {
 		const currentValue = this.state.inputValue,
 			{ seatNumber } = this.props.userInfo,
 			{ gameInfo, userInfo } = this.props,
-			{ hotkey } = this.state;
+			{ hotkey, altClaim } = this.state;
 
 		e.preventDefault();
 
@@ -186,12 +213,13 @@ export default class Gamechat extends React.Component {
 			}
 
 			if (gameInfo.gameState.isStarted && !gameInfo.gameState.isCompleted && userInfo.seatNumber && hotkey !== 'init') {
-				chat.claim = hotkey;
+				chat.claim = altClaim || hotkey;
 			}
 
 			this.props.socket.emit('addNewGameChat', chat, this.props.gameInfo.uid);
 			this.setState({
 				inputValue: '',
+				altClaim: '',
 				hotkey: 'init'
 			});
 		}
@@ -415,7 +443,7 @@ export default class Gamechat extends React.Component {
 							return classes;							
 						})()
 					}>
-						<input value={this.state.inputValue} placeholder="Chat.." id="gameChatInput" ref="gameChatInput" onChange={this.handleInputChange.bind(this)} maxLength="300" dir="rtl"></input>
+						<input value={this.state.inputValue} placeholder="..Chat" id="gameChatInput" ref="gameChatInput" onChange={this.handleInputChange.bind(this)} maxLength="300" dir="rtl"></input>
 						<button className={!this.state.inputValue.length ? 'ui primary button disabled' : 'ui primary button'}>Chat</button>
 					</div>
 				</form>
