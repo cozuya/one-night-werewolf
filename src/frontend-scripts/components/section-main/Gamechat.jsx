@@ -254,6 +254,14 @@ export default class Gamechat extends React.Component {
 		}
 	}
 
+	handleChatLockClick(e) {
+		if (this.state.lock) {
+			this.setState({lock: false});
+		} else {
+			this.setState({lock: true});
+		}
+	}
+
 	processChats() {
 		const { gameInfo } = this.props;
 
@@ -382,14 +390,6 @@ export default class Gamechat extends React.Component {
 		});	
 	}
 
-	handleChatLockClick(e) {
-		if (this.state.lock) {
-			this.setState({lock: false});
-		} else {
-			this.setState({lock: true});
-		}
-	}
-
 	render() {
 		return (
 			<section className="gamechat">
@@ -407,6 +407,12 @@ export default class Gamechat extends React.Component {
 				<form className="segment inputbar" onSubmit={this.handleSubmit.bind(this)}>
 					{(() => {
 						const { gameInfo, userInfo } = this.props;
+
+						let classes = 'expando-container';
+
+						if (!userInfo.seatNumber || !gameInfo.gameState.isDay || this.props.gameInfo.gameState.isCompleted) {
+							classes += ' app-visibility-hidden';
+						}
 
 						return (
 							<div className="expando-container">

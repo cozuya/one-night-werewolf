@@ -77,23 +77,24 @@ const { games, userList, generalChats } = require('./models'),
 				const seatNames = Object.keys(game.seated),
 					userSeatName = seatNames.find((seatName) => {
 						return game.seated[seatName].userName === passport.user;
-					});
+					}),
+					{ gameState } = game;
 
-				if (game.gameState.isStarted && !game.gameState.isCompleted) {
+				if (gameState.isStarted && !gameState.isCompleted) {
 					game.seated[userSeatName].connected = false;
 					sendInProgressGameUpdate(game);
-				} else if (game.gameState.isCompleted && Object.keys(game.seated).filter((seat) => {
+				} else if (gameState.isCompleted && Object.keys(game.seated).filter((seat) => {
 						return !game.seated[seat].connected;
 					}).length === 6) {
 					saveGame(game);
 					games.splice(games.indexOf(game), 1);
 				} else if (seatNames.length === 1) {
 					games.splice(games.indexOf(game), 1);
-				} else if (!game.gameState.isStarted) {
+				} else if (!gameState.isStarted) {
 					// todo-release kick out observer sockets/route to default?
 					delete game.seated[userSeatName];
 					io.sockets.in(game.uid).emit('gameUpdate', game);
-				} else if (game.gameState.isStarted && game.gameState.isCompleted) {
+				} else if (gameState.isCompleted) {
 					game.seated[userSeatName].connected = false;
 					sendInProgressGameUpdate(game);
 				}

@@ -28,11 +28,16 @@ v0.3.4 released 6/5/2016
 	chat sorting moved client side
 	sockets no longer automatically reconnect
 
+v0.4.0 released 6/11/2016
+	claim system redone to allow for verbose "here's what I did" explanations
+	some UI enhancement
+	chats refactored to be more "reacty", no change to UX
+	logout added to game screen
+	resolved various issues that came up during alpha
+
 future
 	explore cardback reward system
 	explore guest mode
 	add dark theme
-	add full featured expando actions based on claimed roll
 	add email confirmation system/tokens
 	more roles
-	do something to fix issue that reverses the direction of mouse scroll wheels in chats (switch to flex?)
