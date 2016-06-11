@@ -89,7 +89,7 @@ const { games, userList, generalChats } = require('./models'),
 					games.splice(games.indexOf(game), 1);
 				} else if (seatNames.length === 1) {
 					games.splice(games.indexOf(game), 1);
-				} else if (game.gameState.isStarted && !game.gameState.isCompleted) {
+				} else if (!game.gameState.isStarted) {
 					// todo-release kick out observer sockets/route to default?
 					delete game.seated[userSeatName];
 					io.sockets.in(game.uid).emit('gameUpdate', game);

@@ -5,8 +5,6 @@ import $ from 'jquery';
 import _ from 'lodash';
 import { roleList, roleMap } from '../../../../iso/util';
 
-// todo-alpha leaving game doesn't unseat you any more
-
 export default class Gamechat extends React.Component {
 	constructor() {
 		this.state = {
@@ -34,22 +32,39 @@ export default class Gamechat extends React.Component {
 		}
 
 		if (prevProps && prevProps.selectedGamerole.random !== selectedGamerole.random && selectedGamerole.role) {
-			if (currentValue === 'I claim to be the ') {
-				if (selectedGamerole.role === 'troublemaker') {
-					this.setState({hotkey: 'troublemaker'});
-				}
-			}
+			switch (currentValue) {
+				case 'I claim to be the ':
+					this.setState({
+						hotkey: selectedGamerole.role,
+						inputValue: `${currentValue}${selectedGamerole.role}`
+					});
+					break;
 
-			this.setState({inputValue: `${currentValue}${selectedGamerole.role}`});
+				case 'I claim to be the seer and I looked two of the center cards and they were a ':
+					this.setState({inputValue: `${this.state.inputValue}${selectedGamerole.role} and a `});
+					break;
+
+				default:
+					this.setState({inputValue: `${currentValue}${selectedGamerole.role}`});
+			}
 		}
 
 		if (prevProps && prevProps.selectedPlayer.random !== selectedPlayer.random && selectedPlayer.playerName.length) {
-			if (currentValue === 'I claim to be the troublemaker and I swapped the cards between ') {
-				this.setState({inputValue: `${currentValue}${selectedPlayer.playerName} and `});
-			} else if (currentValue === 'I think that ') {
-				this.setState({inputValue: `${currentValue}${selectedPlayer.playerName} is a `});
-			} else {
-				this.setState({inputValue: `${currentValue}${selectedPlayer.playerName}`});
+			switch (currentValue) {
+				case 'I claim to be the troublemaker and I swapped the cards between ':
+					this.setState({inputValue: `${currentValue}${selectedPlayer.playerName} and `});
+					break;
+
+				case 'I think that ':
+					this.setState({inputValue: `${currentValue}${selectedPlayer.playerName} is a `});
+					break;
+
+				case 'I claim to be the seer and I looked at the card of ':
+					this.setState({inputValue: `${currentValue}${selectedPlayer.playerName} and they were a `});
+					break;
+
+				default:
+					this.setState({inputValue: `${currentValue}${selectedPlayer.playerName}`});
 			}
 		}
 	}	
@@ -58,14 +73,29 @@ export default class Gamechat extends React.Component {
 		let textLeft, textRight;
 
 		switch (this.state.hotkey) {   // todo-release expand this functionality to include nightaction events
-			case 'init':
-				textLeft = 'I claim..';
-				textRight = 'I think..';
+			case 'troublemaker':
+				textLeft = 'reset';
+				textRight = 'I swapped..';
 				break;
 
-			case 'troublemaker':
-				textLeft = 'Reset';
-				textRight = 'I swapped..'
+			case 'mason':
+				textLeft = 'reset';
+				textRight = 'Others..';
+				break;
+
+			case 'seer':
+				textLeft = 'center';
+				textRight = 'player';
+				break;
+
+			case 'insomniac':
+				textLeft = 'reset';
+				textRight = 'woke to..';
+				break;
+
+			default:
+				textLeft = 'I claim..';
+				textRight = 'I think..';
 		}
 
 		return (
@@ -90,7 +120,11 @@ export default class Gamechat extends React.Component {
 				}, 1000);
 				break;
 
-			case 'troublemaker':
+			case 'seer':
+				this.setState({inputValue: `${this.state.inputValue} and I looked two of the center cards and they were a `});
+				break;
+
+			default:
 				this.setState({
 					inputValue: '',
 					hotkey: 'init'
@@ -102,14 +136,24 @@ export default class Gamechat extends React.Component {
 		const $input = $(this.refs.gameChatInput);
 
 		switch (this.state.hotkey) {
-			case 'init':
-				this.setState({inputValue: 'I think that '});
-				break;
-
 			case 'troublemaker':
 				this.setState({inputValue: `${this.state.inputValue} and I swapped the cards between `});
-				$input.focus();
-				$input[0].setSelectionRange($input.val().length);
+				break;
+
+			case 'mason':
+				this.setState({inputValue: `${this.state.inputValue} and the other mason(s) were `});
+				break;
+
+			case 'seer':
+				this.setState({inputValue: `${this.state.inputValue} and I looked at the card of `});
+				break;
+
+			case 'insomniac':
+				this.setState({inputValue: `${this.state.inputValue} and when I awoke, I was the `});
+				break;
+
+			default:
+				this.setState({inputValue: 'I think that '});
 		}
 	}
 
@@ -371,7 +415,7 @@ export default class Gamechat extends React.Component {
 							return classes;							
 						})()
 					}>
-						<input value={this.state.inputValue} placeholder="Chat.." id="gameChatInput" ref="gameChatInput" onChange={this.handleInputChange.bind(this)} maxLength="300"></input>
+						<input value={this.state.inputValue} placeholder="Chat.." id="gameChatInput" ref="gameChatInput" onChange={this.handleInputChange.bind(this)} maxLength="300" dir="rtl"></input>
 						<button className={!this.state.inputValue.length ? 'ui primary button disabled' : 'ui primary button'}>Chat</button>
 					</div>
 				</form>
