@@ -42,7 +42,9 @@ export default class Gamechat extends React.Component {
 		}
 
 		if (prevProps && prevProps.selectedPlayer.random !== selectedPlayer.random && selectedPlayer.playerName.length) {
-			if (currentValue === 'I think that ') {
+			if (currentValue === 'I claim to be the troublemaker and I swapped the cards between ') {
+				this.setState({inputValue: `${currentValue}${selectedPlayer.playerName} and `});
+			} else if (currentValue === 'I think that ') {
 				this.setState({inputValue: `${currentValue}${selectedPlayer.playerName} is a `});
 			} else {
 				this.setState({inputValue: `${currentValue}${selectedPlayer.playerName}`});
@@ -96,7 +98,7 @@ export default class Gamechat extends React.Component {
 
 		switch (this.state.hotkey) {
 			case 'init':
-				this.setState({inputValue: 'I claim to be the '});
+				this.setState({inputValue: 'I think that '});
 				break;
 
 			case 'troublemaker':
@@ -107,7 +109,10 @@ export default class Gamechat extends React.Component {
 	}
 
 	handleChatClearClick(e) {
-		this.setState({inputValue: ''});
+		this.setState({
+			inputValue: '',
+			hotkey: 'init'
+		});
 	}
 
 	handleInputChange(e) {
@@ -133,13 +138,13 @@ export default class Gamechat extends React.Component {
 			if (gameInfo.gameState.isStarted && !gameInfo.gameState.isCompleted && userInfo.seatNumber) {
 				const roles = _.uniq(gameInfo.roles),
 					roleRegexes = roles.map((role) => {
-						return new RegExp(`^i claim to be the ${role}`, 'gi');
+						return new RegExp(`^i claim to be the ${role}`, 'i');
 					});
 				
 				roleRegexes.forEach((regex) => {
-					if (regex.test(input.value)) {
+					if (regex.test(currentValue)) {
 						const claim = roles.filter((role) => {
-							return input.value.match(new RegExp(`${role}$`, 'gi'));
+							return currentValue.match(new RegExp(`${role}$`, 'i'));
 						});
 
 						chat.claim = claim[0];
@@ -148,7 +153,10 @@ export default class Gamechat extends React.Component {
 			}
 
 			this.props.socket.emit('addNewGameChat', chat, this.props.gameInfo.uid);
-			this.setState({inputValue: ''});
+			this.setState({
+				inputValue: '',
+				hotkey: 'init'
+			});
 		}
 	}
 
@@ -268,6 +276,7 @@ export default class Gamechat extends React.Component {
 										});
 									}
 								});
+								console.log('Hello World!');
 
 								roles.forEach((role) => {
 									const split = chatContents.split(new RegExp(role.name, 'i'));
@@ -290,7 +299,9 @@ export default class Gamechat extends React.Component {
 									return a.index - b.index;
 								});
 
+								console.log(toProcessChats);
 								return splitChat.map((piece, index) => {
+									console.log(index);
 									if (index) {
 										const item = toProcessChats[index - 1];
 

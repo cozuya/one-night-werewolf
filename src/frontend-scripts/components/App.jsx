@@ -144,7 +144,7 @@ class App extends React.Component {
 					seats: [{}, {}, {}, {}, {}, {}, {}, {}, {}, {}]
 				},
 				time: ':16',
-				time: '20:00',
+				time: '40:00',
 				// uid: Math.random().toString(36).substring(2)
 				uid: 'devgame'
 			};
