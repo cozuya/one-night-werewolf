@@ -64,7 +64,7 @@ export default class Gamechat extends React.Component {
 				break;
 
 			case 'troublemaker':
-				textLeft = 'Back';
+				textLeft = 'Reset';
 				textRight = 'I swapped..'
 		}
 
@@ -91,7 +91,10 @@ export default class Gamechat extends React.Component {
 				break;
 
 			case 'troublemaker':
-				this.setState({hotkey: 'init'});
+				this.setState({
+					inputValue: '',
+					hotkey: 'init'
+				});
 		}
 	}
 
@@ -124,7 +127,8 @@ export default class Gamechat extends React.Component {
 	handleSubmit(e) {
 		const currentValue = this.state.inputValue,
 			{ seatNumber } = this.props.userInfo,
-			{ gameInfo, userInfo } = this.props;
+			{ gameInfo, userInfo } = this.props,
+			{ hotkey } = this.state;
 
 		e.preventDefault();
 
@@ -137,21 +141,8 @@ export default class Gamechat extends React.Component {
 				inProgress: gameInfo.inProgress
 			}
 
-			if (gameInfo.gameState.isStarted && !gameInfo.gameState.isCompleted && userInfo.seatNumber) {
-				const roles = _.uniq(gameInfo.roles),
-					roleRegexes = roles.map((role) => {
-						return new RegExp(`^i claim to be the ${role}`, 'i');
-					});
-				
-				roleRegexes.forEach((regex) => {
-					if (regex.test(currentValue)) {
-						const claim = roles.filter((role) => {
-							return currentValue.match(new RegExp(`${role}$`, 'i'));
-						});
-
-						chat.claim = claim[0];
-					}
-				});
+			if (gameInfo.gameState.isStarted && !gameInfo.gameState.isCompleted && userInfo.seatNumber && hotkey !== 'init') {
+				chat.claim = hotkey;
 			}
 
 			this.props.socket.emit('addNewGameChat', chat, this.props.gameInfo.uid);
@@ -277,18 +268,15 @@ export default class Gamechat extends React.Component {
 									if (split.length > 1) {
 										split.forEach((piece, index) => {
 											if (index < split.length - 1) {
-												console.log(split);
 												const processor = {
 													text: item.name,
-													index: split[index + 1] === split[index] ? split[index - 1].length : split[index].length,
+													index: split[index].length, // todo-alpha there's a bug here with chats that go (playername)(rolename)(same rolename) but it will have to wait until I have some time to dig into it
 													type: item.team ? 'roleName' : 'playerName',
 												};
 
 												if (item.team) {
 													processor.team = item.team;
 												}
-
-												console.log(processor);
 
 												toProcessChats.push(processor);
 											}
@@ -301,7 +289,6 @@ export default class Gamechat extends React.Component {
 									return a.index - b.index;
 								});
 
-								console.log(toProcessChats);
 								return splitChat.map((piece, index) => {
 									if (index) {
 										const item = toProcessChats[index - 1];
@@ -385,17 +372,7 @@ export default class Gamechat extends React.Component {
 						})()
 					}>
 						<input value={this.state.inputValue} placeholder="Chat.." id="gameChatInput" ref="gameChatInput" onChange={this.handleInputChange.bind(this)} maxLength="300"></input>
-						<button className={
-							(() => {
-								let classes = 'ui primary button';
-
-								if (!this.state.inputValue.length) {
-									classes += ' disabled';
-								}
-
-								return classes;
-							})()
-						}>Chat</button>
+						<button className={!this.state.inputValue.length ? 'ui primary button disabled' : 'ui primary button'}>Chat</button>
 					</div>
 				</form>
 			</section>

@@ -121,6 +121,10 @@
 			}
 		}
 
+		.seat:hover .username {
+			color: $werewolfteam;
+		}
+
 		.seat.empty {
 			background: url('../images/open-seat.png') no-repeat;
 		}

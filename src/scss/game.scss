@@ -121,6 +121,11 @@
 						bottom: 0;
 						border: 1px solid #bbb;
 
+						> div:hover {
+							font-weight: bold;
+							color: $lteal;
+						}
+
 						div:first-child {
 							width: 75px;
 							border-right: 1px solid #bbb;

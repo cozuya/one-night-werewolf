@@ -86,6 +86,11 @@ body {
 
 	.item.right {
 		padding: 3px 10px;
+
+		a:hover {
+			color: #000;
+			text-decoration: underline;
+		}
 	}
 
 	.loggedin {

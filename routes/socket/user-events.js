@@ -261,8 +261,6 @@ module.exports.handleAddNewGameChat = (data, uid) => {
 		game.tableState.seats[player.seatNumber].claim = data.claim;
 	}
 
-	console.log(data);
-
 	if (game.gameState.isStarted) {
 		sendInProgressGameUpdate(game);
 	} else {
