@@ -5,6 +5,8 @@ import $ from 'jquery';
 import _ from 'lodash';
 import { roleList, roleMap } from '../../../../iso/util';
 
+// todo-alpha leaving game doesn't unseat you any more
+
 export default class Gamechat extends React.Component {
 	constructor() {
 		this.state = {
@@ -196,8 +198,13 @@ export default class Gamechat extends React.Component {
 			return new Date(a.timestamp) - new Date(b.timestamp);
 		}).map((chat, i) => {
 			const chatContents = chat.chat,
-				playerNames = Object.keys(gameInfo.seated).map((seatName) => {
-					return gameInfo.seated[seatName].userName;
+				// playerNames = Object.keys(gameInfo.seated).map((seatName) => {
+				// 	return gameInfo.seated[seatName].userName;
+				// }),
+				players = Object.keys(gameInfo.seated).map((seatName) => {
+					return {
+						name: gameInfo.seated[seatName].userName
+					};
 				}),
 				isSeated = () => {
 					return !!Object.keys(gameInfo.seated).find((seatName) => {
@@ -253,47 +260,42 @@ export default class Gamechat extends React.Component {
 						<span>
 							{(() => {
 								const toProcessChats = [],
-									splitChat = chatContents.split((() => {
-										const toRegex = playerNames.concat(roles.map((role) => {
-											return role.name;
-										})).join('|');
+										splitChat = chatContents.split((() => {
+											const toRegex = players.map((player) => {
+												return player.name;
+											}).concat(roles.map((role) => {
+												return role.name;
+											})).join('|');
 
-									return new RegExp(toRegex, 'i');
-								})());
+										return new RegExp(toRegex, 'i');
+									})()),
+									combinedToProcess = roles.concat(players);
 
-								playerNames.forEach((name) => {
-									const split = chatContents.split(new RegExp(name, 'i'));
-
+								combinedToProcess.forEach((item) => {
+									const split = chatContents.split(new RegExp(item.name, 'i'));
+									
 									if (split.length > 1) {
 										split.forEach((piece, index) => {
 											if (index < split.length - 1) {
-												toProcessChats.push({
-													text: name,
-													index: split[index].length,
-													type: 'playerName'
-												});
+												console.log(split);
+												const processor = {
+													text: item.name,
+													index: split[index + 1] === split[index] ? split[index - 1].length : split[index].length,
+													type: item.team ? 'roleName' : 'playerName',
+												};
+
+												if (item.team) {
+													processor.team = item.team;
+												}
+
+												console.log(processor);
+
+												toProcessChats.push(processor);
 											}
 										});
 									}
 								});
-								console.log('Hello World!');
 
-								roles.forEach((role) => {
-									const split = chatContents.split(new RegExp(role.name, 'i'));
-
-									if (split.length > 1) {
-										split.forEach((piece, index) => {
-											if (index < split.length - 1) {
-												toProcessChats.push({
-													text: role.name,
-													index: split[index].length,
-													type: 'roleName',
-													team: role.team
-												});
-											}
-										});
-									}
-								});
 
 								toProcessChats.sort((a, b) => {
 									return a.index - b.index;
@@ -301,7 +303,6 @@ export default class Gamechat extends React.Component {
 
 								console.log(toProcessChats);
 								return splitChat.map((piece, index) => {
-									console.log(index);
 									if (index) {
 										const item = toProcessChats[index - 1];
 
