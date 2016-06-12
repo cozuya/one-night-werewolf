@@ -415,7 +415,7 @@ export default class Gamechat extends React.Component {
 						}
 
 						return (
-							<div className="expando-container">
+							<div className={classes}>
 								<i className={
 									(() => {
 										let classes = 'large delete icon';

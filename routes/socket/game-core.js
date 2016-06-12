@@ -373,7 +373,7 @@ const prepareNightPhases = (game) => {
 							text: 'werewolves',
 							type: 'roleName'
 						},
-						{text: 'in this game. Be careful - you lose if no village team player is eliminated.'}
+						{text: ' in this game. Be careful - you lose if no village team player is eliminated.'}
 					];
 					game.internals.soloMinion = true;
 				} else {
