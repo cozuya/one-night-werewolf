@@ -48,7 +48,12 @@ module.exports = () => {
 	});
 
 	app.get('/game', ensureAuthenticated, (req, res) => {
-		res.render('game', {user: req.user.username, game: true});
+
+		res.render('game', {
+			user: req.user.username,
+			game: true,
+			isDark: req.user.gameSettings.enableDarkTheme
+		});
 	});
 
 	app.get('/observe', (req, res) => {

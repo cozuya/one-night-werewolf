@@ -18,12 +18,12 @@ let gulp = require('gulp'),
 	notifier = require('node-notifier'),
 	exec = require('child_process').exec;
 
-gulp.task('default', ['watch', 'scripts', 'styles', 'styles-web']);
+gulp.task('default', ['watch', 'scripts', 'styles', 'styles-web', 'styles-dark']);
 
 gulp.task('watch', () => {
 	process.env.NODE_ENV = 'development';
 	livereload.listen();
-	gulp.watch('./src/scss/*.scss', ['styles', 'styles-web']);
+	gulp.watch('./src/scss/*.scss', ['styles', 'styles-web', 'styles-dark']);
 	gulp.watch('./src/frontend-scripts/**/*.js*', ['scripts', 'lint']);
 	gulp.watch('./routes/*.js', ['reload']);
 	gulp.watch('./src/images/*', ['imagemin']);
@@ -43,6 +43,19 @@ gulp.task('lint', () => {
 
 gulp.task('styles', () => {
 	return gulp.src('./src/scss/style.scss')
+		.pipe(plumber())
+		.pipe(sourcemaps.init())
+		.pipe(sass({outputStyle: 'compressed'}).on('error', () => {
+			notifier.notify({ title: 'SASS Error', message: ' ' });
+		}))
+		.pipe(sourcemaps.write())
+		.pipe(gulp.dest('./public/styles/'))
+		.pipe(wait(1000))
+		.pipe(livereload());
+});
+
+gulp.task('styles-dark', () => {
+	return gulp.src('./src/scss/style-dark.scss')
 		.pipe(plumber())
 		.pipe(sourcemaps.init())
 		.pipe(sass({outputStyle: 'compressed'}).on('error', () => {
@@ -97,7 +110,7 @@ gulp.task('reload', () => {
 		.pipe(livereload());
 });
 
-gulp.task('build', ['build-css', 'build-js']);
+gulp.task('build', ['build-css', 'build-css-dark', 'build-js']);
 
 gulp.task('build-js', () => {
 	process.env.NODE_ENV = 'production';
@@ -125,6 +138,16 @@ gulp.task('build-js', () => {
 
 gulp.task('build-css', () => {
 	return gulp.src('./src/scss/style.scss')
+		.pipe(plumber())
+		.pipe(sass({outputStyle: 'compressed'}).on('error', () => {
+			notifier.notify({ title: 'SASS Error', message: ' ' });
+		}))
+		.pipe(cleanCSS({keepSpecialComments: 0}))
+		.pipe(gulp.dest('./public/styles/'));
+});
+
+gulp.task('build-css-dark', () => {
+	return gulp.src('./src/scss/style-dark.scss')
 		.pipe(plumber())
 		.pipe(sass({outputStyle: 'compressed'}).on('error', () => {
 			notifier.notify({ title: 'SASS Error', message: ' ' });

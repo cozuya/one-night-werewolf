@@ -8,7 +8,10 @@ html(lang="en")
 		meta(name="theme-color" content="#034f61")
 		meta(name="description" content="One Night Werewolf Online - A multiplayer game of deception and deduction.")
 		if game
-			link(rel="stylesheet", type="text/css", href="styles/style.css")
+			if isDark
+				link(rel="stylesheet", type="text/css", href="styles/style-dark.css")
+			else
+				link(rel="stylesheet", type="text/css", href="styles/style.css")
 		else
 			meta(name="viewport", content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1")
 			link(rel="stylesheet", type="text/css", href="//cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.1.8/semantic.min.css")

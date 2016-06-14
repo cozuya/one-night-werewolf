@@ -22,7 +22,7 @@ export default class Gamechat extends React.Component {
 		this.setState({inputValue: ''});
 	}
 
-	handleKeyup(e) {
+	handleInputChange(e) {
 		this.setState({inputValue: `${e.target.value}`});
 	}
 
@@ -80,7 +80,7 @@ export default class Gamechat extends React.Component {
 				</section>
 				<form className="segment inputbar" onSubmit={this.handleSubmit.bind(this)}>
 					<div className={this.props.userInfo.userName ? 'ui action input' : 'ui action input disabled'}>
-						<input placeholder="Chat.." value={this.state.inputValue} onChange={this.handleKeyup.bind(this)} maxLength="300"></input>
+						<input placeholder="Chat.." value={this.state.inputValue} onChange={this.handleInputChange.bind(this)} maxLength="300"></input>
 						<button className={this.state.inputValue ? 'ui primary button' : 'ui primary button disabled'}>Chat</button>
 					</div>
 					<i className={this.state.inputValue ? 'large delete icon' : 'large delete icon app-hidden'} onClick={this.handleChatClearClick.bind(this)}></i>

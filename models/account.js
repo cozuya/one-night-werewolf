@@ -13,7 +13,8 @@ let mongoose = require('mongoose'),
 		gameSettings: {
 			disablePopups: Boolean,
 			enableTimestamps: Boolean,
-			disableRightSidebarInGame: Boolean
+			disableRightSidebarInGame: Boolean,
+			enableDarkTheme: Boolean
 		},
 		games: Array,
 		wins: Number,

@@ -34,7 +34,9 @@ internals
 	seatedPlayers array 7
 		seatNumber number 0-6
 		trueRole string
+		originalRole string
 		selectedForElimination string
+		gameChats array of chat objects
 		tableState
 			reported bool
 			isNight bool - beginNightPhases

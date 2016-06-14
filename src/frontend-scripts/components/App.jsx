@@ -28,6 +28,10 @@ class App extends React.Component {
 			window.location.pathname = '/observe';
 		});
 
+		socket.on('manualReload', () => {
+			window.location.reload();
+		});
+
 		socket.on('gameSettings', (settings) => {
 			const { userInfo } = this.props;
 
