@@ -42,11 +42,11 @@ $dteal: #034f61;
 		color: #ccc;
 	}
 
-	.genchat-container .chat-user + span, #game-container .ui.menu .loggedin, .playerlist-header > div > div > span, #game-container .ui.menu .item.right a:hover, .playerlist-body > div > span, .settings .sub.header, .games-container > div > div > span, .gameinformation-container > span, .seat-container .username, .chats .chat-user + span, .creategame .pickroles .column>span, .table-container .ui.fitted.toggle.checkbox.showclaims label {
+	.genchat-container .chat-user + span, #game-container .ui.menu .loggedin, .playerlist-header > div > div > span, #game-container .ui.menu .item.right a:hover, .playerlist-body > div > span, .settings .sub.header, .games-container > div > div > span, .gameinformation-container > span, .seat-container .username, .chats .chat-user + span, .creategame .pickroles .column>span, .clearroles {
 		color: #bfbfbf;
 	}
 
-	.table-container .ui.fitted.toggle.checkbox.truncate-game label {
+	.table-container .ui.fitted.toggle.checkbox.truncate-game label, .table-container .ui.fitted.toggle.checkbox.showclaims label {
 		color: #bfbfbf !important;
 	}
 

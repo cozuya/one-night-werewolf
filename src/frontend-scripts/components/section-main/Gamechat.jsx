@@ -449,7 +449,7 @@ export default class Gamechat extends React.Component {
 							return classes;							
 						})()
 					}>
-						<input value={this.state.inputValue} placeholder="..Chat" id="gameChatInput" ref="gameChatInput" onChange={this.handleInputChange.bind(this)} maxLength="300" dir="rtl"></input>
+						<input value={this.state.inputValue} placeholder="Chat.." id="gameChatInput" ref="gameChatInput" onChange={this.handleInputChange.bind(this)} maxLength="300"></input>
 						<button className={!this.state.inputValue.length ? 'ui primary button disabled' : 'ui primary button'}>Chat</button>
 					</div>
 				</form>

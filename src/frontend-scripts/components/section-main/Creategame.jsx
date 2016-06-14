@@ -207,7 +207,7 @@ export default class Creategame extends React.Component {
 				</div>
 				<div className="ui grid five column pickroles">
 					<div className="row">
-						<div className={this.state.roles.length === 2 ? 'disabled' : ''} onClick={this.clearRoles.bind(this)}>Clear</div>
+						<div className={this.state.roles.length === 2 ? 'clearroles disabled' : 'clearroles'} onClick={this.clearRoles.bind(this)}>Clear</div>
 					</div>
 					<div className="row">
 						<div className="column werewolf">

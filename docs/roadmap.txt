@@ -35,9 +35,11 @@ v0.4.0 released 6/11/2016
 	logout added to game screen
 	resolved various issues that came up during alpha
 
+v0.4.1 released 6/14/2016
+	dark theme added
+
 future
 	explore cardback reward system
 	explore guest mode
-	add dark theme
 	add email confirmation system/tokens
 	more roles
