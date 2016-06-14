@@ -410,7 +410,7 @@ export default class Gamechat extends React.Component {
 
 						let classes = 'expando-container';
 
-						if (!userInfo.seatNumber || !gameInfo.gameState.isDay || this.props.gameInfo.gameState.isCompleted) {
+						if (!userInfo.seatNumber || gameInfo.gameState.isNight || gameInfo.gameState.isCompleted || gameInfo.gameState.isStarted && !gameInfo.gameState.isDay) {
 							classes += ' app-visibility-hidden';
 						}
 
