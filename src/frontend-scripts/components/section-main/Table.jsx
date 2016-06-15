@@ -247,11 +247,11 @@ export default class Table extends React.Component {
 			if (tableState.nightAction.action === 'seer' && cardNumber !== userInfo.seatNumber) {
 				const { firstClickedCard } = this.state;
 
-				if (firstClickedCard || parseInt(cardNumber) < 7) {
+				if (firstClickedCard !== cardNumber && (firstClickedCard || parseInt(cardNumber) < 7)) {
 					const action = [cardNumber];
 
-					if (firstClickedCard) {
-						action.push(this.state.firstClickedCard);
+					if (firstClickedCard && parseInt(cardNumber) > 6) {
+						action.push(firstClickedCard);
 					}
 
 					data.role = 'seer';

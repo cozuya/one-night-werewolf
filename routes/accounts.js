@@ -62,14 +62,24 @@ module.exports = () => {
 		} else if (password !== password2) {
 			res.status(401).json({message: 'Sorry, your passwords did not match.'});
 		} else {
-			Account.register(new Account(save), password, (err) => {
+			Account.findOne({username}, (err, account) => {
 				if (err) {
 					return next(err);
 				}
+				
+				if (account) {
+					res.status(401).json({message: 'Sorry, that account already exists.'})
+				} else {
+					Account.register(new Account(save), password, (err) => {
+						if (err) {
+							return next(err);
+						}
 
-				passport.authenticate('local')(req, res, () => {
-					res.send();
-				});
+						passport.authenticate('local')(req, res, () => {
+							res.send();
+						});
+					});
+				}
 			});
 		}
 	});

@@ -71,7 +71,11 @@ const { games, userList, generalChats } = require('./models'),
 				});
 
 			socket.emit('manualDisconnection');
-			userList.splice(userIndex, 1);
+			if (userIndex !== -1) {
+				userList.splice(userIndex, 1);
+			} else {
+				console.log('userIndex returned -1');
+			}
 
 			if (game) {
 				const seatNames = Object.keys(game.seated),
@@ -370,7 +374,7 @@ module.exports.checkUserStatus = (socket) => {
 			});
 
 		if (oldSocketID && sockets[oldSocketID]) {
-			handleSocketDisconnect(sockets[oldSocketID]);
+			sockets[oldSocketID].emit('manualDisconnection');
 			delete sockets[oldSocketID];
 		}
 
@@ -385,10 +389,9 @@ module.exports.checkUserStatus = (socket) => {
 			socket.emit('updateSeatForUser', internalPlayer.seatNumber.toString());
 			sendInProgressGameUpdate(game);
 		}
-	} else {
-		sendUserList();
 	}
 
+	sendUserList();
 	sendGeneralChats(socket);
 	sendGameList(socket);
 };
