@@ -346,50 +346,49 @@ export default class Gamechat extends React.Component {
 									const split = chatContents.split(new RegExp(item.name, 'i'));
 									
 									if (split.length > 1) {
+										console.log(split);
 										split.forEach((piece, index) => {
-											console.log(split);
 											if (index < split.length - 1) {
 												const processor = { // todo-alpha there's a bug here with chats that go (playername)(rolename)(same rolename) but it will have to wait until I have some time to dig into it
 													text: item.name,
 													index: (() => {
 														let _index = index;
 
-														function findHighestFilledSplit(splitIndex) {
-															console.log(split[splitIndex]);
-															console.log(splitIndex);
-															console.log(_index);
-															console.log(split[_index - 1]);
+
+														function processSplits(splitIndex) {
 															if (typeof split[_index - 1] !== 'undefined' && !split[splitIndex].length) {
 																console.log('Hello World!');
-																_index--;
-																return findHighestFilledSplit(_index);
+																return processSplits(_index--);
 															} else {
-																return split[splitIndex].length;
+																
+
+																// return split[splitIndex].length;
+																return split.reduce((prev, curr) => {
+																	return prev.length ? prev.length : item.name.length + curr.length ? curr.length : item.name.length;
+																}) + split[splitIndex.length];
 															}
 														}
 
 														// return split[index].length;
-														return findHighestFilledSplit(_index);
+														return processSplits(_index);
 													})(),
 													type: item.team ? 'roleName' : 'playerName',
 												};
 
-												// NRR = RNR
-												// NRRR = RRNR
-												// NRRRR = RRRNR
+												console.log(processor);
+
+												// seer seer robber seer == seer seer seer robber
+
 
 												if (item.team) {
 													processor.team = item.team;
 												}
-
-												console.log(processor);
 
 												toProcessChats.push(processor);
 											}
 										});
 									}
 								});
-
 
 								toProcessChats.sort((a, b) => {
 									return a.index - b.index;
