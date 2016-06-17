@@ -277,10 +277,11 @@ export default class Table extends React.Component {
 			if (cardNumber < 7 && ((swappedWithSeat === 0 || swappedWithSeat) && userInfo.seatNumber !== swappedWithSeat || !swappedWithSeat && userInfo.seatNumber !== cardNumber)) {
 				$card.parent().find('.card').removeClass('card-select'); // todo-release remove jquery crap
 				$card.addClass('card-select');
+
 				this.props.socket.emit('updateSelectedForElimination', {
 					uid: gameInfo.uid,
 					seatNumber: userInfo.seatNumber,
-					selectedForElimination: swappedWithSeat || cardNumber
+					selectedForElimination: typeof swappedWithSeat === 'number' ? swappedWithSeat : cardNumber
 				});
 			}
 		}

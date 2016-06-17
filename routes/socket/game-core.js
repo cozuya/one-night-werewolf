@@ -814,7 +814,7 @@ module.exports.updateSelectedElimination = (data) => {
 		player = game.internals.seatedPlayers[parseInt(data.seatNumber)],
 		{ selectedForElimination } = data;
 
-	player.selectedForElimination = selectedForElimination;
+	player.selectedForElimination = selectedForElimination.toString();
 	highlightSeats(player, 'clear');
 	highlightSeats(player, [parseInt(selectedForElimination)], 'selection');
 	sendInProgressGameUpdate(game);

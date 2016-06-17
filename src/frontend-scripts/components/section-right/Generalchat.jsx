@@ -44,7 +44,7 @@ export default class Gamechat extends React.Component {
 
 	scrollChats() {
 		if (!this.state.lock) {
-			document.querySelector('.genchat-container').scrollTop = 999;
+			document.querySelector('.genchat-container').scrollTop = 99999999;
 		}
 	}
 

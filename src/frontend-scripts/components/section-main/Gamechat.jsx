@@ -229,7 +229,7 @@ export default class Gamechat extends React.Component {
 		const chatsContainer = document.querySelector('section.segment.chats > .ui.list');
 		
 		if (!this.state.lock) {
-			chatsContainer.scrollTop = 999;
+			chatsContainer.scrollTop = 99999999;
 		}
 	}
 
@@ -347,16 +347,42 @@ export default class Gamechat extends React.Component {
 									
 									if (split.length > 1) {
 										split.forEach((piece, index) => {
+											console.log(split);
 											if (index < split.length - 1) {
-												const processor = {
+												const processor = { // todo-alpha there's a bug here with chats that go (playername)(rolename)(same rolename) but it will have to wait until I have some time to dig into it
 													text: item.name,
-													index: split[index].length, // todo-alpha there's a bug here with chats that go (playername)(rolename)(same rolename) but it will have to wait until I have some time to dig into it
+													index: (() => {
+														let _index = index;
+
+														function findHighestFilledSplit(splitIndex) {
+															console.log(split[splitIndex]);
+															console.log(splitIndex);
+															console.log(_index);
+															console.log(split[_index - 1]);
+															if (typeof split[_index - 1] !== 'undefined' && !split[splitIndex].length) {
+																console.log('Hello World!');
+																_index--;
+																return findHighestFilledSplit(_index);
+															} else {
+																return split[splitIndex].length;
+															}
+														}
+
+														// return split[index].length;
+														return findHighestFilledSplit(_index);
+													})(),
 													type: item.team ? 'roleName' : 'playerName',
 												};
+
+												// NRR = RNR
+												// NRRR = RRNR
+												// NRRRR = RRRNR
 
 												if (item.team) {
 													processor.team = item.team;
 												}
+
+												console.log(processor);
 
 												toProcessChats.push(processor);
 											}
@@ -449,7 +475,7 @@ export default class Gamechat extends React.Component {
 							return classes;							
 						})()
 					}>
-						<input value={this.state.inputValue} placeholder="Chat.." id="gameChatInput" ref="gameChatInput" onChange={this.handleInputChange.bind(this)} maxLength="300"></input>
+						<input value={this.state.inputValue} autocomplete="off" placeholder="Chat.." id="gameChatInput" ref="gameChatInput" onChange={this.handleInputChange.bind(this)} maxLength="300"></input>
 						<button className={!this.state.inputValue.length ? 'ui primary button disabled' : 'ui primary button'}>Chat</button>
 					</div>
 				</form>
