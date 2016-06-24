@@ -347,25 +347,31 @@ export default class Gamechat extends React.Component {
 									
 									if (split.length > 1) {
 										console.log(split);
-										split.forEach((piece, index) => {
-											if (index < split.length - 1) {
+										split.forEach((piece, i) => {
+											if (i < split.length - 1) {
 												const processor = { // todo-alpha there's a bug here with chats that go (playername)(rolename)(same rolename) but it will have to wait until I have some time to dig into it
 													text: item.name,
 													index: (() => {
-														let _index = index;
+														let _index = i;
 
 
 														function processSplits(splitIndex) {
-															if (typeof split[_index - 1] !== 'undefined' && !split[splitIndex].length) {
+															if (typeof split[_index - 1] !== 'undefined' && !split[splitIndex].length && !split[splitIndex - 1].substr(0, item.name.length) === item.name) {
 																console.log('Hello World!');
 																return processSplits(_index--);
 															} else {
-																
 
-																// return split[splitIndex].length;
-																return split.reduce((prev, curr) => {
-																	return prev.length ? prev.length : item.name.length + curr.length ? curr.length : item.name.length;
-																}) + split[splitIndex.length];
+																console.log(split.reduce((prev, curr) => {
+																	return prev.length ? item.name.length : prev.length + curr.length ? item.name.length : curr.length;
+																}));
+
+																console.log(split[splitIndex].length);
+
+																// return split[splitIndex].length ? 
+
+																return split[splitIndex].length + split.reduce((prev, curr) => {
+																	return prev.length ? item.name.length : prev.length + curr.length ? item.name.length : curr.length;
+																});
 															}
 														}
 
