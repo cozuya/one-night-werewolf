@@ -57,7 +57,7 @@ module.exports = () => {
 			res.status(401).json({message: 'Sorry, your username is too long.'});
 		} else if (password.length < 7) {
 			res.status(401).json({message: 'Sorry, your password is too short.'});
-		} else if (password.length > 50) {
+		} else if (password.length > 255) {
 			res.status(401).json({message: 'Sorry, your password is too long.'});
 		} else if (password !== password2) {
 			res.status(401).json({message: 'Sorry, your passwords did not match.'});

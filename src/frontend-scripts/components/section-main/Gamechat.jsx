@@ -356,22 +356,25 @@ export default class Gamechat extends React.Component {
 
 
 														function processSplits(splitIndex) {
-															if (typeof split[_index - 1] !== 'undefined' && !split[splitIndex].length && !split[splitIndex - 1].substr(0, item.name.length) === item.name) {
+															if (typeof split[_index - 1] !== 'undefined' && !split[splitIndex].length && split[splitIndex - 1].substr(0, item.name.length) !== item.name) {
 																console.log('Hello World!');
 																return processSplits(_index--);
 															} else {
+																let spliceSplit = split.splice(0, splitIndex ? splitIndex : splitIndex + 1),
+																	reducedSplit = spliceSplit.length > 1 ? spliceSplit.reduce((prev, curr) => {
+																		return !prev.length ? item.name.length : 0 + !curr.length ? item.name.length : curr.length;
+																	}) : spliceSplit[splitIndex].length ? spliceSplit[splitIndex].length : item.name.length;
 
-																console.log(split.reduce((prev, curr) => {
-																	return prev.length ? item.name.length : prev.length + curr.length ? item.name.length : curr.length;
-																}));
+																console.log(spliceSplit);
+
+
+																console.log(reducedSplit);
 
 																console.log(split[splitIndex].length);
 
 																// return split[splitIndex].length ? 
 
-																return split[splitIndex].length + split.reduce((prev, curr) => {
-																	return prev.length ? item.name.length : prev.length + curr.length ? item.name.length : curr.length;
-																});
+																return split[splitIndex].length || reducedSplit ? reducedSplit : item.name.length;
 															}
 														}
 
