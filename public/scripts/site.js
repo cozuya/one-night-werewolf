@@ -12,6 +12,7 @@ $(document).ready(function () {  // yay ES5
 		var username = $('#signup-username').val(),
 			password = $('#signup-password1').val(),
 			password2 = $('#signup-password2').val(),
+			email = $('#signup-email').val(),
 			$loader = $(this).next(),
 			$message = $loader.next(),
 			submitErr = function (message) {
@@ -28,7 +29,8 @@ $(document).ready(function () {  // yay ES5
 			data: JSON.stringify({
 				username: username,
 				password: password,
-				password2: password2
+				password2: password2,
+				email: email
 			}),
 			statusCode: {
 				200: function () {

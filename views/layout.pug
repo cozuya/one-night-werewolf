@@ -59,7 +59,7 @@ html(lang="en")
 				.field
 					.ui.left.icon.input
 						i.user.icon
-						input#signup-username(placeholder="Username")
+						input#signup-username(placeholder="Username", spellcheck="false")
 					.ui.info.message.hidden
 				.field
 					.ui.left.icon.input
@@ -74,7 +74,7 @@ html(lang="en")
 				.field
 					.ui.left.icon.input
 						i.mail.icon
-						input#signup-email(placeholder="Email (optional)", maxlength="100")
+						input#signup-email(placeholder="Email (optional)", maxlength="100", spellcheck="false")
 				button.ui.primary.button.fluid.large.signup-submit Submit
 				.ui.dimmer.inverted
 					.ui.text.loader Signing up..

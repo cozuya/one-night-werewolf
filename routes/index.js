@@ -65,4 +65,8 @@ module.exports = () => {
 		}
 		res.render('game', {game: true});
 	});
+
+	app.get('*', (req, res) => {
+		res.render('404');
+	});
 };

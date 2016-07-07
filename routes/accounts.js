@@ -1,19 +1,21 @@
 'use strict';
 
-let passport = require('passport'),
-	Account = require('../models/account');
-
-let ensureAuthenticated = (req, res, next)  => {
-	if (req.isAuthenticated()) {
-		return next();
-	} else {
-		res.redirect('/');
-	}
-};
+const passport = require('passport'),
+	Account = require('../models/account'),
+	ensureAuthenticated = (req, res, next)  => {
+		if (req.isAuthenticated()) {
+			return next();
+		} else {
+			res.redirect('/');
+		}
+	};
 
 module.exports = () => {
 	app.get('/account', ensureAuthenticated, (req, res) => {
-		res.render('page-account', {username: req.user.username});
+		res.render('page-account', {
+			username: req.user.username,
+			verified: req.user.verified
+		});
 	});
 
 	app.post('/account/change-password', ensureAuthenticated, (req, res) => {
@@ -33,16 +35,23 @@ module.exports = () => {
 	});
 
 	app.post('/account/signup', (req, res, next) => {
-		let username = req.body.username,
-			password = req.body.password,
-			password2 = req.body.password2,
+		const { username, password, password2, email } = req.body,
 			save = {
 				username,
 				gameSettings: {
 					disablePopups: false,
 					enableTimestamps: false,
-					disableRightSidebarInGame: false
+					disableRightSidebarInGame: false,
+					enableDarkTheme: false
 				},
+				verification: {
+					email: email || '',
+					verificationToken: '',
+					verificationTokenExpiration: new Date(),
+					passwordResetToken: '',
+					passwordResetTokenExpiration: new Date()
+				},
+				verified: false,
 				games: [],
 				wins: 0,
 				losses: 0,
@@ -76,7 +85,11 @@ module.exports = () => {
 						}
 
 						passport.authenticate('local')(req, res, () => {
-							res.send();
+							if (email) {
+								require('./verify-account')(req, res);
+							} else {
+								res.send();
+							}
 						});
 					});
 				}
@@ -87,21 +100,6 @@ module.exports = () => {
 	app.post('/account/signin', passport.authenticate('local'), (req, res) => {
 		res.send();
 	});
-
-	// app.post('/login', passport.authenticate('local'), (req, res, next) {
-	// 		// issue a remember me cookie if the option was checked
-	// 		if (!req.body.remember_me) { return next(); }
-
-	// 		var token = utils.generateToken(64);
-	// 		Token.save(token, { userId: req.user.id }, function(err) {
-	// 		if (err) { return done(err); }
-	// 		res.cookie('remember_me', token, { path: '/', httpOnly: true, maxAge: 604800000 }); // 7 days
-	// 		return next();
-	// 		});
-	// 		},
-	// 		function(req, res) {
-	// 		res.redirect('/');
-	// 		});
 
 	app.post('/account/logout', ensureAuthenticated, (req, res) => {
 		req.logOut();

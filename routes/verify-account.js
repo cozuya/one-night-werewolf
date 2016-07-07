@@ -2,40 +2,43 @@
 
 const passport = require('passport'),
 	Account = require('../models/account'),
-	ensureAuthenticated = (req, res, next)  => {
-		if (req.isAuthenticated()) {
-			return next();
-		} else {
-			res.redirect('/observe');
-		}
-	},
 	nodemailer = require('nodemailer'),
 	mg = require('nodemailer-mailgun-transport');
 
-module.exports = () => {
-	app.get('/email', (req, res) => {
-			auth = {
-				auth: {
-					api_key: process.env.MGKEY,
-					domain: 'onenightwerewolf.online'
-				}
-			},
-			nmMailgun = nodemailer.createTransport(mg(auth));
-
-		nmMailgun.sendMail({
-			from: 'OneNightWerewolf <admin@onenightwerewolf.online>',
-			to: 'blindstealer@gmail.com',
-			subject: 'Test email subject',
-			'h:Reply-To': 'chris.v.ozols@gmail.com',
-			html: '<h1>email!</h1>'
-		}, (err, info) => {
-			if (err) {
-				console.log(err);
+module.exports = (req, res) => {
+	const token = `${Math.random().toString(36).substring(2)}${Math.random().toString(36).substring(2)}`,
+		nmMailgun = nodemailer.createTransport(mg({
+			auth: {
+				api_key: process.env.MGKEY,
+				domain: 'onenightwerewolf.online'
 			}
+		}));
+
+	Account.findOne({username: req.body.username}, (err, account) => {
+		if (err) {
+			console.log(err);
+		}
+
+		let tomorrow = new Date;
+
+		tomorrow.setDate(tomorrow.getDate() + 1);
+
+		account.verification.verificationTokenExpiration = tomorrow;
+
+		account.save(() => {
+			console.log('saved');
 		});
 	});
 
-	app.get('*', (req, res) => {
-		res.render('404');
-	});
+	// nmMailgun.sendMail({
+	// 	from: 'OneNightWerewolf <admin@onenightwerewolf.online>',
+	// 	to: 'blindstealer@gmail.com',
+	// 	subject: 'Test email subject',
+	// 	'h:Reply-To': 'chris.v.ozols@gmail.com',
+	// 	html: '<h1>email!</h1>'
+	// }, (err, info) => {
+	// 	if (err) {
+	// 		console.log(err);
+	// 	}
+	// });
 };
