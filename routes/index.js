@@ -2,7 +2,9 @@
 
 let passport = require('passport'),
 	Account = require('../models/account'),
-	socketRoutes = require('./socket/routes.js'),
+	socketRoutes = require('./socket/routes'),
+	accounts = require('./accounts'),
+	verifyAccount = require('./verify-account'),
 	ensureAuthenticated = (req, res, next)  => {
 		if (req.isAuthenticated()) {
 			return next();
@@ -13,7 +15,8 @@ let passport = require('passport'),
 
 module.exports = () => {
 	socketRoutes();
-	require('./accounts')();
+	accounts();
+	verifyAccount();
 
 	app.get('/', (req, res) => {
 		if (req.user) {
@@ -48,7 +51,6 @@ module.exports = () => {
 	});
 
 	app.get('/game', ensureAuthenticated, (req, res) => {
-
 		res.render('game', {
 			user: req.user.username,
 			game: true,
@@ -62,9 +64,5 @@ module.exports = () => {
 			req.logout();
 		}
 		res.render('game', {game: true});
-	});
-
-	app.get('*', (req, res) => {
-		res.render('404');
 	});
 };

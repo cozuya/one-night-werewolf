@@ -64,13 +64,17 @@ html(lang="en")
 				.field
 					.ui.left.icon.input
 						i.lock.icon
-						input#signup-password1(placeholder="Password", type="password", maxlength="50")
+						input#signup-password1(placeholder="Password", type="password", maxlength="255")
 					.ui.info.message.hidden
 				.field
 					.ui.left.icon.input
 						i.lock.icon
-						input#signup-password2(placeholder="Repeat password", type="password", maxlength="50")
+						input#signup-password2(placeholder="Repeat password", type="password", maxlength="255")
 					.ui.info.message.hidden
+				.field
+					.ui.left.icon.input
+						i.mail.icon
+						input#signup-email(placeholder="Email (optional)", maxlength="100")
 				button.ui.primary.button.fluid.large.signup-submit Submit
 				.ui.dimmer.inverted
 					.ui.text.loader Signing up..

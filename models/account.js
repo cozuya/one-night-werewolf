@@ -16,6 +16,14 @@ let mongoose = require('mongoose'),
 			disableRightSidebarInGame: Boolean,
 			enableDarkTheme: Boolean
 		},
+		verification: {
+			email: String,
+			verificationToken: String,
+			verificationTokenExpiration: Date,
+			passwordResetToken: String,
+			passwordResetTokenExpiration: Date
+		},
+		verified: Boolean,
 		games: Array,
 		wins: Number,
 		losses: Number,

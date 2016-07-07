@@ -357,7 +357,7 @@ export default class Gamechat extends React.Component {
 
 														function processSplits(splitIndex) {
 															if (typeof split[_index - 1] !== 'undefined' && !split[splitIndex].length && split[splitIndex - 1].substr(0, item.name.length) !== item.name) {
-																console.log('Hello World!');
+																// console.log('Hello World!');
 																return processSplits(_index--);
 															} else {
 																let spliceSplit = split.splice(0, splitIndex ? splitIndex : splitIndex + 1),
@@ -365,12 +365,12 @@ export default class Gamechat extends React.Component {
 																		return !prev.length ? item.name.length : 0 + !curr.length ? item.name.length : curr.length;
 																	}) : spliceSplit[splitIndex].length ? spliceSplit[splitIndex].length : item.name.length;
 
-																console.log(spliceSplit);
+																// console.log(spliceSplit);
 
 
-																console.log(reducedSplit);
+																// console.log(reducedSplit);
 
-																console.log(split[splitIndex].length);
+																// console.log(split[splitIndex].length);
 
 																// return split[splitIndex].length ? 
 
@@ -384,7 +384,7 @@ export default class Gamechat extends React.Component {
 													type: item.team ? 'roleName' : 'playerName',
 												};
 
-												console.log(processor);
+												// console.log(processor);
 
 												// seer seer robber seer == seer seer seer robber
 

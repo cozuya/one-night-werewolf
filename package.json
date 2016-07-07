@@ -17,6 +17,8 @@
     "mongo": "^0.1.0",
     "mongoose": "^4.1.0",
     "morgan": "^1.6.1",
+    "nodemailer": "^2.4.2",
+    "nodemailer-mailgun-transport": "git+https://github.com/orliesaurus/nodemailer-mailgun-transport.git",
     "passport": "^0.2.2",
     "passport-local": "^1.0.0",
     "passport-local-mongoose": "^1.0.1",
