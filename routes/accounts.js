@@ -50,9 +50,9 @@ module.exports = () => {
 				verification: {
 					email: email || '',
 					verificationToken: '',
-					verificationTokenExpiration: new Date(),
+					verificationTokenExpiration: null,
 					passwordResetToken: '',
-					passwordResetTokenExpiration: new Date()
+					passwordResetTokenExpiration: null
 				},
 				verified: false,
 				games: [],
