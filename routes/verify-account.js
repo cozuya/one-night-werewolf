@@ -75,7 +75,6 @@ module.exports = {
 				to: '1nwwtest2@mailinator.com',
 				subject: 'One Night Werewolf Online - confirm your account',
 				'h:Reply-To': 'chris.v.ozols@gmail.com',
-				// html: `<a href="https://onenightwerewolf.online/verify-account/${username}/${token}">click here</a>`
 				html: compiled({
 					username,
 					token
