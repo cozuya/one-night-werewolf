@@ -2,6 +2,7 @@
 
 const passport = require('passport'),
 	Account = require('../models/account'),
+	verifyAccount = require('./verify-account'),
 	ensureAuthenticated = (req, res, next)  => {
 		if (req.isAuthenticated()) {
 			return next();
@@ -11,6 +12,8 @@ const passport = require('passport'),
 	};
 
 module.exports = () => {
+	verifyAccount.setRoutes();
+
 	app.get('/account', ensureAuthenticated, (req, res) => {
 		res.render('page-account', {
 			username: req.user.username,
@@ -21,7 +24,7 @@ module.exports = () => {
 	app.post('/account/change-password', ensureAuthenticated, (req, res) => {
 		let newPassword = req.body.newPassword,
 			newPasswordConfirm = req.body.newPasswordConfirm,
-			user = req.user;
+			{ user } = req;
 
 		if (newPassword !== newPasswordConfirm) {
 			res.status(401).json({message: 'not equal'});
@@ -86,7 +89,8 @@ module.exports = () => {
 
 						passport.authenticate('local')(req, res, () => {
 							if (email) {
-								require('./verify-account')(req, res);
+								verifyAccount.sendToken(req.body.username, req.body.email);
+								res.send();
 							} else {
 								res.send();
 							}

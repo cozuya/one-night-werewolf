@@ -4,7 +4,6 @@ let passport = require('passport'),
 	Account = require('../models/account'),
 	socketRoutes = require('./socket/routes'),
 	accounts = require('./accounts'),
-	verifyAccount = require('./verify-account'),
 	ensureAuthenticated = (req, res, next)  => {
 		if (req.isAuthenticated()) {
 			return next();
@@ -13,10 +12,10 @@ let passport = require('passport'),
 		}
 	};
 
+
 module.exports = () => {
-	socketRoutes();
 	accounts();
-	verifyAccount();
+	socketRoutes();
 
 	app.get('/', (req, res) => {
 		if (req.user) {
