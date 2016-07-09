@@ -9,13 +9,13 @@ html(lang="en")
 		meta(name="description" content="One Night Werewolf Online - A multiplayer game of deception and deduction.")
 		if game
 			if isDark
-				link(rel="stylesheet", type="text/css", href="styles/style-dark.css")
+				link(rel="stylesheet", type="text/css", href="/styles/style-dark.css")
 			else
-				link(rel="stylesheet", type="text/css", href="styles/style.css")
+				link(rel="stylesheet", type="text/css", href="/styles/style.css")
 		else
 			meta(name="viewport", content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1")
 			link(rel="stylesheet", type="text/css", href="//cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.1.8/semantic.min.css")
-			link(rel="stylesheet", type="text/css", href="styles/style-web.css")
+			link(rel="stylesheet", type="text/css", href="/styles/style-web.css")
 		link(href="//fonts.googleapis.com/css?family=Raleway" rel="stylesheet" type="text/css")
 		link(rel="author" href="humans.txt")
 		link(rel="icon" type="image/png" sizes="192x192"  href="/android-icon-192x192.png")
@@ -80,9 +80,9 @@ html(lang="en")
 					.ui.text.loader Signing up..
 				.ui.negative.hidden.message
 		if game
-			script(src="scripts/bundle.js")
+			script(src="/scripts/bundle.js")
 		else
 			script(src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.2.3/jquery.min.js")
 			script(src="//cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.1.8/semantic.min.js")
-			script(src="scripts/site.js")
+			script(src="/scripts/site.js")
 		block footer

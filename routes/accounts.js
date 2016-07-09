@@ -105,6 +105,8 @@ module.exports = () => {
 		res.send();
 	});
 
+	//todo-alpha, signed in on 404 page, nothing updated until moved page.
+
 	app.post('/account/logout', ensureAuthenticated, (req, res) => {
 		req.logOut();
 		res.send();
