@@ -17,7 +17,8 @@ module.exports = () => {
 	app.get('/account', ensureAuthenticated, (req, res) => {
 		res.render('page-account', {
 			username: req.user.username,
-			verified: req.user.verified
+			verified: req.user.verified,
+			email: req.user.verification.email
 		});
 	});
 
