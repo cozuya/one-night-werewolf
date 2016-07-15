@@ -5,7 +5,8 @@ const passport = require('passport'),
 	nodemailer = require('nodemailer'),
 	mg = require('nodemailer-mailgun-transport'),
 	_ = require('lodash'),
-	fs = require('fs');
+	fs = require('fs'),
+	template = _.template(fs.readFileSync('./routes/account-verification-email.template', {encoding: 'UTF-8'}));
 
 let tokens = [];
 
@@ -14,15 +15,15 @@ module.exports = {
 		Account.find({'verification.verificationTokenExpiration': {$gte: new Date()}}, (err, accounts) => {
 			if (err) {
 				console.log(err);
-			} else {
-				tokens = accounts.map((account) => {
-					return {
-						username: account.username,
-						token: account.verification.verificationToken,
-						expires: account.verification.verificationTokenExpiration
-					};
-				});
 			}
+
+			tokens = accounts.map((account) => {
+				return {
+					username: account.username,
+					token: account.verification.verificationToken,
+					expires: account.verification.verificationTokenExpiration
+				};
+			});
 		});
 
 		app.get('/verify-account/:user/:token', (req, res, next) => {
@@ -59,8 +60,8 @@ module.exports = {
 						api_key: process.env.MGKEY,
 						domain: 'onenightwerewolf.online'
 					}
-				})),
-				compiled = _.template(fs.readFileSync('./routes/account-verification-email.template', {encoding: 'UTF-8'}));
+				}));
+				
 			tomorrow.setDate(tomorrow.getDate() + 1);
 			account.verification.verificationToken = token;
 			account.verification.verificationTokenExpiration = tomorrow;
@@ -69,17 +70,15 @@ module.exports = {
 				token,
 				expires: tomorrow
 			});
+
 			nmMailgun.sendMail({
-				from: 'OneNightWerewolf <admin@onenightwerewolf.online>',
+				from: 'One Night Werewolf Online <admin@onenightwerewolf.online>',
 				// to: email,
-				to: '1nwwtest2@mailinator.com',
+				to: '1nwwtest3@mailinator.com',
 				subject: 'One Night Werewolf Online - confirm your account',
 				'h:Reply-To': 'chris.v.ozols@gmail.com',
 				// html: `<a href="https://onenightwerewolf.online/verify-account/${username}/${token}">click here</a>`
-				html: compiled({
-					username,
-					token
-				})
+				html: template({username, token})
 			}, (err) => {
 				if (err) {
 					console.log(err);

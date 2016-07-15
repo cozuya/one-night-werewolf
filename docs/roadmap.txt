@@ -43,3 +43,4 @@ future
 	explore guest mode
 	add email confirmation system/tokens
 	more roles
+	overhaul/refactor express code inside of /views

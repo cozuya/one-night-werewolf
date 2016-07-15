@@ -163,7 +163,7 @@ ol li {
         <tr>
           <td>
             <h2>One Night Werewolf Online</h2>
-            <p>Hello <%= username %>, someone has created an account with this email address - click below to confirm your account.  As of now, this is only used for resetting of passwords.</p>
+            <p>Hello <%= username %>, someone has created an account with this email address - click below to confirm your account.  As of now, this is only used for resetting of passwords.  You'll need to be logged in for verification.</p>
             <table class="btn-primary" cellpadding="0" cellspacing="0" border="0">
               <tr>
                 <td>
