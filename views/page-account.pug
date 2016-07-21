@@ -22,19 +22,19 @@ block content
 			else
 				span.verified-no Not verified
 			if email
-				span.current-email
-					= email
-				button#change-email(style="display: block; margin: 5px auto 0;") Change your email address
+				p.current-email Current Email: 
+					span(style="color: blue")
+						= email
+				button#change-email.ui.primary.button(style="display: block; margin: 5px auto 0;") Change your email address
 				if !verified
 					button#request-verification.ui.primary.button(style="display: block; margin: 5px auto 0;") Request a new verification email
 			else
-				button#add-email(style="display: block; margin: 5px auto 0;") Add an email address (sends verification email)
+				button#add-email.ui.primary.button(style="display: block; margin: 5px auto 0;") Add an email address (sends verification email)
 
 		button#change-password.ui.primary.button(style="display: block; margin: 0 auto;") Change your password
 		//- button#delete-account.ui.primary.button(style="display: block; margin: 10px auto 0;") Delete your account
 
 	section.passwordchange-modal.ui.modal.small.segment.column
-
 		h2.header Change your password
 		form.ui.form
 			.field
@@ -50,6 +50,27 @@ block content
 				.ui.text.loader Changing your password..
 			.ui.negative.hidden.message
 			.ui.hidden.message Successfully changed your password!
+
+	section.emailchange-modal.ui.modal.small.segment.column
+		h2.header Change your email
+		form.ui.form
+			.field
+				.ui.left.icon.input
+					i.lock.icon
+					input#emailchange-email(placeholder="New email")
+			.field
+				.ui.left.icon.input
+					i.lock.icon
+					input#emailchange-confirmemail(placeholder="Confirm new email")
+			button.ui.primary.button.fluid.large#emailchange-submit Submit
+			.ui.dimmer.inverted
+				.ui.text.loader Changing your email..
+			.ui.negative.hidden.message
+			.ui.hidden.message Successfully changed your email!
+
+	section.requestemail-modal.ui.modal.small.segment.column
+		h2.header Email sent!
+		p Please check your email to verify your account.
 
 	section.deleteaccount-modal.ui.modal.small.segment.column
 		h2.header Delete your account

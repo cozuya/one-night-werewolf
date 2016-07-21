@@ -74,7 +74,7 @@ module.exports = {
 			nmMailgun.sendMail({
 				from: 'One Night Werewolf Online <admin@onenightwerewolf.online>',
 				// to: email,
-				to: '1nwwtest3@mailinator.com',
+				to: '1nwwtest4@mailinator.com',
 				subject: 'One Night Werewolf Online - confirm your account',
 				'h:Reply-To': 'chris.v.ozols@gmail.com',
 				// html: `<a href="https://onenightwerewolf.online/verify-account/${username}/${token}">click here</a>`

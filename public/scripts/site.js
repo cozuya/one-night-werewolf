@@ -126,6 +126,29 @@ $(document).ready(function () {  // yay ES5
 			.modal('show');
 	});
 
+	$('button#change-email').on('click', function(event) {
+		$('section.emailchange-modal')
+			.modal('setting', 'transition', 'horizontal flip')
+			.modal('show');
+	});
+
+	$('button#request-verification').on('click', function (event) {
+		event.preventDefault();
+
+		$.ajax({
+			url: '/account/request-verification',
+			method: 'POST',
+			contentType: 'application/json; charset=UTF-8',
+			statusCode: {
+				200: function () {
+					$('section.requestemail-modal')
+						.modal('setting', 'transition', 'horizontal flip')
+						.modal('show');
+				}
+			}
+		});
+	});
+
 	$('button#passwordchange-submit').on('click', function (event) {
 		event.preventDefault();
 		
@@ -163,7 +186,47 @@ $(document).ready(function () {  // yay ES5
 				}
 			}
 		});
-	});	
+	});
+
+	$('button#emailchange-submit').on('click', function (event) {
+		event.preventDefault();
+		
+		var newEmail = $('#emailchange-email').val(),
+			newEmailConfirm = $('#emailchange-confirmemail').val(),
+			$loader = $(this).next(),
+			$errMessage = $loader.next(),
+			$successMessage = $errMessage.next(),
+			data = JSON.stringify({
+				newEmail: newEmail,
+				newEmailConfirm: newEmailConfirm
+			});
+
+		$loader.addClass('active');
+		
+		$.ajax({
+			url: '/account/change-email',
+			method: 'POST',
+			contentType: 'application/json; charset=UTF-8',
+			data: data,
+			statusCode: {
+				200: function () {
+					$loader.removeClass('active');
+					$successMessage.removeClass('hidden');
+					if (!$errMessage.hasClass('hidden')) {
+						$errMessage.addClass('hidden');
+					}
+					$('.current-email > span').html(newEmail);
+				},
+				401: function () {
+					$loader.removeClass('active');
+					$errMessage.text('Your new email and your confirm email did not match.').removeClass('hidden');
+					if (!$successMessage.hasClass('hidden')) {
+						$successMessage.addClass('hidden');
+					}
+				}
+			}
+		});
+	});
 
 	$('button#delete-account').on('click', function(event) {
 		$('section.deleteaccount-modal')

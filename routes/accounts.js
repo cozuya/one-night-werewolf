@@ -23,9 +23,10 @@ module.exports = () => {
 	});
 
 	app.post('/account/change-password', ensureAuthenticated, (req, res) => {
-		let newPassword = req.body.newPassword,
-			newPasswordConfirm = req.body.newPasswordConfirm,
+		const { newPassword, newPasswordConfirm } = req.body,
 			{ user } = req;
+
+		// todo release prevent tiny/huge new passwords
 
 		if (newPassword !== newPasswordConfirm) {
 			res.status(401).json({message: 'not equal'});
@@ -36,6 +37,32 @@ module.exports = () => {
 			user.save();
 			res.send();
 		});
+	});
+
+	app.post('/account/change-email', ensureAuthenticated, (req, res) => {
+		const { newEmail, newEmailConfirm } = req.body,
+			{ user } = req;
+
+		if (newEmail !== newEmailConfirm) {
+			res.status(401).json({message: 'not equal'});
+			return;
+		}
+
+		Account.findOne({username: user.username}, (err, account) => {
+			if (err) {
+				console.log(err);
+			}
+
+			account.verification.email = newEmail;
+			account.save(() => {
+				res.send();	
+			});
+		});
+	});
+
+	app.post('/account/request-verification', ensureAuthenticated, (req, res) => {
+		verifyAccount.sendToken(req.user.username, req.user.verification.email);
+		res.send();
 	});
 
 	app.post('/account/signup', (req, res, next) => {
