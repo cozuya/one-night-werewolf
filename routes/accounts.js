@@ -68,7 +68,7 @@ module.exports = () => {
 	});
 
 	app.post('/account/reset-password', (req, res) => {
-		resetPassword.sendToken(req.body.email);
+		resetPassword.sendToken(req.body.email, res);
 	});
 
 	app.post('/account/signup', (req, res, next) => {

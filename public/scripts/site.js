@@ -140,13 +140,15 @@ $(document).ready(function () {  // yay ES5
 			data: JSON.stringify({email: email}),
 			statusCode: {
 				200: function () {
-					console.log('200');
+					$message.addClass('hidden');
+					$loader.removeClass('active');
+					$('.password-reset-modal .ui.info.hidden.message').removeClass('hidden').html('We\'ve sent you a password reset email, please check your email to a link to reset your password.');
 				},
 				400: function () {
 					submitErr('Sorry, that request did not look right.');
 				},
 				401: function () {
-					submitErr('Sorry, we don\'t have an account associated with that email address.');
+					submitErr('Sorry, we don\'t have an account associated with that verified email address.');
 				}
 			}
 		});		
