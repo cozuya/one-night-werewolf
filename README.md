@@ -64,3 +64,5 @@ start development task runner:
 navigate to: http://localhost:8080
 
 You'll most likely need a browser extension such as Chrome's Multilogin to have multiple sessions on the same browser.  No, incognito will not work.
+
+Server side code for the game is contained in routes/socket and code quality is decent.  Code quality of the express and front end ajax stuff is shabby.. don't judge me too harshly; that wasn't the fun part so bogging through it with some not so DRY code was an easy way to get it done.
