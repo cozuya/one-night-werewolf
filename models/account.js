@@ -23,6 +23,10 @@ let mongoose = require('mongoose'),
 			passwordResetToken: String,
 			passwordResetTokenExpiration: Date
 		},
+		resetPassword: {
+			resetToken: String,
+			resetTokenExpiration: Date
+		},
 		verified: Boolean,
 		games: Array,
 		wins: Number,

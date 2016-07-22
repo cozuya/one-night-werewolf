@@ -3,6 +3,7 @@
 const passport = require('passport'),
 	Account = require('../models/account'),
 	verifyAccount = require('./verify-account'),
+	resetPassword = require('./reset-password'),
 	ensureAuthenticated = (req, res, next)  => {
 		if (req.isAuthenticated()) {
 			return next();
@@ -13,6 +14,7 @@ const passport = require('passport'),
 
 module.exports = () => {
 	verifyAccount.setRoutes();
+	resetPassword.setRoutes();
 
 	app.get('/account', ensureAuthenticated, (req, res) => {
 		res.render('page-account', {
@@ -63,6 +65,10 @@ module.exports = () => {
 	app.post('/account/request-verification', ensureAuthenticated, (req, res) => {
 		verifyAccount.sendToken(req.user.username, req.user.verification.email);
 		res.send();
+	});
+
+	app.post('/account/reset-password', (req, res) => {
+		resetPassword.sendToken(req.body.email);
 	});
 
 	app.post('/account/signup', (req, res, next) => {

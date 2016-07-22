@@ -108,6 +108,50 @@ $(document).ready(function () {  // yay ES5
 		});
 	});
 
+	$('a#reset-password').on('click', function (event) {
+		event.preventDefault();
+
+		$('.signin-modal')
+			.modal('setting', 'transition', 'horizontal flip')
+			.modal('hide', function () {
+				$('.password-reset-modal')
+					.modal('setting', 'transition', 'horizontal flip')
+					.modal('show');
+			});
+	});
+
+	$('button#password-reset-submit').on('click', function (event) {
+		event.preventDefault();
+
+		var email = $('#password-reset-email').val(),
+			$loader = $(this).next(),
+			$message = $(this).next().next(),
+			submitErr = function (message) {
+				$loader.removeClass('active');
+				$message.text(message).removeClass('hidden');
+			};
+
+		$loader.addClass('active');
+
+		$.ajax({
+			url: '/account/reset-password',
+			method: 'POST',
+			contentType: 'application/json; charset=UTF-8',
+			data: JSON.stringify({email: email}),
+			statusCode: {
+				200: function () {
+					console.log('200');
+				},
+				400: function () {
+					submitErr('Sorry, that request did not look right.');
+				},
+				401: function () {
+					submitErr('Sorry, we don\'t have an account associated with that email address.');
+				}
+			}
+		});		
+	});
+
 	$('a#logout').on('click', function(event) {
 		event.preventDefault();
 		
