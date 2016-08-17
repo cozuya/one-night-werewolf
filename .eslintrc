@@ -18,6 +18,7 @@
 		"guard-for-in": "off",
 		"consistent-return": "off",
 		"no-nested-ternary": "off",
+		"func-names": "off",
 		"react/jsx-indent": ["error", "tab"],
 		"react/jsx-indent-props": ["error", "tab"]
 	},

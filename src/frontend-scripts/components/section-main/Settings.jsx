@@ -15,7 +15,7 @@ export default class Settings extends React.Component {
 	componentDidMount() {
 		const {socket} = this.props;
 
-		$(this.refs.popups).popup({
+		$(this.popups).popup({
 			inline: true,
 			hoverable: true,
 			position: 'bottom left',
@@ -36,7 +36,7 @@ export default class Settings extends React.Component {
 			}
 		});
 
-		$(this.refs.timestamps).checkbox({
+		$(this.timestamps).checkbox({
 			onChecked() {
 				socket.emit('updateGameSettings', {
 					enableTimestamps: true
@@ -49,7 +49,7 @@ export default class Settings extends React.Component {
 			}
 		});
 
-		$(this.refs.sidebar).checkbox({
+		$(this.sidebar).checkbox({
 			onChecked() {
 				socket.emit('updateGameSettings', {
 					disableRightSidebarInGame: true
@@ -62,7 +62,7 @@ export default class Settings extends React.Component {
 			}
 		});
 
-		$(this.refs.theme).checkbox({
+		$(this.theme).checkbox({
 			onChecked() {
 				socket.emit('updateGameSettings', {
 					enableDarkTheme: true
@@ -95,9 +95,8 @@ export default class Settings extends React.Component {
 				<div className="ui grid">
 					<div className="four wide column popups">
 						<h4 className="ui header">Disable informational popups</h4>
-						<div className="ui fitted toggle checkbox" ref="popups">
+						<div className="ui fitted toggle checkbox" ref={(c) => { this.popups = c; }}>
 							<input type="checkbox" name="popups" defaultChecked={this.props.userInfo.gameSettings.disablePopups} />
-							<label />
 						</div>
 						<div className="ui small popup transition hidden">
 							Disable most popups (but not this one) that explain game terms and concepts.
@@ -105,23 +104,20 @@ export default class Settings extends React.Component {
 					</div>
 					<div className="four wide column popups">
 						<h4 className="ui header">Add timestamps to in-game chats</h4>
-						<div className="ui fitted toggle checkbox" ref="timestamps">
+						<div className="ui fitted toggle checkbox" ref={(c) => { this.timestamps = c; }}>
 							<input type="checkbox" name="timestamps" defaultChecked={this.props.userInfo.gameSettings.enableTimestamps} />
-							<label />
 						</div>
 					</div>
 					<div className="four wide column popups">
 						<h4 className="ui header">Hide right sidebar while in games</h4>
-						<div className="ui fitted toggle checkbox" ref="sidebar">
+						<div className="ui fitted toggle checkbox" ref={(c) => { this.sidebar = c; }}>
 							<input type="checkbox" name="sidebar" defaultChecked={this.props.userInfo.gameSettings.disableRightSidebarInGame} />
-							<label />
 						</div>
 					</div>
 					<div className="four wide column popups">
 						<h4 className="ui header">Use dark theme (reloads page)</h4>
-						<div className="ui fitted toggle checkbox" ref="theme">
+						<div className="ui fitted toggle checkbox" ref={(c) => { this.theme = c; }}>
 							<input type="checkbox" name="sidebar" defaultChecked={this.props.userInfo.gameSettings.enableDarkTheme} />
-							<label />
 						</div>
 					</div>
 				</div>

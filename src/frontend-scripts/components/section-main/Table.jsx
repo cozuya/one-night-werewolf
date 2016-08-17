@@ -1,5 +1,3 @@
-'use strict';
-
 import React from 'react';
 import $ from 'jquery';
 import Popup from 'semantic-ui-popup';
@@ -9,20 +7,29 @@ $.fn.popup = Popup;
 
 export default class Table extends React.Component {
 	constructor() {
+		super();
+
+		this.leaveGame = this.leaveGame.bind(this);
+		this.handleCardClicked = this.handleCardClicked.bind(this);
+		this.handleSeatClicked = this.handleSeatClicked.bind(this);
+		this.handleClickedReportGame = this.handleClickedReportGame.bind(this);
+		this.handleTruncateClicked = this.handleTruncateClicked.bind(this);
+
 		this.state = {
 			firstClickedCard: '',
 			showClaims: true
 		};
 	}
+	shouldComponentUpdate(nextProps) {
+		return !_.isEqual(nextProps.gameInfo, this.props.gameInfo);  // todo-release review this - without it updates way more than it should
+	}
 
 	componentDidUpdate(prevProps) {
-		const { gameInfo, userInfo } = this.props,
-			{ gameState } = gameInfo;
+		const {gameInfo, userInfo} = this.props,
+			{gameState} = gameInfo;
 
 		if (gameInfo.gameState.isStarted && !prevProps.gameInfo.gameState.isStarted) {
 			const $cards = $('div.card'),
-				centerTop = 190,
-				centerLeft = 260,
 				shuffleInterval = setInterval(() => {
 					$cards.each(function () {
 						$(this).css({
@@ -38,7 +45,7 @@ export default class Table extends React.Component {
 		}
 
 		if (userInfo.seatNumber && gameState.isStarted && userInfo.gameSettings && !this.props.userInfo.gameSettings.disablePopups && !prevProps.gameInfo.gameState.isStarted) {
-			$(this.refs.reportIcon).popup({
+			$(this.reportIcon).popup({
 				inline: true,
 				hoverable: true,
 				lastResort: true,
@@ -48,10 +55,6 @@ export default class Table extends React.Component {
 				}
 			});
 		}
-	}
-
-	shouldComponentUpdate(nextProps) {
-		return !_.isEqual(nextProps.gameInfo, this.props.gameInfo);  // todo-release review this - without it updates way more than it should
 	}
 
 	leaveGame() {
@@ -65,8 +68,7 @@ export default class Table extends React.Component {
 	}
 
 	handleSeatClicked(e) {
-		const { seated } = this.props.gameInfo,
-			{ userInfo, gameInfo } = this.props,
+		const {userInfo, gameInfo} = this.props,
 			$seat = $(e.currentTarget);
 
 		if (userInfo.userName && !gameInfo.gameState.isNight) {
@@ -79,17 +81,21 @@ export default class Table extends React.Component {
 				});
 			}
 		} else if (!gameInfo.gameState.isStarted) {
-			$(this.refs.signinModal).modal('show');
+			$(this.signinModal).modal('show');
 		}
 	}
 
 	createCards() {
-		const { gameInfo, userInfo } = this.props,
-			{ gameState, tableState } = gameInfo;
+		const {gameInfo} = this.props,
+			{gameState, tableState} = gameInfo;
 
-		return _.range(0, 10).map((num) => { 
+		return _.range(0, 10).map((num) => {
 			return (
-				<div key={num} data-cardnumber={num} onClick={this.handleCardClicked.bind(this)} className={
+				<div
+					key={num}
+					data-cardnumber={num}
+					onClick={this.handleCardClicked}
+					className={
 						(() => {
 							let classes = `card card${num}`;
 
@@ -100,13 +106,14 @@ export default class Table extends React.Component {
 							}
 
 							if (gameState.isCompleted) {
-								classes += ` notransition`;
+								classes += ' notransition';
 							}
 
 							return classes;
 						})()
-					}>
-					<div className={
+						}>
+					<div
+						className={
 						(() => {
 							let classes = 'card-flipper';
 
@@ -120,7 +127,8 @@ export default class Table extends React.Component {
 
 							return classes;
 						})()
-					}><div className={
+							}><div
+								className={
 						(() => {
 							let classes;
 
@@ -132,8 +140,9 @@ export default class Table extends React.Component {
 
 							return classes;
 						})()
-					}></div>
-						<div className={
+					} />
+						<div
+							className={
 							(() => {
 								let classes = `card-front seat-${num}`;
 
@@ -153,20 +162,23 @@ export default class Table extends React.Component {
 	}
 
 	createSeats() {
-		const { gameInfo, userInfo } = this.props;
+		const {gameInfo, userInfo} = this.props;
 
 		return _.range(0, 10).map((el) => {
 			const seated = this.props.gameInfo.seated[`seat${el}`],
 				user = seated ? gameInfo.seated[`seat${el}`].userName : '';
 
 			return (
-					<div key={el} className={
+					<div
+						key={el}
+						className={
 						(() => {
-							return `seat-container seat-container${el}`;								
+							return `seat-container seat-container${el}`;
 						})()
 					}>
-						<div className={seated ? `seat seat${el}` : `seat seat${el} empty`} data-seatnumber={el} onClick={this.handleSeatClicked.bind(this)}>
-							<span className={
+						<div className={seated ? `seat seat${el}` : `seat seat${el} empty`} data-seatnumber={el} onClick={this.handleSeatClicked}>
+							<span
+								className={
 								(() => {
 									let classes = 'username';
 
@@ -178,15 +190,16 @@ export default class Table extends React.Component {
 										classes += ' currentuser';
 									}
 
-									return classes;												
+									return classes;
 								})()
 							}>{user}</span>
 						</div>
-						<div className={
+						<div
+							className={
 							(() => {
 								let classes = 'eliminator';
 
-								const { eliminations } = gameInfo.gameState;
+								const {eliminations} = gameInfo.gameState;
 
 								if (el < 7 && eliminations && eliminations[el]) {
 									classes += ` target-seat${gameInfo.gameState.eliminations[el].seatNumber}`;
@@ -198,17 +211,17 @@ export default class Table extends React.Component {
 
 								return classes;
 							})()
-						}></div>
+						} />
 					</div>
 				);
-			});
+		});
 	}
 
 	handleCardClicked(e) {
 		const $card = $(e.currentTarget),
 			cardNumber = $card.attr('data-cardnumber'),
-			{ gameInfo, userInfo } = this.props,
-			{ tableState, gameState } = gameInfo,
+			{gameInfo, userInfo} = this.props,
+			{tableState, gameState} = gameInfo,
 			data = {
 				uid: gameInfo.uid
 			};
@@ -228,8 +241,8 @@ export default class Table extends React.Component {
 				this.props.socket.emit('userNightActionEvent', data);
 			}
 
-			if (tableState.nightAction.action === 'troublemaker' && parseInt(cardNumber) < 7 && cardNumber !== userInfo.seatNumber) {
-				const { firstClickedCard } = this.state;
+			if (tableState.nightAction.action === 'troublemaker' && parseInt(cardNumber, 10) < 7 && cardNumber !== userInfo.seatNumber) {
+				const {firstClickedCard} = this.state;
 
 				if (firstClickedCard) {
 					if (cardNumber !== firstClickedCard) {
@@ -245,26 +258,26 @@ export default class Table extends React.Component {
 			}
 
 			if (tableState.nightAction.action === 'seer' && cardNumber !== userInfo.seatNumber) {
-				const { firstClickedCard } = this.state;
+				const {firstClickedCard} = this.state;
 
-				if (firstClickedCard !== cardNumber && (firstClickedCard || parseInt(cardNumber) < 7)) {
+				if (firstClickedCard !== cardNumber && (firstClickedCard || parseInt(cardNumber, 10) < 7)) {
 					const action = [cardNumber];
 
-					if (firstClickedCard && parseInt(cardNumber) > 6) {
+					if (firstClickedCard && parseInt(cardNumber, 10) > 6) {
 						action.push(firstClickedCard);
 					}
 
 					data.role = 'seer';
-					data.action = action;				
+					data.action = action;
 					this.props.socket.emit('userNightActionEvent', data);
-				} else if (parseInt(cardNumber) > 6) {
+				} else if (parseInt(cardNumber, 10) > 6) {
 					this.setState({
 						firstClickedCard: cardNumber
 					});
 				}
 			}
 
-			if (tableState.nightAction.action === 'robber' && parseInt(cardNumber) < 7 && cardNumber !== userInfo.seatNumber) {
+			if (tableState.nightAction.action === 'robber' && parseInt(cardNumber, 10) < 7 && cardNumber !== userInfo.seatNumber) {
 				data.role = 'robber';
 				data.action = cardNumber;
 				this.props.socket.emit('userNightActionEvent', data);
@@ -272,9 +285,9 @@ export default class Table extends React.Component {
 		}
 
 		if (gameInfo.tableState.isVotable && gameInfo.tableState.isVotable.enabled && userInfo.seatNumber) {
-			const swappedWithSeat = tableState.seats[parseInt(cardNumber)].swappedWithSeat;
+			const swappedWithSeat = tableState.seats[parseInt(cardNumber, 10)].swappedWithSeat;
 
-			if (cardNumber < 7 && ((swappedWithSeat === 0 || swappedWithSeat) && userInfo.seatNumber !== swappedWithSeat || !swappedWithSeat && userInfo.seatNumber !== cardNumber)) {
+			if (((cardNumber < 7 && ((swappedWithSeat === 0 || swappedWithSeat)) && userInfo.seatNumber !== swappedWithSeat) || (!swappedWithSeat && userInfo.seatNumber !== cardNumber))) {
 				$card.parent().find('.card').removeClass('card-select'); // todo-release remove jquery crap
 				$card.addClass('card-select');
 
@@ -288,17 +301,17 @@ export default class Table extends React.Component {
 	}
 
 	nightBlockerStatus(position) {
-		const { gameInfo, userInfo } = this.props;
+		const {gameInfo} = this.props;
 
-		if (gameInfo.tableState.isNight || gameInfo.gameState.isNight && !gameInfo.tableState.nightAction || gameInfo.tableState.nightAction && gameInfo.gameState.isNight && gameInfo.tableState.nightAction.phase !== gameInfo.gameState.phase) {
+		if (gameInfo.tableState.isNight || (gameInfo.gameState.isNight && !gameInfo.tableState.nightAction) || (gameInfo.tableState.nightAction && gameInfo.gameState.isNight && gameInfo.tableState.nightAction.phase !== gameInfo.gameState.phase)) {
 			return position === 'top' ? 'nightblocker nightblocker-top-blocked' : 'nightblocker nightblocker-bottom-blocked';
-		} else {
-			return position === 'top' ? 'nightblocker nightblocker-top': 'nightblocker nightblocker-bottom';
 		}
+
+		return position === 'top' ? 'nightblocker nightblocker-top' : 'nightblocker nightblocker-bottom';
 	}
-	
+
 	handleTruncateClicked(e) {
-		const { gameInfo, userInfo } = this.props;
+		const {gameInfo, userInfo} = this.props;
 
 		if (gameInfo.gameState.isDay && gameInfo.gameState.isStarted) {
 			const clicked = !!$(e.currentTarget).is(':checked');
@@ -319,24 +332,24 @@ export default class Table extends React.Component {
 	}
 
 	createReportGame() {
-		const { gameInfo, userInfo } = this.props,
-			{ gameState, tableState } = gameInfo;
+		const {gameInfo, userInfo} = this.props,
+			{gameState} = gameInfo;
 
 		if (userInfo.seatNumber && gameState.isStarted) {
 			const iconClasses = () => {
 				let classes = 'warning sign icon';
 
-				if (gameState.reportedGame[parseInt(userInfo.seatNumber)]) {
+				if (gameState.reportedGame[parseInt(userInfo.seatNumber, 10)]) {
 					classes += ' report-game-clicked';
 				}
 
 				return classes;
-			}
+			};
 
 			return (
 				<div className="table-uid">
 					Game ID: {gameInfo.uid}
-					<i onClick={this.handleClickedReportGame.bind(this)} ref="reportIcon" className={iconClasses()}></i>
+					<i onClick={this.handleClickedReportGame} ref={(c) => { this.reportIcon = c; }} className={iconClasses()} />
 					<div className="ui popup transition hidden">
 							Player abuse? Mark this game for reporting to the administrators for review.  Found a bug?  Send us an email.
 					</div>
@@ -346,26 +359,26 @@ export default class Table extends React.Component {
 	}
 
 	createUserGameOptions() {
-		const { gameInfo, userInfo } = this.props,
-			{ gameState, tableState } = gameInfo,
+		const {gameInfo, userInfo} = this.props,
+			{gameState, tableState} = gameInfo,
 			toggleClaims = () => {
 				this.setState({
-					showClaims: !$('input', this.refs.showclaims).is(':checked')
+					showClaims: !$('input', this.showclaims).is(':checked')
 				});
-			}
+			};
 
 		if (userInfo.seatNumber && gameState.isStarted && gameState.isDay && !gameState.isCompleted) {
 			return (
 				<div className="game-options-container">
-					<div className="ui fitted toggle checkbox checked showclaims" ref="showclaims">
-						<input type="checkbox" name="show-claims" onClick={toggleClaims}></input>
+					<div className="ui fitted toggle checkbox checked showclaims" ref={(c) => { this.showclaims = c; }}>
+						<input type="checkbox" name="show-claims" onClick={toggleClaims} />
 						<label>Hide claims</label>
 					</div>
 					{(() => {
 						if (!tableState.isVotable) {
 							return (
 								<div className="ui fitted toggle checkbox truncate-game">
-									<input type="checkbox" name="truncate-game" onClick={this.handleTruncateClicked.bind(this)}></input>
+									<input type="checkbox" name="truncate-game" onClick={this.handleTruncateClicked} />
 									<label>End game early</label>
 								</div>
 							);
@@ -377,7 +390,7 @@ export default class Table extends React.Component {
 	}
 
 	createGameInformation() {
-		const { gameInfo } = this.props;
+		const {gameInfo} = this.props;
 
 		return (
 			<div className="gameinformation-container">
@@ -388,38 +401,51 @@ export default class Table extends React.Component {
 	}
 
 	createMoon() {
-		const { secondsLeftInNight, maxSecondsLeftInNight } = this.props.gameInfo.gameState,
+		const {secondsLeftInNight, maxSecondsLeftInNight} = this.props.gameInfo.gameState,
 			percent = secondsLeftInNight / maxSecondsLeftInNight,
-			left = -50 + (640 - 640 * percent),
-			top = 20 + (120 - 120 * Math.sin((Math.PI) * percent));
+			left = -50 + (640 - (640 * percent)),
+			top = 20 + (120 - (120 * Math.sin(Math.PI * percent)));
 
-		return <div className="moon" style={{top: `${top}px`, left: `${left}px`}}></div>;
+		return <div className="moon" style={{top: `${top}px`, left: `${left}px`}} />;
 	}
 
 	render() {
-		const { gameInfo, userInfo } = this.props;
+		const {gameInfo, userInfo} = this.props;
 
 		return (
 			<section className="table">
 				<div className={this.nightBlockerStatus('top')}>
 				{this.createMoon()}
 				</div>
-				<div className={this.nightBlockerStatus('bottom')}></div>
-				<div className="tableimage"></div>
+				<div className={this.nightBlockerStatus('bottom')} />
+				<div className="tableimage" />
 				{this.createGameInformation()}
 				{this.createSeats()}
 				{this.createCards()}
 				{(() => {
 					if (!userInfo.seatNumber || !gameInfo.gameState.isStarted || gameInfo.gameState.isCompleted) {
-						return <i onClick={this.leaveGame.bind(this)} className='remove icon'></i>
+						return <i onClick={this.leaveGame} className="remove icon" />;
 					}
 				})()}
 				{this.createReportGame()}
 				{this.createUserGameOptions()}
-				<div className="ui basic small modal signinnag" ref="signinModal">
+				<div className="ui basic small modal signinnag" ref={(c) => { this.signinModal = c; }}>
 					<div className="ui header">You will need to sign in or sign up for an account to play.</div>
 				</div>
 			</section>
 		);
 	}
+}
+
+Table.propTypes = {
+	onUserNightActionEventSubmit: React.PropTypes.func,
+	onUpdateTruncateGameSubmit: React.PropTypes.func,
+	onUpdateSelectedForEliminationSubmit: React.PropTypes.func,
+	onUpdateReportGame: React.PropTypes.func,
+	onSeatingUser: React.PropTypes.func,
+	onLeaveGame: React.PropTypes.func,
+	selectedPlayer: React.PropTypes.string,
+	userInfo: React.PropTypes.object,
+	gameInfo: React.PropTypes.object,
+	socket: React.PropTypes.object
 };

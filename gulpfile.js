@@ -30,9 +30,9 @@ gulp.task('watch', () => {
 	gulp.watch(['./src/frontend-scripts/**/*.js*', './routes/socket/*.js'], (e) => {
 		gulp.start('scripts');
 		console.log(e.path);
-		console.log(`./${e.path.split('/Users/Coz/one-night-werewolf')[1]}`);
+		console.log(e.path.split('e:\\apps\\one-night-werewolf\\'));
 
-		file = process.platform === 'win32' ? `./${e.path.split('e:\\apps\\one-night-werewolf\\')[1].split('\\').join('/')}` : `./${e.path.split('/Users/Coz/one-night-werewolf/')[1]}`;
+		file = process.platform === 'win32' ? `./${e.path.split('E:\\apps\\one-night-werewolf\\')[1].split('\\').join('/')}` : `./${e.path.split('/Users/Coz/one-night-werewolf/')[1]}`;
 		gulp.start('lint');
 	});
 	gulp.watch('./routes/*.js', ['reload']);

@@ -1,13 +1,17 @@
-'use strict';
-
 import React from 'react';
 import $ from 'jquery';
 import Popup from 'semantic-ui-popup';
-import { roleMap } from '../../../../iso/util.js';
+import {roleMap} from '../../../../iso/util.js';
 
 $.fn.popup = Popup;
 
 export default class Gameroles extends React.Component {
+	constructor() {
+		super();
+
+		this.handleRoleClick = this.handleRoleClick.bind(this);
+	}
+
 	componentDidMount() {
 		if (this.props.userInfo.gameSettings && !this.props.userInfo.gameSettings.disablePopups) {
 			$('div.roles').popup({ // refs don't work?
@@ -35,21 +39,25 @@ export default class Gameroles extends React.Component {
 		return (
 			<section className="gameroles">
 				<div className="ui right pointing label">
-  					Roles in this game:
+					Roles in this game:
 				</div>
 					{(() => {
 						return this.props.roles.map((role, i) => {
 							return (
 								<div key={i}>
-									<div data-role={role} onClick={this.handleRoleClick.bind(this)} ref="roles" className={
+									<div
+										data-role={role}
+										onClick={this.handleRoleClick}
+										ref={(c) => { this.popups = c; }}
+										className={
 										(() => {
 											const notifyClass = this.props.roleState === 'notify' ? 'notify' : '';
-											
+
 											return `roles role-${role} ${this.props.roleState} ${notifyClass}`;
 										})()
 									}
-									></div>
-									<div className="ui small popup transition hidden top left" dangerouslySetInnerHTML={{__html: roleMap[role].description}}></div>
+									/>
+									<div className="ui small popup transition hidden top left" dangerouslySetInnerHTML={{__html: roleMap[role].description}} />
 								</div>
 							);
 						});
@@ -57,4 +65,12 @@ export default class Gameroles extends React.Component {
 			</section>
 		);
 	}
+}
+
+Gameroles.propTypes = {
+	roles: React.PropTypes.array,
+	userInfo: React.PropTypes.object,
+	gameInfo: React.PropTypes.object,
+	roleState: React.PropTypes.object,
+	selectedGamerole: React.PropTypes.string
 };

@@ -1,12 +1,10 @@
-'use strict';
-
 import React from 'react';
 
 export default class Defaultmid extends React.Component {
 	render() {
 		return (
 			<section className="defaultmid">
-				<img src="images/ww-logo-fs2.png" style={{position: 'absolute', left: '50%', marginLeft: '-275px',top: '70px',opacity: '0.05', width: '550px'}} width="550" height="550"/>
+				<img src="images/ww-logo-fs2.png" alt="One Night Werewolf Online logo" style={{position: 'absolute', left: '50%', marginLeft: '-275px', top: '70px', opacity: '0.05', width: '550px'}} width="550" height="550" />
 				<br />
 				<button style={{padding: '5px', width: '80px'}} data-name="Uther" className="loginquick">Uther</button>
 				<br />
@@ -18,7 +16,7 @@ export default class Defaultmid extends React.Component {
 				<br />
 				<button style={{padding: '5px', width: '80px'}} data-name="Thrall" className="loginquick">Thrall</button>
 				<br />
-				<button style={{padding: '5px', width: '80px'}} data-name="Valeera" className="loginquick">Valeera</button>	
+				<button style={{padding: '5px', width: '80px'}} data-name="Valeera" className="loginquick">Valeera</button>
 				<br />
 				<button style={{padding: '5px', width: '80px'}} data-name="Anduin" className="loginquick">Anduin</button>
 				<br />
@@ -39,7 +37,11 @@ export default class Defaultmid extends React.Component {
 				<button style={{padding: '5px', width: '80px'}} data-name="hhh" className="loginquick">hhh</button>
 				<br />
 				<button style={{padding: '5px', background: '#333', color: 'white'}} data-name="h" onClick={this.props.quickDefault}>default game</button>
-			</section>	
+			</section>
 		);
 	}
+}
+
+Defaultmid.propTypes = {
+	quickDefault: React.PropTypes.func
 };

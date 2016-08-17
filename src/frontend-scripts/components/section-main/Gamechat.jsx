@@ -1,12 +1,18 @@
-'use strict';
-
 import React from 'react';
 import $ from 'jquery';
 import _ from 'lodash';
-import { roleList, roleMap } from '../../../../iso/util';
+import {roleMap} from '../../../../iso/util';
 
 export default class Gamechat extends React.Component {
 	constructor() {
+		super();
+
+		this.handleChatFilterClick = this.handleChatFilterClick.bind(this);
+		this.handleSubmit = this.handleSubmit.bind(this);
+		this.handleChatClearClick = this.handleChatClearClick.bind(this);
+		this.handleInputChange = this.handleInputChange.bind(this);
+		this.handleRightHotkeyClick = this.handleRightHotkeyClick.bind(this);
+
 		this.state = {
 			chatFilter: 'All',
 			lock: false,
@@ -21,8 +27,8 @@ export default class Gamechat extends React.Component {
 	}
 
 	componentDidUpdate(prevProps) {
-		const $input = $(this.refs.gameChatInput),
-			{ selectedGamerole, selectedPlayer } = this.props,
+		const $input = $(this.gameChatInput),
+			{selectedGamerole, selectedPlayer} = this.props,
 			currentValue = this.state.inputValue;
 
 		this.scrollChats();
@@ -34,156 +40,154 @@ export default class Gamechat extends React.Component {
 
 		if (prevProps && prevProps.selectedGamerole.random !== selectedGamerole.random && selectedGamerole.role) {
 			switch (currentValue) {
-				case 'I claim to be the ':
-					this.setState({
-						hotkey: selectedGamerole.role,
-						inputValue: `${currentValue}${selectedGamerole.role}`
-					});
-					break;
+			case 'I claim to be the ':
+				this.setState({
+					hotkey: selectedGamerole.role,
+					inputValue: `${currentValue}${selectedGamerole.role}`
+				});
+				break;
 
-				case 'I claim to be the seer and I looked two of the center cards and they were a ':
-					this.setState({inputValue: `${this.state.inputValue}${selectedGamerole.role} and a `});
-					break;
+			case 'I claim to be the seer and I looked two of the center cards and they were a ':
+				this.setState({inputValue: `${this.state.inputValue}${selectedGamerole.role} and a `});
+				break;
 
-				default:
-					this.setState({inputValue: `${currentValue}${selectedGamerole.role}`});
+			default:
+				this.setState({inputValue: `${currentValue}${selectedGamerole.role}`});
 			}
 
-			if (this.state.hotkey === 'insomniac' && /^(I claim to be the insomniac and when I awoke, I was the)/i.test(currentValue) ) {
+			if (this.state.hotkey === 'insomniac' && /^(I claim to be the insomniac and when I awoke, I was the)/i.test(currentValue)) {
 				this.setState({altClaim: selectedGamerole.role});
 			}
 
-			if (this.state.hotkey === 'robber' && /^(I claim to be the robber and I swapped my card with the card of )/i.test(currentValue) ) {
+			if (this.state.hotkey === 'robber' && /^(I claim to be the robber and I swapped my card with the card of )/i.test(currentValue)) {
 				this.setState({altClaim: selectedGamerole.role});
 			}
 		}
 
 		if (prevProps && prevProps.selectedPlayer.random !== selectedPlayer.random && selectedPlayer.playerName.length) {
 			switch (currentValue) {
-				case 'I claim to be the troublemaker and I swapped the cards between ':
-					this.setState({inputValue: `${currentValue}${selectedPlayer.playerName} and `});
-					break;
+			case 'I claim to be the troublemaker and I swapped the cards between ':
+				this.setState({inputValue: `${currentValue}${selectedPlayer.playerName} and `});
+				break;
 
-				case 'I think that ':
-					this.setState({inputValue: `${currentValue}${selectedPlayer.playerName} is a `});
-					break;
+			case 'I think that ':
+				this.setState({inputValue: `${currentValue}${selectedPlayer.playerName} is a `});
+				break;
 
-				case 'I claim to be the seer and I looked at the card of ':
-					this.setState({inputValue: `${currentValue}${selectedPlayer.playerName} and they were a `});
-					break;
+			case 'I claim to be the seer and I looked at the card of ':
+				this.setState({inputValue: `${currentValue}${selectedPlayer.playerName} and they were a `});
+				break;
 
-				case 'I claim to be the robber and I swapped my card with the card of ':
-					this.setState({inputValue: `${currentValue}${selectedPlayer.playerName} and am now a `});
-					break;
+			case 'I claim to be the robber and I swapped my card with the card of ':
+				this.setState({inputValue: `${currentValue}${selectedPlayer.playerName} and am now a `});
+				break;
 
-				default:
-					this.setState({inputValue: `${currentValue}${selectedPlayer.playerName}`});
+			default:
+				this.setState({inputValue: `${currentValue}${selectedPlayer.playerName}`});
 			}
 		}
-	}	
+	}
 
 	createHotkeys() {
 		let textLeft, textRight;
 
 		switch (this.state.hotkey) {   // todo-release expand this functionality to include nightaction events
-			case 'troublemaker':
-				textLeft = 'reset';
-				textRight = 'I swapped..';
-				break;
+		case 'troublemaker':
+			textLeft = 'reset';
+			textRight = 'I swapped..';
+			break;
 
-			case 'mason':
-				textLeft = 'reset';
-				textRight = 'others..';
-				break;
+		case 'mason':
+			textLeft = 'reset';
+			textRight = 'others..';
+			break;
 
-			case 'seer':
-				textLeft = 'center';
-				textRight = 'player';
-				break;
+		case 'seer':
+			textLeft = 'center';
+			textRight = 'player';
+			break;
 
-			case 'insomniac':
-				textLeft = 'reset';
-				textRight = 'woke to..';
-				break;
+		case 'insomniac':
+			textLeft = 'reset';
+			textRight = 'woke to..';
+			break;
 
-			case 'robber':
-				textLeft = 'reset';
-				textRight = 'switched..';
-				break;
+		case 'robber':
+			textLeft = 'reset';
+			textRight = 'switched..';
+			break;
 
-			default:
-				textLeft = 'I claim..';
-				textRight = 'I think..';
+		default:
+			textLeft = 'I claim..';
+			textRight = 'I think..';
 		}
 
 		return (
 			<div className="hotkey-container">
-				<div className="hotkey-left" onClick={this.handleLeftHotkeyClick.bind(this)}>
+				<div className="hotkey-left" onClick={this.handleLeftHotkeyClick}>
 					{textLeft}
 				</div>
-				<div className="hotkey-right" onClick={this.handleRightHotkeyClick.bind(this)}>
+				<div className="hotkey-right" onClick={this.handleRightHotkeyClick}>
 					{textRight}
 				</div>
 			</div>
 		);
 	}
 
-	handleLeftHotkeyClick(e) {
+	handleLeftHotkeyClick() {
 		switch (this.state.hotkey) {
-			case 'init':
-				this.setState({
-					inputValue: 'I claim to be the ',
-					altClaim: ''
-				});
-				this.props.roleState('notify');
-				setTimeout(() => {
-					this.props.roleState('');
-				}, 1000);
-				break;
+		case 'init':
+			this.setState({
+				inputValue: 'I claim to be the ',
+				altClaim: ''
+			});
+			this.props.roleState('notify');
+			setTimeout(() => {
+				this.props.roleState('');
+			}, 1000);
+			break;
 
-			case 'seer':
-				this.setState({inputValue: `${this.state.inputValue} and I looked two of the center cards and they were a `});
-				break;
+		case 'seer':
+			this.setState({inputValue: `${this.state.inputValue} and I looked two of the center cards and they were a `});
+			break;
 
-			default:
-				this.setState({
-					inputValue: '',
-					altClaim: '',
-					hotkey: 'init'
-				});
+		default:
+			this.setState({
+				inputValue: '',
+				altClaim: '',
+				hotkey: 'init'
+			});
 		}
 	}
 
-	handleRightHotkeyClick(e) {
-		const $input = $(this.refs.gameChatInput);
-
+	handleRightHotkeyClick() {
 		switch (this.state.hotkey) {
-			case 'troublemaker':
-				this.setState({inputValue: `${this.state.inputValue} and I swapped the cards between `});
-				break;
+		case 'troublemaker':
+			this.setState({inputValue: `${this.state.inputValue} and I swapped the cards between `});
+			break;
 
-			case 'mason':
-				this.setState({inputValue: `${this.state.inputValue} and the other mason(s) were `});
-				break;
+		case 'mason':
+			this.setState({inputValue: `${this.state.inputValue} and the other mason(s) were `});
+			break;
 
-			case 'seer':
-				this.setState({inputValue: `${this.state.inputValue} and I looked at the card of `});
-				break;
+		case 'seer':
+			this.setState({inputValue: `${this.state.inputValue} and I looked at the card of `});
+			break;
 
-			case 'insomniac':
-				this.setState({inputValue: `${this.state.inputValue} and when I awoke, I was the `});
-				break;
+		case 'insomniac':
+			this.setState({inputValue: `${this.state.inputValue} and when I awoke, I was the `});
+			break;
 
-			case 'robber':
-				this.setState({inputValue: `${this.state.inputValue} and I swapped my card with the card of `});
-				break;
+		case 'robber':
+			this.setState({inputValue: `${this.state.inputValue} and I swapped my card with the card of `});
+			break;
 
-			default:
-				this.setState({inputValue: 'I think that '});
+		default:
+			this.setState({inputValue: 'I think that '});
 		}
 	}
 
-	handleChatClearClick(e) {
+	handleChatClearClick() {
 		this.setState({
 			inputValue: '',
 			altClaim: '',
@@ -197,9 +201,8 @@ export default class Gamechat extends React.Component {
 
 	handleSubmit(e) {
 		const currentValue = this.state.inputValue,
-			{ seatNumber } = this.props.userInfo,
-			{ gameInfo, userInfo } = this.props,
-			{ hotkey, altClaim } = this.state;
+			{gameInfo, userInfo} = this.props,
+			{hotkey, altClaim} = this.state;
 
 		e.preventDefault();
 
@@ -210,7 +213,7 @@ export default class Gamechat extends React.Component {
 				gameChat: false,
 				uid: gameInfo.uid,
 				inProgress: gameInfo.inProgress
-			}
+			};
 
 			if (gameInfo.gameState.isStarted && !gameInfo.gameState.isCompleted && userInfo.seatNumber && hotkey !== 'init') {
 				chat.claim = altClaim || hotkey;
@@ -227,7 +230,7 @@ export default class Gamechat extends React.Component {
 
 	scrollChats() {
 		const chatsContainer = document.querySelector('section.segment.chats > .ui.list');
-		
+
 		if (!this.state.lock) {
 			chatsContainer.scrollTop = 99999999;
 		}
@@ -240,7 +243,7 @@ export default class Gamechat extends React.Component {
 	}
 
 	handleTimestamps(timestamp) {
-		const { userInfo } = this.props;
+		const {userInfo} = this.props;
 
 		if (userInfo.userName && userInfo.gameSettings && userInfo.gameSettings.enableTimestamps) {
 			const minutes = (`0${new Date(timestamp).getMinutes()}`).slice(-2),
@@ -254,7 +257,7 @@ export default class Gamechat extends React.Component {
 		}
 	}
 
-	handleChatLockClick(e) {
+	handleChatLockClick() {
 		if (this.state.lock) {
 			this.setState({lock: false});
 		} else {
@@ -263,11 +266,9 @@ export default class Gamechat extends React.Component {
 	}
 
 	processChats() {
-		const { gameInfo } = this.props;
+		const {gameInfo} = this.props;
 
-		return gameInfo.chats.sort((a, b) => {
-			return new Date(a.timestamp) - new Date(b.timestamp);
-		}).map((chat, i) => {
+		return gameInfo.chats.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp)).map((chat, i) => {
 			const chatContents = chat.chat,
 				// playerNames = Object.keys(gameInfo.seated).map((seatName) => {
 				// 	return gameInfo.seated[seatName].userName;
@@ -283,14 +284,14 @@ export default class Gamechat extends React.Component {
 					});
 				},
 				roles = [{
-						name: 'masons',
-						team: 'village'
-					}, ..._.uniq(gameInfo.roles).map((name) => { // javascript!
-						return {
-							name,
-							team: roleMap[name].team
-						};
-					}),
+					name: 'masons',
+					team: 'village'
+				}, ..._.uniq(gameInfo.roles).map((name) => { // javascript!
+					return {
+						name,
+						team: roleMap[name].team
+					};
+				}),
 					{
 						name: 'werewolves',
 						team: 'werewolf'
@@ -310,15 +311,13 @@ export default class Gamechat extends React.Component {
 										if (chatSegment.type === 'playerName') {
 											classes = 'chat-player';
 										} else {
-											classes = `chat-role--${roles.find((role) => {
-												return role.name === chatSegment.text;
-											}).team}`;
+											classes = `chat-role--${roles.find((role) => role.name === chatSegment.text).team}`;
 										}
 
 										return <span key={index} className={classes}>{chatSegment.text}</span>;
-									} else {
-										return chatSegment.text;
 									}
+
+									return chatSegment.text;
 								});
 							})()}
 						</span>
@@ -331,12 +330,12 @@ export default class Gamechat extends React.Component {
 						<span>
 							{(() => {
 								const toProcessChats = [],
-										splitChat = chatContents.split((() => {
-											const toRegex = players.map((player) => {
-												return player.name;
-											}).concat(roles.map((role) => {
-												return role.name;
-											})).join('|');
+									splitChat = chatContents.split((() => {
+										const toRegex = players.map((player) => {
+											return player.name;
+										}).concat(roles.map((role) => {
+											return role.name;
+										})).join('|');
 
 										return new RegExp(toRegex, 'i');
 									})()),
@@ -344,9 +343,8 @@ export default class Gamechat extends React.Component {
 
 								combinedToProcess.forEach((item) => {
 									const split = chatContents.split(new RegExp(item.name, 'i'));
-									
+
 									if (split.length > 1) {
-										console.log(split);
 										split.forEach((piece, i) => {
 											if (i < split.length - 1) {
 												const processor = { // todo-alpha there's a bug here with chats that go (playername)(rolename)(same rolename) but it will have to wait until I have some time to dig into it
@@ -354,34 +352,30 @@ export default class Gamechat extends React.Component {
 													index: (() => {
 														let _index = i;
 
-
 														function processSplits(splitIndex) {
 															if (typeof split[_index - 1] !== 'undefined' && !split[splitIndex].length && split[splitIndex - 1].substr(0, item.name.length) !== item.name) {
-																// console.log('Hello World!');
 																return processSplits(_index--);
-															} else {
-																let spliceSplit = split.splice(0, splitIndex ? splitIndex : splitIndex + 1),
-																	reducedSplit = spliceSplit.length > 1 ? spliceSplit.reduce((prev, curr) => {
-																		return !prev.length ? item.name.length : 0 + !curr.length ? item.name.length : curr.length;
-																	}) : spliceSplit[splitIndex].length ? spliceSplit[splitIndex].length : item.name.length;
-
-																// console.log(spliceSplit);
-
-
-																// console.log(reducedSplit);
-
-																// console.log(split[splitIndex].length);
-
-																// return split[splitIndex].length ? 
-
-																return split[splitIndex].length || reducedSplit ? reducedSplit : item.name.length;
 															}
+															const spliceSplit = split.splice(0, splitIndex || splitIndex + 1),
+																reducedSplit = spliceSplit.length > 1 ? spliceSplit.reduce((prev, curr) => {
+																	return !prev.length ? item.name.length : 0 + !curr.length ? item.name.length : curr.length;
+																}) : spliceSplit[splitIndex].length ? spliceSplit[splitIndex].length : item.name.length;
+
+															// console.log(spliceSplit);
+
+															// console.log(reducedSplit);
+
+															// console.log(split[splitIndex].length);
+
+															// return split[splitIndex].length ?
+
+															return split[splitIndex].length || reducedSplit ? reducedSplit : item.name.length;
 														}
 
 														// return split[index].length;
 														return processSplits(_index);
 													})(),
-													type: item.team ? 'roleName' : 'playerName',
+													type: item.team ? 'roleName' : 'playerName'
 												};
 
 												// console.log(processor);
@@ -412,82 +406,98 @@ export default class Gamechat extends React.Component {
 												<span className={item.team ? `chat-role--${item.team}` : 'chat-player'}>{item.text}</span>{piece}
 											</span>
 										);
-									} else {
-										return piece;
 									}
+
+									return piece;
 								});
 							})()}
 						</span>
 					</div>
 				);
-			};
-		});	
+			}
+		});
 	}
 
 	render() {
 		return (
 			<section className="gamechat">
 				<section className="ui pointing menu">
-					<a className={this.state.chatFilter === 'All' ? 'item active' : 'item'} onClick={this.handleChatFilterClick.bind(this)}>All</a>
-					<a className={this.state.chatFilter === 'Chat' ? 'item active' : 'item'} onClick={this.handleChatFilterClick.bind(this)}>Chat</a>
-					<a className={this.state.chatFilter === 'Game' ? 'item active' : 'item'} onClick={this.handleChatFilterClick.bind(this)}>Game</a>
-					<i className={this.state.lock ? 'large lock icon' : 'large unlock alternate icon'} onClick={this.handleChatLockClick.bind(this)}></i>
+					<a className={this.state.chatFilter === 'All' ? 'item active' : 'item'} onClick={this.handleChatFilterClick}>All</a>
+					<a className={this.state.chatFilter === 'Chat' ? 'item active' : 'item'} onClick={this.handleChatFilterClick}>Chat</a>
+					<a className={this.state.chatFilter === 'Game' ? 'item active' : 'item'} onClick={this.handleChatFilterClick}>Game</a>
+					<i className={this.state.lock ? 'large lock icon' : 'large unlock alternate icon'} onClick={this.handleChatLockClick} />
 				</section>
 				<section className="segment chats">
 					<div className="ui list">
 						{this.processChats()}
 					</div>
 				</section>
-				<form className="segment inputbar" onSubmit={this.handleSubmit.bind(this)}>
+				<form className="segment inputbar" onSubmit={this.handleSubmit}>
 					{(() => {
-						const { gameInfo, userInfo } = this.props;
+						const {gameInfo, userInfo} = this.props;
 
 						let classes = 'expando-container';
 
-						if (!userInfo.seatNumber || gameInfo.gameState.isNight || gameInfo.gameState.isCompleted || gameInfo.gameState.isStarted && !gameInfo.gameState.isDay) {
+						if (!userInfo.seatNumber || gameInfo.gameState.isNight || gameInfo.gameState.isCompleted || (gameInfo.gameState.isStarted && !gameInfo.gameState.isDay)) {
 							classes += ' app-visibility-hidden';
 						}
 
 						return (
 							<div className={classes}>
-								<i className={
-									(() => {
-										let classes = 'large delete icon';
+								<i
+									className={
+										(() => {
+											let classes = 'large delete icon';
 
-										if (!this.state.inputValue.length) {
-											classes += ' app-visibility-hidden';
-										}
+											if (!this.state.inputValue.length) {
+												classes += ' app-visibility-hidden';
+											}
 
-										return classes;
-									})()
-								}
-								 onClick={this.handleChatClearClick.bind(this)}></i>
+											return classes;
+										})()
+									}
+									onClick={this.handleChatClearClick}
+								/>
 								{(() => {
 									if (gameInfo.gameState.isStarted && userInfo.seatNumber) {
-										{return this.createHotkeys()}
+										return this.createHotkeys();
 									}
 								})()}
 							</div>
 						);
 					})()}
-					<div className={
-						(() => {
-							let classes = 'ui action input';
+					<div
+						className={
+							(() => {
+								let classes = 'ui action input';
 
-							const { gameState } = this.props.gameInfo;
+								const {gameState} = this.props.gameInfo;
 
-							if (!this.props.userInfo.userName || gameState.cardsDealt && !gameState.isDay) {
-								classes += ' disabled';
-							}
+								if (!this.props.userInfo.userName || (gameState.cardsDealt && !gameState.isDay)) {
+									classes += ' disabled';
+								}
 
-							return classes;							
-						})()
-					}>
-						<input value={this.state.inputValue} autocomplete="off" placeholder="Chat.." id="gameChatInput" ref="gameChatInput" onChange={this.handleInputChange.bind(this)} maxLength="300"></input>
+								return classes;
+							})()
+						}
+					>
+						<input value={this.state.inputValue} autoComplete="off" placeholder="Chat.." id="gameChatInput" ref={(c) => { this.gameChatInput = c; }} onChange={this.handleInputChange} maxLength="300" />
 						<button className={!this.state.inputValue.length ? 'ui primary button disabled' : 'ui primary button'}>Chat</button>
 					</div>
 				</form>
 			</section>
 		);
 	}
+}
+
+Gamechat.propTypes = {
+	onNewGameChat: React.PropTypes.func,
+	clickedGameRole: React.PropTypes.object,
+	clickedPlayer: React.PropTypes.object,
+	roleState: React.PropTypes.object,
+	selectedGamerole: React.PropTypes.object,
+	selectedPlayer: React.PropTypes.string,
+	userInfo: React.PropTypes.object,
+	gameInfo: React.PropTypes.object,
+	socket: React.PropTypes.object
 };

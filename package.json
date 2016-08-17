@@ -24,6 +24,7 @@
     "passport": "^0.2.2",
     "passport-local": "^1.0.0",
     "passport-local-mongoose": "^1.0.1",
+    "passport-remember-me": "git+https://github.com/ilich/passport-remember-me.git",
     "pug": "^2.0.0-alpha6",
     "react": "^15.0.2",
     "react-redux": "^4.0.0",
@@ -38,7 +39,10 @@
     "semantic-ui-visibility": "^2.1.7",
     "serve-favicon": "^2.3.0",
     "socket.io": "^1.4.5",
-    "socket.io-client": "^1.4.5"
+    "socket.io-client": "^1.4.5",
+    "react-dom": "^15.0.2",
+    "redux": "^3.3.1",
+    "redux-devtools": "^2.1.5"
   },
   "devDependencies": {
     "babelify": "^5.0.4",
@@ -82,10 +86,6 @@
     "map-stream": "0.0.6",
     "node-notifier": "^4.3.1",
     "opn": "^1.0.1",
-    "passport-remember-me": "git+https://github.com/ilich/passport-remember-me.git",
-    "react-dom": "^15.0.2",
-    "redux": "^3.3.1",
-    "redux-devtools": "^2.1.5",
     "require-dot-file": "^0.4.0",
     "through2": "^0.6.3",
     "vinyl-transform": "^1.0.0",
