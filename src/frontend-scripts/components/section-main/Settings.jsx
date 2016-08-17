@@ -1,17 +1,19 @@
-'use strict';
-
 import React from 'react';
 import $ from 'jquery';
 import Popup from 'semantic-ui-popup';
 import Checkbox from 'semantic-ui-checkbox';
-import { defaultRolesArray } from '../../../../iso/util.js';
 
 $.fn.popup = Popup;
 $.fn.checkbox = Checkbox;
 
 export default class Settings extends React.Component {
+	constructor() {
+		super();
+		this.leaveSettings = this.leaveSettings.bind(this);
+	}
+
 	componentDidMount() {
-		const { socket } = this.props;
+		const {socket} = this.props;
 
 		$(this.refs.popups).popup({
 			inline: true,
@@ -31,7 +33,7 @@ export default class Settings extends React.Component {
 				socket.emit('updateGameSettings', {
 					disablePopups: false
 				});
-			},
+			}
 		});
 
 		$(this.refs.timestamps).checkbox({
@@ -81,12 +83,12 @@ export default class Settings extends React.Component {
 	render() {
 		return (
 			<section className="settings">
-				<i className="remove icon" onClick={this.leaveSettings.bind(this)}></i>
+				<i className="remove icon" onClick={this.leaveSettings} />
 				<div className="ui header">
 					<div className="content">
 						Game settings
 						<div className="sub header">
-							Account settings can be found <a href='/account' target="blank">here</a> (new tab).
+							Account settings can be found <a href="/account" target="_blank" rel="noopener noreferrer">here</a> (new tab).
 						</div>
 					</div>
 				</div>
@@ -94,8 +96,8 @@ export default class Settings extends React.Component {
 					<div className="four wide column popups">
 						<h4 className="ui header">Disable informational popups</h4>
 						<div className="ui fitted toggle checkbox" ref="popups">
-							<input type="checkbox" name="popups" defaultChecked={this.props.userInfo.gameSettings.disablePopups}></input>
-							<label></label>
+							<input type="checkbox" name="popups" defaultChecked={this.props.userInfo.gameSettings.disablePopups} />
+							<label />
 						</div>
 						<div className="ui small popup transition hidden">
 							Disable most popups (but not this one) that explain game terms and concepts.
@@ -104,26 +106,32 @@ export default class Settings extends React.Component {
 					<div className="four wide column popups">
 						<h4 className="ui header">Add timestamps to in-game chats</h4>
 						<div className="ui fitted toggle checkbox" ref="timestamps">
-							<input type="checkbox" name="timestamps" defaultChecked={this.props.userInfo.gameSettings.enableTimestamps}></input>
-							<label></label>
+							<input type="checkbox" name="timestamps" defaultChecked={this.props.userInfo.gameSettings.enableTimestamps} />
+							<label />
 						</div>
 					</div>
 					<div className="four wide column popups">
 						<h4 className="ui header">Hide right sidebar while in games</h4>
 						<div className="ui fitted toggle checkbox" ref="sidebar">
-							<input type="checkbox" name="sidebar" defaultChecked={this.props.userInfo.gameSettings.disableRightSidebarInGame}></input>
-							<label></label>
+							<input type="checkbox" name="sidebar" defaultChecked={this.props.userInfo.gameSettings.disableRightSidebarInGame} />
+							<label />
 						</div>
 					</div>
 					<div className="four wide column popups">
 						<h4 className="ui header">Use dark theme (reloads page)</h4>
 						<div className="ui fitted toggle checkbox" ref="theme">
-							<input type="checkbox" name="sidebar" defaultChecked={this.props.userInfo.gameSettings.enableDarkTheme}></input>
-							<label></label>
+							<input type="checkbox" name="sidebar" defaultChecked={this.props.userInfo.gameSettings.enableDarkTheme} />
+							<label />
 						</div>
-					</div>					
+					</div>
 				</div>
 			</section>
 		);
 	}
+}
+
+Settings.propTypes = {
+	onLeaveSettings: React.PropTypes.func,
+	userInfo: React.PropTypes.object,
+	socket: React.PropTypes.object
 };

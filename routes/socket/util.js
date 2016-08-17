@@ -1,5 +1,3 @@
-'use strict';
-
 module.exports.secureGame = (game) => {
 	const _game = Object.assign({}, game);
 

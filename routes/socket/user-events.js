@@ -1,11 +1,8 @@
-'use strict';
-
 let generalChatCount = 0;
 
-const { games, userList, generalChats } = require('./models'),
-	{ secureGame } = require('./util'),
-	{ sendGameList, sendGeneralChats, sendUserList } = require('./user-requests'),
-	_ = require('lodash'),
+const {games, userList, generalChats} = require('./models'),
+	{secureGame} = require('./util'),
+	{sendGameList, sendGeneralChats, sendUserList} = require('./user-requests'),
 	Game = require('../../models/game'),
 	Account = require('../../models/account'),
 	Generalchats = require('../../models/generalchats'),
@@ -57,8 +54,57 @@ const { games, userList, generalChats } = require('./models'),
 			return player.userName === userName;
 		});
 	},
+	combineInProgressChats = (game, userName) => {
+		let player;
+
+		if (userName) {
+			player = getInternalPlayerInGameByUserName(game, userName);
+		}
+
+		const gameChats = player ? player.gameChats : game.internals.unSeatedGameChats;
+
+		return gameChats.concat(game.chats);
+	},
+	sendInProgressGameUpdate = (game) => { // todo-release make this accept a socket argument and emit only to it if it exists
+		const seatedPlayerNames = Object.keys(game.seated).map((seat) => game.seated[seat].userName);
+
+		let roomSockets, playerSockets, observerSockets;
+
+		if (io.sockets.adapter.rooms[game.uid]) {
+			roomSockets = Object.keys(io.sockets.adapter.rooms[game.uid].sockets).map((sockedId) => io.sockets.connected[sockedId]);
+
+			playerSockets = roomSockets.filter((socket) => socket.handshake.session.passport && Object.keys(socket.handshake.session.passport).length && seatedPlayerNames.includes(socket.handshake.session.passport.user));
+
+			observerSockets = roomSockets.filter((socket) => !socket.handshake.session.passport || !seatedPlayerNames.includes(socket.handshake.session.passport.user));
+		}
+
+		if (playerSockets) {
+			playerSockets.forEach((sock) => {
+				const _game = Object.assign({}, game),
+					{user} = sock.handshake.session.passport;
+
+				if (!game.gameState.isCompleted) {
+					_game.tableState = _game.internals.seatedPlayers.find((player) => {
+						return user === player.userName;
+					}).tableState;
+				}
+
+				_game.chats = combineInProgressChats(_game, user);
+				sock.emit('gameUpdate', secureGame(_game));
+			});
+		}
+
+		if (observerSockets) {
+			observerSockets.forEach((sock) => {
+				const _game = Object.assign({}, game);
+
+				_game.chats = combineInProgressChats(_game);
+				sock.emit('gameUpdate', secureGame(_game));
+			});
+		}
+	},
 	handleSocketDisconnect = (socket) => {
-		const { passport } = socket.handshake.session;
+		const {passport} = socket.handshake.session;
 
 		if (passport && Object.keys(passport).length) {
 			const userIndex = userList.findIndex((user) => {
@@ -82,14 +128,12 @@ const { games, userList, generalChats } = require('./models'),
 					userSeatName = seatNames.find((seatName) => {
 						return game.seated[seatName].userName === passport.user;
 					}),
-					{ gameState } = game;
+					{gameState} = game;
 
 				if (gameState.isStarted && !gameState.isCompleted) {
 					game.seated[userSeatName].connected = false;
 					sendInProgressGameUpdate(game);
-				} else if (gameState.isCompleted && Object.keys(game.seated).filter((seat) => {
-						return !game.seated[seat].connected;
-					}).length === 6) {
+				} else if (gameState.isCompleted && Object.keys(game.seated).filter((seat) => !game.seated[seat].connected).length === 6) {
 					saveGame(game);
 					games.splice(games.indexOf(game), 1);
 				} else if (seatNames.length === 1) {
@@ -107,61 +151,6 @@ const { games, userList, generalChats } = require('./models'),
 		}
 
 		sendUserList();
-	},
-	combineInProgressChats = (game, userName) => {
-		let player, gameChats;
-
-		if (userName) {
-			player = getInternalPlayerInGameByUserName(game, userName);
-		}
-
-		gameChats = player ? player.gameChats : game.internals.unSeatedGameChats;
-
-		return gameChats.concat(game.chats);
-	},
-	sendInProgressGameUpdate = (game) => { // todo-release make this accept a socket argument and emit only to it if it exists
-		const seatedPlayerNames = Object.keys(game.seated).map((seat) => {
-				return game.seated[seat].userName;
-			});
-
-		let roomSockets, playerSockets, observerSockets;
-
-		if (io.sockets.adapter.rooms[game.uid]) {
-			roomSockets = Object.keys(io.sockets.adapter.rooms[game.uid].sockets).map((sockedId) => {
-				return io.sockets.connected[sockedId];
-			}),
-			playerSockets = roomSockets.filter((socket) => {
-				return socket.handshake.session.passport && Object.keys(socket.handshake.session.passport).length && seatedPlayerNames.includes(socket.handshake.session.passport.user);
-			}),
-			observerSockets = roomSockets.filter((socket) => {
-				return !socket.handshake.session.passport || !seatedPlayerNames.includes(socket.handshake.session.passport.user);
-			});
-		}
-
-		if (playerSockets) {
-			playerSockets.forEach((sock, index) => {
-				const _game = Object.assign({}, game),
-					{ user } = sock.handshake.session.passport;
-
-				if (!game.gameState.isCompleted) {
-					_game.tableState = _game.internals.seatedPlayers.find((player) => {
-						return user === player.userName;
-					}).tableState;
-				}
-				
-				_game.chats = combineInProgressChats(_game, user);
-				sock.emit('gameUpdate', secureGame(_game));
-			});
-		}
-
-		if (observerSockets) {
-			observerSockets.forEach((sock) => {
-				const _game = Object.assign({}, game);
-
-				_game.chats = combineInProgressChats(_game);
-				sock.emit('gameUpdate', secureGame(_game));
-			});
-		}
 	};
 
 module.exports.handleUpdatedTruncateGame = (data) => {
@@ -174,7 +163,7 @@ module.exports.handleUpdatedTruncateGame = (data) => {
 		};
 
 	// todo-release this game check shouldn't be necessary but saw a crash some how - added debugging
-	
+
 	if (game && !game.internals.truncated) {
 		if (!data.truncate && game.internals.truncateGameCount !== 0) {
 			game.internals.truncateGameCount--;
@@ -217,7 +206,7 @@ module.exports.handleUpdatedReportGame = (socket, data) => {
 	const game = games.find((el) => {
 			return el.uid === data.uid;
 		}),
-		seatNumber = parseInt(data.seatNumber);
+		seatNumber = parseInt(data.seatNumber, 10);
 
 	if (game.gameState.reportedGame[seatNumber]) {
 		game.gameState.reportedGame[seatNumber] = false;
@@ -230,7 +219,7 @@ module.exports.handleUpdatedReportGame = (socket, data) => {
 
 module.exports.handleAddNewGame = (socket, data) => {
 	data.internals = {
-		unSeatedGameChats: [],  //todo-release clean up this mess
+		unSeatedGameChats: [],  // todo-release clean up this mess
 		seatedPlayers: [{gameChats: [], tableState: {seats: [{}, {}, {}, {}, {}, {}, {}, {}, {}, {}]}}, {gameChats: [], tableState: {seats: [{}, {}, {}, {}, {}, {}, {}, {}, {}, {}]}}, {gameChats: [], tableState: {seats: [{}, {}, {}, {}, {}, {}, {}, {}, {}, {}]}}, {gameChats: [], tableState: {seats: [{}, {}, {}, {}, {}, {}, {}, {}, {}, {}]}}, {gameChats: [], tableState: {seats: [{}, {}, {}, {}, {}, {}, {}, {}, {}, {}]}}, {gameChats: [], tableState: {seats: [{}, {}, {}, {}, {}, {}, {}, {}, {}, {}]}}, {gameChats: [], tableState: {seats: [{}, {}, {}, {}, {}, {}, {}, {}, {}, {}]}}],
 		truncateGameCount: 0
 	};
@@ -276,7 +265,7 @@ module.exports.handleAddNewGameChat = (data, uid) => {
 module.exports.handleNewGeneralChat = (data) => {
 	if (generalChatCount === 100) {
 		const chats = new Generalchats({chats: generalChats});
-		
+
 		chats.save();
 		generalChatCount = 0;
 	}
@@ -313,9 +302,7 @@ module.exports.handleUpdatedGameSettings = (socket, data) => {
 };
 
 module.exports.handleUserLeaveGame = (socket, data) => {
-	const game = games.find((el) => {
-			return el.uid === data.uid;
-		});
+	const game = games.find((el) => el.uid === data.uid);
 
 	let completedGameLeftPlayerCount;
 
@@ -326,9 +313,7 @@ module.exports.handleUserLeaveGame = (socket, data) => {
 	// todo-release for some reason when a player plays a game, it completes, leaves the table, and then comes back to the table, they don't have the private info from the game until there is a game update.
 
 	if (game && game.gameState.isCompleted && data.seatNumber) {
-		const playerSeat = Object.keys(game.seated).find((seatName) => {
-				return game.seated[seatName].userName === data.userName;
-			});
+		const playerSeat = Object.keys(game.seated).find((seatName) => game.seated[seatName].userName === data.userName);
 
 		game.seated[playerSeat].connected = false;
 
@@ -339,12 +324,11 @@ module.exports.handleUserLeaveGame = (socket, data) => {
 		if (completedGameLeftPlayerCount === 7) {
 			saveGame(game);
 		}
-
 	} else if (data.seatNumber && !game.gameState.isStarted) {
 		delete game.seated[`seat${data.seatNumber}`];
 	}
 
-	if (game && Object.keys(game.seated).length === 0 || completedGameLeftPlayerCount === 7) {
+	if ((game && Object.keys(game.seated).length === 0) || completedGameLeftPlayerCount === 7) {
 		socket.emit('gameUpdate', {}, data.isSettings);
 		io.sockets.in(data.uid).emit('gameUpdate', {});
 		games.splice(games.indexOf(game), 1);
@@ -357,11 +341,11 @@ module.exports.handleUserLeaveGame = (socket, data) => {
 };
 
 module.exports.checkUserStatus = (socket) => {
-	const { passport } = socket.handshake.session;
+	const {passport} = socket.handshake.session;
 
 	if (passport && Object.keys(passport).length) {
-		const { user } = passport,
-			{ sockets } = io.sockets,
+		const {user} = passport,
+			{sockets} = io.sockets,
 			game = games.find((game) => {
 				return Object.keys(game.seated).find((seat) => {
 					return game.seated[seat].userName === user;

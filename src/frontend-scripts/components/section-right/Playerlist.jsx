@@ -1,5 +1,3 @@
-'use strict';
-
 import React from 'react';
 
 export default class Playerlist extends React.Component {
@@ -14,21 +12,21 @@ export default class Playerlist extends React.Component {
 								return (
 									<div>
 										<span>{this.props.userList.list.length}</span>
-										<i className="large user icon"></i>
+										<i className="large user icon" />
 										<span>{this.props.userList.totalSockets - this.props.userList.list.length}</span>
-										<i className="large unhide icon"></i>
+										<i className="large unhide icon" />
 									</div>
 								);
 							}
 						})()}
 					</div>
-					<div className="ui divider"></div>
+					<div className="ui divider" />
 				</div>
 				<div className="playerlist-body">
 				{(() => {
 					if (Object.keys(this.props.userList).length) {
-						const { list } = this.props.userList;
-						
+						const {list} = this.props.userList;
+
 						list.sort((a, b) => {
 							const aTotal = a.wins + a.losses,
 								bTotal = b.wins + b.losses;
@@ -42,7 +40,7 @@ export default class Playerlist extends React.Component {
 							}
 
 							if (aTotal > 9 && bTotal > 9) {
-								return b.wins / bTotal - a.wins / aTotal;
+								return (b.wins / bTotal) - (a.wins / aTotal);
 							} else if (aTotal > 9) {
 								return -1;
 							} else if (bTotal > 9) {
@@ -71,4 +69,8 @@ export default class Playerlist extends React.Component {
 			</section>
 		);
 	}
+}
+
+Playerlist.propTypes = {
+	userList: React.PropTypes.object
 };

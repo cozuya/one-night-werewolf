@@ -1,5 +1,3 @@
-'use strict';
-
 import React from 'react';
 import Playerlist from './Playerlist.jsx';
 import Generalchat from './Generalchat.jsx';
@@ -11,7 +9,7 @@ export default class RightSidebar extends React.Component {
 				<Playerlist
 					userList={this.props.userList}
 				/>
-				<div className="ui divider right-sidebar-divider"></div>
+				<div className="ui divider right-sidebar-divider" />
 				<Generalchat
 					socket={this.props.socket}
 					generalChats={this.props.generalChats}
@@ -20,4 +18,11 @@ export default class RightSidebar extends React.Component {
 			</section>
 		);
 	}
+}
+
+RightSidebar.propTypes = {
+	userInfo: React.PropTypes.object,
+	socket: React.PropTypes.object,
+	generalChats: React.PropTypes.array,
+	userList: React.PropTypes.object
 };

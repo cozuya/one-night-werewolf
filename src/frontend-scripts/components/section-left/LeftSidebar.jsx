@@ -1,9 +1,12 @@
-'use strict';
-
 import React from 'react';
 import SidebarGame from './SidebarGame.jsx';
 
 export default class LeftSidebar extends React.Component {
+	constructor() {
+		super();
+		this.createGameClick = this.createGameClick.bind(this);
+	}
+
 	createGameClick() {
 		this.props.onCreateGameButtonClick('createGame');
 	}
@@ -12,18 +15,10 @@ export default class LeftSidebar extends React.Component {
 		return (
 			<section className="section-left three wide column leftsidebar">
 				{(() => {
-					const { userName } = this.props.userInfo,
+					const {userName} = this.props.userInfo,
 						gameBeingCreated = this.props.midSection === 'createGame';
 
-					if (userName && !gameBeingCreated) {
-						return (
-							<button className="ui button primary" onClick={this.createGameClick.bind(this)}>Create a new game</button>
-						)
-					} else {
-						return (
-							<button className="ui button disabled">{gameBeingCreated ? 'Creating a new game..' : 'Sign in to make games'}</button>
-						)
-					}
+					return (userName && !gameBeingCreated) ? <button className="ui button primary" onClick={this.createGameClick}>Create a new game</button> : <button className="ui button disabled">{gameBeingCreated ? 'Creating a new game..' : 'Sign in to make games'}</button>;
 				})()}
 				<div className="games-container">
 					{this.props.gameList.sort((a, b) => {
@@ -36,19 +31,11 @@ export default class LeftSidebar extends React.Component {
 						}
 
 						if (a.gameState.isStarted && !a.gameState.isCompleted) {
-							if (!b.gameState.isStarted) {
-								return 1;
-							} else {
-								return -1;
-							}
+							return !b.gameState.isStarted ? 1 : -1;
 						}
 
 						if (b.gameState.isStarted && !b.gameState.isCompleted) {
-							if (!a.gameState.isStarted) {
-								return -1;
-							} else {
-								return 1;
-							}
+							return !a.gameState.isStarted ? -1 : 1;
 						}
 
 						if (a.gameState.isCompleted && !b.gameState.isCompleted) {
@@ -59,14 +46,24 @@ export default class LeftSidebar extends React.Component {
 
 						return 0;
 					}).map((game, index) => {
-						return <SidebarGame
-									key={index}
-									game={game}
-									socket={this.props.socket}
-								/>
+						return (
+							<SidebarGame
+								key={index}
+								game={game}
+								socket={this.props.socket}
+							/>
+						);
 					})}
 				</div>
 			</section>
 		);
 	}
+}
+
+LeftSidebar.propTypes = {
+	userInfo: React.PropTypes.object,
+	midSection: React.PropTypes.string,
+	gameList: React.PropTypes.array,
+	onCreateGameButtonClick: React.PropTypes.func,
+	socket: React.PropTypes.object
 };

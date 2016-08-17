@@ -1,61 +1,142 @@
-'use strict';
-
 const Account = require('../../models/account'),
-	{ games, userList } = require('./models'),
-	{ secureGame } = require('./util'),
-	{ sendInProgressGameUpdate } = require('./user-events'),
-	{ sendGameList, sendUserList } = require('./user-requests'),
+	{games, userList} = require('./models'),
+	{secureGame} = require('./util'),
+	{sendInProgressGameUpdate} = require('./user-events'),
+	{sendGameList, sendUserList} = require('./user-requests'),
 	_ = require('lodash'),
 	highlightSeats = (player, seats, type) => {
 		if (typeof seats === 'string') {
 			switch (seats) {
-				case 'nonplayer':
-					player.tableState.seats.forEach((seat, index) => {
-						if (index !== player.seatNumber) {
-							seat.highlight = type;
-						}
-					});
-					break;
+			case 'nonplayer':
+				player.tableState.seats.forEach((seat, index) => {
+					if (index !== player.seatNumber) {
+						seat.highlight = type;
+					}
+				});
+				break;
 
-				case 'otherplayers':
-					player.tableState.seats.forEach((seat, index) => {
-						if (index < 7 && index !== player.seatNumber) {
-							seat.highlight = type;
-						}
-					});
-					break;
+			case 'otherplayers':
+				player.tableState.seats.forEach((seat, index) => {
+					if (index < 7 && index !== player.seatNumber) {
+						seat.highlight = type;
+					}
+				});
+				break;
 
-				case 'centercards':
-					player.tableState.seats.forEach((seat, index) => {
-						if (index > 6) {
-							seat.highlight = type;
-						}
-					});
-					break;
+			case 'centercards':
+				player.tableState.seats.forEach((seat, index) => {
+					if (index > 6) {
+						seat.highlight = type;
+					}
+				});
+				break;
 
-				case 'player':
-					player.tableState.seats[player.seatNumber].highlight = type;
-					break;
+			case 'player':
+				player.tableState.seats[player.seatNumber].highlight = type;
+				break;
 
-				case 'clear':
-					player.tableState.seats.forEach((seat) => {
-						if (seat.highlight) {
-							delete seat.highlight;
-						}
-					});
-					break;
+			case 'clear':
+				player.tableState.seats.forEach((seat) => {
+					if (seat.highlight) {
+						delete seat.highlight;
+					}
+				});
+				break;
+
+			default:
 			}
 		} else {
 			seats.forEach((seatNumber) => {
 				player.tableState.seats[seatNumber].highlight = type;
 			});
 		}
+	},
+	startGame = (game) => {
+		let allWerewolvesNotInCenter = false;
+
+		const assignRoles = () => {
+			const _roles = [...game.roles];
+
+			game.internals.seatedPlayers.forEach((player) => {
+				const roleIndex = Math.floor((Math.random() * _roles.length)),
+					role = _roles[roleIndex];
+
+				if (role === 'werewolf' && !allWerewolvesNotInCenter) {
+					allWerewolvesNotInCenter = true;
+				}
+
+				player.trueRole = player.originalRole = role;
+				_roles.splice(roleIndex, 1);
+			});
+
+			game.internals.centerRoles = [..._roles];
+		};
+
+		assignRoles();
+
+		if (game.kobk && !allWerewolvesNotInCenter) {
+			while (!allWerewolvesNotInCenter) {
+				assignRoles();
+			}
+		}
+
+		game.status = 'Dealing..';
+		game.gameState.cardsDealt = true;
+		sendInProgressGameUpdate(game);
+
+		setTimeout(() => {
+			let nightPhasePause = 5;
+
+			game.internals.seatedPlayers.forEach((player, index) => {
+				player.gameChats.push({
+					gameChat: true,
+					userName: player.userName,
+					chat: [
+						{text: 'The game begins and you receive the '},
+						{
+							text: player.trueRole,
+							type: 'roleName'
+						},
+						{text: ' role.'}
+					],
+					timestamp: new Date()
+				});
+				player.tableState.seats[index].role = game.internals.seatedPlayers[index].trueRole;
+			});
+
+			game.internals.unSeatedGameChats.push({
+				gameChat: true,
+				chat: [{text: 'The game begins.'}],
+				timestamp: new Date()
+			});
+
+			sendInProgressGameUpdate(game);
+
+			const countDown = setInterval(() => {
+				game.status = `Night begins in ${nightPhasePause} second${nightPhasePause === 1 ? '' : 's'}.`;
+
+				if (nightPhasePause === 0) {
+					clearInterval(countDown);
+					game.status = 'Night begins..';
+					prepareNightPhases(game);
+				} else if (nightPhasePause === 1) {
+					game.internals.seatedPlayers.forEach((player, index) => {
+						player.tableState.seats[index].isFlipped = false;
+					});
+				} else if (nightPhasePause === 4) {
+					game.internals.seatedPlayers.forEach((player, index) => {
+						player.tableState.seats[index].isFlipped = true;
+					});
+				}
+
+				sendInProgressGameUpdate(game);
+				nightPhasePause--;
+			}, 1000);
+		}, 50);
 	};
 
 module.exports.updateSeatedUser = (socket, data) => {
-	const game = games.find((el) => {
-		return el.uid === data.uid;
-	});
+	const game = games.find((el) => el.uid === data.uid);
 
 	game.seated[`seat${data.seatNumber}`] = {
 		userName: data.userName,
@@ -63,8 +144,7 @@ module.exports.updateSeatedUser = (socket, data) => {
 	};
 
 	if (Object.keys(game.seated).length === 7) {
-		let startGamePause = 5,
-			countDown;
+		let startGamePause = 5;
 
 		game.gameState.isStarted = true;
 
@@ -75,13 +155,13 @@ module.exports.updateSeatedUser = (socket, data) => {
 			game.internals.seatedPlayers[index].seatNumber = index;
 			game.internals.seatedPlayers[index].gameChats.push({
 				gameChat: true,
-				userName, 
+				userName,
 				chat: [{text: 'The table is full and the game will begin.'}],
 				timestamp: new Date()
 			});
 		});
 
-		countDown = setInterval(() => {
+		const countDown = setInterval(() => {
 			if (startGamePause === 0) {
 				clearInterval(countDown);
 				startGame(game);
@@ -98,97 +178,12 @@ module.exports.updateSeatedUser = (socket, data) => {
 	sendGameList();
 };
 
-const startGame = (game) => {
-	let allWerewolvesNotInCenter = false;
-
-	const assignRoles = () => {
-		const _roles = [...game.roles];
-		
-		game.internals.seatedPlayers.forEach((player, index) => {
-			const roleIndex = Math.floor((Math.random() * _roles.length)),
-				role = _roles[roleIndex];
-
-			if (role === 'werewolf' && !allWerewolvesNotInCenter) {
-				allWerewolvesNotInCenter = true;
-			}
-
-			player.trueRole = player.originalRole = role;
-			_roles.splice(roleIndex, 1);
-		});
-
-		game.internals.centerRoles = [..._roles];
-	};
-
-	assignRoles();
-
-	if (game.kobk && !allWerewolvesNotInCenter) {
-		while (!allWerewolvesNotInCenter) {
-			assignRoles();
-		}
-	}
-
-	game.status = 'Dealing..';
-	game.gameState.cardsDealt = true;
-	sendInProgressGameUpdate(game);	
-
-	setTimeout(() => {
-		let nightPhasePause = 5,
-			countDown;
-
-		game.internals.seatedPlayers.forEach((player, index) => {
-			player.gameChats.push({
-				gameChat: true,
-				userName: player.userName,
-				chat: [
-					{text: 'The game begins and you receive the '},
-					{
-						text: player.trueRole,
-						type: 'roleName'
-					},
-					{text: ' role.'}
-				],
-				timestamp: new Date()
-			});
-			player.tableState.seats[index].role = game.internals.seatedPlayers[index].trueRole;
-		});
-
-		game.internals.unSeatedGameChats.push({
-			gameChat: true,
-			chat: [{text: 'The game begins.'}],
-			timestamp: new Date()
-		});
-
-		sendInProgressGameUpdate(game);
-		countDown = setInterval(() => {
-			game.status = `Night begins in ${nightPhasePause} second${nightPhasePause === 1 ? '' : 's'}.`;
-
-			if (nightPhasePause === 0) {
-				clearInterval(countDown);
-				game.status = 'Night begins..';
-				prepareNightPhases(game);
-			} else if (nightPhasePause === 1) {
-				game.internals.seatedPlayers.forEach((player, index) => {
-					player.tableState.seats[index].isFlipped = false;
-				});
-			} else if (nightPhasePause === 4) {
-				game.internals.seatedPlayers.forEach((player, index) => {
-					player.tableState.seats[index].isFlipped = true;
-				});
-			}
-
-			sendInProgressGameUpdate(game);
-			nightPhasePause--;
-		}, 1000);
-	}, 50);
-};
-
 const prepareNightPhases = (game) => {
 	// round 1: all werewolves minions masons seers and (one robber or troublemaker)
 	// round 2 through x: robbercount + troublemaker count minus 1
 	// round x+1: all insomniacs
 
-	let roleChangerInPhase1 = false,
-		werewolves, masons;
+	let roleChangerInPhase1 = false;
 
 	const phases = [[]],
 		insomniacs = [],
@@ -198,89 +193,89 @@ const prepareNightPhases = (game) => {
 				isCenter: true
 			};
 		})));
-	
-	roles.forEach((player, index) => {
+
+	roles.forEach((player) => {
 		switch (player.trueRole) {
-			case 'seer':
-				if (!player.isCenter) {
-					player.tableState.nightAction = {
-						action: 'seer',
-						phase: 1,
-						gameChat: [{text: 'You wake up, and may look at one player\'s card, or two of the center cards.'}],
-						highlight: 'nonplayer'
-					};
-				}
+		case 'seer':
+			if (!player.isCenter) {
+				player.tableState.nightAction = {
+					action: 'seer',
+					phase: 1,
+					gameChat: [{text: 'You wake up, and may look at one player\'s card, or two of the center cards.'}],
+					highlight: 'nonplayer'
+				};
+			}
 
+			phases[0].push(player);
+			break;
+
+		case 'robber':
+			if (!player.isCenter) {
+				player.tableState.nightAction = {
+					action: 'robber',
+					gameChat: [{text: 'You wake up, and may exchange your card with another player\'s, and view your new role (but do not take an additional night action).'}],
+					highlight: 'otherplayers'
+				};
+			}
+
+			if (roleChangerInPhase1) {
+				if (!player.isCenter) {
+					player.tableState.nightAction.phase = phases.length + 1;
+				}
+				phases.push([player]);
+			} else {
+				if (!player.isCenter) {
+					player.tableState.nightAction.phase = 1;
+				}
+				roleChangerInPhase1 = true;
 				phases[0].push(player);
-				break;
+			}
+			break;
 
-			case 'robber':
+		case 'troublemaker':
+			if (!player.isCenter) {
+				player.tableState.nightAction = {
+					action: 'troublemaker',
+					gameChat: [{text: 'You wake up, and may switch cards between two other players without viewing them.'}],
+					highlight: 'otherplayers'
+				};
+			}
+
+			if (roleChangerInPhase1) {
 				if (!player.isCenter) {
-					player.tableState.nightAction = {
-						action: 'robber',
-						gameChat: [{text: 'You wake up, and may exchange your card with another player\'s, and view your new role (but do not take an additional night action).'}],
-						highlight: 'otherplayers'
-					};
+					player.tableState.nightAction.phase = phases.length + 1;
 				}
-
-				if (roleChangerInPhase1) {
-					if (!player.isCenter) {
-						player.tableState.nightAction.phase = phases.length + 1;
-					}
-					phases.push([player]);
-				} else {
-					if (!player.isCenter) {
-						player.tableState.nightAction.phase = 1;
-					}
-					roleChangerInPhase1 = true;
-					phases[0].push(player);
-				}
-				break;
-			
-			case 'troublemaker':
+				phases.push([player]);
+			} else {
 				if (!player.isCenter) {
-					player.tableState.nightAction = {
-						action: 'troublemaker',
-						gameChat: [{text: 'You wake up, and may switch cards between two other players without viewing them.'}],
-						highlight: 'otherplayers'
-					};
+					player.tableState.nightAction.phase = 1;
 				}
+				roleChangerInPhase1 = true;
+				phases[0].push(player);
+			}
+			break;
 
-				if (roleChangerInPhase1) {
-					if (!player.isCenter) {
-						player.tableState.nightAction.phase = phases.length + 1;
-					}
-					phases.push([player]);
-				} else {
-					if (!player.isCenter) {
-						player.tableState.nightAction.phase = 1;
-					}
-					roleChangerInPhase1 = true;
-					phases[0].push(player);
-				}
-				break;
+		case 'insomniac':
+			if (!player.isCenter) {
+				player.tableState.nightAction = {
+					action: 'insomniac',
+					gameChat: [{text: 'You wake up, and may view your card again.'}],
+					highlight: 'player'
+				};
+			}
 
-			case 'insomniac':
-				if (!player.isCenter) {
-					player.tableState.nightAction = {
-						action: 'insomniac',
-						gameChat: [{text: 'You wake up, and may view your card again.'}],
-						highlight: 'player'
-					};
-				}
+			insomniacs.push(player);
+			break;
 
-				insomniacs.push(player);
-				break;
-
-			default:
-				if (player.trueRole === 'werewolf' || player.trueRole === 'minion' || player.trueRole === 'mason') {
-					phases[0].push(player);
-				}
+		default:
+			if (player.trueRole === 'werewolf' || player.trueRole === 'minion' || player.trueRole === 'mason') {
+				phases[0].push(player);
+			}
 		}
 	});
-	
+
 	if (insomniacs.length) {
-		insomniacs.forEach((player, index) => {
+		insomniacs.forEach((player) => {
 			if (!player.isCenter) {
 				player.tableState.nightAction.phase = phases.length + 1;
 			}
@@ -289,189 +284,182 @@ const prepareNightPhases = (game) => {
 		phases.push([...insomniacs]);
 	}
 
-	werewolves = phases[0].filter((player) => {
-		return player.trueRole === 'werewolf' && !player.isCenter;
-	});
+	const werewolves = phases[0].filter((player) => player.trueRole === 'werewolf' && !player.isCenter),
+		masons = phases[0].filter((player) => player.trueRole === 'mason' && !player.isCenter);
 
-	masons = phases[0].filter((player) => {
-		return player.trueRole === 'mason' && !player.isCenter;
-	});
-
-	phases[0].forEach((player, index) => {
+	phases[0].forEach((player) => {
 		let others, nightAction, message;
 
 		switch (player.trueRole) {
-			case 'werewolf':
-				nightAction = {
-					phase: 1
-				};
-			
-				others = werewolves.filter((werewolf) => {
-					return werewolf.userName !== player.userName;
+		case 'werewolf':
+			nightAction = {
+				phase: 1
+			};
+
+			others = werewolves.filter((werewolf) => werewolf.userName !== player.userName);
+
+			if (werewolves.length === 1) {
+				message = [
+					{text: 'You wake up, and see no other '},
+					{
+						text: 'werewolves',
+						type: 'roleName'
+					},
+					{text: '. You may look at a center card'}
+				];
+				nightAction.highlight = 'centercards';
+				nightAction.action = 'singleWerewolf';
+			} else {
+				message = [
+					{text: 'You wake up, and see that the other '},
+					{
+						text: `${others.length > 1 ? 'werewolves' : 'werewolf'}`,
+						type: 'roleName'
+					},
+					{text: ` in this game ${others.length > 1 ? 'are' : 'is'} `}
+				];
+
+				others.forEach((player, index) => {
+					message.push({
+						text: player.userName,
+						type: 'playerName'
+					});
+
+					if (index <= others.length - 3 && others.length !== 1) {
+						message.push({text: ', '});
+					}
+
+					if (index === others.length - 2) {
+						message.push({text: ' and '});
+					}
 				});
 
-				if (werewolves.length === 1) {
-					message = [
-						{text: 'You wake up, and see no other '},
-						{
-							text: 'werewolves',
-							type: 'roleName'
-						},
-						{text: '. You may look at a center card'}
-					];
-					nightAction.highlight = 'centercards';
-					nightAction.action = 'singleWerewolf';
-				} else {
-					message = [
-						{text: 'You wake up, and see that the other '},
-						{
-							text: `${others.length > 1 ? 'werewolves' : 'werewolf'}`,
-							type: 'roleName'
-						},
-						{text: ` in this game ${others.length > 1 ? 'are' : 'is'} `}
-					];
+				nightAction.highlight = others.map((other) => {
+					return other.seatNumber;
+				});
 
-					others.forEach((player, index) => {
-						message.push({
-							text: player.userName,
-							type: 'playerName'
-						});
-
-						if (index <= others.length - 3 && others.length !== 1) {
-							message.push({text: ', '});
-						}
-
-						if (index === others.length - 2) {
-							message.push({text: ' and '});
-						}
-					});
-
-					nightAction.highlight = others.map((other) => {
-						return other.seatNumber;
-					});
-
-					nightAction.action = 'werewolf';
-				}
-
-				message.push({text: '.'});
-				nightAction.gameChat = message;
-				if (!player.isCenter) {
-					player.tableState.nightAction = nightAction;
-				}
-				break;
-
-			case 'minion':
-				nightAction = {
-					action: 'minion',
-					phase: 1
-				};
-
-				if (!werewolves.length) {
-					message = [
-						{text: 'You wake up, and see that there are no '},
-						{
-							text: 'werewolves',
-							type: 'roleName'
-						},
-						{text: ' in this game. Be careful - you lose if no village team player is eliminated.'}
-					];
-					game.internals.soloMinion = true;
-				} else {
-					message = [
-						{text: 'You wake up, and see that the '},
-						{
-							text: `${werewolves.length === 1 ? 'werewolf' : 'werewolves'}`,
-							type: 'roleName'
-						},
-						{text: ` in this game ${werewolves.length === 1 ? 'is' : 'are'}`}
-					];
-
-					werewolves.forEach((player, index) => {
-						message.push({text: ' '});
-
-						message.push({
-							text: player.userName,
-							type: 'playerName'
-						});
-
-						if (index >= werewolves.length - 3 && werewolves.length !== 1 && index !== werewolves.length - 1) {
-							message.push({text: ', '});
-						}
-
-						if (index === werewolves.length - 2) {
-							message.push({text: ' and '});
-						}
-					});
-
-					nightAction.highlight = werewolves.map((werewolf) => {
-						return werewolf.seatNumber;
-					});
-				}
-
-				message.push({text: '.'});
-				nightAction.gameChat = message;
-				if (!player.isCenter) {
-					player.tableState.nightAction = nightAction;
-				}
-				break;
-			
-			case 'mason': {
-				others = masons.filter((mason) => {
-						return mason.userName !== player.userName;
-					});
-
-				nightAction = {
-					action: 'mason',
-					phase: 1
-				};
-
-				if (!others.length) {
-					message = [
-						{text: 'You wake up, and see that you are the only '},
-						{
-							type: 'roleName',
-							text: 'mason'
-						}
-					];
-				} else {
-					message = [
-						{text: 'You wake up, and see that the '},
-						{
-							type: 'roleName',
-							text: others.length === 1 ? 'mason' : 'masons'
-						},
-						{text: ` in this game ${others.length === 1 ? 'is' : 'are'} `}
-					];
-
-					nightAction.highlight = others.map((other) => {
-						return other.seatNumber;
-					});
-
-					others.forEach((player, index) => {
-						message.push({
-							text: player.userName,
-							type: 'playerName'
-						});
-
-						if (index <= others.length - 3 && others.length !== 1) {
-							message.push({text: ', '});
-						}
-
-						if (index === others.length - 2) {
-							message.push({text: ' and '});
-						}
-					});
-				}
-
-				message.push({text: '.'});
-				nightAction.gameChat = message;
-				if (!player.isCenter) {
-					player.tableState.nightAction = nightAction;
-				}
+				nightAction.action = 'werewolf';
 			}
+
+			message.push({text: '.'});
+			nightAction.gameChat = message;
+			if (!player.isCenter) {
+				player.tableState.nightAction = nightAction;
+			}
+			break;
+
+		case 'minion':
+			nightAction = {
+				action: 'minion',
+				phase: 1
+			};
+
+			if (!werewolves.length) {
+				message = [
+					{text: 'You wake up, and see that there are no '},
+					{
+						text: 'werewolves',
+						type: 'roleName'
+					},
+					{text: ' in this game. Be careful - you lose if no village team player is eliminated.'}
+				];
+				game.internals.soloMinion = true;
+			} else {
+				message = [
+					{text: 'You wake up, and see that the '},
+					{
+						text: `${werewolves.length === 1 ? 'werewolf' : 'werewolves'}`,
+						type: 'roleName'
+					},
+					{text: ` in this game ${werewolves.length === 1 ? 'is' : 'are'}`}
+				];
+
+				werewolves.forEach((player, index) => {
+					message.push({text: ' '});
+
+					message.push({
+						text: player.userName,
+						type: 'playerName'
+					});
+
+					if (index >= werewolves.length - 3 && werewolves.length !== 1 && index !== werewolves.length - 1) {
+						message.push({text: ', '});
+					}
+
+					if (index === werewolves.length - 2) {
+						message.push({text: ' and '});
+					}
+				});
+
+				nightAction.highlight = werewolves.map((werewolf) => {
+					return werewolf.seatNumber;
+				});
+			}
+
+			message.push({text: '.'});
+			nightAction.gameChat = message;
+			if (!player.isCenter) {
+				player.tableState.nightAction = nightAction;
+			}
+			break;
+
+		case 'mason':
+			others = masons.filter((mason) => mason.userName !== player.userName);
+
+			nightAction = {
+				action: 'mason',
+				phase: 1
+			};
+
+			if (!others.length) {
+				message = [
+					{text: 'You wake up, and see that you are the only '},
+					{
+						type: 'roleName',
+						text: 'mason'
+					}
+				];
+			} else {
+				message = [
+					{text: 'You wake up, and see that the '},
+					{
+						type: 'roleName',
+						text: others.length === 1 ? 'mason' : 'masons'
+					},
+					{text: ` in this game ${others.length === 1 ? 'is' : 'are'} `}
+				];
+
+				nightAction.highlight = others.map((other) => {
+					return other.seatNumber;
+				});
+
+				others.forEach((player, index) => {
+					message.push({
+						text: player.userName,
+						type: 'playerName'
+					});
+
+					if (index <= others.length - 3 && others.length !== 1) {
+						message.push({text: ', '});
+					}
+
+					if (index === others.length - 2) {
+						message.push({text: ' and '});
+					}
+				});
+			}
+
+			message.push({text: '.'});
+			nightAction.gameChat = message;
+			if (!player.isCenter) {
+				player.tableState.nightAction = nightAction;
+			}
+			break;
+
+		default:
 		}
 	});
-	
+
 	game.gameState.isNight = true;
 	sendInProgressGameUpdate(game);
 	setTimeout(() => {
@@ -483,7 +471,7 @@ const prepareNightPhases = (game) => {
 const nightPhases = (game, phases) => {
 	let phasesIndex = 0,
 		phasesTimer;
-		
+
 	const phasesCount = phases.length,
 		endPhases = () => {
 			clearInterval(phasesTimer);
@@ -510,8 +498,7 @@ const nightPhases = (game, phases) => {
 			if (phasesIndex === phasesCount && phasesCount > 1) {
 				endPhases();
 			} else {
-				let phaseTime = 10,
-					countDown;
+				let phaseTime = 10;
 
 				const startPhaseTime = phaseTime,
 					phasesPlayers = phases[phasesIndex];
@@ -524,18 +511,18 @@ const nightPhases = (game, phases) => {
 							chat: player.tableState.nightAction.gameChat,
 							timestamp: new Date()
 						};
-						
+
 						player.gameChats.push(chat);
 					}
 				});
 
-				countDown = setInterval(() => {
+				const countDown = setInterval(() => {
 					if (game.gameState.secondsLeftInNight) {
 						game.gameState.secondsLeftInNight--;
 					}
 
-					if (phaseTime === 0) {	
-						game.status = `Night phase ${phases.length === 1 ? 1 : (phasesIndex).toString()} of ${phasesCount} ends.`
+					if (phaseTime === 0) {
+						game.status = `Night phase ${phases.length === 1 ? 1 : (phasesIndex).toString()} of ${phasesCount} ends.`;
 						phasesIndex++;
 						game.gameState.phase++;
 						sendInProgressGameUpdate(game);
@@ -569,7 +556,7 @@ const nightPhases = (game, phases) => {
 			}
 		};
 
-	game.gameState.secondsLeftInNight = game.gameState.maxSecondsLeftInNight = [10,21,32,43,54,65,76,86][phases.length - 1];
+	game.gameState.secondsLeftInNight = game.gameState.maxSecondsLeftInNight = [10, 21, 32, 43, 54, 65, 76, 86][phases.length - 1];
 
 	phasesFn();
 
@@ -594,19 +581,19 @@ module.exports.updateUserNightActionEvent = (socket, data) => {
 			timestamp: new Date()
 		},
 		getTrueRoleBySeatNumber = (num) => {
-			num = parseInt(num);
+			num = parseInt(num, 10);
 
 			return num < 7 ? game.internals.seatedPlayers[num].trueRole : game.internals.centerRoles[num - 7];
 		},
 		eventMap = {
 			singleWerewolf() {
 				const selectedCard = {
-					7: 'center left',
-					8: 'center middle',
-					9: 'center right'
-				},
-				seat = player.tableState.seats[parseInt(data.action)],
-				roleClicked = getTrueRoleBySeatNumber(data.action);
+						7: 'center left',
+						8: 'center middle',
+						9: 'center right'
+					},
+					seat = player.tableState.seats[parseInt(data.action, 10)],
+					roleClicked = getTrueRoleBySeatNumber(data.action);
 
 				seat.isFlipped = true;
 				seat.role = roleClicked;
@@ -626,14 +613,14 @@ module.exports.updateUserNightActionEvent = (socket, data) => {
 			},
 			insomniac() {
 				const roleClicked = getTrueRoleBySeatNumber(data.action),
-					seat = player.tableState.seats[parseInt(data.action)];
+					seat = player.tableState.seats[parseInt(data.action, 10)];
 
 				seat.isFlipped = true;
 				seat.role = roleClicked;
 				setTimeout(() => {
 					seat.isFlipped = false;
 					sendInProgressGameUpdate(game);
-				}, 3000);				
+				}, 3000);
 				player.tableState.nightAction.completed = true;
 				chat.chat = [
 					{text: `You look at your own card and it is revealed to be ${roleClicked === 'insomniac' ? 'an' : 'a'} `},
@@ -645,8 +632,8 @@ module.exports.updateUserNightActionEvent = (socket, data) => {
 				];
 			},
 			troublemaker() {
-				const action1 = parseInt(data.action[0]),
-					action2 = parseInt(data.action[1]),
+				const action1 = parseInt(data.action[0], 10),
+					action2 = parseInt(data.action[1], 10),
 					seat1player = game.internals.seatedPlayers.find((player) => {
 						return player.seatNumber === action1;
 					}),
@@ -656,14 +643,14 @@ module.exports.updateUserNightActionEvent = (socket, data) => {
 					seat1 = player.tableState.seats[action1],
 					seat2 = player.tableState.seats[action2];
 
-				updatedTrueRoles = game.internals.seatedPlayers.map((player, index) => {
+				updatedTrueRoles = game.internals.seatedPlayers.map((player) => {
 					if (player.userName === seat1player.userName) {
 						return seat2player.trueRole;
 					} else if (player.userName === seat2player.userName) {
 						return seat1player.trueRole;
-					} else {
-						return player.trueRole;
 					}
+
+					return player.trueRole;
 				});
 
 				player.tableState.nightAction.completed = true;
@@ -684,7 +671,7 @@ module.exports.updateUserNightActionEvent = (socket, data) => {
 				];
 			},
 			robber() {
-				const action = parseInt(data.action),
+				const action = parseInt(data.action, 10),
 					playerSeat = player.tableState.seats[player.seatNumber],
 					swappedPlayerSeat = player.tableState.seats[action],
 					swappedPlayer = game.internals.seatedPlayers.find((play) => {
@@ -709,7 +696,7 @@ module.exports.updateUserNightActionEvent = (socket, data) => {
 				playerSeat.swappedWithSeat = swappedPlayer.seatNumber;
 				setTimeout(() => {
 					swappedPlayerSeat.isFlipped = true;
-					swappedPlayerSeat.role = _role; 
+					swappedPlayerSeat.role = _role;
 				}, 2000);
 				setTimeout(() => {
 					swappedPlayerSeat.isFlipped = false;
@@ -740,8 +727,8 @@ module.exports.updateUserNightActionEvent = (socket, data) => {
 				player.tableState.nightAction.completed = true;
 
 				if (data.action.length === 1) {
-					const playerClicked = game.internals.seatedPlayers[parseInt(data.action[0])],
-						seat = player.tableState.seats[parseInt(data.action[0])];
+					const playerClicked = game.internals.seatedPlayers[parseInt(data.action[0], 10)],
+						seat = player.tableState.seats[parseInt(data.action[0], 10)];
 
 					seat.isFlipped = true;
 					seat.role = playerClicked.originalRole;
@@ -763,7 +750,7 @@ module.exports.updateUserNightActionEvent = (socket, data) => {
 						{text: '.'}
 					];
 				} else {
-					const seats = [player.tableState.seats[parseInt(data.action[0])], player.tableState.seats[parseInt(data.action[1])]],
+					const seats = [player.tableState.seats[parseInt(data.action[0], 10)], player.tableState.seats[parseInt(data.action[1], 10)]],
 						rolesClicked = data.action.map((role) => {
 							return getTrueRoleBySeatNumber(role);
 						});
@@ -808,15 +795,13 @@ module.exports.updateUserNightActionEvent = (socket, data) => {
 };
 
 module.exports.updateSelectedElimination = (data) => {
-	const game = games.find((el) => {
-			return el.uid === data.uid;
-		}),
-		player = game.internals.seatedPlayers[parseInt(data.seatNumber)],
-		{ selectedForElimination } = data;
+	const game = games.find((el) => el.uid === data.uid),
+		player = game.internals.seatedPlayers[parseInt(data.seatNumber, 10)],
+		{selectedForElimination} = data;
 
 	player.selectedForElimination = selectedForElimination.toString();
 	highlightSeats(player, 'clear');
-	highlightSeats(player, [parseInt(selectedForElimination)], 'selection');
+	highlightSeats(player, [parseInt(selectedForElimination, 10)], 'selection');
 	sendInProgressGameUpdate(game);
 };
 
@@ -824,16 +809,17 @@ const dayPhase = (game) => {
 	let seconds = (() => {
 		const _time = game.time.split(':');
 
-		return !_time[0] ? parseInt(_time[1]) : parseInt(_time[0]) * 60 + parseInt(_time[1]);
-	})(),
-	countDown = setInterval(() => {
+		return !_time[0] ? parseInt(_time[1], 10) : (parseInt(_time[0], 10) * 60) + parseInt(_time[1], 10);
+	})();
+
+	const countDown = setInterval(() => {
 		if (seconds === 0) {
 			game.status = 'The game ends.';
 			clearInterval(countDown);
 			eliminationPhase(game);
 		} else {
 			let status;
-			
+
 			if (game.internals.truncateGame) {
 				seconds = 16;
 				game.internals.truncateGame = false;
@@ -880,7 +866,7 @@ const dayPhase = (game) => {
 				status += '.';
 			} else {
 				const minutes = Math.floor(seconds / 60),
-					remainder = seconds - minutes * 60;
+					remainder = seconds - (minutes * 60);
 
 				status = `Day ends in ${minutes}:${remainder < 10 ? `0${remainder}` : remainder}.`;  // yo dawg, I heard you like template strings.
 			}
@@ -895,10 +881,9 @@ const dayPhase = (game) => {
 };
 
 const eliminationPhase = (game) => {
-	let index = 0,
-		countDown;
+	let index = 0;
 
-	const { seatedPlayers } = game.internals;
+	const {seatedPlayers} = game.internals;
 
 	game.chats.push({
 		gameChat: true,
@@ -911,10 +896,10 @@ const eliminationPhase = (game) => {
 	seatedPlayers.forEach((player) => {
 		highlightSeats(player, 'clear');
 	});
-	
+
 	game.gameState.eliminations = [];
 
-	countDown = setInterval(() => {
+	const countDown = setInterval(() => {
 		if (index === 7) {
 			clearInterval(countDown);
 			endGame(game);
@@ -922,7 +907,7 @@ const eliminationPhase = (game) => {
 			const noSelection = index === 6 ? 0 : index + 1;
 
 			game.gameState.eliminations[index] = {
-				seatNumber: seatedPlayers[index].selectedForElimination ? parseInt(seatedPlayers[index].selectedForElimination) : noSelection
+				seatNumber: seatedPlayers[index].selectedForElimination ? parseInt(seatedPlayers[index].selectedForElimination, 10) : noSelection
 			};
 
 			sendInProgressGameUpdate(game);
@@ -937,11 +922,9 @@ const endGame = (game) => {
 		eliminatedPlayersIndex = [],
 		maxCount = 1;
 
-	const playersSelectedForElimination = game.gameState.eliminations.map((elimination) => {
-			return elimination.seatNumber;
-		}),
+	const playersSelectedForElimination = game.gameState.eliminations.map((elimination) => elimination.seatNumber),
 		modeMap = {},
-		{ seatedPlayers } = game.internals,
+		{seatedPlayers} = game.internals,
 		tannerEliminations = [];
 
 	playersSelectedForElimination.forEach((el) => {
@@ -962,7 +945,7 @@ const endGame = (game) => {
 
 	seatedPlayers.forEach((player, index) => { // todo-release hunter's fade out thingy should happen later/not give away that he or she is a hunter
 		if (player.trueRole === 'hunter' && eliminatedPlayersIndex.includes(index) && eliminatedPlayersIndex.length !== 7) {
-			eliminatedPlayersIndex.push(parseInt(player.selectedForElimination));
+			eliminatedPlayersIndex.push(parseInt(player.selectedForElimination, 10));
 		}
 
 		if (player.trueRole === 'werewolf' || player.trueRole === 'minion') {
@@ -984,11 +967,10 @@ const endGame = (game) => {
 	sendGameList();
 
 	eliminatedPlayersIndex.forEach((eliminatedPlayerIndex) => {
-
 		// app crashed on line below (truerole of undefined @ werewolf) after a game where 2 players reloaded the page during night I believe.  After much trying have not been able to reproduce much lately.  Could be related to wrong types but I'm not seeing it not be a string lately.  Will look at logs after release to see if its still happening.
 
 		try {
-			if (seatedPlayers[eliminatedPlayerIndex].trueRole === 'werewolf' || seatedPlayers[eliminatedPlayerIndex].trueRole === 'minion' && game.internals.soloMinion) {
+			if (seatedPlayers[eliminatedPlayerIndex].trueRole === 'werewolf' || (seatedPlayers[eliminatedPlayerIndex].trueRole === 'minion' && game.internals.soloMinion)) {
 				werewolfEliminated = true;
 			}
 			if (seatedPlayers[eliminatedPlayerIndex].trueRole === 'tanner') {
@@ -1001,18 +983,17 @@ const endGame = (game) => {
 			console.log(eliminatedPlayerIndex); // NaN on crash
 			console.log(modeMap);
 		}
-
 	});
 
 	seatedPlayers.forEach((player, index) => {
-		if (!werewolfEliminated && (player.trueRole === 'werewolf' || player.trueRole === 'minion') && !tannerEliminations.length || 
-			
-			tannerEliminations.includes(index) || 
-			
-			(werewolfEliminated && player.trueRole !== 'werewolf' && player.trueRole !== 'minion' && player.trueRole !== 'tanner' && eliminatedPlayersIndex.length !== 7) || 
-			
-			((player.trueRole === 'werewolf' || player.trueRole === 'minion' && !game.internals.soloMinion) && eliminatedPlayersIndex.length === 7) || 
-			
+		if (((player.trueRole === 'werewolf' || player.trueRole === 'minion') && !tannerEliminations.length && !werewolfEliminated) ||
+
+			tannerEliminations.includes(index) ||
+
+			(werewolfEliminated && player.trueRole !== 'werewolf' && player.trueRole !== 'minion' && player.trueRole !== 'tanner' && eliminatedPlayersIndex.length !== 7) ||
+
+			(eliminatedPlayersIndex.length === 7 && (player.trueRole === 'werewolf' || (player.trueRole === 'minion' && !game.internals.soloMinion))) ||
+
 			(eliminatedPlayersIndex.length === 7 && !werewolfTeamInGame)) {
 			player.wonGame = true;
 		}
@@ -1032,15 +1013,9 @@ const endGame = (game) => {
 	}
 
 	setTimeout(() => {
-		const winningPlayers = seatedPlayers.filter((player) => {
-				return player.wonGame;
-			}),
-			winningPlayersIndex = winningPlayers.map((player) => {
-				return player.seatNumber;
-			}),
-			winningPlayerNames = winningPlayers.map((player) => {
-				return player.userName;
-			}),
+		const winningPlayers = seatedPlayers.filter((player) => player.wonGame),
+			winningPlayersIndex = winningPlayers.map((player) => player.seatNumber),
+			winningPlayerNames = winningPlayers.map((player) => player.userName),
 			wonGameChat = {
 				gameChat: true,
 				chat: [],
@@ -1093,7 +1068,7 @@ const endGame = (game) => {
 			if (err) {
 				console.log(err);
 			}
-			
+
 			results.forEach((player) => {
 				let winner = false;
 
@@ -1122,6 +1097,5 @@ const endGame = (game) => {
 				});
 			});
 		});
-
 	}, 11000);
 };

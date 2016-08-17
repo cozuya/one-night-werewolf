@@ -1,6 +1,6 @@
 'use strict';
 
-let gulp = require('gulp'),
+const gulp = require('gulp'),
 	livereload = require('gulp-livereload'),
 	plumber = require('gulp-plumber'),
 	browserify = require('browserify'),
@@ -16,29 +16,48 @@ let gulp = require('gulp'),
 	imagemin = require('gulp-imagemin'),
 	sourcemaps = require('gulp-sourcemaps'),
 	notifier = require('node-notifier'),
+	eslint = require('gulp-eslint'),
 	exec = require('child_process').exec;
 
-gulp.task('default', ['watch', 'scripts', 'styles', 'styles-web', 'styles-dark']);
+let file;
+
+gulp.task('default', ['watch', 'scripts', 'styles', 'styles-web', 'styles-dark', 'lint-all']);
 
 gulp.task('watch', () => {
 	process.env.NODE_ENV = 'development';
 	livereload.listen();
 	gulp.watch('./src/scss/*.scss', ['styles', 'styles-web', 'styles-dark']);
-	gulp.watch('./src/frontend-scripts/**/*.js*', ['scripts', 'lint']);
+	gulp.watch(['./src/frontend-scripts/**/*.js*', './routes/socket/*.js'], (e) => {
+		gulp.start('scripts');
+		file = process.platform === 'win32' ? `./${e.path.split('e:\\apps\\one-night-werewolf\\')[1].split('\\').join('/')}` : 'todo';
+		gulp.start('lint');
+	});
 	gulp.watch('./routes/*.js', ['reload']);
 	gulp.watch('./src/images/*', ['imagemin']);
+});
+
+gulp.task('lint', () => {
+	return gulp.src(file)
+		.pipe(eslint())
+		.pipe(plumber())
+		.pipe(eslint.format())
+		.pipe(eslint.failAfterError())
+		.on('error', () => {
+			notifier.notify({ title: 'ESLint Error', message: ' ' });
+		});
+});
+
+gulp.task('lint-all', () => {
+	return gulp.src(['./routes/socket/*.js', './src/frontend-scripts/**/*.jsx'])
+		.pipe(eslint())
+		.pipe(eslint.format())
+		.pipe(eslint.failAfterError());
 });
 
 gulp.task('imagemin', () => {
 	gulp.src('./src/images/*')
 		.pipe(imagemin())
 		.pipe(gulp.dest('./public/images'));
-});
-
-gulp.task('lint', () => {
-	// gulp.src(['./src/frontend-scripts/*.js*'])
-	// 	.pipe(jshint())
-	// 	.pipe(jshint.reporter('jshint-stylish'));
 });
 
 gulp.task('styles', () => {
@@ -101,7 +120,7 @@ gulp.task('scripts', () => {
 		.pipe(rename('bundle.js'))
 		.pipe(gulp.dest('./public/scripts'))
 		.pipe(wait(500))
-		.pipe(livereload());
+		// .pipe(livereload());
 });
 
 gulp.task('reload', () => {

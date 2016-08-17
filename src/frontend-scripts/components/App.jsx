@@ -1,21 +1,29 @@
-'use strict';
-
+import socket from 'socket.io-client';
+import React from 'react';
+import {connect} from 'react-redux';
 import LeftSidebar from './section-left/LeftSidebar.jsx';
 import Main from './section-main/Main.jsx';
 import RightSidebar from './section-right/RightSidebar.jsx';
-import React from 'react';
-import { connect } from 'react-redux';
-import { updateUser, updateMidsection, updateGameList, updateGameInfo, updateUserList, updateGeneralChats } from '../actions/actions.js';
-import socket from 'socket.io-client';
+import {updateUser, updateMidsection, updateGameList, updateGameInfo, updateUserList, updateGeneralChats} from '../actions/actions.js';
 
 socket = socket({
 	reconnection: false
 });
 
 class App extends React.Component {
+	constructor() {
+		super();
+		this.handleRoute = this.handleRoute.bind(this);
+		this.handleCreateGameSubmit = this.handleCreateGameSubmit.bind(this);
+		this.handleRoute = this.handleRoute.bind(this);
+		this.handleSeatingUser = this.handleSeatingUser.bind(this);
+		this.handleLeaveGame = this.handleLeaveGame.bind(this);
+		this.makeQuickDefault = this.makeQuickDefault.bind(this);
+	}
+
 	componentWillMount() {
-		const { dispatch } = this.props,
-			{ classList } = document.getElementById('game-container');
+		const {dispatch} = this.props,
+			{classList} = document.getElementById('game-container');
 
 		if (classList.length) {
 			const username = classList[0].split('username-')[1];
@@ -33,7 +41,7 @@ class App extends React.Component {
 		});
 
 		socket.on('gameSettings', (settings) => {
-			const { userInfo } = this.props;
+			const {userInfo} = this.props;
 
 			userInfo.gameSettings = settings;
 			dispatch(updateUser(userInfo));
@@ -64,7 +72,7 @@ class App extends React.Component {
 		});
 
 		socket.on('updateSeatForUser', (seatNumber) => {
-			const { userInfo } = this.props;
+			const {userInfo} = this.props;
 
 			userInfo.seatNumber = seatNumber;
 			dispatch(updateUser(userInfo));
@@ -76,13 +84,13 @@ class App extends React.Component {
 	}
 
 	handleRoute(route) {
-		const { dispatch } = this.props;
+		const {dispatch} = this.props;
 
 		dispatch(updateMidsection(route));
 	}
 
 	handleCreateGameSubmit(game) {
-		const { dispatch, userInfo } = this.props;
+		const {dispatch, userInfo} = this.props;
 
 		userInfo.seatNumber = '0';
 		dispatch(updateGameInfo(game));
@@ -96,7 +104,7 @@ class App extends React.Component {
 	// componentDidUpdate(prevProps) {  // note: this breaks everything if these players try to leave a finished game
 	// 	const autoPlayers = ['Jaina', 'Rexxar', 'Malfurian', 'Thrall', 'Valeera'],
 	// 		{ userInfo, gameInfo, dispatch } = this.props;
-		
+
 	// 	let prevSeatedNames;
 
 	// 		if (Object.keys(prevProps).length && prevProps.gameInfo && prevProps.gameInfo.seated) {
@@ -118,7 +126,7 @@ class App extends React.Component {
 
 
 	makeQuickDefault() {
-		const { dispatch, userInfo } = this.props,
+		const {dispatch, userInfo} = this.props,
 			game = {
 				kobk: false,
 				name: 'New Game',
@@ -148,7 +156,7 @@ class App extends React.Component {
 					seats: [{}, {}, {}, {}, {}, {}, {}, {}, {}, {}]
 				},
 				time: ':16',
-				time: '40:00',
+				// time: '40:00',
 				// uid: Math.random().toString(36).substring(2)
 				uid: 'devgame'
 			};
@@ -163,8 +171,7 @@ class App extends React.Component {
 	// ***** end dev helpers *****
 
 	handleSeatingUser(seatNumber) {
-		const { gameInfo } = this.props,
-			{ dispatch, userInfo } = this.props,
+		const {gameInfo, dispatch, userInfo} = this.props,
 			data = {
 				uid: gameInfo.uid,
 				seatNumber,
@@ -175,17 +182,17 @@ class App extends React.Component {
 		socket.emit('updateSeatedUser', data);
 		dispatch(updateUser(userInfo));
 	}
-	
+
 	handleLeaveGame(seatNumber, isSettings = false) {
-		const { dispatch, userInfo } = this.props;
+		const {dispatch, userInfo} = this.props;
 
 		if (userInfo.seatNumber) {
 			userInfo.seatNumber = '';
 			dispatch(updateUser(userInfo));
 		}
-		
+
 		socket.emit('leaveGame', {
-			userName: this.props.userInfo.userName,
+			userName: userInfo.userName,
 			seatNumber,
 			isSettings,
 			uid: this.props.gameInfo.uid
@@ -202,7 +209,7 @@ class App extends React.Component {
 								userInfo={this.props.userInfo}
 								midSection={this.props.midSection}
 								gameList={this.props.gameList}
-								onCreateGameButtonClick={this.handleRoute.bind(this)}
+								onCreateGameButtonClick={this.handleRoute}
 								socket={socket}
 							/>
 						);
@@ -211,18 +218,18 @@ class App extends React.Component {
 				<Main
 					userInfo={this.props.userInfo}
 					midSection={this.props.midSection}
-					onCreateGameSubmit={this.handleCreateGameSubmit.bind(this)}
-					onLeaveCreateGame={this.handleRoute.bind(this)}
+					onCreateGameSubmit={this.handleCreateGameSubmit}
+					onLeaveCreateGame={this.handleRoute}
 					gameInfo={this.props.gameInfo}
-					onLeaveSettings={this.handleRoute.bind(this)}
-					onSeatingUser={this.handleSeatingUser.bind(this)}
-					onLeaveGame={this.handleLeaveGame.bind(this)}
-					quickDefault={this.makeQuickDefault.bind(this)}
-					onSettingsButtonClick={this.handleRoute.bind(this)}
+					onLeaveSettings={this.handleRoute}
+					onSeatingUser={this.handleSeatingUser}
+					onLeaveGame={this.handleLeaveGame}
+					quickDefault={this.makeQuickDefault}
+					onSettingsButtonClick={this.handleRoute}
 					socket={socket}
 				/>
 				{(() => {
-					if (this.props.midSection === 'game' && this.props.userInfo.gameSettings && !this.props.userInfo.gameSettings.disableRightSidebarInGame || !this.props.userInfo.userName || this.props.midSection !== 'game') {
+					if ((this.props.midSection === 'game' && this.props.userInfo.gameSettings && !this.props.userInfo.gameSettings.disableRightSidebarInGame) || !this.props.userInfo.userName || this.props.midSection !== 'game') {
 						return (
 							<RightSidebar
 								userInfo={this.props.userInfo}
@@ -236,10 +243,18 @@ class App extends React.Component {
 			</section>
 		);
 	}
+}
+
+App.propTypes = {
+	dispatch: React.PropTypes.func,
+	userInfo: React.PropTypes.object,
+	midSection: React.PropTypes.string,
+	gameInfo: React.PropTypes.object,
+	gameList: React.PropTypes.array,
+	generalChats: React.PropTypes.array,
+	userList: React.PropTypes.object
 };
 
-const select = (state) => {
-	return state;
-}
+const select = (state) => state;
 
 export default connect(select)(App);

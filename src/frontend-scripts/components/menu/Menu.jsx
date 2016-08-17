@@ -1,11 +1,16 @@
-'use strict';
-
 import React from 'react';
 import $ from 'jquery';
 
+
 export default class Menu extends React.Component {
+	constructor() {
+		super();
+		this.clickSettingsButton = this.clickSettingsButton.bind(this);
+	}
+
 	componentDidMount() {
-		(function($) {
+		/*eslint-disable */
+		(function() {
 			"use strict";
 			var TextEffect = {
 				init: function (options, elem) {
@@ -111,7 +116,8 @@ export default class Menu extends React.Component {
 					texteffect.init(options, this);
 				});
 			};
-		})($);
+		})();
+		/*eslint-enable */
 
 		$('section.nav-menu > p > a').textEffect({
 			effect: 'random',
@@ -122,11 +128,11 @@ export default class Menu extends React.Component {
 		});
 	}
 
-	clickSettingsButton(e) {
-		const { gameInfo, userInfo } = this.props,
-			{ gameState } = gameInfo;
+	clickSettingsButton() {
+		const {gameInfo, userInfo} = this.props,
+			{gameState} = gameInfo;
 
-		if (gameState && gameState.isCompleted && userInfo.seatNumber || gameState && !userInfo.seatNumber || gameState && !gameState.isStarted) {
+		if ((gameState && gameState.isCompleted && userInfo.seatNumber) || (gameState && !userInfo.seatNumber) || (gameState && !gameState.isStarted)) {
 			this.props.onLeaveGame(userInfo.seatNumber, true);
 		} else if (!gameState) {
 			this.props.onSettingsButtonClick('settings');
@@ -137,11 +143,11 @@ export default class Menu extends React.Component {
 		return (
 			<section className="ui menu nav-menu">
 				<p>
-					<a href="/" target="_blank">One Night Werewolf</a>
+					<a href="/" target="_blank" rel="noopener noreferrer">One Night Werewolf</a>
 				</p>
 				<div className="item right">
 				{(() => {
-					const { gameInfo, userInfo } = this.props,
+					const {gameInfo, userInfo} = this.props,
 						iconClasses = () => {
 							let classes = 'setting icon large';
 
@@ -152,24 +158,20 @@ export default class Menu extends React.Component {
 							return classes;
 						};
 
-					if (!userInfo.userName) {
-						return (
-							<div className="ui buttons">
-								<div className="ui button" id="signin">Sign in</div>
-								<div className="or"></div>
-								<div className="ui button" id="signup">Sign up</div>
+					return !userInfo.userName ? (
+						<div className="ui buttons">
+							<div className="ui button" id="signin">Sign in</div>
+							<div className="or" />
+							<div className="ui button" id="signup">Sign up</div>
+						</div>
+					) : (
+						<div>
+							<div className="loggedin">
+								Logged in as <span className="playername">{userInfo.userName}</span>
 							</div>
-						);
-					} else {
-						return (
-							<div>
-								<div className="loggedin">
-									Logged in as <span className="playername">{userInfo.userName}</span>
-								</div>
-								<i className={iconClasses()} onClick={this.clickSettingsButton.bind(this)}></i>
-							</div>
-						);
-					}
+							<i className={iconClasses()} onClick={this.clickSettingsButton} />
+						</div>
+					);
 				})()}
 				{(() => {
 					if (this.props.userInfo.userName) {
@@ -184,4 +186,11 @@ export default class Menu extends React.Component {
 			</section>
 		);
 	}
+}
+
+Menu.propTypes = {
+	userInfo: React.PropTypes.object,
+	gameInfo: React.PropTypes.object,
+	onLeaveGame: React.PropTypes.func,
+	onSettingsButtonClick: React.PropTypes.func
 };

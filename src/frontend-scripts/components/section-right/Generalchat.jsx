@@ -1,9 +1,12 @@
-'use strict';
-
 import React from 'react';
 
-export default class Gamechat extends React.Component {
+export default class Generalchat extends React.Component {
 	constructor() {
+		super();
+		this.handleChatLockClick = this.handleChatLockClick.bind(this);
+		this.handleSubmit = this.handleSubmit.bind(this);
+		this.handleInputChange = this.handleInputChange.bind(this);
+		this.handleChatClearClick = this.handleChatClearClick.bind(this);
 		this.state = {
 			lock: false,
 			inputValue: ''
@@ -16,9 +19,9 @@ export default class Gamechat extends React.Component {
 
 	componentDidUpdate() {
 		this.scrollChats();
-	}	
+	}
 
-	handleChatClearClick(e) {
+	handleChatClearClick() {
 		this.setState({inputValue: ''});
 	}
 
@@ -27,7 +30,7 @@ export default class Gamechat extends React.Component {
 	}
 
 	handleSubmit(e) {
-		const { inputValue } = this.state;
+		const {inputValue} = this.state;
 
 		e.preventDefault();
 
@@ -41,7 +44,6 @@ export default class Gamechat extends React.Component {
 		}
 	}
 
-
 	scrollChats() {
 		if (!this.state.lock) {
 			document.querySelector('.genchat-container').scrollTop = 99999999;
@@ -49,7 +51,7 @@ export default class Gamechat extends React.Component {
 	}
 
 	processChats() {
-		return this.props.generalChats.map((chat, i) => {		
+		return this.props.generalChats.map((chat, i) => {
 			return (
 				<div className="item" key={i}>
 					<span className={chat.userName === 'coz' ? 'chat-user admin' : chat.userName === 'stine' ? 'chat-user admin' : 'chat-user'}>{chat.userName}: </span>
@@ -59,7 +61,7 @@ export default class Gamechat extends React.Component {
 		});
 	}
 
-	handleChatLockClick(e) {
+	handleChatLockClick() {
 		this.setState({lock: !this.state.lock});
 	}
 
@@ -69,23 +71,29 @@ export default class Gamechat extends React.Component {
 				<section className="generalchat-header">
 					<div className="clearfix">
 						<h3 className="ui header">Chat</h3>
-						<i className={this.state.lock ? 'large lock icon' : 'large unlock alternate icon'} onClick={this.handleChatLockClick.bind(this)}></i>
+						<i className={this.state.lock ? 'large lock icon' : 'large unlock alternate icon'} onClick={this.handleChatLockClick} />
 					</div>
-					<div className="ui divider right-sidebar-divider"></div>
+					<div className="ui divider right-sidebar-divider" />
 				</section>
 				<section className="segment chats">
 					<div className="ui list genchat-container">
 						{this.processChats()}
 					</div>
 				</section>
-				<form className="segment inputbar" onSubmit={this.handleSubmit.bind(this)}>
+				<form className="segment inputbar" onSubmit={this.handleSubmit}>
 					<div className={this.props.userInfo.userName ? 'ui action input' : 'ui action input disabled'}>
-						<input placeholder="Chat.." value={this.state.inputValue} onChange={this.handleInputChange.bind(this)} maxLength="300"></input>
+						<input placeholder="Chat.." value={this.state.inputValue} onChange={this.handleInputChange} maxLength="300" />
 						<button className={this.state.inputValue ? 'ui primary button' : 'ui primary button disabled'}>Chat</button>
 					</div>
-					<i className={this.state.inputValue ? 'large delete icon' : 'large delete icon app-hidden'} onClick={this.handleChatClearClick.bind(this)}></i>
+					<i className={this.state.inputValue ? 'large delete icon' : 'large delete icon app-hidden'} onClick={this.handleChatClearClick} />
 				</form>
 			</section>
 		);
 	}
+}
+
+Generalchat.propTypes = {
+	userInfo: React.PropTypes.object,
+	socket: React.PropTypes.object,
+	generalChats: React.PropTypes.array
 };

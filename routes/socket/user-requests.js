@@ -1,8 +1,6 @@
-'use strict';
-
 const Account = require('../../models/account'),
-	{ games, userList, generalChats } = require('./models'),
-	{ secureGame } = require('./util');
+	{games, userList, generalChats} = require('./models'),
+	{secureGame} = require('./util');
 
 module.exports.sendUserGameSettings = (socket, username) => {
 	Account.findOne({username}, (err, account) => {
@@ -25,18 +23,16 @@ module.exports.sendUserGameSettings = (socket, username) => {
 };
 
 module.exports.sendGameList = (socket) => {
-	const formattedGames = games.map((game) => {
-		return {
-			kobk: game.kobk,
-			time: game.time,
-			name: game.name,
-			gameState: game.gameState,
-			roles: game.roles,
-			seatedCount: Object.keys(game.seated).length,
-			inProgress: game.gameState.isStarted,
-			uid: game.uid
-		};
-	});
+	const formattedGames = games.map(game => ({
+		kobk: game.kobk,
+		time: game.time,
+		name: game.name,
+		gameState: game.gameState,
+		roles: game.roles,
+		seatedCount: Object.keys(game.seated).length,
+		inProgress: game.gameState.isStarted,
+		uid: game.uid
+	}));
 
 	if (socket) {
 		socket.emit('gameList', formattedGames);
@@ -64,9 +60,7 @@ module.exports.sendUserList = (socket) => {
 };
 
 module.exports.sendGameInfo = (socket, uid) => {
-	const game = games.find((el) => {
-		return el.uid === uid;
-	});
+	const game = games.find((el) => el.uid === uid);
 
 	socket.join(uid);
 	socket.emit('gameUpdate', secureGame(game));

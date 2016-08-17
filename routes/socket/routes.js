@@ -1,13 +1,11 @@
-'use strict';
-
-const { handleUpdatedTruncateGame, handleUpdatedReportGame, handleAddNewGame, handleAddNewGameChat, handleNewGeneralChat, handleUpdatedGameSettings, handleSocketDisconnect, handleUserLeaveGame, checkUserStatus } = require('./user-events'),
-	{ sendGameInfo, sendUserGameSettings, sendGameList, sendGeneralChats, sendUserList } = require('./user-requests'),
-	{ updateSeatedUser, updateSelectedElimination, updateUserNightActionEvent } = require('./game-core');
+const {handleUpdatedTruncateGame, handleUpdatedReportGame, handleAddNewGame, handleAddNewGameChat, handleNewGeneralChat, handleUpdatedGameSettings, handleSocketDisconnect, handleUserLeaveGame, checkUserStatus} = require('./user-events'),
+	{sendGameInfo, sendUserGameSettings, sendGameList, sendGeneralChats, sendUserList} = require('./user-requests'),
+	{updateSeatedUser, updateSelectedElimination, updateUserNightActionEvent} = require('./game-core');
 
 module.exports = () => {
 	io.on('connection', (socket) => {
 		checkUserStatus(socket);
-	
+
 		socket
 
 		// user-events
@@ -19,7 +17,7 @@ module.exports = () => {
 		}).on('addNewGameChat', (chat, uid) => {
 			handleAddNewGameChat(chat, uid);
 		}).on('updateReportGame', (data) => {
-			handleUpdatedReportGame(socket, data);			
+			handleUpdatedReportGame(socket, data);
 		}).on('addNewGame', (data) => {
 			handleAddNewGame(socket, data);
 		}).on('updateGameSettings', (data) => {
