@@ -71,6 +71,6 @@ Gameroles.propTypes = {
 	roles: React.PropTypes.array,
 	userInfo: React.PropTypes.object,
 	gameInfo: React.PropTypes.object,
-	roleState: React.PropTypes.object,
-	selectedGamerole: React.PropTypes.string
+	roleState: React.PropTypes.string,
+	selectedGamerole: React.PropTypes.func
 };

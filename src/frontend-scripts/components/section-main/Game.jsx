@@ -135,8 +135,8 @@ Game.propTypes = {
 	socket: React.PropTypes.object,
 	gameRoleInfo: React.PropTypes.object,
 	clickedPlayerInfo: React.PropTypes.object,
-	clickedGamerole: React.PropTypes.string,
-	clickedPlayer: React.PropTypes.string,
-	expandoInfo: React.PropTypes.object,
+	clickedGamerole: React.PropTypes.object,
+	clickedPlayer: React.PropTypes.object,
+	expandoInfo: React.PropTypes.string,
 	dispatch: React.PropTypes.func
 };

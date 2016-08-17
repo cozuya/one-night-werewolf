@@ -444,7 +444,7 @@ Table.propTypes = {
 	onUpdateReportGame: React.PropTypes.func,
 	onSeatingUser: React.PropTypes.func,
 	onLeaveGame: React.PropTypes.func,
-	selectedPlayer: React.PropTypes.string,
+	selectedPlayer: React.PropTypes.func, // todo-release: rename this if its a func
 	userInfo: React.PropTypes.object,
 	gameInfo: React.PropTypes.object,
 	socket: React.PropTypes.object

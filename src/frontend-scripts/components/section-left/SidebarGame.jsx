@@ -52,7 +52,6 @@ export default class SidebarGame extends React.Component {
 }
 
 SidebarGame.propTypes = {
-	key: React.PropTypes.number,
 	game: React.PropTypes.object,
-	socket: React.PropTypes.func
+	socket: React.PropTypes.object
 };

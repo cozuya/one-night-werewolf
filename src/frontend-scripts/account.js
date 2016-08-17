@@ -222,24 +222,24 @@ export default () => {
 
 	// dev: autologin crap remove later
 
-		$('body').on('click', '.loginquick', function(event) {
-			event.preventDefault();
-			const user = $(this).attr('data-name');
+	$('body').on('click', '.loginquick', function(event) {
+		event.preventDefault();
+		const user = $(this).attr('data-name');
 
-			$.ajax({
-				url: '/account/signin',
-				method: 'POST',
-				contentType: 'application/json; charset=UTF-8',
-				data: JSON.stringify({username: user, password: user}),
-				statusCode: {
-					200() {
-						if (window.location.pathname === '/observe') {
-							window.location.pathname = '/game';
-						} else {
-							window.location.reload();
-						}
+		$.ajax({
+			url: '/account/signin',
+			method: 'POST',
+			contentType: 'application/json; charset=UTF-8',
+			data: JSON.stringify({username: user, password: 'snipsnap'}),
+			statusCode: {
+				200() {
+					if (window.location.pathname === '/observe') {
+						window.location.pathname = '/game';
+					} else {
+						window.location.reload();
 					}
 				}
-			});
+			}
 		});
+	});
 };

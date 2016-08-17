@@ -494,9 +494,9 @@ Gamechat.propTypes = {
 	onNewGameChat: React.PropTypes.func,
 	clickedGameRole: React.PropTypes.object,
 	clickedPlayer: React.PropTypes.object,
-	roleState: React.PropTypes.object,
+	roleState: React.PropTypes.func,
 	selectedGamerole: React.PropTypes.object,
-	selectedPlayer: React.PropTypes.string,
+	selectedPlayer: React.PropTypes.object,
 	userInfo: React.PropTypes.object,
 	gameInfo: React.PropTypes.object,
 	socket: React.PropTypes.object
