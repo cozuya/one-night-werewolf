@@ -136,7 +136,7 @@ const Account = require('../../models/account'),
 	};
 
 module.exports.updateSeatedUser = (socket, data) => {
-	const game = games.find((el) => el.uid === data.uid);
+	const game = games.find(el => el.uid === data.uid);
 
 	game.seated[`seat${data.seatNumber}`] = {
 		userName: data.userName,
@@ -634,16 +634,16 @@ module.exports.updateUserNightActionEvent = (socket, data) => {
 			troublemaker() {
 				const action1 = parseInt(data.action[0], 10),
 					action2 = parseInt(data.action[1], 10),
-					seat1player = game.internals.seatedPlayers.find((player) => {
+					seat1player = game.internals.seatedPlayers.find(player => {
 						return player.seatNumber === action1;
 					}),
-					seat2player = game.internals.seatedPlayers.find((player) => {
+					seat2player = game.internals.seatedPlayers.find(player => {
 						return player.seatNumber === action2;
 					}),
 					seat1 = player.tableState.seats[action1],
 					seat2 = player.tableState.seats[action2];
 
-				updatedTrueRoles = game.internals.seatedPlayers.map((player) => {
+				updatedTrueRoles = game.internals.seatedPlayers.map(player => {
 					if (player.userName === seat1player.userName) {
 						return seat2player.trueRole;
 					} else if (player.userName === seat2player.userName) {
@@ -674,12 +674,12 @@ module.exports.updateUserNightActionEvent = (socket, data) => {
 				const action = parseInt(data.action, 10),
 					playerSeat = player.tableState.seats[player.seatNumber],
 					swappedPlayerSeat = player.tableState.seats[action],
-					swappedPlayer = game.internals.seatedPlayers.find((play) => {
+					swappedPlayer = game.internals.seatedPlayers.find(play => {
 						return play.seatNumber === action;
 					}),
 					_role = swappedPlayer.trueRole;
 
-				updatedTrueRoles = game.internals.seatedPlayers.map((play) => {
+				updatedTrueRoles = game.internals.seatedPlayers.map(play => {
 					if (play.userName === player.userName) {
 						return swappedPlayer.trueRole;
 					}
@@ -751,7 +751,7 @@ module.exports.updateUserNightActionEvent = (socket, data) => {
 					];
 				} else {
 					const seats = [player.tableState.seats[parseInt(data.action[0], 10)], player.tableState.seats[parseInt(data.action[1], 10)]],
-						rolesClicked = data.action.map((role) => {
+						rolesClicked = data.action.map(role => {
 							return getTrueRoleBySeatNumber(role);
 						});
 
@@ -794,8 +794,8 @@ module.exports.updateUserNightActionEvent = (socket, data) => {
 	sendInProgressGameUpdate(game);
 };
 
-module.exports.updateSelectedElimination = (data) => {
-	const game = games.find((el) => el.uid === data.uid),
+module.exports.updateSelectedElimination = data => {
+	const game = games.find(el => el.uid === data.uid),
 		player = game.internals.seatedPlayers[parseInt(data.seatNumber, 10)],
 		{selectedForElimination} = data;
 
@@ -805,7 +805,7 @@ module.exports.updateSelectedElimination = (data) => {
 	sendInProgressGameUpdate(game);
 };
 
-const dayPhase = (game) => {
+const dayPhase = game => {
 	let seconds = (() => {
 		const _time = game.time.split(':');
 
@@ -829,7 +829,7 @@ const dayPhase = (game) => {
 				status = `Day ends in ${seconds} second${seconds === 1 ? '' : 's'}`;
 
 				if (seconds === 15) {
-					game.internals.seatedPlayers.forEach((player) => {
+					game.internals.seatedPlayers.forEach(player => {
 						highlightSeats(player, 'otherplayers', 'notify');
 						player.gameChats.push({
 							gameChat: true,
@@ -844,7 +844,7 @@ const dayPhase = (game) => {
 				}
 
 				if (seconds === 14 || seconds === 12) {
-					game.internals.seatedPlayers.forEach((player) => {
+					game.internals.seatedPlayers.forEach(player => {
 						if (!player.tableState.isVotable.selectedForElimination) {
 							highlightSeats(player, 'clear');
 						}
@@ -852,7 +852,7 @@ const dayPhase = (game) => {
 				}
 
 				if (seconds === 13) {
-					game.internals.seatedPlayers.forEach((player) => {
+					game.internals.seatedPlayers.forEach(player => {
 						if (!player.tableState.isVotable.selectedForElimination) {
 							highlightSeats(player, 'otherplayers', 'notify');
 						}
@@ -880,7 +880,7 @@ const dayPhase = (game) => {
 	game.gameState.isDay = true;
 };
 
-const eliminationPhase = (game) => {
+const eliminationPhase = game => {
 	let index = 0;
 
 	const {seatedPlayers} = game.internals;
@@ -893,7 +893,7 @@ const eliminationPhase = (game) => {
 
 	game.status = 'The game ends.';
 
-	seatedPlayers.forEach((player) => {
+	seatedPlayers.forEach(player => {
 		highlightSeats(player, 'clear');
 	});
 
@@ -916,18 +916,18 @@ const eliminationPhase = (game) => {
 	}, 1000);
 };
 
-const endGame = (game) => {
+const endGame = game => {
 	let werewolfEliminated = false,
 		werewolfTeamInGame = false,
 		eliminatedPlayersIndex = [],
 		maxCount = 1;
 
-	const playersSelectedForElimination = game.gameState.eliminations.map((elimination) => elimination.seatNumber),
+	const playersSelectedForElimination = game.gameState.eliminations.map(elimination => elimination.seatNumber),
 		modeMap = {},
 		{seatedPlayers} = game.internals,
 		tannerEliminations = [];
 
-	playersSelectedForElimination.forEach((el) => {
+	playersSelectedForElimination.forEach(el => {
 		if (!modeMap[el]) {
 			modeMap[el] = 1;
 		} else {
@@ -953,7 +953,7 @@ const endGame = (game) => {
 		}
 	});
 
-	game.gameState.eliminations.forEach((elimination) => {
+	game.gameState.eliminations.forEach(elimination => {
 		let transparent = false;
 
 		if (eliminatedPlayersIndex.length === 7 || !eliminatedPlayersIndex.includes(elimination.seatNumber)) {
@@ -966,7 +966,7 @@ const endGame = (game) => {
 	sendInProgressGameUpdate(game);
 	sendGameList();
 
-	eliminatedPlayersIndex.forEach((eliminatedPlayerIndex) => {
+	eliminatedPlayersIndex.forEach(eliminatedPlayerIndex => {
 		// app crashed on line below (truerole of undefined @ werewolf) after a game where 2 players reloaded the page during night I believe.  After much trying have not been able to reproduce much lately.  Could be related to wrong types but I'm not seeing it not be a string lately.  Will look at logs after release to see if its still happening.
 
 		try {
@@ -1001,7 +1001,7 @@ const endGame = (game) => {
 
 	if (eliminatedPlayersIndex.length !== 7) {
 		setTimeout(() => {
-			eliminatedPlayersIndex.forEach((eliminatedPlayerIndex) => {
+			eliminatedPlayersIndex.forEach(eliminatedPlayerIndex => {
 				game.tableState.seats[eliminatedPlayerIndex] = {
 					role: seatedPlayers[eliminatedPlayerIndex].trueRole,
 					isFlipped: true
@@ -1013,9 +1013,9 @@ const endGame = (game) => {
 	}
 
 	setTimeout(() => {
-		const winningPlayers = seatedPlayers.filter((player) => player.wonGame),
-			winningPlayersIndex = winningPlayers.map((player) => player.seatNumber),
-			winningPlayerNames = winningPlayers.map((player) => player.userName),
+		const winningPlayers = seatedPlayers.filter(player => player.wonGame),
+			winningPlayersIndex = winningPlayers.map(player => player.seatNumber),
+			winningPlayerNames = winningPlayers.map(player => player.userName),
 			wonGameChat = {
 				gameChat: true,
 				chat: [],
@@ -1062,14 +1062,14 @@ const endGame = (game) => {
 
 		sendInProgressGameUpdate(game);
 
-		Account.find({username: {$in: seatedPlayers.map((player) => {
+		Account.find({username: {$in: seatedPlayers.map(player => {
 			return player.userName;
 		})}}, (err, results) => {
 			if (err) {
 				console.log(err);
 			}
 
-			results.forEach((player) => {
+			results.forEach(player => {
 				let winner = false;
 
 				if (winningPlayerNames.includes(player.username)) {
@@ -1081,7 +1081,7 @@ const endGame = (game) => {
 
 				player.games.push(game.uid);
 				player.save(() => {
-					const userEntry = userList.find((user) => {
+					const userEntry = userList.find(user => {
 						return user.userName === player.username;
 					});
 
