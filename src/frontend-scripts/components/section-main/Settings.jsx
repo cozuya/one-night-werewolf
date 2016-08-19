@@ -95,7 +95,9 @@ export default class Settings extends React.Component {
 				<div className="ui grid">
 					<div className="four wide column popups">
 						<h4 className="ui header">Disable informational popups</h4>
-						<div className="ui fitted toggle checkbox" ref={(c) => { this.popups = c; }}>
+						<div className="ui fitted toggle checkbox" ref={c => {
+							this.popups = c;
+						}}>
 							<input type="checkbox" name="popups" defaultChecked={this.props.userInfo.gameSettings.disablePopups} />
 						</div>
 						<div className="ui small popup transition hidden">
@@ -104,19 +106,25 @@ export default class Settings extends React.Component {
 					</div>
 					<div className="four wide column popups">
 						<h4 className="ui header">Add timestamps to in-game chats</h4>
-						<div className="ui fitted toggle checkbox" ref={(c) => { this.timestamps = c; }}>
+						<div className="ui fitted toggle checkbox" ref={c => {
+							this.timestamps = c;
+						}}>
 							<input type="checkbox" name="timestamps" defaultChecked={this.props.userInfo.gameSettings.enableTimestamps} />
 						</div>
 					</div>
 					<div className="four wide column popups">
 						<h4 className="ui header">Hide right sidebar while in games</h4>
-						<div className="ui fitted toggle checkbox" ref={(c) => { this.sidebar = c; }}>
+						<div className="ui fitted toggle checkbox" ref={c => {
+							this.sidebar = c;
+						}}>
 							<input type="checkbox" name="sidebar" defaultChecked={this.props.userInfo.gameSettings.disableRightSidebarInGame} />
 						</div>
 					</div>
 					<div className="four wide column popups">
 						<h4 className="ui header">Use dark theme (reloads page)</h4>
-						<div className="ui fitted toggle checkbox" ref={(c) => { this.theme = c; }}>
+						<div className="ui fitted toggle checkbox" ref={c => {
+							this.theme = c;
+						}}>
 							<input type="checkbox" name="sidebar" defaultChecked={this.props.userInfo.gameSettings.enableDarkTheme} />
 						</div>
 					</div>

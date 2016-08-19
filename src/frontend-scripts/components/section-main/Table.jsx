@@ -89,7 +89,7 @@ export default class Table extends React.Component {
 		const {gameInfo} = this.props,
 			{gameState, tableState} = gameInfo;
 
-		return _.range(0, 10).map((num) => {
+		return _.range(0, 10).map(num => {
 			return (
 				<div
 					key={num}
@@ -164,56 +164,56 @@ export default class Table extends React.Component {
 	createSeats() {
 		const {gameInfo, userInfo} = this.props;
 
-		return _.range(0, 10).map((el) => {
+		return _.range(0, 10).map(el => {
 			const seated = this.props.gameInfo.seated[`seat${el}`],
 				user = seated ? gameInfo.seated[`seat${el}`].userName : '';
 
 			return (
-					<div
-						key={el}
-						className={
-						(() => {
-							return `seat-container seat-container${el}`;
-						})()
-					}>
-						<div className={seated ? `seat seat${el}` : `seat seat${el} empty`} data-seatnumber={el} onClick={this.handleSeatClicked}>
-							<span
-								className={
-								(() => {
-									let classes = 'username';
-
-									if (seated && !gameInfo.seated[`seat${el}`].connected) {
-										classes += ' socket-not-present';
-									}
-
-									if (userInfo.seatNumber === el.toString()) {
-										classes += ' currentuser';
-									}
-
-									return classes;
-								})()
-							}>{user}</span>
-						</div>
-						<div
+				<div
+					key={el}
+					className={
+					(() => {
+						return `seat-container seat-container${el}`;
+					})()
+				}>
+					<div className={seated ? `seat seat${el}` : `seat seat${el} empty`} data-seatnumber={el} onClick={this.handleSeatClicked}>
+						<span
 							className={
 							(() => {
-								let classes = 'eliminator';
+								let classes = 'username';
 
-								const {eliminations} = gameInfo.gameState;
-
-								if (el < 7 && eliminations && eliminations[el]) {
-									classes += ` target-seat${gameInfo.gameState.eliminations[el].seatNumber}`;
+								if (seated && !gameInfo.seated[`seat${el}`].connected) {
+									classes += ' socket-not-present';
 								}
 
-								if (eliminations && eliminations[el] && eliminations[el].transparent) {
-									classes += ' transparent';
+								if (userInfo.seatNumber === el.toString()) {
+									classes += ' currentuser';
 								}
 
 								return classes;
 							})()
-						} />
+						}>{user}</span>
 					</div>
-				);
+					<div
+						className={
+						(() => {
+							let classes = 'eliminator';
+
+							const {eliminations} = gameInfo.gameState;
+
+							if (el < 7 && eliminations && eliminations[el]) {
+								classes += ` target-seat${gameInfo.gameState.eliminations[el].seatNumber}`;
+							}
+
+							if (eliminations && eliminations[el] && eliminations[el].transparent) {
+								classes += ' transparent';
+							}
+
+							return classes;
+						})()
+					} />
+				</div>
+			);
 		});
 	}
 
@@ -314,7 +314,7 @@ export default class Table extends React.Component {
 		const {gameInfo, userInfo} = this.props;
 
 		if (gameInfo.gameState.isDay && gameInfo.gameState.isStarted) {
-			const clicked = !!$(e.currentTarget).is(':checked');
+			const clicked = $(e.currentTarget).is(':checked');
 
 			this.props.socket.emit('updateTruncateGame', {
 				truncate: clicked,
@@ -349,7 +349,9 @@ export default class Table extends React.Component {
 			return (
 				<div className="table-uid">
 					Game ID: {gameInfo.uid}
-					<i onClick={this.handleClickedReportGame} ref={(c) => { this.reportIcon = c; }} className={iconClasses()} />
+					<i onClick={this.handleClickedReportGame} ref={c => {
+						this.reportIcon = c;
+					}} className={iconClasses()} />
 					<div className="ui popup transition hidden">
 							Player abuse? Mark this game for reporting to the administrators for review.  Found a bug?  Send us an email.
 					</div>
@@ -370,7 +372,9 @@ export default class Table extends React.Component {
 		if (userInfo.seatNumber && gameState.isStarted && gameState.isDay && !gameState.isCompleted) {
 			return (
 				<div className="game-options-container">
-					<div className="ui fitted toggle checkbox checked showclaims" ref={(c) => { this.showclaims = c; }}>
+					<div className="ui fitted toggle checkbox checked showclaims" ref={c => {
+						this.showclaims = c;
+					}}>
 						<input type="checkbox" name="show-claims" onClick={toggleClaims} />
 						<label>Hide claims</label>
 					</div>
@@ -429,7 +433,9 @@ export default class Table extends React.Component {
 				})()}
 				{this.createReportGame()}
 				{this.createUserGameOptions()}
-				<div className="ui basic small modal signinnag" ref={(c) => { this.signinModal = c; }}>
+				<div className="ui basic small modal signinnag" ref={c => {
+					this.signinModal = c;
+				}}>
 					<div className="ui header">You will need to sign in or sign up for an account to play.</div>
 				</div>
 			</section>
