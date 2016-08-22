@@ -346,6 +346,11 @@ export default class Gamechat extends React.Component {
 													index: (() => {
 														let _index = i;
 
+														/**
+ 														* Recusively processes split chunks.
+														* @param {int} splitIndex The index of the split to process
+														* @return {int} tbd
+														*/
 														function processSplits(splitIndex) {
 															if (typeof split[_index - 1] !== 'undefined' && !split[splitIndex].length && split[splitIndex - 1].substr(0, item.name.length) !== item.name) {
 																return processSplits(_index--);
