@@ -36,7 +36,7 @@ const Account = require('../../models/account'),
 				break;
 
 			case 'clear':
-				player.tableState.seats.forEach((seat) => {
+				player.tableState.seats.forEach(seat => {
 					if (seat.highlight) {
 						delete seat.highlight;
 					}
@@ -46,18 +46,18 @@ const Account = require('../../models/account'),
 			default:
 			}
 		} else {
-			seats.forEach((seatNumber) => {
+			seats.forEach(seatNumber => {
 				player.tableState.seats[seatNumber].highlight = type;
 			});
 		}
 	},
-	startGame = (game) => {
+	startGame = game => {
 		let allWerewolvesNotInCenter = false;
 
 		const assignRoles = () => {
 			const _roles = [...game.roles];
 
-			game.internals.seatedPlayers.forEach((player) => {
+			game.internals.seatedPlayers.forEach(player => {
 				const roleIndex = Math.floor((Math.random() * _roles.length)),
 					role = _roles[roleIndex];
 
@@ -178,7 +178,7 @@ module.exports.updateSeatedUser = (socket, data) => {
 	sendGameList();
 };
 
-const prepareNightPhases = (game) => {
+const prepareNightPhases = game => {
 	// round 1: all werewolves minions masons seers and (one robber or troublemaker)
 	// round 2 through x: robbercount + troublemaker count minus 1
 	// round x+1: all insomniacs
@@ -187,14 +187,14 @@ const prepareNightPhases = (game) => {
 
 	const phases = [[]],
 		insomniacs = [],
-		roles = _.shuffle(game.internals.seatedPlayers.concat(game.internals.centerRoles.map((role) => {
-			return {
+		roles = _.shuffle(game.internals.seatedPlayers.concat(game.internals.centerRoles.map(role => (
+			{
 				trueRole: role,
 				isCenter: true
-			};
-		})));
+			}
+		))));
 
-	roles.forEach((player) => {
+	roles.forEach(player => {
 		switch (player.trueRole) {
 		case 'seer':
 			if (!player.isCenter) {
@@ -275,7 +275,7 @@ const prepareNightPhases = (game) => {
 	});
 
 	if (insomniacs.length) {
-		insomniacs.forEach((player) => {
+		insomniacs.forEach(player => {
 			if (!player.isCenter) {
 				player.tableState.nightAction.phase = phases.length + 1;
 			}
@@ -284,10 +284,10 @@ const prepareNightPhases = (game) => {
 		phases.push([...insomniacs]);
 	}
 
-	const werewolves = phases[0].filter((player) => player.trueRole === 'werewolf' && !player.isCenter),
-		masons = phases[0].filter((player) => player.trueRole === 'mason' && !player.isCenter);
+	const werewolves = phases[0].filter(player => player.trueRole === 'werewolf' && !player.isCenter),
+		masons = phases[0].filter(player => player.trueRole === 'mason' && !player.isCenter);
 
-	phases[0].forEach((player) => {
+	phases[0].forEach(player => {
 		let others, nightAction, message;
 
 		switch (player.trueRole) {
@@ -296,7 +296,7 @@ const prepareNightPhases = (game) => {
 				phase: 1
 			};
 
-			others = werewolves.filter((werewolf) => werewolf.userName !== player.userName);
+			others = werewolves.filter(werewolf => werewolf.userName !== player.userName);
 
 			if (werewolves.length === 1) {
 				message = [
@@ -334,7 +334,7 @@ const prepareNightPhases = (game) => {
 					}
 				});
 
-				nightAction.highlight = others.map((other) => {
+				nightAction.highlight = others.map(other => {
 					return other.seatNumber;
 				});
 
@@ -354,17 +354,7 @@ const prepareNightPhases = (game) => {
 				phase: 1
 			};
 
-			if (!werewolves.length) {
-				message = [
-					{text: 'You wake up, and see that there are no '},
-					{
-						text: 'werewolves',
-						type: 'roleName'
-					},
-					{text: ' in this game. Be careful - you lose if no village team player is eliminated.'}
-				];
-				game.internals.soloMinion = true;
-			} else {
+			if (werewolves.length) {
 				message = [
 					{text: 'You wake up, and see that the '},
 					{
@@ -391,9 +381,17 @@ const prepareNightPhases = (game) => {
 					}
 				});
 
-				nightAction.highlight = werewolves.map((werewolf) => {
-					return werewolf.seatNumber;
-				});
+				nightAction.highlight = werewolves.map(werewolf => werewolf.seatNumber);
+			} else {
+				message = [
+					{text: 'You wake up, and see that there are no '},
+					{
+						text: 'werewolves',
+						type: 'roleName'
+					},
+					{text: ' in this game. Be careful - you lose if no village team player is eliminated.'}
+				];
+				game.internals.soloMinion = true;
 			}
 
 			message.push({text: '.'});
@@ -404,22 +402,14 @@ const prepareNightPhases = (game) => {
 			break;
 
 		case 'mason':
-			others = masons.filter((mason) => mason.userName !== player.userName);
+			others = masons.filter(mason => mason.userName !== player.userName);
 
 			nightAction = {
 				action: 'mason',
 				phase: 1
 			};
 
-			if (!others.length) {
-				message = [
-					{text: 'You wake up, and see that you are the only '},
-					{
-						type: 'roleName',
-						text: 'mason'
-					}
-				];
-			} else {
+			if (others.length) {
 				message = [
 					{text: 'You wake up, and see that the '},
 					{
@@ -429,9 +419,7 @@ const prepareNightPhases = (game) => {
 					{text: ` in this game ${others.length === 1 ? 'is' : 'are'} `}
 				];
 
-				nightAction.highlight = others.map((other) => {
-					return other.seatNumber;
-				});
+				nightAction.highlight = others.map(other => other.seatNumber);
 
 				others.forEach((player, index) => {
 					message.push({
@@ -447,6 +435,14 @@ const prepareNightPhases = (game) => {
 						message.push({text: ' and '});
 					}
 				});
+			} else {
+				message = [
+					{text: 'You wake up, and see that you are the only '},
+					{
+						type: 'roleName',
+						text: 'mason'
+					}
+				];
 			}
 
 			message.push({text: '.'});
@@ -475,7 +471,7 @@ const nightPhases = (game, phases) => {
 	const phasesCount = phases.length,
 		endPhases = () => {
 			clearInterval(phasesTimer);
-			game.internals.seatedPlayers.forEach((player) => {
+			game.internals.seatedPlayers.forEach(player => {
 				player.gameChats.push({
 					gameChat: true,
 					userName: player.userName,
@@ -503,7 +499,7 @@ const nightPhases = (game, phases) => {
 				const startPhaseTime = phaseTime,
 					phasesPlayers = phases[phasesIndex];
 
-				phasesPlayers.forEach((player) => {
+				phasesPlayers.forEach(player => {
 					if (!player.isCenter) {
 						const chat = {
 							gameChat: true,
@@ -536,13 +532,13 @@ const nightPhases = (game, phases) => {
 						game.status = `Night phase ${phases.length === 1 ? 1 : (phasesIndex).toString()} of ${phasesCount} ends in ${phaseTime} second${phaseTime === 1 ? '' : 's'}.`;
 
 						if (phaseTime === startPhaseTime - 1 || phaseTime === startPhaseTime - 3) {
-							phasesPlayers.forEach((player) => {
+							phasesPlayers.forEach(player => {
 								if (!player.isCenter && player.tableState.nightAction.highlight) {
 									highlightSeats(player, player.tableState.nightAction.highlight, 'notify');
 								}
 							});
 						} else if (phaseTime === startPhaseTime - 2 || phaseTime === startPhaseTime - 4) {
-							phasesPlayers.forEach((player) => {
+							phasesPlayers.forEach(player => {
 								if (!player.isCenter && player.tableState.nightAction.highlight) {
 									highlightSeats(player, 'clear');
 								}
@@ -569,18 +565,14 @@ const nightPhases = (game, phases) => {
 module.exports.updateUserNightActionEvent = (socket, data) => {
 	let updatedTrueRoles = [];
 
-	const game = games.find((el) => {
-			return el.uid === data.uid;
-		}),
-		player = game.internals.seatedPlayers.find((player) => {
-			return player.userName === data.userName;
-		}),
+	const game = games.find(el => el.uid === data.uid),
+		player = game.internals.seatedPlayers.find(player => player.userName === data.userName),
 		chat = {
 			gameChat: true,
 			userName: player.userName,
 			timestamp: new Date()
 		},
-		getTrueRoleBySeatNumber = (num) => {
+		getTrueRoleBySeatNumber = num => {
 			num = parseInt(num, 10);
 
 			return num < 7 ? game.internals.seatedPlayers[num].trueRole : game.internals.centerRoles[num - 7];
@@ -634,12 +626,8 @@ module.exports.updateUserNightActionEvent = (socket, data) => {
 			troublemaker() {
 				const action1 = parseInt(data.action[0], 10),
 					action2 = parseInt(data.action[1], 10),
-					seat1player = game.internals.seatedPlayers.find(player => {
-						return player.seatNumber === action1;
-					}),
-					seat2player = game.internals.seatedPlayers.find(player => {
-						return player.seatNumber === action2;
-					}),
+					seat1player = game.internals.seatedPlayers.find(player => player.seatNumber === action1),
+					seat2player = game.internals.seatedPlayers.find(player => player.seatNumber === action2),
 					seat1 = player.tableState.seats[action1],
 					seat2 = player.tableState.seats[action2];
 
@@ -674,9 +662,7 @@ module.exports.updateUserNightActionEvent = (socket, data) => {
 				const action = parseInt(data.action, 10),
 					playerSeat = player.tableState.seats[player.seatNumber],
 					swappedPlayerSeat = player.tableState.seats[action],
-					swappedPlayer = game.internals.seatedPlayers.find(play => {
-						return play.seatNumber === action;
-					}),
+					swappedPlayer = game.internals.seatedPlayers.find(play => play.seatNumber === action),
 					_role = swappedPlayer.trueRole;
 
 				updatedTrueRoles = game.internals.seatedPlayers.map(play => {
@@ -751,9 +737,7 @@ module.exports.updateUserNightActionEvent = (socket, data) => {
 					];
 				} else {
 					const seats = [player.tableState.seats[parseInt(data.action[0], 10)], player.tableState.seats[parseInt(data.action[1], 10)]],
-						rolesClicked = data.action.map(role => {
-							return getTrueRoleBySeatNumber(role);
-						});
+						rolesClicked = data.action.map(role => getTrueRoleBySeatNumber(role));
 
 					seats[0].isFlipped = true;
 					seats[1].isFlipped = true;
@@ -809,7 +793,7 @@ const dayPhase = game => {
 	let seconds = (() => {
 		const _time = game.time.split(':');
 
-		return !_time[0] ? parseInt(_time[1], 10) : (parseInt(_time[0], 10) * 60) + parseInt(_time[1], 10);
+		return _time[0] ? (parseInt(_time[0], 10) * 60) + parseInt(_time[1], 10) : parseInt(_time[1], 10);
 	})();
 
 	const countDown = setInterval(() => {
@@ -928,10 +912,10 @@ const endGame = game => {
 		tannerEliminations = [];
 
 	playersSelectedForElimination.forEach(el => {
-		if (!modeMap[el]) {
-			modeMap[el] = 1;
-		} else {
+		if (modeMap[el]) {
 			modeMap[el]++;
+		} else {
+			modeMap[el] = 1;
 		}
 
 		if (modeMap[el] > maxCount) {

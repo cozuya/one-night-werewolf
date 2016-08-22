@@ -22,7 +22,7 @@ module.exports.sendUserGameSettings = (socket, username) => {
 	});
 };
 
-module.exports.sendGameList = (socket) => {
+module.exports.sendGameList = socket => {
 	const formattedGames = games.map(game => ({
 		kobk: game.kobk,
 		time: game.time,
@@ -41,11 +41,11 @@ module.exports.sendGameList = (socket) => {
 	}
 };
 
-module.exports.sendGeneralChats = (socket) => {
+module.exports.sendGeneralChats = socket => {
 	socket.emit('generalChats', generalChats);
 };
 
-module.exports.sendUserList = (socket) => {
+module.exports.sendUserList = socket => {
 	if (socket) {
 		socket.emit('userList', {
 			list: userList,
@@ -60,7 +60,7 @@ module.exports.sendUserList = (socket) => {
 };
 
 module.exports.sendGameInfo = (socket, uid) => {
-	const game = games.find((el) => el.uid === uid);
+	const game = games.find(el => el.uid === uid);
 
 	socket.join(uid);
 	socket.emit('gameUpdate', secureGame(game));

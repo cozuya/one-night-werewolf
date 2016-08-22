@@ -40,14 +40,14 @@ class App extends React.Component {
 			window.location.reload();
 		});
 
-		socket.on('gameSettings', (settings) => {
+		socket.on('gameSettings', settings => {
 			const {userInfo} = this.props;
 
 			userInfo.gameSettings = settings;
 			dispatch(updateUser(userInfo));
 		});
 
-		socket.on('gameList', (list) => {
+		socket.on('gameList', list => {
 			dispatch(updateGameList(list));
 		});
 
@@ -67,18 +67,18 @@ class App extends React.Component {
 			}
 		});
 
-		socket.on('userList', (list) => {
+		socket.on('userList', list => {
 			dispatch(updateUserList(list));
 		});
 
-		socket.on('updateSeatForUser', (seatNumber) => {
+		socket.on('updateSeatForUser', seatNumber => {
 			const {userInfo} = this.props;
 
 			userInfo.seatNumber = seatNumber;
 			dispatch(updateUser(userInfo));
 		});
 
-		socket.on('generalChats', (chats) => {
+		socket.on('generalChats', chats => {
 			dispatch(updateGeneralChats(chats));
 		});
 	}
@@ -123,7 +123,6 @@ class App extends React.Component {
 	// 		});
 	// 	}
 	// }
-
 
 	makeQuickDefault() {
 		const {dispatch, userInfo} = this.props,
@@ -255,6 +254,6 @@ App.propTypes = {
 	userList: React.PropTypes.object
 };
 
-const select = (state) => state;
+const select = state => state;
 
 export default connect(select)(App);

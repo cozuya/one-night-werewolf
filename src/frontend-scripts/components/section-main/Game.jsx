@@ -118,7 +118,7 @@ class Game extends React.Component {
 	}
 }
 
-const select = (state) => state;
+const select = state => state;
 
 export default connect(select)(Game);
 

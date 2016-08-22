@@ -52,14 +52,14 @@ export default class Creategame extends React.Component {
 	}
 
 	handleChangeRole(e) {
-		let werewolfTeamCount = this.state.roles.filter((el) => el === 'werewolf' || el === 'minion'.length),
-			tannerTeamCount = this.state.roles.filter((el) => el === 'tanner').length;
+		let werewolfTeamCount = this.state.roles.filter(el => el === 'werewolf' || el === 'minion'.length),
+			tannerTeamCount = this.state.roles.filter(el => el === 'tanner').length;
 
 		const $target = $(e.target),
 			role = $target.parent().find('div:first-child').attr('data-role'),
 			$progress = $(this.progressbar),
 			roles = this.state.roles,
-			currentRoleCount = roles.filter((el) => el === role).length;
+			currentRoleCount = roles.filter(el => el === role).length;
 
 		if (role === 'werewolf' || role === 'minion') {
 			werewolfTeamCount++;
@@ -83,9 +83,7 @@ export default class Creategame extends React.Component {
 	}
 
 	roleCount(role) {
-		return this.state.roles.filter((el) => {
-			return el === role;
-		}).length;
+		return this.state.roles.filter(el => el === role).length;
 	}
 
 	clearRoles() {
@@ -182,7 +180,9 @@ export default class Creategame extends React.Component {
 					</div>
 					<div className="four wide column timeofgame">
 						<h4 className="ui header">Length of game</h4>
-						<div className="ui dropdown" ref={(c) => { this.timedropdown = c; }}>
+						<div className="ui dropdown" ref={c => {
+							this.timedropdown = c;
+						}}>
 							<span className="text">3:00</span>
 							<i className="dropdown icon">
 								<div className="menu" />
@@ -311,7 +311,9 @@ export default class Creategame extends React.Component {
 				</div>
 				<div className="ui grid footer">
 					<div className="twelve wide column">
-						<div className="ui teal progress" ref={(c) => { this.progressbar = c; }} data-value="2" data-total="10">
+						<div className="ui teal progress" ref={c => {
+							this.progressbar = c;
+						}} data-value="2" data-total="10">
 							<div className="bar">
 								<div className="progress" />
 							</div>
@@ -322,7 +324,7 @@ export default class Creategame extends React.Component {
 							className={
 								(() => {
 									const classes = 'ui button primary',
-										disabled = this.state.roles.length !== 10 ? 'disabled ' : ''; // strings and ternaries don't mix well
+										disabled = this.state.roles.length === 10 ? '' : 'disabled ';
 
 									return disabled + classes;
 								})()

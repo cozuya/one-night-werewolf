@@ -273,25 +273,19 @@ export default class Gamechat extends React.Component {
 				// playerNames = Object.keys(gameInfo.seated).map((seatName) => {
 				// 	return gameInfo.seated[seatName].userName;
 				// }),
-				players = Object.keys(gameInfo.seated).map((seatName) => {
+				players = Object.keys(gameInfo.seated).map(seatName => {
 					return {
 						name: gameInfo.seated[seatName].userName
 					};
 				}),
-				isSeated = () => {
-					return !!Object.keys(gameInfo.seated).find((seatName) => {
-						return gameInfo.seated[seatName].userName === chat.userName;
-					});
-				},
+				isSeated = () => !!Object.keys(gameInfo.seated).find(seatName => gameInfo.seated[seatName].userName === chat.userName),
 				roles = [{
 					name: 'masons',
 					team: 'village'
-				}, ..._.uniq(gameInfo.roles).map((name) => { // javascript!
-					return {
-						name,
-						team: roleMap[name].team
-					};
-				}),
+				}, ..._.uniq(gameInfo.roles).map(name => ({ // javascript!
+					name,
+					team: roleMap[name].team
+				})),
 					{
 						name: 'werewolves',
 						team: 'werewolf'
@@ -301,7 +295,7 @@ export default class Gamechat extends React.Component {
 			if (chat.gameChat && (this.state.chatFilter === 'Game' || this.state.chatFilter === 'All')) {
 				return (
 					<div className="item" key={i}>
-						<span className="chat-user--game">[GAME] {this.handleTimestamps.call(this, chat.timestamp)}: </span>
+						<span className="chat-user--game">[GAME] {this.handleTimestamps(chat.timestamp)}: </span>
 						<span className="game-chat">
 							{(() => {
 								return chatContents.map((chatSegment, index) => {
@@ -311,7 +305,7 @@ export default class Gamechat extends React.Component {
 										if (chatSegment.type === 'playerName') {
 											classes = 'chat-player';
 										} else {
-											classes = `chat-role--${roles.find((role) => role.name === chatSegment.text).team}`;
+											classes = `chat-role--${roles.find(role => role.name === chatSegment.text).team}`;
 										}
 
 										return <span key={index} className={classes}>{chatSegment.text}</span>;
@@ -326,14 +320,14 @@ export default class Gamechat extends React.Component {
 			} else if (!chat.gameChat && this.state.chatFilter !== 'Game') {
 				return (
 					<div className="item" key={i}>
-						<span className="chat-user">{chat.userName}{isSeated() ? '' : ' (Observer)'}{this.handleTimestamps.call(this, chat.timestamp)}: </span>
+						<span className="chat-user">{chat.userName}{isSeated() ? '' : ' (Observer)'}{this.handleTimestamps(chat.timestamp)}: </span>
 						<span>
 							{(() => {
 								const toProcessChats = [],
 									splitChat = chatContents.split((() => {
-										const toRegex = players.map((player) => {
+										const toRegex = players.map(player => {
 											return player.name;
-										}).concat(roles.map((role) => {
+										}).concat(roles.map(role => {
 											return role.name;
 										})).join('|');
 
@@ -341,7 +335,7 @@ export default class Gamechat extends React.Component {
 									})()),
 									combinedToProcess = roles.concat(players);
 
-								combinedToProcess.forEach((item) => {
+								combinedToProcess.forEach(item => {
 									const split = chatContents.split(new RegExp(item.name, 'i'));
 
 									if (split.length > 1) {
@@ -381,7 +375,6 @@ export default class Gamechat extends React.Component {
 												// console.log(processor);
 
 												// seer seer robber seer == seer seer seer robber
-
 
 												if (item.team) {
 													processor.team = item.team;
@@ -481,8 +474,10 @@ export default class Gamechat extends React.Component {
 							})()
 						}
 					>
-						<input value={this.state.inputValue} autoComplete="off" placeholder="Chat.." id="gameChatInput" ref={(c) => { this.gameChatInput = c; }} onChange={this.handleInputChange} maxLength="300" />
-						<button className={!this.state.inputValue.length ? 'ui primary button disabled' : 'ui primary button'}>Chat</button>
+						<input value={this.state.inputValue} autoComplete="off" placeholder="Chat.." id="gameChatInput" ref={c => {
+							this.gameChatInput = c;
+						}} onChange={this.handleInputChange} maxLength="300" />
+						<button className={this.state.inputValue.length ? 'ui primary button' : 'ui primary button disabled'}>Chat</button>
 					</div>
 				</form>
 			</section>

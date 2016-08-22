@@ -3,7 +3,7 @@ const {handleUpdatedTruncateGame, handleUpdatedReportGame, handleAddNewGame, han
 	{updateSeatedUser, updateSelectedElimination, updateUserNightActionEvent} = require('./game-core');
 
 module.exports = () => {
-	io.on('connection', (socket) => {
+	io.on('connection', socket => {
 		checkUserStatus(socket);
 
 		socket
@@ -12,42 +12,42 @@ module.exports = () => {
 
 		.on('disconnect', () => {
 			handleSocketDisconnect(socket);
-		}).on('updateTruncateGame', (data) => {
+		}).on('updateTruncateGame', data => {
 			handleUpdatedTruncateGame(data);
 		}).on('addNewGameChat', (chat, uid) => {
 			handleAddNewGameChat(chat, uid);
-		}).on('updateReportGame', (data) => {
+		}).on('updateReportGame', data => {
 			handleUpdatedReportGame(socket, data);
-		}).on('addNewGame', (data) => {
+		}).on('addNewGame', data => {
 			handleAddNewGame(socket, data);
-		}).on('updateGameSettings', (data) => {
+		}).on('updateGameSettings', data => {
 			handleUpdatedGameSettings(socket, data);
-		}).on('addNewGeneralChat', (data) => {
+		}).on('addNewGeneralChat', data => {
 			handleNewGeneralChat(data);
-		}).on('leaveGame', (data) => {
+		}).on('leaveGame', data => {
 			handleUserLeaveGame(socket, data);
 		})
 		// user-requests
 
 		.on('getGameList', () => {
 			sendGameList(socket);
-		}).on('getGameInfo', (uid) => {
+		}).on('getGameInfo', uid => {
 			sendGameInfo(socket, uid);
 		}).on('getUserList', () => {
 			sendUserList(socket);
 		}).on('getGeneralChats', () => {
 			sendGeneralChats(socket);
-		}).on('getUserGameSettings', (data) => {
+		}).on('getUserGameSettings', data => {
 			sendUserGameSettings(socket, data);
 		})
 
 		// game-core
 
-		.on('updateSeatedUser', (data) => {
+		.on('updateSeatedUser', data => {
 			updateSeatedUser(socket, data);
-		}).on('updateSelectedForElimination', (data) => {
+		}).on('updateSelectedForElimination', data => {
 			updateSelectedElimination(data);
-		}).on('userNightActionEvent', (data) => {
+		}).on('userNightActionEvent', data => {
 			updateUserNightActionEvent(socket, data);
 		});
 	});

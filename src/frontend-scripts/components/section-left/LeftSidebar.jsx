@@ -31,11 +31,11 @@ export default class LeftSidebar extends React.Component {
 						}
 
 						if (a.gameState.isStarted && !a.gameState.isCompleted) {
-							return !b.gameState.isStarted ? 1 : -1;
+							return b.gameState.isStarted ? -1 : 1;
 						}
 
 						if (b.gameState.isStarted && !b.gameState.isCompleted) {
-							return !a.gameState.isStarted ? -1 : 1;
+							return a.gameState.isStarted ? 1 : -1;
 						}
 
 						if (a.gameState.isCompleted && !b.gameState.isCompleted) {

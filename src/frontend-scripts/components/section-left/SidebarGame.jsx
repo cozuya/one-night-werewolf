@@ -12,8 +12,8 @@ export default class SidebarGame extends React.Component {
 	}
 
 	render() {
-		const setClass = (role) => roleMap[role].team,
-			renderRoles = (roles) => roles.map((role, i) => <div key={i} className={setClass(role)}>{roleMap[role].initial}</div>),
+		const setClass = role => roleMap[role].team,
+			renderRoles = roles => roles.map((role, i) => <div key={i} className={setClass(role)}>{roleMap[role].initial}</div>),
 			{game} = this.props,
 			gameClasses = () => {
 				let classes = 'ui vertical segment';
