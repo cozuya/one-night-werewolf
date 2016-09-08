@@ -266,34 +266,33 @@ export default class Gamechat extends React.Component {
 	}
 
 	processChats() {
-		const {gameInfo} = this.props;
+		const {gameInfo} = this.props,
+			{chatFilter} = this.state;
 
-		return gameInfo.chats.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp)).map((chat, i) => {
-			const chatContents = chat.chat,
-				// playerNames = Object.keys(gameInfo.seated).map((seatName) => {
-				// 	return gameInfo.seated[seatName].userName;
-				// }),
-				players = Object.keys(gameInfo.seated).map(seatName => {
-					return {
-						name: gameInfo.seated[seatName].userName
-					};
-				}),
-				isSeated = () => !!Object.keys(gameInfo.seated).find(seatName => gameInfo.seated[seatName].userName === chat.userName),
-				roles = [{
-					name: 'masons',
-					team: 'village'
-				}, ..._.uniq(gameInfo.roles).map(name => ({ // javascript!
-					name,
-					team: roleMap[name].team
-				})),
-					{
-						name: 'werewolves',
-						team: 'werewolf'
-					}
-				];
+		return gameInfo.chats.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp))
+			.filter(chat => ((chat.gameChat && (chatFilter === 'Game' || chatFilter === 'All'))) || (!chat.gameChat && chatFilter !== 'Game'))
+			.map((chat, i) => {
+				const chatContents = chat.chat,
+					players = Object.keys(gameInfo.seated).map(seatName => {
+						return {
+							name: gameInfo.seated[seatName].userName
+						};
+					}),
+					isSeated = () => Boolean(Object.keys(gameInfo.seated).find(seatName => gameInfo.seated[seatName].userName === chat.userName)),
+					roles = [{
+						name: 'masons',
+						team: 'village'
+					}, ..._.uniq(gameInfo.roles).map(name => ({ // javascript!
+						name,
+						team: roleMap[name].team
+					})),
+						{
+							name: 'werewolves',
+							team: 'werewolf'
+						}
+					];
 
-			if (chat.gameChat && (this.state.chatFilter === 'Game' || this.state.chatFilter === 'All')) {
-				return (
+				return chat.gameChat ? (
 					<div className="item" key={i}>
 						<span className="chat-user--game">[GAME] {this.handleTimestamps(chat.timestamp)}: </span>
 						<span className="game-chat">
@@ -316,9 +315,8 @@ export default class Gamechat extends React.Component {
 							})()}
 						</span>
 					</div>
-				);
-			} else if (!chat.gameChat && this.state.chatFilter !== 'Game') {
-				return (
+			) :
+			(
 					<div className="item" key={i}>
 						<span className="chat-user">{chat.userName}{isSeated() ? '' : ' (Observer)'}{this.handleTimestamps(chat.timestamp)}: </span>
 						<span>
@@ -347,7 +345,7 @@ export default class Gamechat extends React.Component {
 														let _index = i;
 
 														/**
- 														* Recusively processes split chunks.
+															* Recusively processes split chunks.
 														* @param {int} splitIndex The index of the split to process
 														* @return {int} tbd
 														*/
@@ -412,8 +410,7 @@ export default class Gamechat extends React.Component {
 						</span>
 					</div>
 				);
-			}
-		});
+			});
 	}
 
 	render() {
@@ -427,7 +424,7 @@ export default class Gamechat extends React.Component {
 				</section>
 				<section className="segment chats">
 					<div className="ui list">
-						{this.processChats()}
+						this.processChats()
 					</div>
 				</section>
 				<form className="segment inputbar" onSubmit={this.handleSubmit}>

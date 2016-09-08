@@ -1,7 +1,6 @@
 import React from 'react';
 import $ from 'jquery';
 
-
 export default class Menu extends React.Component {
 	constructor() {
 		super();
@@ -124,7 +123,7 @@ export default class Menu extends React.Component {
 			effectSpeed: 100,
 			completionSpeed: Math.floor(Math.random() * 20000),
 			jumbleColor: '#7f7f7f',
-			reverse: !!(Math.random() >= 0.5)
+			reverse: Boolean(Math.random() >= 0.5)
 		});
 	}
 
