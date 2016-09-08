@@ -313,11 +313,7 @@ module.exports.checkUserStatus = socket => {
 		const {user} = passport,
 			{sockets} = io.sockets,
 			game = games.find(game => Object.keys(game.seated).find(seat => game.seated[seat].userName === user)),
-			oldSocketID = Object.keys(sockets).find(socketID => {
-				if (sockets[socketID].handshake.session.passport && Object.keys(sockets[socketID].handshake.session.passport).length) {
-					return sockets[socketID].handshake.session.passport.user === user && socketID !== socket.id;
-				}
-			});
+			oldSocketID = Object.keys(sockets).find(socketID => ((sockets[socketID].handshake.session.passport && Object.keys(sockets[socketID].handshake.session.passport).length) && (sockets[socketID].handshake.session.passport.user === user && socketID !== socket.id)));
 
 		if (oldSocketID && sockets[oldSocketID]) {
 			sockets[oldSocketID].emit('manualDisconnection');

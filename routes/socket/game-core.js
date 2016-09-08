@@ -1,3 +1,4 @@
+
 const Account = require('../../models/account'),
 	{games, userList} = require('./models'),
 	{secureGame} = require('./util'),
