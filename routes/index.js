@@ -1,17 +1,14 @@
-'use strict';
-
-let passport = require('passport'),
-	Account = require('../models/account'),
+let passport = require('passport'), // eslint-disable-line no-unused-vars
+	Account = require('../models/account'), // eslint-disable-line no-unused-vars
 	socketRoutes = require('./socket/routes'),
 	accounts = require('./accounts'),
-	ensureAuthenticated = (req, res, next)  => {
+	ensureAuthenticated = (req, res, next) => {
 		if (req.isAuthenticated()) {
 			return next();
-		} else {
-			res.redirect('/observe');
 		}
-	};
 
+		res.redirect('/observe');
+	};
 
 module.exports = () => {
 	accounts();
@@ -39,7 +36,7 @@ module.exports = () => {
 		} else {
 			res.render('page-howtoplay');
 		}
-	});	
+	});
 
 	app.get('/about', (req, res) => {
 		if (req.user) {

@@ -1,4 +1,3 @@
-
 const Account = require('../../models/account'),
 	{games, userList} = require('./models'),
 	{secureGame} = require('./util'),
@@ -71,14 +70,14 @@ const Account = require('../../models/account'),
 			});
 
 			game.internals.centerRoles = [..._roles];
+
+			return allWerewolvesNotInCenter;
 		};
 
 		assignRoles();
 
 		if (game.kobk && !allWerewolvesNotInCenter) {
-			while (!allWerewolvesNotInCenter) {
-				assignRoles();
-			}
+			while (!assignRoles()) {}  // yes goofy I know
 		}
 
 		game.status = 'Dealing..';

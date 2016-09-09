@@ -1,15 +1,13 @@
-'use strict';
-
 const passport = require('passport'),
 	Account = require('../models/account'),
 	verifyAccount = require('./verify-account'),
 	resetPassword = require('./reset-password'),
-	ensureAuthenticated = (req, res, next)  => {
+	ensureAuthenticated = (req, res, next) => {
 		if (req.isAuthenticated()) {
 			return next();
-		} else {
-			res.redirect('/');
 		}
+
+		res.redirect('/');
 	};
 
 module.exports = () => {
@@ -25,8 +23,8 @@ module.exports = () => {
 	});
 
 	app.post('/account/change-password', ensureAuthenticated, (req, res) => {
-		const { newPassword, newPasswordConfirm } = req.body,
-			{ user } = req;
+		const {newPassword, newPasswordConfirm} = req.body,
+			{user} = req;
 
 		// todo release prevent tiny/huge new passwords
 
@@ -42,8 +40,8 @@ module.exports = () => {
 	});
 
 	app.post('/account/change-email', ensureAuthenticated, (req, res) => {
-		const { newEmail, newEmailConfirm } = req.body,
-			{ user } = req;
+		const {newEmail, newEmailConfirm} = req.body,
+			{user} = req;
 
 		if (newEmail !== newEmailConfirm) {
 			res.status(401).json({message: 'not equal'});
@@ -57,7 +55,7 @@ module.exports = () => {
 
 			account.verification.email = newEmail;
 			account.save(() => {
-				res.send();	
+				res.send();
 			});
 		});
 	});
@@ -72,7 +70,7 @@ module.exports = () => {
 	});
 
 	app.post('/account/signup', (req, res, next) => {
-		const { username, password, password2, email } = req.body,
+		const {username, password, password2, email} = req.body,
 			save = {
 				username,
 				gameSettings: {
@@ -112,11 +110,11 @@ module.exports = () => {
 				if (err) {
 					return next(err);
 				}
-				
+
 				if (account) {
-					res.status(401).json({message: 'Sorry, that account already exists.'})
+					res.status(401).json({message: 'Sorry, that account already exists.'});
 				} else {
-					Account.register(new Account(save), password, (err) => {
+					Account.register(new Account(save), password, err => {
 						if (err) {
 							return next(err);
 						}
@@ -139,7 +137,7 @@ module.exports = () => {
 		res.send();
 	});
 
-	//todo-alpha, signed in on 404 page, nothing updated until moved page.
+	// todo-alpha, signed in on 404 page, nothing updated until moved page.
 
 	app.post('/account/logout', ensureAuthenticated, (req, res) => {
 		req.logOut();

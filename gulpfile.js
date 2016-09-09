@@ -27,7 +27,7 @@ gulp.task('watch', () => {
 	process.env.NODE_ENV = 'development';
 	livereload.listen();
 	gulp.watch('./src/scss/*.scss', ['styles', 'styles-web', 'styles-dark']);
-	gulp.watch(['./src/frontend-scripts/**/*.js*', './routes/socket/*.js'], (e) => {
+	gulp.watch(['./src/frontend-scripts/**/*.js*', './routes/**/*.js'], (e) => {
 		gulp.start('scripts');
 		console.log(e.path);
 		console.log(e.path.split('e:\\apps\\one-night-werewolf\\'));
@@ -51,7 +51,7 @@ gulp.task('lint', () => {
 });
 
 gulp.task('lint-all', () => {
-	return gulp.src(['./routes/socket/*.js', './src/frontend-scripts/**/*.jsx'])
+	return gulp.src(['./routes/**/*.js', './src/frontend-scripts/**/*.jsx'])
 		.pipe(eslint())
 		.pipe(eslint.format())
 		.pipe(eslint.failAfterError());

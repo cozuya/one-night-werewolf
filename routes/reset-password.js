@@ -1,6 +1,4 @@
-'use strict';
-
-const passport = require('passport'),
+const passport = require('passport'), // eslint-disable-line no-unused-vars
 	Account = require('../models/account'),
 	nodemailer = require('nodemailer'),
 	mg = require('nodemailer-mailgun-transport'),
@@ -17,31 +15,28 @@ module.exports = {
 				console.log(err);
 			}
 
-			tokens = accounts.map((account) => {
-				return {
-					username: account.username,
-					token: account.verification.verificationToken,
-					expires: account.verification.verificationTokenExpiration
-				};
-			});
+			tokens = accounts.map(account => ({
+				username: account.username,
+				token: account.verification.verificationToken,
+				expires: account.verification.verificationTokenExpiration
+			}));
 		});
 
 		app.get('/reset-password/:user/:token', (req, res, next) => {
-			const token = tokens.find((toke, i) => {
-				return toke.token === req.params.token;
-			});
+			const token = tokens.find(toke => toke.token === req.params.token);
 
 			if (token && token.expires >= new Date()) {
-				res.render('')
-
+				res.render('');
 
 				Account.findOne({username: token.username}, (err, account) => {
+					if (err) {
+						console.log(err);
+					}
+
 					account.resetPassword.resetTokenExpiration = null;
 					account.save(() => {
 						res.render('/reset-password', {username: token.username});
-						tokens.splice(tokens.findIndex((toke) => {
-							return toke.token === req.params.token;
-						}), 1);
+						tokens.splice(tokens.findIndex(toke => toke.token === req.params.token), 1);
 					});
 				});
 			} else {
@@ -57,7 +52,7 @@ module.exports = {
 
 			if (account) {
 				const tomorrow = new Date(),
-					{ username } = account,
+					{username} = account,
 					token = `${Math.random().toString(36).substring(2)}${Math.random().toString(36).substring(2)}`,
 					nmMailgun = nodemailer.createTransport(mg({
 						auth: {
@@ -67,7 +62,7 @@ module.exports = {
 					}));
 
 				console.log(username);
-					
+
 				tomorrow.setDate(tomorrow.getDate() + 1);
 				account.resetPassword.resetToken = token;
 				account.resetPassword.resetTokenExpiration = tomorrow;
@@ -84,7 +79,7 @@ module.exports = {
 					subject: 'One Night Werewolf Online - reset your password',
 					'h:Reply-To': 'chris.v.ozols@gmail.com',
 					html: template({username, token})
-				}, (err) => {
+				}, err => {
 					if (err) {
 						console.log(err);
 					}
@@ -96,7 +91,6 @@ module.exports = {
 			} else {
 				res.status(401).send();
 			}
-
 		});
 	}
 };

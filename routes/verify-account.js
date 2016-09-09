@@ -1,6 +1,4 @@
-'use strict';
-
-const passport = require('passport'),
+const passport = require('passport'),  // eslint-disable-line no-unused-vars
 	Account = require('../models/account'),
 	nodemailer = require('nodemailer'),
 	mg = require('nodemailer-mailgun-transport'),
@@ -17,29 +15,27 @@ module.exports = {
 				console.log(err);
 			}
 
-			tokens = accounts.map((account) => {
-				return {
-					username: account.username,
-					token: account.verification.verificationToken,
-					expires: account.verification.verificationTokenExpiration
-				};
-			});
+			tokens = accounts.map(account => ({
+				username: account.username,
+				token: account.verification.verificationToken,
+				expires: account.verification.verificationTokenExpiration
+			}));
 		});
 
 		app.get('/verify-account/:user/:token', (req, res, next) => {
-			const token = tokens.find((toke, i) => {
-				return toke.token === req.params.token;
-			});
+			const token = tokens.find(toke => toke.token === req.params.token);
 
 			if (token && token.expires >= new Date() && req.user.username === req.params.user) {
 				Account.findOne({username: token.username}, (err, account) => {
+					if (err) {
+						console.log(err);
+					}
+
 					account.verified = true;
 					account.verification.verificationTokenExpiration = null;
 					account.save(() => {
 						res.redirect('/account');
-						tokens.splice(tokens.findIndex((toke) => {
-							return toke.token === req.params.token;
-						}), 1);
+						tokens.splice(tokens.findIndex(toke => toke.token === req.params.token), 1);
 					});
 				});
 			} else {
@@ -61,7 +57,7 @@ module.exports = {
 						domain: 'onenightwerewolf.online'
 					}
 				}));
-				
+
 			tomorrow.setDate(tomorrow.getDate() + 1);
 			account.verification.verificationToken = token;
 			account.verification.verificationTokenExpiration = tomorrow;
@@ -73,13 +69,13 @@ module.exports = {
 
 			nmMailgun.sendMail({
 				from: 'One Night Werewolf Online <admin@onenightwerewolf.online>',
+				html: template({username, token}),
 				// to: email,
+				// html: `<a href="https://onenightwerewolf.online/verify-account/${username}/${token}">click here</a>`
 				to: '1nwwtest4@mailinator.com',
 				subject: 'One Night Werewolf Online - confirm your account',
-				'h:Reply-To': 'chris.v.ozols@gmail.com',
-				// html: `<a href="https://onenightwerewolf.online/verify-account/${username}/${token}">click here</a>`
-				html: template({username, token})
-			}, (err) => {
+				'h:Reply-To': 'chris.v.ozols@gmail.com'
+			}, err => {
 				if (err) {
 					console.log(err);
 				}
