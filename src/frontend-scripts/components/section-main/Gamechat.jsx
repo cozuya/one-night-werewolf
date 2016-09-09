@@ -11,6 +11,7 @@ export default class Gamechat extends React.Component {
 		this.handleSubmit = this.handleSubmit.bind(this);
 		this.handleChatClearClick = this.handleChatClearClick.bind(this);
 		this.handleInputChange = this.handleInputChange.bind(this);
+		this.handleLeftHotkeyClick = this.handleLeftHotkeyClick.bind(this);
 		this.handleRightHotkeyClick = this.handleRightHotkeyClick.bind(this);
 
 		this.state = {
@@ -91,7 +92,7 @@ export default class Gamechat extends React.Component {
 	createHotkeys() {
 		let textLeft, textRight;
 
-		switch (this.state.hotkey) {   // todo-release expand this functionality to include nightaction events
+		switch (this.state.hotkey) {
 		case 'troublemaker':
 			textLeft = 'reset';
 			textRight = 'I swapped..';
@@ -424,7 +425,7 @@ export default class Gamechat extends React.Component {
 				</section>
 				<section className="segment chats">
 					<div className="ui list">
-						this.processChats()
+						{this.processChats()}
 					</div>
 				</section>
 				<form className="segment inputbar" onSubmit={this.handleSubmit}>
