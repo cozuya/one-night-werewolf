@@ -6,9 +6,7 @@ const gulp = require('gulp'),
 	browserify = require('browserify'),
 	babelify = require('babelify'),
 	through2 = require('through2'),
-	transform = require('vinyl-transform'),
 	rename = require('gulp-rename'),
-	opn = require('opn'),
 	sass = require('gulp-sass'),
 	cleanCSS = require('gulp-clean-css'),
 	uglify = require('gulp-uglify'),
@@ -16,8 +14,7 @@ const gulp = require('gulp'),
 	imagemin = require('gulp-imagemin'),
 	sourcemaps = require('gulp-sourcemaps'),
 	notifier = require('node-notifier'),
-	eslint = require('gulp-eslint'),
-	exec = require('child_process').exec;
+	eslint = require('gulp-eslint');
 
 let file;
 
@@ -27,11 +24,8 @@ gulp.task('watch', () => {
 	process.env.NODE_ENV = 'development';
 	livereload.listen();
 	gulp.watch('./src/scss/*.scss', ['styles', 'styles-web', 'styles-dark']);
-	gulp.watch(['./src/frontend-scripts/**/*.js*', './routes/**/*.js'], (e) => {
+	gulp.watch(['./src/frontend-scripts/**/*.js*', './routes/**/*.js'], e => {
 		gulp.start('scripts');
-		console.log(e.path);
-		console.log(e.path.split('e:\\apps\\one-night-werewolf\\'));
-
 		file = process.platform === 'win32' ? `./${e.path.split('E:\\apps\\one-night-werewolf\\')[1].split('\\').join('/')}` : `./${e.path.split('/Users/Coz/one-night-werewolf/')[1]}`;
 		gulp.start('lint');
 	});
@@ -46,7 +40,7 @@ gulp.task('lint', () => {
 		.pipe(eslint.format())
 		.pipe(eslint.failAfterError())
 		.on('error', () => {
-			notifier.notify({ title: 'ESLint Error', message: ' ' });
+			notifier.notify({title: 'ESLint Error', message: ' '});
 		});
 });
 
@@ -68,7 +62,7 @@ gulp.task('styles', () => {
 		.pipe(plumber())
 		.pipe(sourcemaps.init())
 		.pipe(sass({outputStyle: 'compressed'}).on('error', () => {
-			notifier.notify({ title: 'SASS Error', message: ' ' });
+			notifier.notify({title: 'SASS Error', message: ' '});
 		}))
 		.pipe(sourcemaps.write())
 		.pipe(gulp.dest('./public/styles/'))
@@ -81,7 +75,7 @@ gulp.task('styles-dark', () => {
 		.pipe(plumber())
 		.pipe(sourcemaps.init())
 		.pipe(sass({outputStyle: 'compressed'}).on('error', () => {
-			notifier.notify({ title: 'SASS Error', message: ' ' });
+			notifier.notify({title: 'SASS Error', message: ' '});
 		}))
 		.pipe(sourcemaps.write())
 		.pipe(gulp.dest('./public/styles/'))
@@ -94,7 +88,7 @@ gulp.task('styles-web', () => {
 		.pipe(plumber())
 		.pipe(sourcemaps.init())
 		.pipe(sass({outputStyle: 'compressed'}).on('error', () => {
-			notifier.notify({ title: 'SASS Error', message: ' ' });
+			notifier.notify({title: 'SASS Error', message: ' '});
 		}))
 		.pipe(sourcemaps.write())
 		.pipe(gulp.dest('./public/styles/'))
@@ -116,13 +110,14 @@ gulp.task('scripts', () => {
 				});
 		}))
 		.on('error', function (error) {
-			notifier.notify({ title: 'JavaScript Error', message: ' '});
+			notifier.notify({title: 'JavaScript Error', message: ' '});
 			console.log(error.stack);
 			this.emit('end');
 		})
 		.pipe(rename('bundle.js'))
 		.pipe(gulp.dest('./public/scripts'))
 		.pipe(wait(500))
+		;
 		// .pipe(livereload());
 });
 
@@ -149,7 +144,7 @@ gulp.task('build-js', () => {
 				});
 		}))
 		.on('error', function (error) {
-			notifier.notify({ title: 'JavaScript Error', message: ' '});
+			notifier.notify({title: 'JavaScript Error', message: ' '});
 			console.log(error.stack);
 			this.emit('end');
 		})
@@ -162,7 +157,7 @@ gulp.task('build-css', () => {
 	return gulp.src('./src/scss/style.scss')
 		.pipe(plumber())
 		.pipe(sass({outputStyle: 'compressed'}).on('error', () => {
-			notifier.notify({ title: 'SASS Error', message: ' ' });
+			notifier.notify({title: 'SASS Error', message: ' '});
 		}))
 		.pipe(cleanCSS({keepSpecialComments: 0}))
 		.pipe(gulp.dest('./public/styles/'));
@@ -172,7 +167,7 @@ gulp.task('build-css-dark', () => {
 	return gulp.src('./src/scss/style-dark.scss')
 		.pipe(plumber())
 		.pipe(sass({outputStyle: 'compressed'}).on('error', () => {
-			notifier.notify({ title: 'SASS Error', message: ' ' });
+			notifier.notify({title: 'SASS Error', message: ' '});
 		}))
 		.pipe(cleanCSS({keepSpecialComments: 0}))
 		.pipe(gulp.dest('./public/styles/'));
