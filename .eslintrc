@@ -24,7 +24,10 @@
 		"io": true,
 		"app": true,
 		"document": true,
-		"window": true
+		"window": true,
+		"expect": true,
+		"describe": true,
+		"it": true
 	},
 	"parserOptions": {
 		"ecmaFeatures": {

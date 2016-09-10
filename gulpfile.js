@@ -24,11 +24,11 @@ gulp.task('watch', () => {
 	process.env.NODE_ENV = 'development';
 	livereload.listen();
 	gulp.watch('./src/scss/*.scss', ['styles', 'styles-web', 'styles-dark']);
-	gulp.watch(['./src/frontend-scripts/**/*.js*', './routes/**/*.js'], e => {
-		gulp.start('scripts');
+	gulp.watch(['./src/frontend-scripts/**/*.js*', './routes/**/*.js', './__test__/*.js'], e => {
 		file = process.platform === 'win32' ? `./${e.path.split('E:\\apps\\one-night-werewolf\\')[1].split('\\').join('/')}` : `./${e.path.split('/Users/Coz/one-night-werewolf/')[1]}`;
 		gulp.start('lint');
 	});
+	gulp.watch(['./src/frontend-scripts/**/*.js*'], ['scripts']);
 	gulp.watch('./routes/*.js', ['reload']);
 	gulp.watch('./src/images/*', ['imagemin']);
 });
@@ -45,7 +45,7 @@ gulp.task('lint', () => {
 });
 
 gulp.task('lint-all', () => {
-	return gulp.src(['./routes/**/*.js', './src/frontend-scripts/**/*.jsx'])
+	return gulp.src(['./routes/**/*.js', './src/frontend-scripts/**/*.jsx', './__test__/*.test.js'])
 		.pipe(eslint())
 		.pipe(eslint.format())
 		.pipe(eslint.failAfterError());
@@ -117,8 +117,7 @@ gulp.task('scripts', () => {
 		.pipe(rename('bundle.js'))
 		.pipe(gulp.dest('./public/scripts'))
 		.pipe(wait(500))
-		;
-		// .pipe(livereload());
+		.pipe(livereload());
 });
 
 gulp.task('reload', () => {
