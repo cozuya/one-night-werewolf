@@ -1,4 +1,4 @@
-import socket from 'socket.io-client';
+import sock from 'socket.io-client';
 import React from 'react';
 import {connect} from 'react-redux';
 import LeftSidebar from './section-left/LeftSidebar.jsx';
@@ -6,11 +6,12 @@ import Main from './section-main/Main.jsx';
 import RightSidebar from './section-right/RightSidebar.jsx';
 import {updateUser, updateMidsection, updateGameList, updateGameInfo, updateUserList, updateGeneralChats} from '../actions/actions.js';
 
-socket = socket({
-	reconnection: false
-});
+const socket = sock({
+		reconnection: false
+	}),
+	select = state => state;
 
-class App extends React.Component {
+export class App extends React.Component {
 	constructor() {
 		super();
 		this.handleRoute = this.handleRoute.bind(this);
@@ -253,7 +254,5 @@ App.propTypes = {
 	generalChats: React.PropTypes.array,
 	userList: React.PropTypes.object
 };
-
-const select = state => state;
 
 export default connect(select)(App);
