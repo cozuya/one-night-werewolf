@@ -29,6 +29,8 @@ export class App extends React.Component {
 		if (classList.length) {
 			const username = classList[0].split('username-')[1];
 
+			console.log(this.props);
+
 			dispatch(updateUser({userName: username}));
 			socket.emit('getUserGameSettings', username);
 		}

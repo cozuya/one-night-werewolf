@@ -47,11 +47,11 @@ On occasion semantic-ui itself will attempt to install for some reason - you can
 
 start mongo:
 
-> mongod --dbpath data
+> npm run db
 
 start server:
 
-> nodemon bin/dev
+> npm run server
 
 build assets (first time only):
 
@@ -66,3 +66,7 @@ navigate to: http://localhost:8080
 You'll most likely need a browser extension such as Chrome's Multilogin to have multiple sessions on the same browser.  No, incognito will not work.
 
 Server side code for the game is contained in routes/socket and code quality is decent.  Code quality of the express and front end ajax stuff is sloppy.. don't judge me too harshly - that wasn't the fun part so bogging through it with some not so DRY code was an easy way to get it done.
+
+## Tests ##
+
+> npm test

@@ -1,4 +1,4 @@
-import combinedReducers from '../src/frontend-scripts/reducers/ww-app.js';
+import combinedReducers from '../../src/frontend-scripts/reducers/ww-app.js';
 
 describe('reducers', () => {
 	describe('mainReducer', function() {

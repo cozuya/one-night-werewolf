@@ -1,20 +1,13 @@
 import React from 'react'; // eslint-disable-line no-unused-vars
 import renderer from 'react-test-renderer';
-import {App} from '../src/frontend-scripts/components/App.jsx';
+import {App} from '../../src/frontend-scripts/components/App.jsx';
 
 describe('components', () => {
 	describe('<App />', () => {
 		it('renders correctly', () => {
 			document.body.innerHTML = '<div class="test" id="game-container"></div>';
-			const tree = renderer.create(<App redux={{
-				dispatch: () => {},
-				userInfo: {},
-				midSection: 'default',
-				gameInfo: {},
-				gameList: [],
-				generalChats: [],
-				userList: {}
-			}} />).toJSON();
+
+			const tree = renderer.create( <App dispatch={{() => {}}} userInfo={{}} midSection={{}} gameInfo={{}} gameList={[]} generalChats={[]} userList={{}} />).toJSON();
 
 			expect(tree).toMatchSnapshot();
 		});

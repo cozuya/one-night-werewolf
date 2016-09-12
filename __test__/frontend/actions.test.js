@@ -8,7 +8,7 @@ import {
 	updateClickedGamerole,
 	updateClickedPlayer,
 	updateGeneralChats
-} from '../src/frontend-scripts/actions/actions.js';
+} from '../../src/frontend-scripts/actions/actions.js';
 
 describe('actions', () => {
 	describe('updateUser', () => {

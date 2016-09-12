@@ -96,6 +96,8 @@
     "yamljs": "^0.2.3"
   },
   "scripts": {
-    "test": "jest"
+    "test": "jest",
+    "db": "mongod --dbpath logs",
+    "server": "nodemon bin/dev"
   }
 }
