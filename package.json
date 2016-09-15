@@ -98,6 +98,6 @@
   "scripts": {
     "test": "jest",
     "db": "mongod --dbpath logs",
-    "server": "nodemon bin/dev"
+    "start": "nodemon bin/dev"
   }
 }

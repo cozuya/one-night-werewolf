@@ -7,7 +7,7 @@ describe('components', () => {
 		it('renders correctly', () => {
 			document.body.innerHTML = '<div class="test" id="game-container"></div>';
 
-			const tree = renderer.create( <App dispatch={{() => {}}} userInfo={{}} midSection={{}} gameInfo={{}} gameList={[]} generalChats={[]} userList={{}} />).toJSON();
+			const tree = renderer.create( <App redux={{}} />).toJSON();
 
 			expect(tree).toMatchSnapshot();
 		});

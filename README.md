@@ -51,7 +51,7 @@ start mongo:
 
 start server:
 
-> npm run server
+> npm start
 
 build assets (first time only):
 
