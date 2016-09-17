@@ -11,7 +11,7 @@ Back end: Node, Express, Pug, Passport, Mongodb with Mongoose, SocketIO.
 
 Build: Gulp, Browserify, Babel (front end).
 
-Latest version: 0.4.2.  Open beta began June 15th, 2016.  https://onenightwerewolf.online
+Latest version: 0.4.2.
 
 ## Installation ##
 
